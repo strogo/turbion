@@ -1,0 +1,84 @@
+# -*- coding: utf-8 -*-
+#--------------------------------
+#$Date$
+#$Author$
+#$Revision$
+#--------------------------------
+#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+
+TURBION_CONTEXT_PROCESSORS = [
+    "turbion.blogs.context_processors.blog_globals",
+    "turbion.options.context_processors.options_globals",
+]
+
+TURBION_APPS = [
+    'pantheon.utils',
+    'pantheon.postprocessing',
+    'pantheon.supernovaforms',
+
+    'dxapian',
+
+    'turbion.tags',
+    'turbion.comments',
+    'turbion.blogs',
+    'turbion.profiles',
+    'turbion.feedback',
+    'turbion.staticpages',
+    'turbion.visitors',
+    'turbion.socialbookmarks',
+    'turbion.pingback',
+    'turbion.notifications',
+    'turbion.gears',
+    'turbion.feedburner',
+    'turbion.dbtemplates',
+    'turbion.roles',
+    'turbion.options',
+    'turbion.aliases',
+]
+
+TURBION_MIDDLEWARE_CLASSES = [
+    ( 0,    'turbion.aliases.middleware.AliasesMiddleware', ),
+    ( None, 'turbion.visitors.middleware.VisitorsMiddleware', )
+]
+
+TURBION_TEMPLATE_LOADERS = [
+    ( None, 'turbion.dbtemplates.loader.load_template_source', ),
+]
+
+def to_list( func ):
+    def _decorator( value, *args, **kwargs ):
+        if isinstance( value, tuple ):
+            value = list( value )
+        elif isinstance( value, list ):
+            pass
+        else:
+            raise ValueError
+
+        return func( value, *args, **kwargs )
+    return _decorator
+
+def append( source ):
+    @to_list
+    def _func( value ):
+        return value + source
+    return _func
+
+def insert( source ):
+    @to_list
+    def _func( value ):
+        for pos, klass in source:
+            if pos is not None:
+                value.insert( pos, klass )
+            value.append( klass )
+        return value
+    return _func
+
+patch_installed_apps     = append( TURBION_APPS )
+patch_middleware_classes = insert( TURBION_MIDDLEWARE_CLASSES )
+patch_context_processors = append( TURBION_CONTEXT_PROCESSORS )
+patch_template_loaders   = insert( TURBION_TEMPLATE_LOADERS )
+
+BLOGS_MULTIPLE = False
+PANTHEON_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'
+
+from turbion.pingback.settings import *
