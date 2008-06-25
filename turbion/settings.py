@@ -29,7 +29,7 @@ TURBION_APPS = [
     'turbion.pingback',
     'turbion.notifications',
     'turbion.gears',
-    'turbion.feedburner',
+    #'turbion.feedburner',
     'turbion.dbtemplates',
     'turbion.roles',
     'turbion.options',

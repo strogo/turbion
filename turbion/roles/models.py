@@ -30,6 +30,7 @@ class Capability( models.Model ):
 
     class Meta:
         unique_together = [ ( "connection_id", "connection_ct", "descriptor", "code" ) ]
+        db_table        = "turbion_capability"
 
 class Role( models.Model ):
     code = models.CharField( max_length = 150, db_index = True )
@@ -47,4 +48,4 @@ class Role( models.Model ):
         return self.code
 
     class Meta:
-        pass
+        db_table = "turbion_role"

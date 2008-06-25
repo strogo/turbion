@@ -37,8 +37,9 @@ class Visitor( models.Model, ActionModel ):
         super( Visitor, self ).save()
 
     class Meta:
-        verbose_name = "посетитель"
-        verbose_name_plural = "посетители"
+        verbose_name        = "visitor"
+        verbose_name_plural = "visitors"
+        db_table            = "turbion_visitor"
 
     class Admin:
         list_display = ( "name", "session_key", "email", "action_delete" )
@@ -92,9 +93,10 @@ class User( models.Model ):
         list_filter = ( "ip", "raw_user_ct",  )
 
     class Meta:
-        unique_together = ( ( "raw_user_ct", "raw_user_id" ), )
-        verbose_name = "пользователь"
-        verbose_name_plural = "пользователи"
+        unique_together     = ( ( "raw_user_ct", "raw_user_id" ), )
+        verbose_name        = "user"
+        verbose_name_plural = "users"
+        db_table            = "turbion_user"
 
 def _get_visitor( self ):
     if not hasattr( self, "_visitor" ):

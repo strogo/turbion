@@ -26,5 +26,6 @@ class Template( ActionModel, models.Model ):
         list_filter = ( "is_active", )
 
     class Meta:
-        verbose_name = "шаблон"
-        verbose_name_plural = "шаблоны"
+        verbose_name        = "template"
+        verbose_name_plural = "templates"
+        db_table            = "turbion_template"

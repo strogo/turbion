@@ -65,3 +65,4 @@ class Option( models.Model ):
 
     class Meta:
         unique_together = [ ( "connection_id", "connection_ct", "descriptor", "name" ) ]
+        db_table        = "turbion_option"

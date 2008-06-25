@@ -74,11 +74,12 @@ class BlogTest( TestCase ):
         response = self.assertOk( url )
         #TODO: check right data
 
-    def test_global_sitemap( self ):
-        url = blog_reverse( "global_blog_sitemap" )
+    if settings.BLOGS_MULTIPLE:
+        def test_global_sitemap( self ):
+            url = blog_reverse( "global_blog_sitemap" )
 
-        response = self.assertOk( url )
-        #TODO: check right data
+            response = self.assertOk( url )
+            #TODO: check right data
 
     def _create_comment( self ):
         return {}

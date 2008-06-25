@@ -39,3 +39,6 @@ class GearInfo( models.Model ):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        db_table = "turbion_gear"

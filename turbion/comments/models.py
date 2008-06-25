@@ -103,6 +103,7 @@ class Comment( ActionModel, models.Model ):
         ordering            = ( "created_on",)
         verbose_name        = _( 'comment' )
         verbose_name_plural = _( 'comments' )
+        db_table            = "turbion_comment"
 
 
 def update_comment_count( connection ):

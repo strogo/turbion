@@ -146,6 +146,7 @@ class Post( models.Model, CommentedModel ):
         ordering            = ( '-created_on', )
         unique_together     = ( ( "blog", "created_on", "title", "slug" ), )
         app_label           = "blogs"
+        db_table            = "turbion_post"
 
 from turbion.comments import signals as comment_signals
 

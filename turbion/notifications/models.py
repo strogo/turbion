@@ -27,8 +27,9 @@ class Event( models.Model ):
         return self.descriptor
 
     class Meta:
-        verbose_name = "событие"
-        verbose_name_plural = "события"
+        verbose_name        = "event"
+        verbose_name_plural = "events"
+        db_table            = "turbion_event"
 
 class Connection( ActionModel, models.Model ):
     event = models.ForeignKey( Event )
@@ -43,7 +44,7 @@ class Connection( ActionModel, models.Model ):
         return "%s: %s" % ( self.event.name, self.object_id )
 
     class Meta:
-        verbose_name = "соединение"
-        verbose_name_plural = "соединения"
-
-        unique_together = [ ( "event", "user", "connection_ct", "connection_id" ) ]
+        verbose_name        = "event connection"
+        verbose_name_plural = "event connections"
+        unique_together     = [ ( "event", "user", "connection_ct", "connection_id" ) ]
+        db_table            = "turbion_event_connection"

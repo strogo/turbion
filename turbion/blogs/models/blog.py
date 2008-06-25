@@ -99,6 +99,7 @@ class Blog( models.Model ):
         verbose_name        = 'blog'
         verbose_name_plural = 'blogs'
         app_label           = 'blogs'
+        db_table            = "turbion_blog"
 
     class Admin:
         list_display = ( "id", 'slug', 'name', 'created_on', "created_by" )

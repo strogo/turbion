@@ -23,6 +23,7 @@ class IllegalName( models.Model ):
     class Meta:
         verbose_name = "запретное имя"
         verbose_name_plural = "запретные имена"
+        db_table = "turbion_illegal_name"
 
 class Code( models.Model ):
     code_types = Enum( registration = "registration",
@@ -52,6 +53,7 @@ class Code( models.Model ):
         list_display = ( "user", "type", "date", "code", "data" )
 
     class Meta:
-        unique_together = ( ( "type", "user"), )
-        verbose_name = "запрос"
-        verbose_name_plural = "запросы"
+        unique_together     = ( ( "type", "user"), )
+        verbose_name        = "reg code"
+        verbose_name_plural = "reg codes"
+        db_table            = "turbion_reg_code"

@@ -19,7 +19,7 @@ class Alias( models.Model ):
     active = GenericManager( is_active = True )
 
     class Meta:
-        pass
+        db_table = "turbion_alias"
 
     class Admin:
         list_display = ( "from_url", "to_url" )

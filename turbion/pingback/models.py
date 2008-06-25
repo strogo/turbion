@@ -36,9 +36,10 @@ class Incoming( models.Model ):
         list_per_page = 25
 
     class Meta:
-        verbose_name = "входящий"
+        verbose_name        = "входящий"
         verbose_name_plural = "входящие"
-        unique_together = ( ( "source_url", "content_type", "object_id" ), )
+        unique_together     = ( ( "source_url", "content_type", "object_id" ), )
+        db_table            = "turbion_pingback_incoming"
 
 class Outgoing( models.Model ):
     target_uri = models.URLField()
@@ -52,8 +53,9 @@ class Outgoing( models.Model ):
     object = generic.GenericForeignKey()
 
     class Meta:
-        verbose_name = "исходящий"
+        verbose_name        = "исходящий"
         verbose_name_plural = "исходящие"
+        db_table            = "turbion_pingback_outgoing"
 
 
     class Admin:

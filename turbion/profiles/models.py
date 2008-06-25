@@ -89,8 +89,9 @@ class Profile( User ):
         list_filter = ( "gender", "country", "city" )
 
     class Meta:
-        verbose_name = 'профайл'
-        verbose_name_plural = 'профайлы'
+        verbose_name        = 'profile'
+        verbose_name_plural = 'profiles'
+        db_table            = "turbion_profile"
 
     @property
     def caps( self ):

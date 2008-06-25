@@ -30,8 +30,16 @@ class Asset( models.Model ):
     type = models.CharField()
     file = fields.ExtFileField( upload_to = "assets/" )
 
+    class Meta:
+        verbose_name        = "asset"
+        verbose_name_plural = "assets"
+        db_table            = "turbion_asset"
+
 class Connection( models.Model ):
     object_ct = models.ForeignKey( ContentType )
     object_id = models.PositiveIntegerField()
 
     asset = models.ForeignKey( Asset )
+
+    class Meta:
+        db_table = "turbion_asset_connection"

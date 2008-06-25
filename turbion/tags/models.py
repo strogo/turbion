@@ -28,9 +28,10 @@ class Tag( models.Model ):
         return self.name
 
     class Meta:
-        ordering = ( "name", "slug" )
+        ordering            = ( "name", "slug" )
         verbose_name        = "tag"
         verbose_name_plural = "tags"
+        db_table            = "turbion_tag"
 
     class Admin:
         list_display = ( "name", "slug", )
@@ -47,3 +48,4 @@ class TaggedItem( models.Model ):
 
     class Meta:
         unique_together = ( ( "tag", "item_ct", "item_id" ), )
+        db_table        = "turbion_taggeditem"

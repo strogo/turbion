@@ -59,7 +59,7 @@ def top_commenters_pad( context, blog, count = 5 ):
                      ]
 
     return  { "commenters" : User.objects.select_related()\
-             .extra( select = { "comment_count" : "SELECT COUNT(*) FROM %s as cc WHERE cc.created_by_id = visitors_user.id" % comments_table_name } )\
+             .extra( select = { "comment_count" : "SELECT COUNT(*) FROM %s as cc WHERE cc.created_by_id = turbion_user.id" % comments_table_name } )\
              .extra( where = extra_where, tables = [ comments_table_name, posts_table_name ] )\
              .order_by('-comment_count').distinct()[:count] }
 

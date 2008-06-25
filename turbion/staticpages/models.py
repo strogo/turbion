@@ -35,5 +35,6 @@ class Page( models.Model ):
         list_display_links = ( 'title', )
 
     class Meta:
-        verbose_name = "Страница"
-        verbose_name_plural = "Страницы"
+        verbose_name        = "page"
+        verbose_name_plural = "pages"
+        db_table            = "turbion_page"

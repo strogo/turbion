@@ -31,9 +31,10 @@ class Feedback( ActionModel, models.Model ):
         return self.name
 
     class Meta:
-        verbose_name = _( 'feedback' )
+        verbose_name        = _( 'feedback' )
         verbose_name_plural = _( 'feedbacks' )
-        ordering = ( 'solved', '-date', )
+        ordering            = ( 'solved', '-date', )
+        db_table            = "turbion_feedback"
 
     class Admin:
         list_display = ( 'update_date', 'name', 'subject', 'e_mail', 'solved', 'ip', 'action_delete' )
