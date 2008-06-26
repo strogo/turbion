@@ -16,7 +16,6 @@ from turbion.feedback.models import Feedback
 from turbion.feedback import signals
 from turbion.blogs.decorators import blog_view
 
-
 @render_to( "feedback/index.html" )
 @title_bits( page=_(u"Write"), section=_(u"Feedback") )
 @blog_view

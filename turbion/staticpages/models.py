@@ -10,8 +10,11 @@ from django.core.urlresolvers import reverse
 
 from pantheon.postprocessing.fields import PostprocessField
 
+from turbion.blogs.models import Blog
 
 class Page( models.Model ):
+    blog = models.ForeignKey( Blog, related_name = "pages" )
+
     slug = models.SlugField()
     title = models.CharField( max_length = 100, verbose_name = "Заголовок" )
     last_update = models.DateTimeField( auto_now = True, verbose_name = "Последнее обновление" )

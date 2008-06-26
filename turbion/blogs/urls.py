@@ -29,9 +29,9 @@ sitemaps = {
 
 post_url_pattern = r"post/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/(?P<post_slug>[\w_-]+)/"
 
-urlpatterns = patterns('turbion.blogs.views',
+urlpatterns = patterns('',
  ( r'^dashboard/',                          include( 'turbion.blogs.dashboard.urls' ) ),
- ( r'^profiles/',                           include( 'turbion.blogs.dashboard.urls' ) ),
+ #( r'^profiles/',                           include( 'turbion.blogs.dashboard.urls' ) ),
 )
 
 if MULTIPLE_SETUP: #add global sitemap
@@ -56,7 +56,6 @@ urlpatterns += patterns('turbion.blogs.views',
  blog_url( r'search/$',                                                               'search.search', name = "blog_search" ),
  blog_url( r'search/posts/$',                                                         'search.posts', name = "blog_search_posts"  ),
  blog_url( r'search/comments/$',                                                      'search.comments', name = "blog_search_comments" ),
- blog_url( r'feedback/',                                         include( 'turbion.feedback.urls' ) ),
 )
 
 urlpatterns += patterns('turbion.blogs.views',

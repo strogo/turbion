@@ -8,11 +8,13 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
 
-urlpatterns = patterns('',
-    url( r'^pages/(?P<slug>[\w_-]+)/$',     'turbion.staticpages.views.dispatcher', name = "pages" ),
-    url( r'^profile/',                      include( 'turbion.profiles.urls' ) ),
-    url( r'^captcha/(?P<id>\w+)/$',         "pantheon.supernovaforms.views.captcha_image" ),
+from turbion.blogs.utils import blog_url
 
+urlpatterns = patterns('',
+    blog_url( r'^pages/$',                  include( 'turbion.staticpages.urls' ) ),
+    blog_url( r'feedback/',                 include( 'turbion.feedback.urls' ) ),
+    url( r'^profile/',                      include( 'turbion.profiles.urls' ) ),#FIXME: remove profile link
+    url( r'^captcha/(?P<id>\w+)/$',         "pantheon.supernovaforms.views.captcha_image" ),
 
     url( r'^pingback/',                     include( 'turbion.pingback.urls' )  ),
     url( r'^notifications/',                include( 'turbion.notifications.urls' )  ),
