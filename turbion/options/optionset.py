@@ -128,7 +128,7 @@ class OptionSetSpot( type ):
                                )
             #TODO: add delete handler
 
-        descriptor = "%s.%s" % ( t.__module__, name.lower() )
+        descriptor = "%s.%s" % ( t.__module__, name )
         t._meta.descriptor = descriptor#FIXME: refactor descriptor assigment
 
         cls.sets.add( descriptor, instance )
@@ -144,7 +144,10 @@ class OptionSet( object ):
         if not field:
             raise AttributeError, "Option with name `%s` not found" % name
 
-        return field.to_python( Option.active.get_option( name, self._meta.descriptor, object, cls ).value )
+        try:
+            return field.to_python( Option.active.get_option( name, self._meta.descriptor, object, cls ).value )
+        except Option.DoesNotExist:
+            return None
 
     def set( self, name, value, object = None, cls = None ):
         field = self._meta.fields.get( name, None )

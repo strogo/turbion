@@ -12,6 +12,8 @@ from django.contrib.auth.models import User
 from django.core import mail
 
 class FeedbackPageTest( TestCase ):
+    fixtures = [ "profiles", "blog" ]
+    
     def test_submit_feedback(self):
         response = self.client.get( reverse( "feedback" ) )
         self.assertEqual( response.status_code, 200 )

@@ -41,7 +41,7 @@ class OptionManager( GenericManager ):
 
     def get_option( self, name, descriptor, object = None, cls = None ):
         connection_lookup = self._make_lookup( object, cls )
-        return self.get( name = name, descriptor = descriptor, **connection_lookup )
+        return self.get( name = name, descriptor = descriptor, **connection_lookup )#FIXME: remove __endswith
 
     def set_option( self, name, value, descriptor, object = None, cls = None ):
         option = self.get_option( name, descriptor, object, cls )

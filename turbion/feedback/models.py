@@ -8,12 +8,14 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from turbion.blogs.models import Blog
 from turbion.notifications import EventDescriptor
 from turbion.feedback import signals
 
 from pantheon.models.models import ActionModel
 
 class Feedback( ActionModel, models.Model ):
+    blog = models.ForeignKey( Blog, related_name = "feedbacks" )
     name = models.CharField( max_length = 50, verbose_name = _('user') )
     e_mail = models.EmailField( verbose_name = _( 'e-mail' ) )
     date = models.DateTimeField( auto_now_add = True, verbose_name = _('creation date') )
