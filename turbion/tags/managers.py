@@ -45,5 +45,11 @@ class TaggedItemManager( models.Manager ):
         table_name = model._meta.db_table
         table_name_quoted = quote_name( table_name )
 
-        return query_set.extra( where = [ "%s.%s = %s" % ( table_name_quoted, field, value ) for field, value in kwargs.iteritems() ],
+        params = []
+        for name, value in kwargs.iteritems():
+            if isinstance( value, basestring ):
+                value = '"%s"' % value
+            params.append( ( name, value ) )
+
+        return query_set.extra( where = [ "%s.%s = %s" % ( table_name_quoted, field, value ) for field, value in params ],
                                             tables = [ table_name ] )
