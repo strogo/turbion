@@ -11,7 +11,7 @@ from django.conf import settings
 from turbion.blogs.utils import blog_url
 
 urlpatterns = patterns('',
-    blog_url( r'^pages/$',                  include( 'turbion.staticpages.urls' ) ),
+    blog_url( r'pages/',                    include( 'turbion.staticpages.urls' ) ),
     blog_url( r'feedback/',                 include( 'turbion.feedback.urls' ) ),
     url( r'^profile/',                      include( 'turbion.profiles.urls' ) ),#FIXME: remove profile link
     url( r'^captcha/(?P<id>\w+)/$',         "pantheon.supernovaforms.views.captcha_image" ),
