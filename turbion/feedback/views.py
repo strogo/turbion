@@ -24,6 +24,7 @@ def index( request, blog ):
         feedback_form = FeedbackForm( request.POST )
         if feedback_form.is_valid():
             feedback = feedback_form.save( False )
+            feedback.blog = blog
             feedback.ip = request.META.get( "REMOTE_ADDR", "0.0.0.0" )
             feedback.save()
 

@@ -21,7 +21,9 @@ from pantheon.utils.decorators import render_to, paged
 def add( request, blog, post_id ):
     post = get_object_or_404( Post.published.for_blog( blog ), pk = post_id )
 
-    context = views.add_comment( request, connection = post )
+    context = views.add_comment( request,
+                                 connection = post,
+                                 defaults = { "postprocess" : blog.comments_default_postprocessor } )
 
     if isinstance( context, dict ):
         context.update( { "blog": blog,

@@ -14,6 +14,7 @@ from turbion.comments import signals
 from turbion.comments import forms
 
 def add_comment( request,
+                 defaults = {},
                  redirect = None,
                  connection = None,
                  comment = None,
@@ -34,6 +35,7 @@ def add_comment( request,
             else:
                 if connection:
                     new_comment.connection = connection
+                new_comment.__dict__.update( defaults )
                 new_comment.save()
 
                 dispatcher.send( signal = comment and signals.comment_edited or signals.comment_added,
