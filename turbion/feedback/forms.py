@@ -13,5 +13,5 @@ from turbion.feedback.models import Feedback
 class FeedbackForm( forms.ModelForm ):
     class Meta:
         model = Feedback
-        exclude = ( "solved", "ip", )
+        exclude = ( "blog", "solved", "ip", )
 #FeedbackForm.base_fields[ "captcha" ] = CaptchaField( label = u"Проверка" )
