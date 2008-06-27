@@ -23,7 +23,7 @@ from turbion.blogs import utils
 
 from pantheon.models import fields
 from pantheon.postprocessing.fields import PostprocessField
-from pantheon.utils.enum import NamedEnum
+from pantheon.utils.enum import NamedEnum, Enum
 
 
 commenting_settings = [ ( 0, u"По умолчанию" ),
@@ -37,10 +37,10 @@ show_settings = ( ( 1, u"Всем" ),
                   )
 
 class Post( models.Model, CommentedModel ):
-    statuses = NamedEnum( draft     = ( 1, _( "draft" ) ),
-                          trash     = ( 2, _( "trashed" ) ),
-                          published = ( 3, _( "published" ) )
-                        )
+    statuses = Enum( draft     = _( "draft" ),
+                     trash     = _( "trashed" ),
+                     published = _( "published" )
+                )
 
     blog   = models.ForeignKey( Blog, verbose_name = _( "blog" ) )
     comment_count = models.PositiveIntegerField( default = 0, editable = False, verbose_name = _( "comment count" ) )
@@ -62,7 +62,7 @@ class Post( models.Model, CommentedModel ):
 
     text        = models.TextField( verbose_name = _( "text" ) )
 
-    status = models.PositiveSmallIntegerField( choices = statuses, default = statuses.draft, verbose_name= _( "status" ) )
+    status = models.CharField( max_length = 10, choices = statuses, default = statuses.draft, verbose_name= _( "status" ) )
 
     postprocess = PostprocessField( verbose_name = _( "postprocessor" ) )
 

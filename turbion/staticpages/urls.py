@@ -8,5 +8,5 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns( 'turbion.staticpages.views',
-    url( r'(?P<slug>[\w_-]+)/$',        'dispatcher', name = "pages_dispatcher" ),
+    url( r'^(?P<slug>[\w_-]+)/$',        'dispatcher', name = "pages_dispatcher" ),
 )
