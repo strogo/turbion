@@ -57,7 +57,7 @@ class Comment( ActionModel, models.Model ):
                      moderation = "on moderation", )
 
     created_on = models.DateTimeField( default = datetime.now, verbose_name = _( "created on" ) )
-    created_by = models.ForeignKey( User, related_name = "created_comments", verbose_name = _( "created by" ) )
+    created_by = models.ForeignKey( User, related_name = "created_comments", verbose_name = _( "created by" ), raw_id_admin = True )
 
     edited_on = models.DateTimeField( verbose_name = _( "edited on" ) )
     edited_by = models.ForeignKey( Profile, related_name = "edited_comments", null = True, verbose_name = _( "edited by" ) )

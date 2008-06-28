@@ -5,24 +5,38 @@
 #$Revision$
 #--------------------------------
 #Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
+from datetime import datetime
+
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from pantheon.postprocessing.fields import PostprocessField
+from pantheon.utils.enum import Enum
 
+from turbion.profiles.models import Profile
 from turbion.blogs.models import Blog
 
 class Page( models.Model ):
-    blog = models.ForeignKey( Blog, related_name = "pages" )
+    statuses = Enum( published = _( "published" ),
+                     hide      = _( "hide" ) )
+    blog        = models.ForeignKey( Blog, related_name = "pages" )
 
-    slug = models.SlugField()
-    title = models.CharField( max_length = 100, verbose_name = "Заголовок" )
-    last_update = models.DateTimeField( auto_now = True, verbose_name = "Последнее обновление" )
-    text = models.TextField( verbose_name = "Текст" )
+    created_on = models.DateTimeField( default = datetime.now, verbose_name = _('creation date') )
+    created_by = models.ForeignKey( Profile, related_name = "created_pages" )
+
+    edited_on  = models.DateTimeField( verbose_name = _('update date'), null = True, )
+    edited_by  = models.ForeignKey( Profile, related_name = "edited_pages", null = True )
+
+    slug        = models.SlugField()
+    title       = models.CharField( max_length = 100, verbose_name = _( "title" ) )
+    last_update = models.DateTimeField( auto_now = True, verbose_name = _( "update date" ) )
+    text        = models.TextField( verbose_name = _( "text" ) )
+    status      = models.CharField( max_length = 10, choices = statuses, default = statuses.published )
 
     postprocess = PostprocessField()
 
-    template = models.CharField( max_length = 150, verbose_name = "Шаблон", null = True, blank = True )
+    template    = models.CharField( max_length = 150, verbose_name = _( "template" ), null = True, blank = True )
 
     def get_text(self):
         return self.postprocess.postprocess( self.text )
@@ -30,14 +44,20 @@ class Page( models.Model ):
     def __unicode__(self):
         return self.title
 
+    def save( self ):
+        if self.edited_by:
+            self.edited_on = datetime.now()
+        super( Feedback, self ).save()
+
+    @models.permalink
     def get_absolute_url(self):
-        return reverse( "turbion.staticpages.views.dispatcher", kwargs = { 'slug' : self.slug } )
+        return ( "pages_dispatcher", ( self.blog.slug, self.slug ) )
 
     class Admin:
-        list_display = ( 'title', 'slug', 'last_update' )
+        list_display = ( 'title', 'slug', 'created_by' )
         list_display_links = ( 'title', )
 
     class Meta:
-        verbose_name        = "page"
-        verbose_name_plural = "pages"
+        verbose_name        = _( "page" )
+        verbose_name_plural = _( "pages" )
         db_table            = "turbion_page"

@@ -41,7 +41,7 @@ class Connection( ActionModel, models.Model ):
     connection = GenericForeignKey( "connection_ct", "connection_id" )
 
     def __unicode__(self):
-        return "%s: %s" % ( self.event.name, self.object_id )
+        return "%s: %s-%s" % ( self.event, self.connection_ct, self.connection_id )
 
     class Meta:
         verbose_name        = "event connection"

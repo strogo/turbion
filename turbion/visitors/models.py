@@ -107,7 +107,7 @@ def _get_visitor( self ):
     return self._visitor
 
 def _get_generic_user( self ):
-    if not hasattr( self, "_generic_user" ):
+    if not getattr( self, "_generic_user", False ):
         if self.user.is_authenticated():
             raw_user = self.user.profile
         elif self.visitor:
@@ -124,5 +124,5 @@ def _get_generic_user( self ):
             self._generic_user = None
     return self._generic_user
 
-HttpRequest.visitor      = property( _get_visitor )
-HttpRequest.generic_user = property( _get_generic_user )
+HttpRequest.visitor            = property( _get_visitor )
+HttpRequest.generic_user       = property( _get_generic_user )

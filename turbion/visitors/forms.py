@@ -18,8 +18,8 @@ def extract_user_data( request ):
 def extract_visitor_data( request ):
     return { "session_key" : request.session.session_key }
 
-def combine_user_form_with( form_class, visitor_data, user_data, user = None, field = "created_by", need_captcha = True ):
-    if not user or user.is_guest:
+def combine_user_form_with( form_class, visitor_data, user_data, user = None, raw_user = None, field = "created_by", need_captcha = True ):
+    if ( not user or user.is_guest ) and ( not raw_user or not raw_user.is_authenticated() ):
         class UserForm( form_class, forms.ModelForm ):
             #class Meta:
             #    model = Visitor
@@ -74,8 +74,12 @@ def combine_user_form_with( form_class, visitor_data, user_data, user = None, fi
     form_save = form_class.save
 
     def save( self, commit = True ):
+        if not user and raw_user.is_authenticated():
+            new_user, _ = User.objects.get_or_create_for( raw_user.profile )
+        else:
+            new_user = user
         obj = form_save( self, commit = False )
-        setattr( obj, field, user )
+        setattr( obj, field, new_user )
         if commit:
             obj.save()
 

@@ -15,7 +15,7 @@ from django import http
 from django.conf import settings
 from django.core import mail
 
-from turbion.blogs.models import Blog, Post, Comment
+from turbion.blogs.models import Blog, Post, Comment, CommentAdd
 from turbion.blogs.models.blog import BlogRoles
 from turbion.blogs.utils import blog_reverse
 from turbion.profiles.models import Profile
@@ -36,7 +36,7 @@ class BlogTest( TestCase ):
 
     def setUp( self ):
         self.blog = Blog.objects.get( slug = "wna" )
-        self.post = Post.objects.all()[ 0 ]
+        self.post = Post.objects.get( pk = 1 )
 
     def test_index( self ):
         response = self.client.get( self.blog.get_absolute_url() )
@@ -86,13 +86,13 @@ class BlogTest( TestCase ):
 
     def test_comment_add( self ):
         url = blog_reverse( "blog_comment_add", kwargs = { "blog" : self.blog.slug, "post_id" : self.post.id } )
+        CommentAdd.subscribe( self.post.created_by )
 
         self.client.login( **CREDENTIALS )
 
         comment = { "text" : "My comment" }
 
         response = self.client.post( url, data = comment )
-
         self.assertEqual( response.status_code, http.HttpResponseRedirect.status_code )
         post = Post.published.for_blog( self.blog ).get( pk = self.post.pk )
 

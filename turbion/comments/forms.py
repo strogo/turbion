@@ -20,6 +20,7 @@ class CommentForm( forms.Form ):
     def __init__(self, request, *args, **kwargs ):
         self.__class__ = visitors_forms.combine_user_form_with( _CommentForm,
                                                  user         = request.generic_user,
+                                                 raw_user     = request.user,
                                                  visitor_data = visitors_forms.extract_visitor_data( request ),
                                                  user_data    = visitors_forms.extract_user_data( request ),
                                                  field        = "created_by",

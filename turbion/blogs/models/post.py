@@ -23,7 +23,7 @@ from turbion.blogs import utils
 
 from pantheon.models import fields
 from pantheon.postprocessing.fields import PostprocessField
-from pantheon.utils.enum import NamedEnum, Enum
+from pantheon.utils.enum import Enum
 
 
 commenting_settings = [ ( 0, u"По умолчанию" ),
@@ -157,7 +157,7 @@ class CommentAdd( EventDescriptor ):
         trigger = ( Comment, comment_signals.comment_added )
 
     @classmethod
-    def allow_recipient( cls, recipient, obj, instance, *args, **kwargs ):
-        if recipient == instance.author:
+    def allow_recipient( cls, recipient, comment, *args, **kwargs ):
+        if recipient == comment.created_by:
             return False
         return True

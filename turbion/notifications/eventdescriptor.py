@@ -18,9 +18,10 @@ from turbion.notifications.models import Event, Connection
 from turbion.visitors.models import User
 
 class EventMeta( object ):
-    def __init__( self, name, link = lambda x: x ):
+    def __init__( self, name, link = lambda x: x, to_object = False ):
         self.name = name
         self.link = link
+        self.to_object = to_object
 
 def enshure_user( func ):
     def _decorator( cls, user, *args, **kwargs ):
@@ -49,11 +50,12 @@ class EventSpot( type ):
         if "Meta" in attrs:
             Meta = attrs.pop( "Meta" )
 
-            link = getattr( Meta, "link", lambda x: x )
-            trigger = getattr( Meta, "trigger", None )
+            link       = getattr( Meta, "link", lambda x: x )
+            trigger    = getattr( Meta, "trigger", None )
             event_name = getattr( Meta, "name", name )
+            to_object  = getattr( Meta, "to_object", False )
 
-            meta = EventMeta( link = link, name = event_name )
+            meta = EventMeta( link = link, name = event_name, to_object = to_object )
         else:
             meta = EventMeta( name = name )
             trigger = None
@@ -137,6 +139,9 @@ class EventDescriptor( object ):
             obj = cls.meta.link( instance )
 
         recipients = cls._get_recipients( obj )
+        if not len( recipients ):
+            return
+
         domain = Site.objects.get_current().domain
         from_email = "notifications@%s" % domain
 
@@ -145,7 +150,7 @@ class EventDescriptor( object ):
         try:
             name = event.template
             if not name:
-                name = cls.meta.descriptor.lower().replace( ".", "/" ) + ".html"
+                name = cls.meta.descriptor.replace( ".", "/" ) + ".html"
             template = loader.get_template( name )
         except TemplateDoesNotExist, e:
             return
@@ -156,7 +161,8 @@ class EventDescriptor( object ):
 
         for r in recipients:
             email = r.email
-            if cls.allow_recipient( r, obj = obj, *args, **kwargs ) and email and email not in emails:
+
+            if cls.allow_recipient( obj = obj, recipient = r, *args, **kwargs ) and email and email not in emails:
                 emails.add( email )
 
                 context = Context( { "event"     : event,
@@ -175,9 +181,9 @@ class EventDescriptor( object ):
     @classmethod
     def _get_recipients( cls, obj = None ):
         event = cls._get_event()
-
+        if obj and not cls.meta.to_object:
+            obj = None
         conn = cls._create_connection( obj )
-
         users = User.objects.filter( pk__in = Connection.objects.filter( event = event, **conn ).values_list( "user", flat = True ) )
 
         return users

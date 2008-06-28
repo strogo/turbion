@@ -21,11 +21,10 @@ from turbion.blogs.decorators import blog_view
 @blog_view
 def index( request, blog ):
     if request.method == 'POST':
-        feedback_form = FeedbackForm( request.POST )
+        feedback_form = FeedbackForm( request = request, blog = blog, data = request.POST )
         if feedback_form.is_valid():
             feedback = feedback_form.save( False )
             feedback.blog = blog
-            feedback.ip = request.META.get( "REMOTE_ADDR", "0.0.0.0" )
             feedback.save()
 
             dispatcher.send( signals.feedback_added,
@@ -39,14 +38,7 @@ def index( request, blog ):
                               message= _( u"Thanks. Your request will be handled by the administrator." ),
                               template="info_page.html" )
     else:
-        initial = {}
-        if request.user.is_authenticated():
-            initial[ 'name' ] = request.user.username
-            initial[ 'e_mail' ] = request.user.email
+        feedback_form = FeedbackForm( request = request, blog = blog )
 
-        feedback_form = FeedbackForm( initial = initial )
-    feedback_action = './'
-
-    return { "feedback_action" : feedback_action,
-             "feedback_form": feedback_form,
+    return { "feedback_form": feedback_form,
              "blog" : blog }
