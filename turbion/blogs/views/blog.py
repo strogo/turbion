@@ -16,7 +16,7 @@ from django.core import urlresolvers
 from django.template import loader
 
 from turbion.feedburner import views
-from turbion.blogs.decorators import blog_view, title_bits
+from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Blog, Post, Comment
 
 from pantheon.utils.decorators import paged, templated
@@ -66,12 +66,12 @@ def feed( request, blog, url, feed_dict ):
 
 @blog_view
 @templated( 'blogs/404.html' )
-@title_bits( page = u'Страница не найден' )
+@titled( page = u'Страница не найден' )
 def handler404( request, blog ):
     return { "blog" : blog }
 
 @blog_view
 @templated( 'blogs/500.html' )
-@title_bits( page = u'Страница не найден' )
+@titled( page = u'Страница не найден' )
 def handler500( request, blog ):
     return { "blog" : blog }

@@ -16,9 +16,9 @@ import re
 from turbion.blogs.models import Blog, Post, BlogRoles
 from turbion.registration.models import IllegalName
 
-from pantheon.utils.decorators import special_title_bits
+from pantheon.utils.decorators import special_titled
 
-title_bits = special_title_bits( section = u"{{blog.name}}" )
+titled = special_titled( section = u"{{blog.name}}" )
 
 def blog_view( view_func ):
     """
