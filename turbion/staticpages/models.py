@@ -22,24 +22,23 @@ class Page( models.Model ):
                      hide      = _( "hide" ) )
     blog        = models.ForeignKey( Blog, related_name = "pages" )
 
-    created_on = models.DateTimeField( default = datetime.now, verbose_name = _('creation date') )
-    created_by = models.ForeignKey( Profile, related_name = "created_pages" )
+    created_on  = models.DateTimeField( default = datetime.now, verbose_name = _('creation date') )
+    created_by  = models.ForeignKey( Profile, related_name = "created_pages" )
 
-    edited_on  = models.DateTimeField( verbose_name = _('update date'), null = True, )
-    edited_by  = models.ForeignKey( Profile, related_name = "edited_pages", null = True )
+    edited_on   = models.DateTimeField( verbose_name = _('update date'), null = True, )
+    edited_by   = models.ForeignKey( Profile, related_name = "edited_pages", null = True )
 
     slug        = models.SlugField()
     title       = models.CharField( max_length = 100, verbose_name = _( "title" ) )
-    last_update = models.DateTimeField( auto_now = True, verbose_name = _( "update date" ) )
+
     text        = models.TextField( verbose_name = _( "text" ) )
+    text_html   = models.TextField( verbose_name = _( "text html" ) )
+    
     status      = models.CharField( max_length = 10, choices = statuses, default = statuses.published )
 
     postprocess = PostprocessField()
 
     template    = models.CharField( max_length = 150, verbose_name = _( "template" ), null = True, blank = True )
-
-    def get_text(self):
-        return self.postprocess.postprocess( self.text )
 
     def __unicode__(self):
         return self.title
@@ -47,6 +46,8 @@ class Page( models.Model ):
     def save( self ):
         if self.edited_by:
             self.edited_on = datetime.now()
+
+        self.text_html = self.postprocess.postprocess( self.text )
         super( Feedback, self ).save()
 
     @models.permalink

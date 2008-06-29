@@ -59,10 +59,11 @@ class Comment( ActionModel, models.Model ):
     created_on = models.DateTimeField( default = datetime.now, verbose_name = _( "created on" ) )
     created_by = models.ForeignKey( User, related_name = "created_comments", verbose_name = _( "created by" ), raw_id_admin = True )
 
-    edited_on = models.DateTimeField( verbose_name = _( "edited on" ) )
+    edited_on = models.DateTimeField( null = True, verbose_name = _( "edited on" ) )
     edited_by = models.ForeignKey( Profile, related_name = "edited_comments", null = True, verbose_name = _( "edited by" ) )
 
     text = models.TextField( verbose_name = _( "text" ) )
+    text_html   = models.TextField( verbose_name = _( "text html" ) )
 
     status = models.CharField( max_length = 20,
                                choices = statuses,
@@ -88,7 +89,10 @@ class Comment( ActionModel, models.Model ):
         return self.connection.get_absolute_url() +"#comment_%s" % self.id
 
     def save( self ):
-        self.edited_on = datetime.now()
+        if self.edited_by:
+            self.edited_on = datetime.now()
+
+        self.text_html = self.postprocess.postprocess( self.text )
 
         super( Comment, self ).save()
 

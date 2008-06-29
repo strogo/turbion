@@ -22,10 +22,10 @@ from pantheon.utils.enum import Enum
 class Feedback( ActionModel, models.Model ):
     statuses = Enum( accepted = _( "accepted" ),
                      rejected = _( "rejected" ),
-                     done     = _( "done"),
+                     done     = _( "done" ),
                      new      = _( "new" ),
                 )
-    blog = models.ForeignKey( Blog, related_name = "feedbacks" )
+    blog       = models.ForeignKey( Blog, related_name = "feedbacks" )
 
     created_on = models.DateTimeField( default = datetime.now, verbose_name = _('creation date') )
     created_by = models.ForeignKey( User, related_name = "created_feedbacks" )
@@ -33,11 +33,11 @@ class Feedback( ActionModel, models.Model ):
     edited_on  = models.DateTimeField( verbose_name = _('update date'), null = True, )
     edited_by  = models.ForeignKey( Profile, related_name = "edited_feedbacks", null = True )
 
-    subject = models.CharField( max_length = 255, verbose_name = _( "subject" ) )
+    subject    = models.CharField( max_length = 255, verbose_name = _( "subject" ) )
 
-    text = models.TextField( verbose_name = _('text') )
+    text       = models.TextField( verbose_name = _('text') )
 
-    status = models.CharField( max_length = 10, choices = statuses, default = statuses.new, verbose_name = _( "status" ) )
+    status     = models.CharField( max_length = 10, choices = statuses, default = statuses.new, verbose_name = _( "status" ) )
 
     def __unicode__(self):
         return "%s" % self.created_on

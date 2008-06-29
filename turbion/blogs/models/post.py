@@ -25,56 +25,56 @@ from pantheon.models import fields
 from pantheon.postprocessing.fields import PostprocessField
 from pantheon.utils.enum import Enum
 
-
-commenting_settings = [ ( 0, u"По умолчанию" ),
-                        ( 1, u"Все" ),
-                        ( 3, u"Никто" ),
-                       ]
-
-show_settings = ( ( 1, u"Всем" ),
-                  ( 2, u"Друзьям" ),
-                  ( 3, u"Только мне" ),
-                  )
-
 class Post( models.Model, CommentedModel ):
     statuses = Enum( draft     = _( "draft" ),
                      trash     = _( "trashed" ),
                      published = _( "published" )
                 )
 
-    blog   = models.ForeignKey( Blog, verbose_name = _( "blog" ) )
+    commenting_settings = Enum( allow    = _( "allow" ),
+                                disallow = _( "disallow" ),
+            )
+
+    show_settings = Enum( everybody = _( "everybody" ),
+                          registred = _( "registered" ),
+            )
+
+    blog          = models.ForeignKey( Blog, verbose_name = _( "blog" ) )
     comment_count = models.PositiveIntegerField( default = 0, editable = False, verbose_name = _( "comment count" ) )
 
-    created_on = models.DateTimeField( default = datetime.now, editable = False, verbose_name = _( "created on" ) )
-    created_by = models.ForeignKey( Profile, related_name = "created_posts", verbose_name = _( "created by" ) )
+    created_on    = models.DateTimeField( default = datetime.now, editable = False, verbose_name = _( "created on" ) )
+    created_by    = models.ForeignKey( Profile, related_name = "created_posts", verbose_name = _( "created by" ) )
 
-    edited_on = models.DateTimeField( default = datetime.now, editable = False, verbose_name = _( "edited on" ) )
-    edited_by = models.ForeignKey( Profile, null = True, blank = True, related_name = "edited_blogs", verbose_name = _( "edited by" ) )
+    edited_on     = models.DateTimeField( null = True, editable = False, verbose_name = _( "edited on" ) )
+    edited_by     = models.ForeignKey( Profile, null = True, blank = True, related_name = "edited_blogs", verbose_name = _( "edited by" ) )
 
-    review_count = models.IntegerField( default = 0, editable = False, verbose_name = _( "review count" ) )
+    review_count  = models.IntegerField( default = 0, editable = False, verbose_name = _( "review count" ) )
 
-    title = models.CharField( max_length = 130, verbose_name = _( "title" ) )
-    slug  = fields.ExtSlugField( for_field= "title", max_length = 130, editable = False, verbose_name = _( "slug" ) )
+    title         = models.CharField( max_length = 130, verbose_name = _( "title" ) )
+    slug          = fields.ExtSlugField( for_field= "title", max_length = 130, editable = False, verbose_name = _( "slug" ) )
 
-    mood     = models.CharField( max_length = 50, null = True, blank = True, verbose_name = _( "mood" ) )
-    location = models.CharField( max_length = 100, null = True, blank = True, verbose_name = _( "location" ) )
-    music    = models.CharField( max_length = 100, null = True, blank = True, verbose_name = _( "music" ) )
+    mood          = models.CharField( max_length = 50, null = True, blank = True, verbose_name = _( "mood" ) )
+    location      = models.CharField( max_length = 100, null = True, blank = True, verbose_name = _( "location" ) )
+    music         = models.CharField( max_length = 100, null = True, blank = True, verbose_name = _( "music" ) )
 
-    text        = models.TextField( verbose_name = _( "text" ) )
+    text          = models.TextField( verbose_name = _( "text" ) )
+    text_html     = models.TextField( verbose_name = _( "text html" ) )
 
-    status = models.CharField( max_length = 10, choices = statuses, default = statuses.draft, verbose_name= _( "status" ) )
+    status        = models.CharField( max_length = 10, choices = statuses, default = statuses.draft, verbose_name= _( "status" ) )
 
-    postprocess = PostprocessField( verbose_name = _( "postprocessor" ) )
+    postprocess   = PostprocessField( verbose_name = _( "postprocessor" ) )
 
-    #commenting = models.SmallIntegerField( choices = commenting_settings,
-    #                                       default = 1,
-    #                                       verbose_name="Комментирование" )
-    #visible_status = models.SmallIntegerField( choices = show_settings,
-    #                                 default = 1,
-    #                                 verbose_name="Показ" )
+    commenting    = models.CharField( max_length = 10,
+                                      choices = commenting_settings,
+                                      default = commenting_settings.allow,
+                                      verbose_name = _( "commenting" ) )
+    showing       = models.CharField( max_length = 10,
+                                      choices = show_settings,
+                                      default = show_settings.everybody,
+                                      verbose_name= _( "showing" ) )
 
-    notify = models.BooleanField( default = True,
-                                  verbose_name= _( "e-mail notifications" ) )
+    notify        = models.BooleanField( default = True,
+                                         verbose_name= _( "e-mail notifications" ) )
 
     draft   = property( lambda self: self.status == Post.statuses.draft )
     trash   = property( lambda self: self.status == Post.statuses.trash )
@@ -129,8 +129,10 @@ class Post( models.Model, CommentedModel ):
         return self.title
 
     def save( self ):
-        self.edited_on = datetime.now()
+        if self.edited_by:
+            self.edited_on = datetime.now()
 
+        self.text_html = self.postprocess.postprocess( self.text )
         super( Post, self ).save()
 
     class Admin:
