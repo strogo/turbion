@@ -7,7 +7,6 @@
 #Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 
 TURBION_CONTEXT_PROCESSORS = [
-    "turbion.blogs.context_processors.blog_globals",
     "turbion.options.context_processors.options_globals",
 ]
 
@@ -34,6 +33,7 @@ TURBION_APPS = [
     'turbion.roles',
     'turbion.options',
     'turbion.aliases',
+    'turbion.openid',
 ]
 
 TURBION_MIDDLEWARE_CLASSES = [
@@ -43,6 +43,10 @@ TURBION_MIDDLEWARE_CLASSES = [
 
 TURBION_TEMPLATE_LOADERS = [
     ( None, 'turbion.dbtemplates.loader.load_template_source', ),
+]
+
+TURBION_AUTHENTICATION_BACKENDS = [
+    'turbion.openid.backend.OpenidBackend'
 ]
 
 def to_list( func ):
@@ -77,8 +81,11 @@ patch_installed_apps     = append( TURBION_APPS )
 patch_middleware_classes = insert( TURBION_MIDDLEWARE_CLASSES )
 patch_context_processors = append( TURBION_CONTEXT_PROCESSORS )
 patch_template_loaders   = insert( TURBION_TEMPLATE_LOADERS )
+patch_authenticated_backends_loaders = append( TURBION_AUTHENTICATION_BACKENDS )
 
-TURBON_BLOGS_MULTIPLE = False
+TURBION_BLOGS_MULTIPLE = False
 PANTHEON_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'
+
+TURBION_OPENID_STORE_ROOT = "/var/tmp/"
 
 from turbion.pingback.settings import *

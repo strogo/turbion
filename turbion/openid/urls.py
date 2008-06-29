@@ -8,11 +8,11 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns( 'turbion.openid.views',
-    ( r'^login/$',                      'login' ),
-    ( r'^authenticate/$',               'authenticate' ),
-    ( r'^collect/$',                    'collect' ),
-    
-    ( r'^list/$',                       'list' ),
-    ( r'^add/$',                        'add' ),
-    ( r'^delete/(?P<id>\d+)/$',         'delete' ),
+    url( r'^login/$',                      'authorization.login', name = "openid_login" ),
+    url( r'^authenticate/$',               'authorization.authenticate', name = "openid_authenticate" ),
+    url( r'^collect/$',                    'authorization.collect' ),
+
+    ( r'^list/$',                       'management.list' ),
+    ( r'^add/$',                        'management.add' ),
+    ( r'^delete/(?P<id>\d+)/$',         'management.delete' ),
 )

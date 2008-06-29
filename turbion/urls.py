@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url( r'^roles/',                        include( 'turbion.roles.urls' )  ),
     url( r'^comments/',                     include( 'turbion.comments.urls' )  ),
     url( r'^gears/',                        include( 'turbion.gears.urls' )  ),
+    url( r'^openid/',                       include( 'turbion.openid.urls' )  ),
 
     url( r'^',                              include( 'turbion.blogs.urls' ),        name = "blog_root" ),
 )

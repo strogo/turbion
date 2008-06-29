@@ -20,9 +20,6 @@ def gen_username( identity_url ):
 
 class OpenidBackend( ModelBackend ):
     def authenticate( self, request ):
-        return None
-
-    def foo(self):
         consumer, response = utils.complete(request )
 
         if response.status != consumer.SUCCESS:
@@ -31,8 +28,8 @@ class OpenidBackend( ModelBackend ):
         sreg_response = utils.complete_sreg( response )
 
         try:
-            connection = Identifier.objects.get( openid = response.identity_url )
-        except Identifier.DoesNotExist:
+            connection = Identity.objects.get( openid = response.identity_url )
+        except Identity.DoesNotExist:
 
             username = sreg_response.has_key( "nickname" ) and sreg_response[ "nickname" ] or gen_username()
             email = sreg_response.has_key( "email" ) and sreg_response[ "email" ] or gen_username
@@ -41,5 +38,5 @@ class OpenidBackend( ModelBackend ):
                                              email,
                                              User.objects.make_random_password()
                                             )
-            connection = Identifier.objects.create( user = user, openid = response.identity_url )
+            connection = Identity.objects.create( user = user, openid = response.identity_url )
         return connection.user

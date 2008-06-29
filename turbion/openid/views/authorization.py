@@ -4,7 +4,9 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
+from openid.consumer import consumer as openid_consumer
+
 from django import http
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -12,6 +14,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
 from turbion.openid import forms, utils, models
+
 from pantheon.utils.decorators import *
 
 def post_redirect( request ):
@@ -23,7 +26,7 @@ def post_redirect( request ):
 @render_to( 'openid/login.html' )
 def login(request):
     if request.method == 'POST':
-        form = forms.OpenidLoginForm( request.session, data = request.POST)
+        form = forms.OpenidLoginForm( request, data = request.POST)
         if form.is_valid():
             after_auth_redirect = form.auth_redirect(post_redirect(request))
             return http.HttpResponseRedirect( after_auth_redirect )
@@ -34,12 +37,12 @@ def login(request):
 def authenticate(request):
     consumer, response = utils.complete( request )
 
-    if response.status != consumer.SUCCESS:
+    if response.status != openid_consumer.SUCCESS:
         return http.HttpResponseForbidden('Ошибка авторизации')
 
     try:
-        connection = models.Indetifier.objects.get( url = response.identity_url )
-    except models.Indetifier.DoesNotExists:
+        connection = models.Identity.objects.get( url = response.identity_url )
+    except models.Identity.DoesNotExist:
         sreg_response = utils.complete_sreg( response )
 
         request.session[ "openid_data" ] = { "response" : response, "sreg_response" : sreg_response }
@@ -77,12 +80,3 @@ def collect(request):
                  "user_info_form_action" : "./",
                  "redirect" : request.GET.get('redirect', '/') }
     raise http.Http404
-
-def list( request ):
-    pass
-
-def add( request ):
-    pass
-
-def delete( request ):
-    pass
