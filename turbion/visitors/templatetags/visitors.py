@@ -4,7 +4,7 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007-2008 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django import template
 from django.template import Context
 from django.template.loader import get_template
@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 register = template.Library()
 
 @register.simple_tag
-def visitors_stats( template = "visitors/stats.html" ):
+def visitors_stats( template = "turbion/visitors/stats.html" ):
     bound  = datetime.now() - timedelta( minutes = 15 )
 
     gus    = list( User.registered.filter( last_visit__gte = bound ) )

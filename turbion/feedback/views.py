@@ -4,11 +4,11 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.utils.translation import ugettext_lazy as _
 from django.dispatch import dispatcher
 
-from pantheon.utils.decorators import *
+from pantheon.utils.decorators import templated, titled
 from pantheon.utils.views import info_page
 
 from turbion.feedback.forms import FeedbackForm
@@ -16,8 +16,8 @@ from turbion.feedback.models import Feedback
 from turbion.feedback import signals
 from turbion.blogs.decorators import blog_view
 
-@render_to( "feedback/index.html" )
-@title_bits( page=_(u"Write"), section=_(u"Feedback") )
+@templated( "turbion/feedback/index.html" )
+@titled( page=_(u"Write"), section=_(u"Feedback") )
 @blog_view
 def index( request, blog ):
     if request.method == 'POST':

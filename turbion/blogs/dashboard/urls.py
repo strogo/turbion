@@ -17,6 +17,8 @@ urlpatterns = patterns('turbion.blogs.dashboard.views',
  url( r'^login/$',                               'global.login',            name = "dashboard_login" ),
  url( r'^logout/$',                              'global.logout',           name = "dashboard_logout" ),
 
+ url( r'^openid/',                               include( 'turbion.openid.urls' )  ),
+
  url( r'sources/posts/$',                        'sources.posts' ),
  url( r'sources/comments/$',                     'sources.comments' ),
  url( r'sources/users/$',                        'sources.users' ),

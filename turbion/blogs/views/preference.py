@@ -4,20 +4,20 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import date
 
 from django.newforms.extras import SelectDateWidget
 
-from pantheon.utils.decorators import render_to, paged
+from pantheon.utils.decorators import templated, paged
 
 from turbion.blogs import forms
-from turbion.blogs.decorators import blog_view, login_required, title_bits
+from turbion.blogs.decorators import blog_view, login_required, titled
 
 @blog_view
 @login_required
-@title_bits( page = u'Редактирование настроек' )
-@render_to( 'blogs/edit_preference.html' )
+@templated( 'turbion/blogs/edit_preference.html' )
+@titled( page = u'Редактирование настроек' )
 def edit( request, blog ):
     blogpref_form_action = './'
 

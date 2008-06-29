@@ -65,13 +65,13 @@ def feed( request, blog, url, feed_dict ):
     return response
 
 @blog_view
-@templated( 'blogs/404.html' )
+@templated( 'turbion/blogs/404.html' )
 @titled( page = u'Страница не найден' )
 def handler404( request, blog ):
     return { "blog" : blog }
 
 @blog_view
-@templated( 'blogs/500.html' )
+@templated( 'turbion/blogs/500.html' )
 @titled( page = u'Страница не найден' )
 def handler500( request, blog ):
     return { "blog" : blog }

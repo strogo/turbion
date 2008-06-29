@@ -17,7 +17,7 @@ register = template.Library()
 def socialbookmarks_fill_pattern( pattern, title, url, domain ):
     return pattern % { "title" : http.urlquote( title ), "url" : "http://%s%s" % ( domain, http.urlquote( url ) ) }
 
-@register.inclusion_tag( 'socialbookmarks/group.html', takes_context=True )
+@register.inclusion_tag( 'turbion/socialbookmarks/group.html', takes_context=True )
 def socialbookmarks_group( context, group_name, title, url ):
     if isinstance( group_name, basestring ):
         try:
@@ -26,9 +26,9 @@ def socialbookmarks_group( context, group_name, title, url ):
             return {}
     else:
         group = group_name
-    
-    domain = Site.objects.get_current().domain    
-    
+
+    domain = Site.objects.get_current().domain
+
     return { "group" : group,
             "title": title,
             "url":url,

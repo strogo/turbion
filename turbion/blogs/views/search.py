@@ -8,12 +8,12 @@
 from django.core.urlresolvers import reverse
 from django import newforms as forms
 
-from turbion.blogs.decorators import blog_view, title_bits
+from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Post
 from turbion.blogs.models import Comment
 from turbion.tags.models import Tag
 
-from pantheon.utils.decorators import render_to, paged
+from pantheon.utils.decorators import templated, paged
 
 class SearchForm( forms.Form ):
     query = forms.CharField( required = True, label = 'Поиск' )
@@ -53,8 +53,8 @@ def get_ids( queryset ):
 
 @paged
 @blog_view
-@title_bits( page = u'Поиск' )
-@render_to( 'blogs/search/results.html' )
+@templated( 'turbion/blogs/search/results.html' )
+@titled( page = u'Поиск' )
 def search( request, blog ):
     blog_search_action = reverse( "turbion.blogs.views.search.search",
                                   kwargs = { "blog" : blog.slug } )
@@ -77,8 +77,8 @@ def search( request, blog ):
 
 @paged
 @blog_view
-@title_bits( page = u'Поиск в постах' )
-@render_to( 'blogs/search/posts.html' )
+@templated( 'turbion/blogs/search/posts.html' )
+@titled( page = u'Поиск в постах' )
 def posts( request, blog ):
     blog_search_action = reverse( "turbion.blogs.views.search.posts",
                                   kwargs = { "blog" : blog.slug } )
@@ -92,8 +92,8 @@ def posts( request, blog ):
 
 @paged
 @blog_view
-@title_bits( page = u'Поиск в комментариях' )
-@render_to( 'blogs/search/comments.html' )
+@templated( 'turbion/blogs/search/comments.html' )
+@titled( page = u'Поиск в комментариях' )
 def comments( request, blog ):
     blog_search_action = reverse( "turbion.blogs.views.search.comments",
                                   kwargs = { "blog" : blog.author.username } )

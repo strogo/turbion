@@ -5,8 +5,6 @@
 #$Revision$
 #--------------------------------
 #Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
-from openid.consumer import consumer as openid_consumer
-
 from django import http
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -15,15 +13,15 @@ from django.contrib.auth.decorators import login_required
 
 from turbion.openid import forms, utils, models
 
-from pantheon.utils.decorators import *
+from pantheon.utils.decorators import templated, titled
 
 def post_redirect( request ):
     redirect = request.GET.get( "redirect", None ) or request.META.get( "HTTP_REFERER", "/" )
 
     return redirect
 
-@title_bits( page=u"Вход", section=u"Авторизация OpenID" )
-@render_to( 'openid/login.html' )
+@templated( 'turbion/openid/login.html' )
+@titled( page=u"Вход", section=u"Авторизация OpenID" )
 def login(request):
     if request.method == 'POST':
         form = forms.OpenidLoginForm( request, data = request.POST)
@@ -35,6 +33,8 @@ def login(request):
     return {'form': form, 'redirect': post_redirect(request)}
 
 def authenticate(request):
+    from openid.consumer import consumer as openid_consumer
+
     consumer, response = utils.complete( request )
 
     if response.status != openid_consumer.SUCCESS:
@@ -54,8 +54,8 @@ def authenticate(request):
     auth.login(request, connection.user)
     return http.HttpResponseRedirect(request.GET.get('redirect', '/'))
 
-@title_bits( page=u"Сбор сведений", section=u"Авторизация OpenID" )
-@render_to( 'openid/collect.html' )
+@templated( 'turbion/openid/collect.html' )
+@titled( page=u"Сбор сведений", section=u"Авторизация OpenID" )
 def collect(request):
     if "openid_data" in request.session:
         response = request.session[ "openid_data" ][ "reponse" ]

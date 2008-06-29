@@ -5,16 +5,18 @@
 #$Revision$
 #--------------------------------
 #Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
-from pantheon.utils.decorators import paged,render_to
+from pantheon.utils.decorators import paged, templated
 from pantheon.utils.paging import paginate
-from turbion.blogs.decorators import blog_view, title_bits
+
+from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Post
+
 from datetime import date
 
 @blog_view
 @paged
-@title_bits( page = u'Архив блог от {{blog.calendar.current.year}}' )
-@render_to( 'blogs/list.html' )
+@templated( 'turbion/blogs/list.html' )
+@titled( page = u'Архив блог от {{blog.calendar.current.year}}' )
 def year( request, blog, year_id ):
     blog.calendar.current = date( year = int( year_id ), month = 1, day = 1 )
     post_paginator = paginate( Post.published.for_blog( blog ).filter( created_on__year = year_id ),
@@ -25,8 +27,8 @@ def year( request, blog, year_id ):
 
 @blog_view
 @paged
-@title_bits( page = u'Архив от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}' )
-@render_to( 'blogs/list.html' )
+@templated( 'turbion/blogs/list.html' )
+@titled( page = u'Архив от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}' )
 def month( request, blog, year_id, month_id ):
     blog.calendar.current = date( year = int( year_id ), month = int( month_id ), day = 1 )
     post_paginator = paginate( Post.published.for_blog( blog ).filter( created_on__year = int(year_id),
@@ -40,8 +42,8 @@ def month( request, blog, year_id, month_id ):
 
 @blog_view
 @paged
-@title_bits( page = u'Архив от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}/{{blog.calendar.current.day}}' )
-@render_to( 'blogs/list.html' )
+@templated( 'turbion/blogs/list.html' )
+@titled( page = u'Архив от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}/{{blog.calendar.current.day}}' )
 def day( request, blog, year_id, month_id, day_id ):
     blog.calendar.current = date( year = int( year_id ), month = int( month_id ), day = int( day_id ) )
     post_paginator = paginate( Post.published.for_blog( blog ).filter( created_on__year = year_id,

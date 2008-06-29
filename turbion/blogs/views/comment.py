@@ -4,20 +4,20 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
-from turbion.blogs.decorators import blog_view, post_view, title_bits
+from turbion.blogs.decorators import blog_view, post_view, titled
 from turbion.comments import views, models
 from turbion.blogs.models import Post
 
-from pantheon.utils.decorators import render_to, paged
+from pantheon.utils.decorators import templated, paged
 
 @blog_view
-@title_bits( page = u'Добавление комментария к "{{post.title}}"' )
-@render_to( 'blogs/edit_comment.html' )
+@templated( 'turbion/blogs/edit_comment.html' )
+@titled( page = u'Добавление комментария к "{{post.title}}"' )
 def add( request, blog, post_id ):
     post = get_object_or_404( Post.published.for_blog( blog ), pk = post_id )
 
@@ -33,8 +33,8 @@ def add( request, blog, post_id ):
     return context
 
 @blog_view
-@title_bits( page = u'Редактирование комментария к "{{post.title}}"' )
-@render_to( 'blogs/edit_comment.html' )
+@templated( 'turbion/blogs/edit_comment.html' )
+@titled( page = u'Редактирование комментария к "{{post.title}}"' )
 def edit( request, blog, comment_id ):
     comment = get_object_or_404( models.Comment.published,  pk = comment_id )
     post = comment.connection

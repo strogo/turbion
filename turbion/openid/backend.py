@@ -4,14 +4,14 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
 
 from turbion.openid import utils
-from turbion.openid.models import Indetifier
+from turbion.openid.models import Identity
 
 def gen_username( identity_url ):
     import md5
@@ -30,7 +30,6 @@ class OpenidBackend( ModelBackend ):
         try:
             connection = Identity.objects.get( openid = response.identity_url )
         except Identity.DoesNotExist:
-
             username = sreg_response.has_key( "nickname" ) and sreg_response[ "nickname" ] or gen_username()
             email = sreg_response.has_key( "email" ) and sreg_response[ "email" ] or gen_username
 

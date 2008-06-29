@@ -4,7 +4,7 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
 
 from django.http import HttpResponseRedirect
@@ -12,8 +12,7 @@ from django.shortcuts import *
 from django.contrib.auth.models import User
 from django.dispatch import dispatcher
 
-
-from turbion.blogs.decorators import blog_view, post_view, login_required, title_bits
+from turbion.blogs.decorators import blog_view, post_view, login_required, titled
 from turbion.blogs.models import Blog, Post, Comment
 from turbion.profiles.models import Profile
 from turbion.blogs.utils import blog_reverse
@@ -23,12 +22,12 @@ from turbion.tags.models import Tag
 from turbion.pingback import signals
 
 from pantheon.utils.paging import paginate
-from pantheon.utils.decorators import paged, render_to
+from pantheon.utils.decorators import paged, templated
 
 @blog_view
 @paged
-@title_bits( page = u'Блог' )
-@render_to( 'blogs/list.html' )
+@templated( 'turbion/blogs/list.html' )
+@titled( page = u'Блог' )
 def blog( request, blog ):
     blog.inc_reviews()
 
@@ -43,8 +42,8 @@ def blog( request, blog ):
 
 @blog_view
 @paged
-@title_bits( page=u'Теги')
-@render_to( 'blogs/tags.html' )
+@templated( 'turbion/blogs/tags.html' )
+@titled( page=u'Теги')
 def tags( request, blog ):
     _tags = blog.tags
 
@@ -53,8 +52,8 @@ def tags( request, blog ):
             }
 @blog_view
 @paged
-@title_bits( page=u'Тег "{{tag}}"' )
-@render_to( 'blogs/list.html' )
+@templated( 'turbion/blogs/list.html' )
+@titled( page=u'Тег "{{tag}}"' )
 def tag( request, blog, tag_slug ):
     _tag = get_object_or_404( blog.tags, slug = tag_slug )
     posts = Post.published.for_tag( blog, _tag )
@@ -70,8 +69,8 @@ def tag( request, blog, tag_slug ):
 
 @blog_view
 @post_view
-@title_bits( page='{{post.title}}' )
-@render_to( 'blogs/post.html' )
+@templated( 'turbion/blogs/post.html' )
+@titled( page='{{post.title}}' )
 def post( request, blog, post ):
     post.inc_reviews()
     comment_form = comments_forms.CommentForm( request = request )

@@ -31,7 +31,7 @@ users_table_name    = quote_name( User._meta.db_table )
                                   "signal" : signals.post_save,
                                   "suffix" : lambda instance, created, *args, **kwargs: instance.blog.id },
                       suffix = lambda context, blog: blog.id,
-                      file_name='blogs/pads/archive_pad.html',
+                      file_name='turbion/blogs/pads/archive_pad.html',
                       takes_context=True)
 def archive_pad( context, blog ):
     months = list( set( list( Post.published.for_blog( blog ).dates( "created_on", "month", order='DESC' ).distinct() ) ) )
@@ -49,7 +49,7 @@ def archive_pad( context, blog ):
                                   "signal" : signals.post_save,
                                   "suffix" : lambda instance, *args, **kwargs: instance.connection.blog.id },
                       suffix = lambda context, blog: blog.id,
-                      file_name='blogs/pads/top_commenters_pad.html',
+                      file_name='turbion/blogs/pads/top_commenters_pad.html',
                       takes_context=True)
 def top_commenters_pad( context, blog, count = 5 ):
     ct = ContentType.objects.get_for_model( Post )
@@ -69,7 +69,7 @@ def top_commenters_pad( context, blog, count = 5 ):
                                   "signal" : signals.post_save,
                                   "suffix" : lambda instance, *args, **kwargs: instance.connection.blog.id },
                       suffix = lambda context, blog: blog.id,
-                      file_name='blogs/pads/last_comments_pad.html',
+                      file_name='turbion/blogs/pads/last_comments_pad.html',
                       takes_context=True)
 def last_comments_pad( context, blog, count = 5 ):
     comments = Comment.published.for_model_with_rel( Post, blog ).order_by("-created_on").distinct()[:count]
@@ -81,7 +81,7 @@ def last_comments_pad( context, blog, count = 5 ):
                                   "signal" : signals.post_save,
                                   "suffix" : lambda instance, created, *args, **kwargs: instance.blog.id },
                       suffix = lambda context, blog: blog.id,
-                      file_name='blogs/pads/top_posts_pad.html',
+                      file_name='turbion/blogs/pads/top_posts_pad.html',
                       takes_context=True)
 def top_posts_pad( context, blog, count = 5 ):
     return  { "posts" : Post.published.for_blog( blog ).order_by('-comment_count')[:count] }
@@ -91,7 +91,7 @@ def top_posts_pad( context, blog, count = 5 ):
                                   "signal" : signals.post_save,
                                   "suffix" : lambda instance, created, *args, **kwargs: instance.blog.id },
                       suffix = lambda context, blog: blog.id,
-                      file_name='blogs/pads/tags_pad.html',
+                      file_name='turbion/blogs/pads/tags_pad.html',
                       takes_context=True)
 def tags_pad( context, blog ):
     return { "blog": blog,
@@ -103,7 +103,7 @@ def tags_pad( context, blog ):
                                   "signal" : signals.post_save,
                                   "checker" :  lambda *args,**kwargs: True },
                       suffix = lambda context, blog: ( blog.id, blog.calendar.current ),
-                      file_name='blogs/pads/calendar_pad.html',
+                      file_name='turbion/blogs/pads/calendar_pad.html',
                       takes_context=True)
 def calendar_pad( context, blog ):
     return { "blog":blog }
@@ -113,7 +113,7 @@ def calendar_pad( context, blog ):
                                   "signal" : signals.post_save,
                                   "checker" :  lambda  *args,**kwargs: True },
                       suffix = lambda context, post: [post.blog.id, post.id],
-                      file_name='blogs/pads/prevnext_pad.html',
+                      file_name='turbion/blogs/pads/prevnext_pad.html',
                       takes_context=True)
 def prevnext_pad( context, post ):
     filter = Post.published.lookups

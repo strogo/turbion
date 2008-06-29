@@ -28,7 +28,7 @@ register = template.Library()
 #                      suffix = lambda context, post: [ context[ "user" ].is_author, post.blog.id, post.id ],
 #                      file_name='blogs/include/comments.html',
 #                      takes_context=True)
-@register.inclusion_tag( 'blogs/include/comments.html', takes_context=True )
+@register.inclusion_tag( 'turbion/blogs/include/comments.html', takes_context=True )
 def post_comments( context, post ):
     return { "post"     : post,
              "comments" : Comment.published.for_object( post ),
