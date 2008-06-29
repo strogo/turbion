@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.conf.urls.defaults import url
 
-MULTIPLE_SETUP = getattr( settings, 'BLOGS_MULTIPLE', False )
+MULTIPLE_SETUP = getattr( settings, 'TURBION_BLOGS_MULTIPLE', False )
 
 def blog_reverse( viewname, urlconf=None, args=None, kwargs=None ):
     if not MULTIPLE_SETUP:

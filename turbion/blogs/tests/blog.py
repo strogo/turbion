@@ -74,7 +74,7 @@ class BlogTest( TestCase ):
         response = self.assertOk( url )
         #TODO: check right data
 
-    if settings.BLOGS_MULTIPLE:
+    if settings.TURBION_BLOGS_MULTIPLE:
         def test_global_sitemap( self ):
             url = blog_reverse( "global_blog_sitemap" )
 

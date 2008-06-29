@@ -55,6 +55,6 @@ def comment_save(instance):
     except Exception:
         pass
 
-if settings.ON_SERVER:
+if not settings.DEBUG:
     dispatcher.connect( post_save,    signal = signals.post_save, sender = Post )
     dispatcher.connect( comment_save, signal = signals.post_save, sender = Comment )

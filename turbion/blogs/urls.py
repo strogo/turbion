@@ -14,7 +14,7 @@ from turbion.blogs.decorators import *
 from turbion.blogs import utils
 from turbion.blogs.utils import blog_url
 
-MULTIPLE_SETUP = getattr( settings, 'BLOGS_MULTIPLE', False )
+MULTIPLE_SETUP = getattr( settings, 'TRUBION_BLOGS_MULTIPLE', False )
 
 atom_feeds = {
     'posts'   : feeds.PostsFeedAtom,

@@ -78,7 +78,7 @@ patch_middleware_classes = insert( TURBION_MIDDLEWARE_CLASSES )
 patch_context_processors = append( TURBION_CONTEXT_PROCESSORS )
 patch_template_loaders   = insert( TURBION_TEMPLATE_LOADERS )
 
-BLOGS_MULTIPLE = False
+TURBON_BLOGS_MULTIPLE = False
 PANTHEON_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'
 
 from turbion.pingback.settings import *
