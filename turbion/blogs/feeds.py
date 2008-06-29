@@ -34,6 +34,8 @@ class BasePostFeed(object):
         return post.created_by.name
 
 class PostsFeed(BasePostFeed, BlogFieldBase):
+    description_template = "turbion/blogs/feeds/post_description.html"
+
     def title( self ):
         return gen_title( { "page":u"%s" % self.blog,
                             "section":u"Последние записи",
@@ -53,6 +55,9 @@ class PostsFeedAtom(PostsFeed):
     subtitle = PostsFeed.description
 
 class CommentsFeed(BlogFieldBase):
+    description_template = "turbion/blogs/feeds/comment_description.html"
+    title_template = "turbion/blogs/feeds/comment_title.html"
+
     def get_object(self, bits):
         if len(bits) == 1:
             return get_object_or_404( Post.published.for_blog( self.blog ),
@@ -91,6 +96,8 @@ class CommentsFeedAtom(CommentsFeed):
     subtitle = CommentsFeed.description
 
 class TagFeed( BasePostFeed, BlogFieldBase):
+    description_template = "turbion/blogs/feeds/tag_description.html"
+
     def get_object(self, bits):
         if len(bits) == 1:
             return get_object_or_404( self.blog.tags, slug = bits[ 0 ] )
