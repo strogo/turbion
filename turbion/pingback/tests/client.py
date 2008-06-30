@@ -13,52 +13,30 @@ from django.dispatch import dispatcher
 from django.db import models
 
 from turbion.pingback import client, signals
-from turbion.pingback.tests.utils import TestEntry
-
-from pantheon.utils.urlfetch import UrlFetcher, ResponseObject
-
-TITLE = ""
-PARAGRAPH = "Вот параграф со ссылкой на пост с длинной строчкой"
-ENTRY_TEXT = """<p>Вот первый параграф</p>
-
-<p>Вот параграф со ссылкой <a href="%s">на пост</a> с длинной строчкой</p>
-
-<p>Третий параграф</p>
-"""
-
-TARGET_URI = "http://foobar.com"
-
-ENTRY_TEXT = ENTRY_TEXT % TARGET_URI
-
-REMOTE_HTML = """<html><link rel="pingback" href="http://foobar.com/pingback/xmlrpc/pingback.testentry/" /></head></html>"""
-
-class MyFetcher( UrlFetcher ):
-    mapping = { "http://foobar.com" : ( 200, {}, REMOTE_HTML ) }
-
-    fetched = []
-
-    def fetch( self, url, data ):
-        self.fetched.append( url )
-
-        for mapped_url, data in self.mapping.iteritems():
-            if url.startswith( mapped_url ):
-                return ResponseObject( data[ 0 ], data[ 2 ], data[ 1 ] )
-
-        return super( MyFetcher, self ).fetch( url, data )
-
-my_fetcher = MyFetcher()
-
-settings.PANTHEON_URLFETCHER = my_fetcher
+from turbion.pingback.tests.utils import TestEntry, BASE_ENTRY_TEXT
 
 class ClientTest( TestCase ):
-    def setUp(self):
+    def setUp( self ):
+        self.source_uri = "http://source.host.com"
+        self.target_uri = "http://target.host.com"
+        
         site = Site.objects.get_current()
-        site.domain = "to.com"
+        site.domain = self.source_uri[ self.source_uri.index( "//" ) + 2 : ]
         site.save()
+        
+        text = BASE_ENTRY_TEXT
 
-        self.entry = TestEntry.objects.create( text = ENTRY_TEXT )
-
+        self.entry = TestEntry.objects.create( text = text % self.target_uri )
+            
+        self.needed_status = 'Pingback from %s%s to %s registered. Keep the web talking! :-)' % ( self.source_uri, self.entry.get_absolute_url(), self.target_uri )
+        
+        self.old_ping = client.call_ping
+        client.call_ping = lambda gateway, source_uri, target_uri: 'Pingback from %s to %s registered. Keep the web talking! :-)' % ( source_uri, target_uri )
+            
         self.entry.process()
+        
+    def tearDown( self ):
+        client.call_ping = self.old_ping
 
     def test_outgoing(self):
         from turbion.pingback.models import Outgoing
@@ -67,4 +45,5 @@ class ClientTest( TestCase ):
 
         out = Outgoing.objects.get()
         self.assertEqual( out.object,     self.entry )
-        self.assertEqual( out.target_uri, TARGET_URI )
+        self.assertEqual( out.target_uri, self.target_uri )
+        self.assertEqual( out.status,     self.needed_status )

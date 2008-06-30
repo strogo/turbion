@@ -44,8 +44,11 @@ class SourceParser( object ):
         self.soup = BeautifulSoup( content )
 
     def get_title(self):
-        title = self.soup.find('title').contents[0]
-        title = strip_tags(unicode(title))
+        try:
+            title = self.soup.find('title').contents[0]
+            title = strip_tags(unicode(title))
+        except AttributeError:
+            return ""
         return title
 
     def get_paragraph( self, target_uri, max_length = None ):

@@ -7,8 +7,13 @@
 #Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.dispatch import dispatcher
 from django.db import models
+from django.contrib.sites.models import Site
+from django.test import TestCase
+from django.conf import settings
 
 from turbion.pingback import signals
+
+from pantheon.utils.urlfetch import UrlFetcher, ResponseObject
 
 class TestEntry( models.Model ):
     text = models.TextField()
@@ -26,3 +31,30 @@ class TestEntry( models.Model ):
                         url      = self.get_absolute_url(),
                         text     = self.text,
                 )
+
+
+TITLE = ""
+PARAGRAPH = "Вот параграф со ссылкой на пост с длинной строчкой"
+BASE_ENTRY_TEXT = """<p>Вот первый параграф</p><p>Вот параграф со ссылкой <a href="%s">на пост</a> с длинной строчкой</p>
+<p>Третий параграф</p>
+"""
+
+REMOTE_HTML = """<html><link rel="pingback" href="http://foobar.com/pingback/xmlrpc/pingback.testentry/" /></head></html>"""
+
+class TestFetcher( UrlFetcher ):
+    mapping = { "http://target.host.com" : ( 200, {}, REMOTE_HTML ) }
+
+    fetched = []
+
+    def fetch( self, url, data ):
+        self.fetched.append( url )
+
+        for mapped_url, data in self.mapping.iteritems():
+            if url.startswith( mapped_url ):
+                return ResponseObject( data[ 0 ], data[ 2 ], data[ 1 ] )
+
+        return super( MyFetcher, self ).fetch( url, data )
+
+test_fetcher = TestFetcher()
+
+settings.PANTHEON_URLFETCHER = test_fetcher

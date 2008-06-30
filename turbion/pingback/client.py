@@ -69,7 +69,6 @@ def process_for_pingback( sender, instance, url, text ):
                 continue
 
             status = call_ping(gateway, local_uri, target_url)
-            print status
         except Exception, e:
             status = str( e )
             gateway = None

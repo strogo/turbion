@@ -14,7 +14,7 @@ from django.contrib.sites.models import Site
 import urllib2
 from urlparse import urlparse, urlsplit
 
-from pantheon.utils.fetch import fetch
+from pantheon.utils.urlfetch import fetch
 
 from turbion.pingback import signals
 from turbion.pingback import client
@@ -31,8 +31,8 @@ def resolve_model( model_id ):
 
 def resolve_object( model, id ):
     try:
-        obj = model._meta.default_manager.get( pk = id )
-    except ( model.DoesNotExist, AttributeError ):
+        obj = model._default_manager.get( pk = id )
+    except ( model.DoesNotExist, ):
         raise utils.PingError( 0x0021 )
     return obj
 
@@ -45,12 +45,10 @@ def ping( source_uri, target_uri, model_id, id ):
     try:
         domain = Site.objects.get_current().domain
         scheme, server, path, query, fragment = urlsplit(target_uri)
-
-        #args, kwargs = resolve_url( path )
+        
         model = resolve_model( model_id )
 
         obj = resolve_object( model, id )
-
         if obj.get_absolute_url() != path + query:
             # The specified target URI cannot be used as a target.
             raise utils.PingError( 0x0021 )
