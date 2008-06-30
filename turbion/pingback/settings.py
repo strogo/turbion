@@ -1,3 +1,1 @@
-TURBION_PINGBACK_TRANSPORT = "turbion.pingback.transport.XmlRpcTransport"
-
 TURBION_PINGBACK_PARAGRAPH_LENGTH = 200

@@ -35,21 +35,11 @@ def get_rpc_gateway( target_uri ):
 
 def call_ping( gateway, source_uri, target_uri ):
     try:
-        server = xmlrpclib.ServerProxy( gateway, transport = get_class( settings.PINGBACK_TRANSPORT )() )
+        server = xmlrpclib.ServerProxy( gateway )
         q = server.pingback.ping( source_uri, target_uri )
         return q
     except xmlrpclib.Fault, e:
         return str( e )
-
-def get_value( obj, name, default = None, args = [] ):
-    try:
-        attr = getattr( obj, name )
-
-        if callable( attr ):
-            attr = attr(*args)
-        return attr
-    except AttributeError:
-        return default
 
 def process_for_pingback( sender, instance, url, text ):
     from turbion.pingback.models import Outgoing
@@ -71,18 +61,18 @@ def process_for_pingback( sender, instance, url, text ):
         except Outgoing.DoesNotExist:
             pass
 
-        if True:
+        try:
             #make ping client
             gateway = get_rpc_gateway( target_url )
-            
+
             if not gateway:
                 continue
 
             status = call_ping(gateway, local_uri, target_url)
             print status
-        #except TypeError, e:
-        #    status = str( e )
-        #    gateway = None
+        except Exception, e:
+            status = str( e )
+            gateway = None
 
         out = Outgoing.objects.create( content_type = ct,
                                        object_id = instance.id,

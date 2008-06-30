@@ -19,9 +19,9 @@ from datetime import datetime
 gateway = ServerGateway( "pingback" )
 
 @gateway.connect
-def ping( source_uri, target_uri, model ):
+def ping( source_uri, target_uri, model_id, id ):
     try:
-        res = server.ping( source_uri, target_uri, model )
+        res = server.ping( source_uri, target_uri, model_id, id )
         return res[ "status" ]
     except utils.PingError, e:
         return e.code
