@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from pantheon.postprocessing.fields import PostprocessField
 from pantheon.utils.enum import Enum
+from pantheon.models.manager import GenericManager
 
 from turbion.profiles.models import Profile
 from turbion.blogs.models import Blog
@@ -33,12 +34,15 @@ class Page( models.Model ):
 
     text        = models.TextField( verbose_name = _( "text" ) )
     text_html   = models.TextField( verbose_name = _( "text html" ) )
-    
+
     status      = models.CharField( max_length = 10, choices = statuses, default = statuses.published )
 
     postprocess = PostprocessField()
 
     template    = models.CharField( max_length = 150, verbose_name = _( "template" ), null = True, blank = True )
+
+    objects   = models.Manager()
+    published = GenericManager( status = statuses.published )
 
     def __unicode__(self):
         return self.title

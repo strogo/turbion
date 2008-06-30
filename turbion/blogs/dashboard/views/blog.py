@@ -89,7 +89,7 @@ def post_new( request, blog, post = None ):
                                      sender = Post,
                                      instance = post,
                                      url = post.get_absolute_url(),
-                                     text = post.html,
+                                     text = post.text_html,
                                 )
 
                 return http.HttpResponseRedirect( post.get_absolute_url() )

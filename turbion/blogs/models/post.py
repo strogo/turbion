@@ -89,7 +89,7 @@ class Post( models.Model, CommentedModel ):
     tags = TagsField()
 
     @classmethod
-    def get_for_pingback(cls, year_id, month_id, day_id, post_slug,**kwargs ):
+    def get_for_pingback(cls, year_id, month_id, day_id, post_slug, **kwargs ):
         from django.shortcuts import get_object_or_404
         post = get_object_or_404( Post.published, created_on__year = year_id,
                                         created_on__month = month_id,
@@ -104,12 +104,6 @@ class Post( models.Model, CommentedModel ):
                                                          "day_id"    : self.created_on.day,
                                                          "post_slug" : self.slug,
                                                          "blog"      : self.blog.slug  } )
-
-    def _get_html(self):
-        """For pingback html getter"""
-        from turbion.blogs import utils
-        return self.postprocess.postprocess( self.text )
-    html = property( _get_html )
 
     def is_edited(self):
         return self.date < self.update_date

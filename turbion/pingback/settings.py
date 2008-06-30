@@ -1,6 +1,3 @@
-PINGBACK_TRANSPORT = "turbion.pingback.transport.XmlRpcTransport"
-PINGBACK_URLFETCHER = "turbion.pingback.urlfetcher.UrllibUrlFetcher"
+TURBION_PINGBACK_TRANSPORT = "turbion.pingback.transport.XmlRpcTransport"
 
-PINGBACK_ONLY_EXTERNALS = True
-
-PINGBACK_PARAGRAPH_LENGTH = 200
+TURBION_PINGBACK_PARAGRAPH_LENGTH = 200

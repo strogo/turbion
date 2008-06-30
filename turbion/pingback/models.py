@@ -57,7 +57,6 @@ class Outgoing( models.Model ):
         verbose_name_plural = "исходящие"
         db_table            = "turbion_pingback_outgoing"
 
-
     class Admin:
         list_display = ( "target_uri", "date", "title", "status", "rpcserver", )
         list_filter = ( "content_type", )
