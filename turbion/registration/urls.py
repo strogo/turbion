@@ -8,16 +8,13 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns( 'turbion.registration.views',
-    ( r'^$',                           'registration' ),
-    ( r'^confirm/$',                   'registration_confirm' ),
+    url( r'^$',                           'registration',         name = "registration_index" ),
+    url( r'^confirm/$',                   'registration_confirm', name = "registration_confirm" ),
     
-    ( r'^change/email/$',              'change_email' ),
-    ( r'^change/email/confirm/$',      'change_email_confirm' ),
-    ( r'^change/password/$',           'change_password' ),
+    url( r'^change/email/$',              'change_email' ),
+    url( r'^change/email/confirm/$',      'change_email_confirm' ),
+    url( r'^change/password/$',           'change_password' ),
     
-    ( r'^restore/$',                   'restore_password' ),
-    ( r'^restore/request/$',           'restore_password_request' ),
-    
-    ( r'^login/$',                     'login' ),
-    ( r'^logout/$',                    'logout' ),
+    url( r'^restore/$',                   'restore_password' ),
+    url( r'^restore/request/$',           'restore_password_request' ),
 )

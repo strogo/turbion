@@ -18,10 +18,11 @@ urlpatterns = patterns('',
 
     url( r'^pingback/',                     include( 'turbion.pingback.urls' )  ),
     url( r'^notifications/',                include( 'turbion.notifications.urls' )  ),
-    url( r'^feedburner/',                   include( 'turbion.feedburner.urls' )  ),
+    #url( r'^feedburner/',                   include( 'turbion.feedburner.urls' )  ),
     url( r'^roles/',                        include( 'turbion.roles.urls' )  ),
     url( r'^comments/',                     include( 'turbion.comments.urls' )  ),
     url( r'^gears/',                        include( 'turbion.gears.urls' )  ),
+    url( r'^registration/',                 include( 'turbion.registration.urls' )  ),
 
     url( r'^',                              include( 'turbion.blogs.urls' ), ),
 )

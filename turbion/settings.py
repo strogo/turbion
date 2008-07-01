@@ -34,6 +34,7 @@ TURBION_APPS = [
     'turbion.options',
     'turbion.aliases',
     'turbion.openid',
+    'turbion.registration'
 ]
 
 TURBION_MIDDLEWARE_CLASSES = [

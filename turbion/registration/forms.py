@@ -4,14 +4,14 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django import newforms as forms
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 
 from pantheon.supernovaforms.fields import CaptchaField
 
+from turbion.profiles.models import Profile
 from turbion.registration import utils
 
 class LoginForm( forms.Form ):
@@ -27,7 +27,7 @@ class LoginForm( forms.Form ):
             #if not user.is_active:
             #    raise forms.ValidationError( "Ваша учетная запись заблокирована. Обратитесь к администрации")
         else:
-            raise forms.ValidationError( _( "Illegal username or password" ) )#u"Имя или пароль указаны неверно"
+            raise forms.ValidationError( _( "Illegal username or password" ) )
         self.cleaned_data[ "user" ] = user
         return self.cleaned_data
 
@@ -44,7 +44,7 @@ class ChangePasswordForm( forms.Form ):
         old_password = self.cleaned_data[ "old_password" ]
         user = self.request.user
         if not user.check_password(old_password):
-            raise forms.ValidationError( _( "Illegal ol password" ) )
+            raise forms.ValidationError( _( "Wrong old password" ) )
 
         return old_password
 
@@ -65,11 +65,11 @@ class RestorePasswordForm( forms.Form ):
     def clean_email( self ):
         email = self.cleaned_data[ 'email' ]
         try:
-            user = User.objects.get( email = email )
+            user = Profile.objects.get( email = email )
             self.cleaned_data["user"] = user
             return email
-        except User.DoesNotExist:
-            raise forms.ValidationError( _( "Unknown e-mail" ) )#Данный e-mail: %s - не зарегистрирован в системе
+        except Profile.DoesNotExist:
+            raise forms.ValidationError( _( "Unknown e-mail" ) )
 
 class RegistrationFormBase( object ):
     def clean_email( self ):

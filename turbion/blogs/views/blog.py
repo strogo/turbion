@@ -15,7 +15,6 @@ from django.contrib.sites.models import Site
 from django.core import urlresolvers
 from django.template import loader
 
-from turbion.feedburner import views
 from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Blog, Post, Comment
 
@@ -35,10 +34,6 @@ def index_sitemap( request, sitemaps ):
         sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
     xml = loader.render_to_string('sitemap_index.xml', {'sitemaps': sites})
     return http.HttpResponse(xml, mimetype='application/xml')
-
-def account_getter( request, url, *args, **kwargs ):
-    from turbion.feedburner.models import Account
-    return Account.objects.get( user = request.blog.authors.all()[0] )#TODO:make account in preference
 
 @blog_view
 def feed( request, blog, url, feed_dict ):

@@ -7,49 +7,25 @@
 #Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from django.contrib import auth
 from django import http
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 from turbion.registration import forms
 from turbion.registration.models import Code
 from turbion.registration import mail
+from turbion.profiles.models import Profile
 
-from pantheon.utils.decorators import render_to, special_title_bits
+from pantheon.utils.decorators import templated, special_titled
 from pantheon.utils.views import info_page
 
 SECTION = _( "Registration" )
-title_bits = special_title_bits( section = SECTION )
+titled = special_titled( section = SECTION )
 
-@title_bits( page= _( "Login" ) )
-@render_to( 'registration/login.html' )
-def login( request ):
-    if request.method == 'POST':
-        login_form = forms.LoginForm( request.POST )
-        if login_form.is_valid():
-            user = login_form.cleaned_data[ "user" ]
-            auth.login( request, user )
-
-            return http.HttpResponseRedirect( request.GET.get( 'redirect', user.get_profile().get_absolute_url() ) )
-    else:
-        login_form = forms.LoginForm()
-        
-    login_form_action = './?redirect=' + request.GET.get( 'redirect', '/' ) 
-
-    return { "login_form": login_form,
-            "login_form_action":login_form_action }
-
-@login_required
-def logout( request ):
-    if request.method=='POST':
-        auth.logout( request )
-    return  http.HttpResponseRedirect( request.GET.get( 'redirect', '/' ) )
-
-
-@title_bits( page = _("Password restore request") )#u"Запрос востановления пароля" 
-@render_to( 'registration/restore_password_request.html' )
+@templated( 'turbion/registration/restore_password_request.html' )
+@titled( page = _("Password restore request") )
 def restore_password_request( request ):
     if request.POST:
         form = forms.RestorePasswordForm( data = request.POST )
@@ -64,7 +40,7 @@ def restore_password_request( request ):
                               section=SECTION,
                               message=_("Check your e-mail inbox for notification message"),
                               next=u"/",
-                              template="registration/info.html" )
+                              template="turbion/registration/info.html" )
     else:
         form = forms.RestorePasswordForm()
     action = "./"
@@ -78,7 +54,7 @@ def restore_password( request ):
         restore_request = get_object_or_404( Code, code = code )
         user = restore_request.user
         
-        new_password = User.objects.make_random_password()
+        new_password = Profile.objects.make_random_password()
         
         user.set_password( new_password )
         user.save()
@@ -93,18 +69,19 @@ def restore_password( request ):
                           section=SECTION,
                           message=_( "Check your e-mail inbox for new creditionals" ),
                           next= "/",
-                          template="registration/info.html" )
+                          template="turbion/registration/info.html" )
     
     raise http.Http404
 
-@title_bits( page = _( "E-mail change" ) )#u"Изменение почтового адреса"
-@render_to( 'registration/change_email.html' )
+
+@templated( 'turbion/registration/change_email.html' )
+@titled( page = _( "E-mail change" ) )
 @login_required
 def change_email( request ):
     if request.method == 'POST':
         form = forms.ChangeEmailForm( data = request.POST )
         if form.is_valid():
-            code = Code.objects.create( user = request.user,
+            code = Code.objects.create( user = request.user.profile,
                                         type = "email_change",
                                         data = form.cleaned_data["email"] )
             
@@ -114,14 +91,15 @@ def change_email( request ):
                               section=SECTION,
                               message= _( "Check your e-mail inbox for instructions" ),
                               next= "/",
-                              template="registration/info.html" )
+                              template="turbion/registration/info.html" )
     else:
         form = forms.ChangeEmailForm()
     
     return { "form" : form }
 
-@title_bits( page = _( "E-mail confirmation" ) )#u"Подтверждение почтового адреса"
-@render_to( 'registration/change_email.html' )
+
+@templated( 'turbion/registration/change_email.html' )
+@titled( page = _( "E-mail confirmation" ) )
 @login_required
 def change_email_confirm( request ):
     code = request.GET.get( 'code', None )
@@ -136,11 +114,11 @@ def change_email_confirm( request ):
                           section= SECTION,
                           message= _( "Your new e-mail has been confirmed" ),
                           next= "/",
-                          template="registration/info.html" )
+                          template="turbion/registration/info.html" )
     raise http.Http404
 
-@title_bits( page = _( "Password change" ) )#u"Изменение пароля"
-@render_to( 'registration/change_password.html' )
+@templated( 'turbion/registration/change_password.html' )
+@titled( page = _( "Password change" ) )
 @login_required
 def change_password( request ):
     if request.method == 'POST':
@@ -154,21 +132,21 @@ def change_password( request ):
                               section = SECTION,
                               message= _( "Now you can sing-in with your new password" ),
                               next = request.GET.get( 'redirect', '/' ),
-                              template="registration/info.html" )
+                              template="turbion/registration/info.html" )
     else:
         form = forms.ChangePasswordForm()
     
     return { "change_password_form": form }
 
-@render_to( 'registration/registration.html' )
-@title_bits( page= _( "Information collection" ) )#u"Сбор сведений"
+@templated( 'turbion/registration/registration.html' )
+@titled( page= _( "Information collection" ) )#u"Сбор сведений"
 def registration( request ):
     if request.method == 'POST':
         form = forms.RegistrationForm( data = request.POST )
         if form.is_valid():
             data = form.cleaned_data
             
-            user = User.objects.create_user( **data )
+            user = Profile.objects.create_user( **data )
             user.is_active = False
             user.save()
             
@@ -180,13 +158,11 @@ def registration( request ):
                               section=SECTION,
                               message= _( "Check your e-mail inbox for instructions" ),
                               next= "/",
-                              template="registration/info.html" )
+                              template="turbion/registration/info.html" )
     else:
         form = forms.RegistrationForm()
-    registration_action = './'
 
-    return { "registration_form": form,
-             "registration_action": registration_action }
+    return { "registration_form": form }
 
 def registration_confirm( request ):
     code = request.GET.get( 'code', None )
@@ -200,7 +176,7 @@ def registration_confirm( request ):
                           title= _( "Registration finished" ),
                           section = SECTION,
                           message= _( "Now you can sing-in with your account" ),
-                          next= reverse( "turbion.registration.views.login" ),
-                          template="registration/info.html" )
+                          next= settings.LOGIN_URL,
+                          template="turbion/registration/info.html" )
 
     raise http.Http404

@@ -4,76 +4,70 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.core import mail
+from django.conf import settings
 
 from pantheon.supernovaforms.captcha import manager
 
 from turbion.registration.models import Code
+from turbion.profiles.models import Profile
 
 USERNAME = "daevaorn"
 PASSWORD = "pocha"
 EMAIL    = "foobar@bar.com"
 
 def make_reg_data( ):
-    # cm = CaptchaManager()
-    #key = cm.get_solution( form[ "captcha" ].field.widget.get_id() )
-
     data = {}
     data[ "username"] = USERNAME
     data[ "email" ] = EMAIL
     data[ "password" ] = PASSWORD
     data[ "password_confirm" ] = PASSWORD
-    #data[ "captcha_2" ] = key
-    #data[ "captcha_0" ] = form[ "captcha" ].field.widget.get_id()
 
     return data
 
-class NewUserRegistrationTest( TestCase ):
+class NewProfileRegistrationTest( TestCase ):
     def setUp(self):
         pass#prepare()
 
     def test_registration(self):
-        response = self.client.get( reverse( "turbion.registration.views.registration" ) )
+        response = self.client.get( reverse( "registration_index" ) )
         self.assertEqual( response.status_code, 200 )
 
         data = make_reg_data()
 
         #registering user
-        response = self.client.post(reverse( "turbion.registration.views.registration" ), data = data )
+        response = self.client.post(reverse( "registration_index" ), data = data )
         self.assertEqual( response.status_code, 200 )
         self.assertEqual( len( mail.outbox ), 1 )
-        del mail.outbox[0]
 
         #try find our new user
-        user = User.objects.get( username = USERNAME )
+        user = Profile.objects.get( username = USERNAME )
         self.assertEqual( user.is_active, False )
 
         #process confirm
         tu = Code.objects.get( user = user )
 
-        response = self.client.get(reverse( "turbion.registration.views.registration_confirm" ), data = { "code" : tu.code } )
+        response = self.client.get(reverse( "registration_confirm" ), data = { "code" : tu.code } )
         self.assertEqual( response.status_code, 200 )
 
-        user = User.objects.get( username = USERNAME )
+        user = Profile.objects.get( username = USERNAME )
         self.assertEqual( user.is_active, True )
 
         #try to login
-        response = self.client.post( reverse( "turbion.registration.views.login" ), data = { "username" : USERNAME, "password": PASSWORD } )
+        response = self.client.post( settings.LOGIN_URL, data = { "username" : USERNAME, "password": PASSWORD } )
         self.assertEqual( response.status_code, 302 )
-        #self.assertRedirects( response, "/" )
 
 class RegTestBase( object ):
     def setUp(self):
-        self.user = User.objects.create_user( USERNAME, EMAIL, PASSWORD )
+        self.user = Profile.objects.create_user( USERNAME, EMAIL, PASSWORD )
         self.user.save()
 
-class InactiveUserLoginTest( RegTestBase, TestCase ):
+class InactiveProfileLoginTest( RegTestBase, TestCase ):
     def setUp(self):
-        super( InactiveUserLoginTest, self ).setUp()
+        super( InactiveProfileLoginTest, self ).setUp()
         self.user.is_active = False
         self.user.save()
 
@@ -90,7 +84,6 @@ class PasswordRestoreTest( RegTestBase, TestCase ):
         response = self.client.post( reverse( "turbion.registration.views.restore_password_request" ), data = data )
         self.assertEqual( response.status_code, 200 )
         self.assertEqual( len( mail.outbox ), 1 )
-        del mail.outbox[0]
 
         request = Code.objects.get( user = self.user )
         response = self.client.get( reverse( "turbion.registration.views.restore_password" ), data = { "code" : request.code } )
@@ -106,7 +99,7 @@ class ChangePasswordTest( RegTestBase, TestCase ):
 
         self.assertEqual( self.client.login( username = USERNAME, password = PASSWORD ), True )
         response = self.client.post( reverse( "turbion.registration.views.change_password" ), data = data )
-        self.assertEqual( response.status_code, 302 )
+        self.assert_( 'change_password_form' not in response.context[0] )
 
     def test_bad_change(self):
         NEW_PASSWORD = "foobar"
@@ -116,7 +109,7 @@ class ChangePasswordTest( RegTestBase, TestCase ):
 
         self.assertEqual( self.client.login( username = USERNAME, password = PASSWORD ), True )
         response = self.client.post( reverse( "turbion.registration.views.change_password" ), data = data )
-        self.assertFormError( response, "change_password_form", "old_password", [ u"Указан неверный пароль" ] )
+        self.assertFormError( response, "change_password_form", "old_password", [ "Wrong old password" ] )
         self.assertEqual( response.status_code, 200 )
 
 class ChangeEmailTest( RegTestBase, TestCase ):
@@ -127,14 +120,13 @@ class ChangeEmailTest( RegTestBase, TestCase ):
         response = self.client.post(reverse( "turbion.registration.views.change_email" ), data = data )
         self.assertEqual( response.status_code, 200 )
         self.assertEqual( len( mail.outbox ), 1 )
-        del mail.outbox[0]
 
         code = ""
         data = { "code" : code }
         response = self.client.get(reverse( "turbion.registration.views.change_email_confirm" ), data = data )
         self.assertEqual( response.status_code, 200 )
 
-class SameUsernameTest( RegTestBase, TestCase ):
+class SameProfilenameTest( RegTestBase, TestCase ):
     def test_newuser(self):
         data = make_reg_data()
         response = self.client.post(reverse( "turbion.registration.views.registration" ), data = data )

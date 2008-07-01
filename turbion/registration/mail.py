@@ -14,11 +14,7 @@ from django.contrib.sites.models import Site
 
 site = "http://" + Site.objects.get_current().domain
 
-
- #def __init__(self, subject='', body='', from_email=None, to=None, bcc=None,
-#            connection=None, attachments=None, headers=None):
-
-class Mail( EmailMessage ):
+class Mail( EmailMessage ):   
     def __init__( self, to, context ):
         template = get_template( self.template )
         context = Context( context )
@@ -33,16 +29,16 @@ class Mail( EmailMessage ):
 
 class RegistrationConfirmMessage( Mail ):
     subject = u'Регистрация на сайте %s' % site
-    template = 'registration/messages/confirm_mail.html'
+    template = 'turbion/registration/messages/confirm_mail.html'
         
 class RestorePasswordRequestMessage( Mail ):
     subject = u'Запрос востановления пароля на сайте %s' % site
-    template = "registration/messages/restore_password_request.html"
+    template = "turbion/registration/messages/restore_password_request.html"
 
 class RestorePasswordMessage( Mail ):
     subject = u'Новый пароля на сайте %s' % site
-    template = "registration/messages/restore_password.html"
+    template = "turbion/registration/messages/restore_password.html"
     
 class ChangeEmailMessage( Mail ):
     subject = u'Подтверждение почтового адреса %s' % site
-    template = "registration/messages/change_email.html"
+    template = "turbion/registration/messages/change_email.html"
