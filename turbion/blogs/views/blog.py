@@ -29,9 +29,14 @@ def index_sitemap( request, sitemaps ):
     current_site = Site.objects.get_current()
     sites = []
     protocol = request.is_secure() and 'https' or 'http'
+    
     for slug in Blog.objects.all().values_list( "slug", flat = True ):
-        sitemap_url = urlresolvers.reverse( 'turbion.blogs.views.blog.sitemap', kwargs={'blog': slug})
+        sitemap_url = urlresolvers.reverse( 'blog_sitemap', kwargs={'blog': slug})
         sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
+        
+        sitemap_url = urlresolvers.reverse( 'page_sitemap', kwargs={'blog': slug})
+        sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
+    
     xml = loader.render_to_string('sitemap_index.xml', {'sitemaps': sites})
     return http.HttpResponse(xml, mimetype='application/xml')
 
@@ -59,14 +64,12 @@ def feed( request, blog, url, feed_dict ):
     feedgen.write(response, 'utf-8')
     return response
 
-@blog_view
 @templated( 'turbion/blogs/404.html' )
 @titled( page = u'Страница не найден' )
-def handler404( request, blog ):
-    return { "blog" : blog }
+def handler404( request ):
+    return { }
 
-@blog_view
 @templated( 'turbion/blogs/500.html' )
 @titled( page = u'Страница не найден' )
-def handler500( request, blog ):
-    return { "blog" : blog }
+def handler500( request ):
+    return { }

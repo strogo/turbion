@@ -20,9 +20,9 @@ from turbion.blogs.models.blog import BlogRoles
 from turbion.blogs.utils import blog_reverse
 from turbion.profiles.models import Profile
 
-settings.DEBUG = True#FIXME: must accepts as `test` command param
+settings.DEBUG = True#FIXME
 
-CREDENTIALS = { 'username' : "daev", 'password' : "dkflbvbhgenby" }
+CREDENTIALS = { 'username' : "daev", 'password' : "foobar" }
 
 class BlogTest( TestCase ):
     fixtures = [ 'blog', 'posts', 'profiles', 'tags' ]
@@ -93,6 +93,7 @@ class BlogTest( TestCase ):
         comment = { "text" : "My comment" }
 
         response = self.client.post( url, data = comment )
+        
         self.assertEqual( response.status_code, http.HttpResponseRedirect.status_code )
         post = Post.published.for_blog( self.blog ).get( pk = self.post.pk )
 

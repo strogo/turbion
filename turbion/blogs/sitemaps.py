@@ -5,7 +5,7 @@
 #$Revision$
 #--------------------------------
 #Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
-from django.contrib.sitemaps import Sitemap, ping_google
+from django.contrib.sitemaps import Sitemap
 from turbion.blogs.models import Post, Comment
 
 from django.utils.functional import curry
@@ -40,21 +40,3 @@ class CommentSitemap( BlogSitemap ):
 
 class GlobalSitemap( Sitemap ):
     pass
-
-def post_save(instance):
-    try:
-        if instance.is_published():
-            ping_google()
-    except Exception:
-        pass
-
-def comment_save(instance):
-    try:
-        if instance.blog_posts.count():
-            ping_google()
-    except Exception:
-        pass
-
-if not settings.DEBUG:
-    dispatcher.connect( post_save,    signal = signals.post_save, sender = Post )
-    dispatcher.connect( comment_save, signal = signals.post_save, sender = Comment )

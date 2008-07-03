@@ -11,11 +11,8 @@ from django.conf import settings
 from turbion.blogs.utils import blog_url
 
 urlpatterns = patterns('',
-    blog_url( r'pages/',                    include( 'turbion.staticpages.urls' ) ),
-    blog_url( r'feedback/',                 include( 'turbion.feedback.urls' ) ),
     url( r'^profile/',                      include( 'turbion.profiles.urls' ) ),#FIXME: remove profile link
     url( r'^captcha/(?P<id>\w+)/$',         "pantheon.supernovaforms.views.captcha_image" ),
-
     url( r'^pingback/',                     include( 'turbion.pingback.urls' )  ),
     url( r'^notifications/',                include( 'turbion.notifications.urls' )  ),
     #url( r'^feedburner/',                   include( 'turbion.feedburner.urls' )  ),
@@ -23,6 +20,18 @@ urlpatterns = patterns('',
     url( r'^comments/',                     include( 'turbion.comments.urls' )  ),
     url( r'^gears/',                        include( 'turbion.gears.urls' )  ),
     url( r'^registration/',                 include( 'turbion.registration.urls' )  ),
-
-    url( r'^',                              include( 'turbion.blogs.urls' ), ),
+    url( r'^dashboard/',                    include( 'turbion.blogs.dashboard.urls' ) ),
+    
+    blog_url( r'',                          include( 'turbion.blogs.urls' ) ),
+    blog_url( r'pages/',                    include( 'turbion.staticpages.urls' ) ),
+    blog_url( r'feedback/',                 include( 'turbion.feedback.urls' ) ),
 )
+
+MULTIPLE_SETUP = getattr( settings, 'TRUBION_BLOGS_MULTIPLE', False )
+
+if MULTIPLE_SETUP:
+    urlpatterns += patterns('', url( r'^sitemap.xml$', 'turbion.blogs.views.blog.index_sitemap', name = "global_blog_sitemap" ) )
+
+
+handler404 = 'turbion.views.blog.handler404'
+handler500 = 'turbion.views.blog.handler500'
