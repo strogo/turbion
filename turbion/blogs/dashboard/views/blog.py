@@ -10,7 +10,7 @@ from django import http
 from pantheon.utils.decorators import titled, templated
 
 from turbion.blogs.decorators import blog_view, post_view
-from turbion.blogs.models import Blog, BlogRoles, Post, CommentAdd
+from turbion.blogs.models import Blog, BlogRoles, Post, CommentAdd, Comment
 from turbion.blogs.dashboard import forms
 from turbion.profiles.models import Profile
 
@@ -21,8 +21,12 @@ from turbion.roles.decorators import has_capability_for
 @blog_view
 @has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
 def index( request, blog ):
+    latest_posts = Post.objects.for_blog( blog ).order_by("-created_on")[:5]
+    latest_comments = Comment.published.for_model_with_rel( Post, blog ).order_by("-created_on").distinct()[:5]
 
-    return { "blog" : blog }
+    return { "blog"            : blog,
+             "latest_posts"    : latest_posts,
+             "latest_comments" : latest_comments }
 
 @templated( "turbion/blogs/dashboard/blog/posts.html" )
 @titled( page = "Dashboard", section = "Administration" )
@@ -96,12 +100,9 @@ def post_new( request, blog, post = None ):
     else:
         form = forms.PostForm( blog = blog, instance = post )
 
-    form_action = './'
-
     return { "blog" : blog,
              "post" : post,
-             "form" : form,
-             "form_action" : form_action }
+             "form" : form }
 
 def post_edit( request, post_id, *args, **kwargs ):
     post = Post.objects.get( pk = post_id )

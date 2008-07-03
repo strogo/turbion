@@ -58,7 +58,7 @@ class CreateBlogForm( forms.ModelForm ):
 class PostForm( forms.ModelForm ):
     class Meta:
         model = Post
-        exclude = [ 'blog', 'created_by', 'edited_by', 'edited_on' ]
+        exclude = [ 'blog', 'created_by', 'edited_by', 'edited_on', 'text_html' ]
 
     def __init__( self, blog, *args, **kwargs ):
         self.blog = blog
@@ -93,7 +93,7 @@ class LoginForm( forms.Form ):
 
         username = self.cleaned_data[ "username" ]
         password = self.cleaned_data[ "password" ]
-
+        print username, password
         user = auth.authenticate( username=username, password=password )
         if user:pass
             #if not user.is_active:
