@@ -1,0 +1,12 @@
+{% extends "turbion/dashboard/base.html" %}
+
+{% block page_body %}
+<form method="POST" action="">
+	{% for field in form %}
+		<p>{{field.label_tag}}{{field}}<p>
+	{% endfor %}
+	<p>
+		<input type="submit" value="ok"/>
+	</p>
+</form>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load media %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+{% block head %}
+    {{block.super}}
+    <link rel="stylesheet" type="text/css"
+          href="http://yui.yahooapis.com/2.5.2/build/reset-fonts-grids/reset-fonts-grids.css">
+    <style>
+    div {
+        border: solid 1px blue;
+        margin: 5px;
+        padding: 3px;
+           }
+    </style>
+{% endblock %}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" type="text/css" ref="reset-fonts-grids.css">
+</head>
+<body>
+{% block main %}
+<div id="doc3" class="yui-t1">
+  <div id="hd">
+    <div>Turbion dashboard</div>
+    <div>
+        <a href="{% url dashboard_blog_posts blog.slug %}">posts</a>
+        <a href="">comments</a>
+        <a href="">preferences</a>
+        <a href="{% url dashboard_blog_feedbacks blog.slug %}">feedbacks</a>
+    </div>
+  </div>
+  <div id="bd">
+    <div class="yui-b">
+        <ul>
+            {% block page_left %}
+            <li><a href="{% url dashboard_blog_post_new blog.slug %}">New post</a></li>
+            {% endblock %}
+        </ul>
+    </div>
+    <div class="yui-main">
+        <div class="yui-b">
+            {% block page_body %}
+            {% endblock %}
+        </div>
+    </div>
+  </div>
+  <div id="ft">{% block page_footer %}{% endblock %}</div>
+</div>
+{% endblock %}
+</body>
+</html>

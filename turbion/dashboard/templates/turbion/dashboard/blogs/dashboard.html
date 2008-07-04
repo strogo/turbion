@@ -1,0 +1,25 @@
+{% extends "turbion/dashboard/blogs/base.html" %}
+
+{% block page_header %}
+    <a href="{{blog.get_dasboard_url}}"></a>
+{% endblock %}
+
+{% block page_body %}
+<div>
+<h3>Posts</h3>
+<ul>
+    {% for post in latest_posts %}
+    <li><a href="{% url dashboard_blog_post_edit blog.slug,post.id %}">{{post}}</a> - {{post.status}}</li>
+    {% endfor %}
+</ul>
+<a href="{% url dashboard_blog_posts blog.slug%}">all</a>
+</div>
+<div>
+<h3>Comments</h3>
+<ul>
+    {% for comment in latest_comments %}
+    <li><a href="">{{comment}}</a> - {{comment.status}}</li>
+    {% endfor %}
+</ul>
+</div>
+{% endblock %}
