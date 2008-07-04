@@ -52,7 +52,7 @@ class Page( models.Model ):
             self.edited_on = datetime.now()
 
         self.text_html = self.postprocess.postprocess( self.text )
-        super( Feedback, self ).save()
+        super( Page, self ).save()
 
     @models.permalink
     def get_absolute_url(self):
