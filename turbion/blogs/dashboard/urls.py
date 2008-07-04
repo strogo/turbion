@@ -25,14 +25,20 @@ urlpatterns = patterns('turbion.blogs.dashboard.views',
  url( r'^raw/',                                  include('django.contrib.admin.urls') ),
 )
 
+blog_slug = r"^(?P<blog>[\w_-]+)/"
+
+def blog_url( regex, view, kwargs=None, name=None, prefix='' ):
+    return url( blog_slug + regex, view, kwargs, name, prefix )
+
 #blog specific pages
 urlpatterns += patterns('turbion.blogs.dashboard.views',
- url( r'^(?P<blog>[\w_-]+)/$',                                     'blog.index',    name = "dashboard_blog_index" ),
+ blog_url( r'$',                                     'blog.index',    name = "dashboard_blog_index" ),
 
- url( r'^(?P<blog>[\w_-]+)/posts/$',                               'blog.posts',    name = "dashboard_blog_posts" ),
- url( r'^(?P<blog>[\w_-]+)/post/new/$',                            'blog.post_new', name = "dashboard_blog_post_new" ),
+ blog_url( r'posts/$',                               'blog.posts',    name = "dashboard_blog_posts" ),
+ blog_url( r'post/new/$',                            'blog.post_new', name = "dashboard_blog_post_new" ),
  #url( r'^(?P<blog>[\w_-]+)/post/(?P<post_id>\d+)/$',               'blog.post' ),
- url( r'^(?P<blog>[\w_-]+)/post/(?P<post_id>\d+)/edit/$',          'blog.post_edit', name = "dashboard_blog_post_edit" ),
+ blog_url( r'post/(?P<post_id>\d+)/edit/$',          'blog.post_edit', name = "dashboard_blog_post_edit" ),
+ blog_url( r'post/(?P<post_id>\d+)/delete/$',          'blog.post_edit', name = "dashboard_blog_post_edit" ),
  #url( r'^(?P<blog>[\w_-]+)/post/(?P<post_id>\d+)/status/(?P<status>\w+)/$',    'blog.post_status' ),
 
  #url( r'^(?P<blog>[\w_-]+)/comments/$',                            'blog.comments' ),
@@ -46,5 +52,8 @@ urlpatterns += patterns('turbion.blogs.dashboard.views',
  #url( r'^(?P<blog>[\w_-]+)/asset/new/$',                           'assets.new' ),
  #url( r'^(?P<blog>[\w_-]+)/asset/(?P<asset_id>\d+)/edit/$',        'assets.edit' ),
 
- #( r'^preference/$',                                                          'preference.edit' ),
+ blog_url( r'feedbacks/$',                            'feedback.feedbacks', name = "dashboard_blog_feedbacks" ),
+ blog_url( r'feedbacks/new/$',                        'feedback.new',       name = "dashboard_blog_feedbacks_new" ),
+ blog_url( r'feedbacks/(?P<feedback_id>\d+)/edit/$',  'feedback.edit',      name = "dashboard_blog_feedbacks_edit" ),
+ blog_url( r'feedbacks/(?P<feedback_id>\d+)/delete/$','feedback.delete',    name = "dashboard_blog_feedbacks_delete" ),
 )
