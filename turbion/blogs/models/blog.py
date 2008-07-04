@@ -138,11 +138,11 @@ class BlogRoles( roles.RoleSet ):
         edit_comment       = roles.Capability( "Can edit blog comments" )
 
     class Roles:
-        blog_owner = roles.Role( "Foobar user", ( "enter_dashboard",
+        blog_owner = roles.Role( "Blog owner",  ( "enter_dashboard",
                                                   "add_post",
                                                   "edit_post",
                                                   "delete_post",
                                                   "change_preferences",
-                                                  "review_feedbacks",
+                                                  "review_feedback",
                                                   "edit_feedback",
                                                   "edit_comment" ) )
