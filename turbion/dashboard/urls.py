@@ -8,7 +8,7 @@
 from django.conf.urls.defaults import *
 
 #global pages
-urlpatterns = patterns('turbion.blogs.dashboard.views',
+urlpatterns = patterns('turbion.dashboard.views',
  url( r'^$',                                     'global.index',            name = "dashboard_index" ),
  url( r'^install/$',                             'global.install',          name = "dashboard_install" ),
  url( r'^create_superuser/$',                    'global.create_superuser', name = "dashboard_create_superuser" ),
@@ -31,7 +31,7 @@ def blog_url( regex, view, kwargs=None, name=None, prefix='' ):
     return url( blog_slug + regex, view, kwargs, name, prefix )
 
 #blog specific pages
-urlpatterns += patterns('turbion.blogs.dashboard.views',
+urlpatterns += patterns('turbion.dashboard.views',
  blog_url( r'$',                                     'blog.index',    name = "dashboard_blog_index" ),
 
  blog_url( r'posts/$',                               'blog.posts',    name = "dashboard_blog_posts" ),

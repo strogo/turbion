@@ -11,12 +11,12 @@ from pantheon.utils.decorators import titled, templated
 
 from turbion.blogs.decorators import blog_view, post_view
 from turbion.blogs.models import Blog, BlogRoles, Post, CommentAdd, Comment
-from turbion.blogs.dashboard import forms
+from turbion.dashboard import forms
 from turbion.profiles.models import Profile
 
 from turbion.roles.decorators import has_capability_for
 
-@templated( "turbion/blogs/dashboard/blog/dashboard.html" )
+@templated( "turbion/dashboard/blog/dashboard.html" )
 @titled( page = "Dashboard", section = "Administration" )
 @blog_view
 @has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
@@ -28,7 +28,7 @@ def index( request, blog ):
              "latest_posts"    : latest_posts,
              "latest_comments" : latest_comments }
 
-@templated( "turbion/blogs/dashboard/blog/posts.html" )
+@templated( "turbion/dashboard/blog/posts.html" )
 @titled( page = "Dashboard", section = "Administration" )
 @blog_view
 @has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
@@ -38,7 +38,7 @@ def posts( request, blog ):
     return { "blog"  : blog,
              "posts" : posts }
 
-@templated( "turbion/blogs/dashboard/blog/table.html" )
+@templated( "turbion/dashboard/blog/table.html" )
 @titled( page = "Dashboard", section = "Administration" )
 @blog_view
 @has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
@@ -46,14 +46,14 @@ def comments( request, blog ):
 
     return { "blog" : blog }
 
-@templated( "turbion/blogs/dashboard/blog/table.html" )
+@templated( "turbion/dashboard/blog/table.html" )
 @titled( page = "Dashboard", section = "Administration" )
 @blog_view
 def preferences( request, blog ):
 
     return { "blog" : blog }
 
-@templated( 'turbion/blogs/dashboard/blog/form.html' )
+@templated( 'turbion/dashboard/blog/form.html' )
 @titled( page=u'Редактирование поста "{{post.title}}"' )
 @blog_view
 @has_capability_for( BlogRoles.capabilities.add_post, "blog" )

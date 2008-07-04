@@ -13,11 +13,11 @@ from django.contrib import auth
 from pantheon.utils.decorators import templated, titled
 
 from turbion.blogs.models.blog import Blog, BlogRoles
-from turbion.blogs.dashboard import forms, decorators
+from turbion.dashboard import forms, decorators
 from turbion.profiles.models import Profile
 
 
-@templated( "turbion/blogs/dashboard/global/install.html" )
+@templated( "turbion/dashboard/global/install.html" )
 @titled()
 def install( request ):
     if not Profile.objects.has_superuser():
@@ -27,7 +27,7 @@ def install( request ):
 
 @login_required
 @decorators.superuser_required
-@templated( "turbion/blogs/dashboard/global/index.html" )
+@templated( "turbion/dashboard/global/index.html" )
 @titled()
 def index( request ):
     if not Profile.objects.has_superuser():
@@ -41,7 +41,7 @@ def index( request ):
     return { "blogs" : blogs }
 
 
-@templated( "turbion/blogs/dashboard/global/create_superuser.html" )
+@templated( "turbion/dashboard/global/create_superuser.html" )
 @titled()
 def create_superuser( request ):
     if Profile.objects.has_superuser():
@@ -60,7 +60,7 @@ def create_superuser( request ):
 
 @login_required
 @decorators.superuser_required
-@templated( "turbion/blogs/dashboard/global/create_blog.html" )
+@templated( "turbion/dashboard/global/create_blog.html" )
 @titled()
 def create_blog( request ):
     if request.POST:
@@ -80,7 +80,7 @@ def create_blog( request ):
 
     return { "form" : form }
 
-@templated( 'turbion/blogs/dashboard/global/login.html' )
+@templated( 'turbion/dashboard/global/login.html' )
 @titled()
 def login( request ):
     if request.POST:

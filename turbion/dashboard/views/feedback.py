@@ -15,7 +15,7 @@ from pantheon.utils.decorators import titled, templated
 
 @never_cache
 @blog_view
-@templated( "turbion/feedback/dashboard/feedbacks.html")
+@templated( "turbion/dashboard/feedback/feedbacks.html")
 @titled()
 def feedbacks( request, blog ):
 
