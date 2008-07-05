@@ -8,11 +8,19 @@
     <link rel="stylesheet" type="text/css"
           href="http://yui.yahooapis.com/2.5.2/build/reset-fonts-grids/reset-fonts-grids.css">
     <style>
-    div {
+    div.data {
         border: solid 1px blue;
-        margin: 5px;
+        margin: 3px;
         padding: 3px;
-           }
+    }
+    .data p {
+        margin-bottom: 25px;
+    }
+    .data label {
+        display: block;
+        width: 100px;
+        float: left;
+    }
     </style>
 {% endblock %}
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -21,27 +29,32 @@
 </head>
 <body>
 {% block main %}
-<div id="doc3" class="yui-t1">
+<div id="doc3" class="yui-t2">
   <div id="hd">
     <div>Turbion dashboard</div>
     <div>
         <a href="{% url dashboard_blog_posts blog.slug %}">posts</a>
         <a href="">comments</a>
+        <a href="">assets</a>
         <a href="">preferences</a>
         <a href="{% url dashboard_blog_feedbacks blog.slug %}">feedbacks</a>
     </div>
   </div>
   <div id="bd">
-    <div class="yui-b">
-        <ul>
-            {% block page_left %}
-            <li><a href="{% url dashboard_blog_post_new blog.slug %}">New post</a></li>
-            {% endblock %}
-        </ul>
-    </div>
-    <div class="yui-main">
+    <div id="yui-main">
         <div class="yui-b">
+            <div class="data">
             {% block page_body %}
+            {% endblock %}
+            </div>
+        </div>
+    </div>
+    <div class="yui-b">
+        <div class="data">
+            {% block page_left %}
+            <ul>
+            <li><a href="{% url dashboard_blog_post_new blog.slug %}">New post</a></li>
+            </ul>
             {% endblock %}
         </div>
     </div>
