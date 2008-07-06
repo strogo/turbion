@@ -19,7 +19,6 @@ from turbion.blogs.utils import blog_reverse
 from turbion.comments import forms as comments_forms
 
 from turbion.tags.models import Tag
-from turbion.pingback import signals
 
 from pantheon.utils.paging import paginate
 from pantheon.utils.decorators import paged, templated

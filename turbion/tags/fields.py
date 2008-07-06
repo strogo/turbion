@@ -21,8 +21,8 @@ class ModelTagManager( object ):
     def _create_tag( self, tag ):
         if isinstance( tag, ( long, int) ):
             tag = Tag.objects.get( pk = tag)
-        elif isinstance( tag, basestring ):
-            tag, created = Tag.objects.get_or_create( name = tag )
+        elif isinstance( tag, basestring ) and tag != "":
+            tag, created = Tag.objects.get_or_create( name = tag.strip() )
         elif isinstance( tag, Tag ):
             pass
         else:
@@ -45,8 +45,8 @@ class ModelTagManager( object ):
     def remove( self, *tags ):
         tags = map( self._create_tag, tags )
 
-        item = TaggedItem.objects.get( tag__in = tags,
-                                            **self._create_item() )
+        item = TaggedItem.objects.filter( tag__in = tags,
+                                          **self._create_item() )
         item.delete()
 
     def replace( self, *tags ):
