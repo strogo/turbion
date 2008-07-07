@@ -24,6 +24,8 @@ def has_capability_for( perm, obj_name = None, cond = "AND" ):
                 return func( request, *args, **kwargs )
             else:
                 return http.HttpResponseRedirect( reverse("no_capability") )
+        _decorator.__doc__ = func.__doc__
+        _decorator.__dict__ = func.__dict__
         _decorator.perm = perm
         return _decorator
     return _wrapper
