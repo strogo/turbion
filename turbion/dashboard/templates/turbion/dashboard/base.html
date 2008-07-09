@@ -1,4 +1,4 @@
-{% load media %}
+{% load media dashboard %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
@@ -6,7 +6,7 @@
 {% block head %}
     {{block.super}}
     <link rel="stylesheet" type="text/css"
-          href="http://yui.yahooapis.com/2.5.2/build/reset-fonts-grids/reset-fonts-grids.css">
+          href="{% add_turbion_media "yui/reset-fonts-grids/reset-fonts-grids.css" %}">
     <style>
     div.data {
         border: solid 1px blue;
