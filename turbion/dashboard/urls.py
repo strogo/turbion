@@ -48,9 +48,10 @@ urlpatterns += patterns('turbion.dashboard.views',
 
  #url( r'^(?P<blog>[\w_-]+)/preferences/$',                         'blog.preferences' ),
 
- #url( r'^(?P<blog>[\w_-]+)/assets/$',                              'assets.index' ),
- #url( r'^(?P<blog>[\w_-]+)/asset/new/$',                           'assets.new' ),
- #url( r'^(?P<blog>[\w_-]+)/asset/(?P<asset_id>\d+)/edit/$',        'assets.edit' ),
+ #blog_url( r'assets/$',                              'assets.index' ),
+ #blog_url( r'assets/new/$',                           'assets.new' ),
+ #blog_url( r'assets/(?P<asset_id>\d+)/edit/$',        'assets.edit' ),
+ blog_url( r'pages/$',                                'pages.pages', name = "dashboard_blog_pages" ),
 
  blog_url( r'feedbacks/$',                            'feedback.feedbacks', name = "dashboard_blog_feedbacks" ),
  blog_url( r'feedbacks/new/$',                        'feedback.new',       name = "dashboard_blog_feedbacks_new" ),

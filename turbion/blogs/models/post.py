@@ -39,7 +39,7 @@ class Post( models.Model, CommentedModel ):
                           registred = _( "registered" ),
             )
 
-    blog          = models.ForeignKey( Blog, verbose_name = _( "blog" ) )
+    blog          = models.ForeignKey( Blog, verbose_name = _( "blog" ), related_name = "posts" )
     comment_count = models.PositiveIntegerField( default = 0, editable = False, verbose_name = _( "comment count" ) )
 
     created_on    = models.DateTimeField( default = datetime.now, editable = False, verbose_name = _( "created on" ) )

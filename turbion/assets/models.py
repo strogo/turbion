@@ -7,6 +7,7 @@
 #Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
 
+from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 
@@ -25,10 +26,15 @@ class Asset( models.Model ):
     modified_on = models.DateTimeField( null = True )
 
     description = models.TextField( null = True )
-    mime_type = models.CharField()
+    mime_type = models.CharField( max_length = 255 )
 
-    type = models.CharField()
-    file = fields.ExtFileField( upload_to = "assets/" )
+    type = models.CharField( max_length = 255 )
+    file = fields.ExtFileField( upload_to = settings.TURBION_ASSETS_UPLOAD_PATH )
+
+    def save( self ):
+        if self.edited_by:
+            self.edited_on = datetime.now()
+        super( Asset, self ).save()
 
     class Meta:
         verbose_name        = "asset"
@@ -42,4 +48,5 @@ class Connection( models.Model ):
     asset = models.ForeignKey( Asset )
 
     class Meta:
+        unique_together = [ "object_ct", "object_id", "asset" ]
         db_table = "turbion_asset_connection"

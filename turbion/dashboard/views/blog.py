@@ -9,6 +9,7 @@ from datetime import datetime
 
 from django import http
 from django.dispatch import dispatcher
+from django.core.urlresolvers import reverse
 
 from pantheon.utils.decorators import titled, templated
 
@@ -62,6 +63,7 @@ def preferences( request, blog ):
 @has_capability_for( BlogRoles.capabilities.add_post, "blog" )
 def post_new( request, blog, post = None ):
     draft = post and post.draft
+
     if request.method == 'POST':
         form = forms.PostForm( data = request.POST, instance = post, blog = blog )
         if form.is_valid():
@@ -99,7 +101,7 @@ def post_new( request, blog, post = None ):
                                      text = post.text_html,
                                 )
 
-                return http.HttpResponseRedirect( post.get_absolute_url() )
+                return http.HttpResponseRedirect( reverse( "dashboard_blog_posts", args = ( blog.slug, ) ) )
     else:
         form = forms.PostForm( blog = blog, instance = post )
 
