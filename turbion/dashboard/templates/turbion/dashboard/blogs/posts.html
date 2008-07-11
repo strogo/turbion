@@ -3,7 +3,7 @@
 {% block page_body %}
 <ul>
     {% for post in posts %}
-    <li>{{post.title}} - {{post.status}} - <a href="{% url dashboard_blog_post_edit blog.slug,post.id%}">edit</a></li>
+    <li>{{post.title}} - {{post.status}} - <a href="{% url dashboard_blog_post_edit blog.slug,post.id%}">edit</a> - <a href="{{post.get_absolute_url}}">go</a></li>
     {% endfor %}
 </ul>
 {% endblock %}
