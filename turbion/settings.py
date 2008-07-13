@@ -90,6 +90,6 @@ PANTHEON_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'
 
 TURBION_OPENID_STORE_ROOT = "/var/tmp/"
 
-TURBION_ASSETS_UPLOAD_PATH = "upload/turbion/assets/"
+TURBION_BASE_UPLOAD_PATH = "upload/turbion/"
 
 from turbion.pingback.settings import *

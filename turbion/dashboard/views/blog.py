@@ -40,7 +40,7 @@ def posts( request, blog ):
     posts = Post.objects.for_blog( blog ).order_by( "-created_on" )
 
     return { "blog"  : blog,
-             "posts" : posts }
+             "object_list" : posts }
 
 @templated( "turbion/dashboard/table.html" )
 @titled( page = "Dashboard", section = "Administration" )

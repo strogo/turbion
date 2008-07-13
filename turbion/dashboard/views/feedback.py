@@ -24,7 +24,7 @@ def feedbacks( request, blog ):
     feedbacks = Feedback.objects.filter( blog = blog )
 
     return { "blog" : blog,
-             "feedbacks" : feedbacks }
+             "object_list" : feedbacks }
 
 @never_cache
 @blog_view

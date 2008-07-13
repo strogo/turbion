@@ -29,7 +29,7 @@ class Asset( models.Model ):
     mime_type = models.CharField( max_length = 255 )
 
     type = models.CharField( max_length = 255 )
-    file = fields.ExtFileField( upload_to = settings.TURBION_ASSETS_UPLOAD_PATH )
+    file = fields.ExtFileField( upload_to = settings.TURBION_BASE_UPLOAD_PATH + "assets/" )
 
     def save( self ):
         if self.edited_by:
@@ -37,8 +37,8 @@ class Asset( models.Model ):
         super( Asset, self ).save()
 
     class Meta:
-        verbose_name        = "asset"
-        verbose_name_plural = "assets"
+        verbose_name        = _( "asset" )
+        verbose_name_plural = _( "assets" )
         db_table            = "turbion_asset"
 
 class Connection( models.Model ):
