@@ -8,22 +8,23 @@
 from django import http
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils.http import urlencode
 
-def has_capability_for( perm, obj_name = None, cond = "AND" ):
-    def _wrapper( func ):
+def has_capability_for(perm, obj_name = None, cond = "AND"):
+    def _wrapper(func):
         @login_required
-        def _decorator( request, *args, **kwargs ):
+        def _decorator(request, *args, **kwargs):
             if obj_name:
-                if callable( obj_name ):
-                    obj = obj_name( request, *args, **kwargs )
+                if callable(obj_name):
+                    obj = obj_name(request, *args, **kwargs)
                 else:
-                    obj = kwargs[ obj_name ]
+                    obj = kwargs[obj_name]
             else:
                 obj = None
-            if request.user.profile.has_capability_for( perm, obj, cond ):
-                return func( request, *args, **kwargs )
+            if request.user.profile.has_capability_for(perm, obj, cond):
+                return func(request, *args, **kwargs)
             else:
-                return http.HttpResponseRedirect( reverse("no_capability") )
+                return http.HttpResponseRedirect(reverse("no_capability") + "?" + urlencode({"from": request.path}, doseq=True))
         _decorator.__doc__ = func.__doc__
         _decorator.perm = perm
         return _decorator

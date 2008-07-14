@@ -32,29 +32,25 @@ def blog_url( regex, view, kwargs=None, name=None, prefix='' ):
 
 #blog specific pages
 urlpatterns += patterns('turbion.dashboard.views',
- blog_url( r'$',                                     'blog.index',    name = "dashboard_blog_index" ),
+ blog_url( r'$',                                      'blog.dashbaord',    name = "dashboard_blog_index" ),
 
- blog_url( r'posts/$',                               'blog.posts',    name = "dashboard_blog_posts" ),
- blog_url( r'post/new/$',                            'blog.post_new', name = "dashboard_blog_post_new" ),
- #url( r'^(?P<blog>[\w_-]+)/post/(?P<post_id>\d+)/$',               'blog.post' ),
- blog_url( r'post/(?P<post_id>\d+)/edit/$',          'blog.post_edit', name = "dashboard_blog_post_edit" ),
+ blog_url( r'posts/$',                                'blog.index',    name = "dashboard_blog_posts" ),
+ blog_url( r'post/new/$',                             'blog.post_new', name = "dashboard_blog_post_new" ),
+ #blog_url( r'post/(?P<post_id>\d+)/$',                'blog.post' ),
+ blog_url( r'post/(?P<post_id>\d+)/edit/$',           'blog.post_edit', name = "dashboard_blog_post_edit" ),
  blog_url( r'post/(?P<post_id>\d+)/delete/$',          'blog.post_edit', name = "dashboard_blog_post_edit" ),
- #url( r'^(?P<blog>[\w_-]+)/post/(?P<post_id>\d+)/status/(?P<status>\w+)/$',    'blog.post_status' ),
 
- #url( r'^(?P<blog>[\w_-]+)/comments/$',                            'blog.comments' ),
- #url( r'^(?P<blog>[\w_-]+)/comment/(?P<comment_id>\d+)/$',         'blog.comment' ),
- #url( r'^(?P<blog>[\w_-]+)/comment/(?P<comment_id>\d+)/edit/$',    'blog.comment_edit' ),
- #url( r'^(?P<blog>[\w_-]+)/comment/(?P<comment_id>\d+)/status/$',  'blog.comment_status' ),
+ #blog_url( r'comments/$',                             'blog.comments' ),
+ #blog_url( r'comment/(?P<comment_id>\d+)/$',          'blog.comment' ),
+ #blog_url( r'comment/(?P<comment_id>\d+)/edit/$',     'blog.comment_edit' ),
+ #blog_url( r'comment/(?P<comment_id>\d+)/status/$',   'blog.comment_status' ),
 
- #url( r'^(?P<blog>[\w_-]+)/preferences/$',                         'blog.preferences' ),
-
- #blog_url( r'assets/$',                              'assets.index' ),
- #blog_url( r'assets/new/$',                           'assets.new' ),
+ blog_url( r'assets/$',                               'assets.index', name = "dashboard_blog_assets" ),
+ blog_url( r'assets/new/$',                           'assets.new' ),
  #blog_url( r'assets/(?P<asset_id>\d+)/edit/$',        'assets.edit' ),
  blog_url( r'pages/$',                                'pages.pages', name = "dashboard_blog_pages" ),
 
  blog_url( r'feedbacks/$',                            'feedback.feedbacks', name = "dashboard_blog_feedbacks" ),
- blog_url( r'feedbacks/new/$',                        'feedback.new',       name = "dashboard_blog_feedbacks_new" ),
- blog_url( r'feedbacks/(?P<feedback_id>\d+)/edit/$',  'feedback.edit',      name = "dashboard_blog_feedbacks_edit" ),
- blog_url( r'feedbacks/(?P<feedback_id>\d+)/delete/$','feedback.delete',    name = "dashboard_blog_feedbacks_delete" ),
+ blog_url( r'feedbacks/(?P<feedback_id>\d+)/edit/$',  'feedback.edit',      name = "dashboard_blog_feedback_edit" ),
+ blog_url( r'feedbacks/(?P<feedback_id>\d+)/delete/$','feedback.delete',    name = "dashboard_blog_feedback_delete" ),
 )

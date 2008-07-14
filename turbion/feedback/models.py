@@ -18,6 +18,7 @@ from turbion.profiles.models import Profile
 
 from pantheon.models.models import ActionModel
 from pantheon.utils.enum import Enum
+from pantheon.models.manager import GenericManager
 
 class Feedback( ActionModel, models.Model ):
     statuses = Enum( accepted = _( "accepted" ),
@@ -38,6 +39,10 @@ class Feedback( ActionModel, models.Model ):
     text       = models.TextField( verbose_name = _('text') )
 
     status     = models.CharField( max_length = 10, choices = statuses, default = statuses.new, verbose_name = _( "status" ) )
+
+    objects  = models.Manager()
+    new      = GenericManager(status = statuses.new)
+    accepted = GenericManager(status = statuses.accepted)
 
     def __unicode__(self):
         return "%s" % self.created_on

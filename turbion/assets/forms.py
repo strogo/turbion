@@ -16,8 +16,12 @@ class AssetForm( forms.ModelForm ):
     class Meta:
         model = Asset
 
-    def __init__( self, connection = None, *args, **kwargs ):
+    def __init__( self, *args, **kwargs ):
         super( AssetForm, self ).__init__( *args, **kwargs )
-        self.connection = connection
 
-        self.fields[ "tags" ] = TagsField( form = self )
+        self.fields["filename"].required = False
+        self.fields["tags"] = TagsField( form = self )
+
+
+    def clean( self ):
+        return self.cleaned_data

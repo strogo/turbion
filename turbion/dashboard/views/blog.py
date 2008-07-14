@@ -15,6 +15,7 @@ from pantheon.utils.decorators import titled, templated
 
 from turbion.blogs.decorators import blog_view, post_view
 from turbion.blogs.models import Blog, BlogRoles, Post, CommentAdd, Comment
+from turbion.feedback.models import Feedback
 from turbion.dashboard import forms
 from turbion.profiles.models import Profile
 from turbion.pingback import signals
@@ -24,19 +25,21 @@ from turbion.roles.decorators import has_capability_for
 @titled( page = "Dashboard", section = "Administration" )
 @blog_view
 @has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
-def index( request, blog ):
+def dashbaord( request, blog ):
     latest_posts = Post.objects.for_blog( blog ).order_by("-created_on")[:5]
     latest_comments = Comment.published.for_model_with_rel( Post, blog ).order_by("-created_on").distinct()[:5]
+    latest_feedbacks = Feedback.new.all()
 
     return { "blog"            : blog,
              "latest_posts"    : latest_posts,
-             "latest_comments" : latest_comments }
+             "latest_comments" : latest_comments,
+             "latest_feedback": latest_feedbacks }
 
 @templated( "turbion/dashboard/blogs/posts.html" )
 @titled( page = "Dashboard", section = "Administration" )
 @blog_view
 @has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
-def posts( request, blog ):
+def index( request, blog ):
     posts = Post.objects.for_blog( blog ).order_by( "-created_on" )
 
     return { "blog"  : blog,

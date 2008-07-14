@@ -20,7 +20,7 @@ from turbion.profiles.models import Profile
 from turbion.pingback import signals
 from turbion.roles.decorators import has_capability_for
 
-def assets( request, blog ):
+def index( request, blog ):
     pass
 
 def new( request, blog ):

@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.blogs.models import Post, Blog
 from turbion.profiles.models import Profile
 from turbion.tags.forms import TagsField
+from turbion.feedback.models import Feedback
 
 from pantheon.supernovaforms import utils
 
@@ -102,3 +103,7 @@ class LoginForm( forms.Form ):
             raise forms.ValidationError( _( "Illegal username or password" ) )
         self.cleaned_data[ "user" ] = user
         return self.cleaned_data
+
+class FeedbackEditForm( forms.ModelForm ):
+    class Meta:
+        model = Feedback

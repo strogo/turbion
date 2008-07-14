@@ -45,7 +45,7 @@ class Connection( models.Model ):
     object_ct = models.ForeignKey( ContentType )
     object_id = models.PositiveIntegerField()
 
-    asset = models.ForeignKey( Asset )
+    asset = models.ForeignKey( Asset, related_name = "connections" )
 
     class Meta:
         unique_together = [ "object_ct", "object_id", "asset" ]

@@ -1,1 +1,9 @@
-{% extends "turbion/dashboard/blogs/posts.html" %}
+{% extends "turbion/dashboard/feedback/base.html" %}
+
+{% block page_body %}
+<ul>
+    {% for entry in object_list %}
+    <li>{{entry.date}} - {{entry.status}} - {{entry.subject}} - {{entry.created_by}} - <a href="{% url dashboard_blog_feedback_edit blog.slug,entry.id%}">edit</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

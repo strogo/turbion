@@ -136,6 +136,11 @@ class BlogRoles( roles.RoleSet ):
         review_feedback    = roles.Capability( "Can review blog feedback entries" )
         edit_feedback      = roles.Capability( "Can edit blog feedback entries" )
         edit_comment       = roles.Capability( "Can edit blog comments" )
+        upload_asset       = roles.Capability( "Can upload blog asset" )
+        edit_asset         = roles.Capability( "Can edit blog asset" )
+        add_page           = roles.Capability( "Can add blog page" )
+        edit_page          = roles.Capability( "Can edit blog page" )
+        delete_page        = roles.Capability( "Can delete blog page" )
 
     class Roles:
         blog_owner = roles.Role( "Blog owner",  ( "enter_dashboard",

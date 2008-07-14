@@ -31,12 +31,13 @@
 {% block main %}
 <div id="doc3" class="yui-t2">
   <div id="hd">
-    <div>Turbion dashboard</div>
+    <div>Turbion dashboard {%if blog%}<a href="{{blog.get_dashboard_url}}">{{blog.slug}}</a>{%endif%}</div>
     <div>
         <a href="{% url dashboard_blog_posts blog.slug %}">posts</a>
         <a href="">comments</a>
-        <a href="">assets</a>
+        <a href="{% url dashboard_blog_assets blog.slug %}">assets</a>
         <a href="">preferences</a>
+        <a href="{% url dashboard_blog_pages blog.slug %}">pages</a>
         <a href="{% url dashboard_blog_feedbacks blog.slug %}">feedbacks</a>
     </div>
   </div>
