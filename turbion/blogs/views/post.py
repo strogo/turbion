@@ -75,7 +75,7 @@ def post( request, blog, post ):
     comment_form = comments_forms.CommentForm( request = request )
     form_action = blog_reverse( "blog_comment_add", args = ( post.blog.slug, post.id ) )
 
-    comments = Comment.published.for_object( post )
+    comments = Comment.published.for_object( post ).select_related("created_by")
 
     return {"blog" : blog,
             "post" : post,

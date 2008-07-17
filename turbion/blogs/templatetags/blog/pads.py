@@ -84,7 +84,7 @@ def last_comments_pad( context, blog, count = 5 ):
                       file_name='turbion/blogs/pads/top_posts_pad.html',
                       takes_context=True)
 def top_posts_pad( context, blog, count = 5 ):
-    return  { "posts" : Post.published.for_blog( blog ).order_by('-comment_count')[:count] }
+    return  { "posts" : Post.published.for_blog( blog ).select_related("blog").order_by('-comment_count')[:count] }
 
 @cached_inclusion_tag( register,
                       trigger = { "sender" : Post,

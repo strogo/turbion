@@ -26,6 +26,8 @@ class Visitor( models.Model, ActionModel ):
     site = models.CharField( max_length = 200, null = True, blank = True, verbose_name = "сайт" )
     #phone = models.CharField( maxlength = 200, null = True, blank = True, verbose_name = "телефон" )
 
+    user = generic.GenericRelation("User", object_id_field="raw_user_id", content_type_field="raw_user_ct")
+
     objects = managers.VisitorManager()
 
     def __unicode__(self):
