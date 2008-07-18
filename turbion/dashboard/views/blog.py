@@ -93,10 +93,10 @@ def post_new( request, blog, post = None ):
                 post.save()
                 form.save_tags()
 
-                if post.publish and post.notify:
+                if post.is_published and post.notify:
                     CommentAdd.subscribe( post.created_by, post )
 
-                if post.publish:
+                if post.is_published:
                     dispatcher.send( signal = signals.send_pingback,
                                      sender = Post,
                                      instance = post,

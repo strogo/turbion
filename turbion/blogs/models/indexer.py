@@ -17,5 +17,5 @@ indexer = XapianIndexer( model = Post,
                         attributes = { "blog" : "blog.id",
                                        "status" : "status",
                                        "title" : "title",  },
-                        trigger = ( lambda post: post.publish )
+                        trigger = ( lambda post: post.is_published )
                          )

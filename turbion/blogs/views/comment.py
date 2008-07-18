@@ -21,6 +21,9 @@ from pantheon.utils.decorators import templated, paged
 def add( request, blog, post_id ):
     post = get_object_or_404( Post.published.for_blog( blog ), pk = post_id )
 
+    if not post.allow_comments:
+        return HttpResponseRedirect(post.get_absolute_url())#FIXME: add message showing
+
     context = views.add_comment( request,
                                  connection = post,
                                  defaults = { "postprocess" : blog.comments_default_postprocessor } )

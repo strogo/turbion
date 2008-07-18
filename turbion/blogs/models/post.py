@@ -76,26 +76,11 @@ class Post( models.Model, CommentedModel ):
     notify        = models.BooleanField( default = True,
                                          verbose_name= _( "e-mail notifications" ) )
 
-    draft   = property( lambda self: self.status == Post.statuses.draft )
-    trash   = property( lambda self: self.status == Post.statuses.trash )
-    publish = property( lambda self: self.status == Post.statuses.published )
-
     objects = managers.PostManager()
 
     published = managers.PostManager( status = statuses.published )
-    trashed   = managers.PostManager( status = statuses.trash )
-    drafts    = managers.PostManager( status = statuses.draft )
 
     tags = TagsField()
-
-    @classmethod
-    def get_for_pingback(cls, year_id, month_id, day_id, post_slug, **kwargs ):
-        from django.shortcuts import get_object_or_404
-        post = get_object_or_404( Post.published, created_on__year = year_id,
-                                        created_on__month = month_id,
-                                        created_on__day = day_id,
-                                        slug = post_slug )
-        return post
 
     @utils.permalink
     def get_absolute_url(self):
@@ -104,9 +89,9 @@ class Post( models.Model, CommentedModel ):
                                                          "day_id"    : self.created_on.day,
                                                          "post_slug" : self.slug,
                                                          "blog"      : self.blog.slug  } )
-
-    def is_edited(self):
-        return self.date < self.update_date
+    
+    is_published = property( lambda self: self.status == Post.statuses.published )
+    allow_comments = property( lambda self: self.commenting == Post.commenting_settings.allow )
 
     @models.permalink
     def get_atom_feed_url(self):

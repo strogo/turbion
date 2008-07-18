@@ -35,5 +35,5 @@ class CommentForm( forms.Form ):
             email = self.cleaned_data[ "email" ]
 
             if notify and not email:
-                raise forms.ValidationError("Для получения уведомлений должен буть указан адрес почты")
+                raise forms.ValidationError("Для получения уведомлений должен буть указан адрес почты")#FIXME: translate
         return notify
