@@ -65,7 +65,7 @@ def preferences( request, blog ):
 @blog_view
 @has_capability_for( BlogRoles.capabilities.add_post, "blog" )
 def post_new( request, blog, post = None ):
-    draft = post and post.draft
+    draft = not post.is_published
 
     if request.method == 'POST':
         form = forms.PostForm( data = request.POST, instance = post, blog = blog )
@@ -87,7 +87,7 @@ def post_new( request, blog, post = None ):
 
                 post.edited_by = request.user.profile
 
-                if draft and not post.draft:#reset date of creation
+                if draft and post.is_published:#reset date of creation
                     post.created_on = datetime.now()
 
                 post.save()
