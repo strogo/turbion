@@ -89,7 +89,7 @@ class Post( models.Model, CommentedModel ):
                                                          "day_id"    : self.created_on.day,
                                                          "post_slug" : self.slug,
                                                          "blog"      : self.blog.slug  } )
-    
+
     is_published = property( lambda self: self.status == Post.statuses.published )
     allow_comments = property( lambda self: self.commenting == Post.commenting_settings.allow )
 
@@ -131,14 +131,20 @@ class Post( models.Model, CommentedModel ):
 
 from turbion.comments import signals as comment_signals
 
-class CommentAdd( EventDescriptor ):
+class CommentAdd(EventDescriptor):
     class Meta:
         name = _( "new comment added" )
 
         trigger = ( Comment, comment_signals.comment_added )
 
     @classmethod
-    def allow_recipient( cls, recipient, comment, *args, **kwargs ):
+    def fire(cls, comment, *args, **kwargs):
+        if comment.notify:
+            cls.subscribe(comment.created_by, comment.connection)
+        super(CommentAdd, cls).fire(comment=comment, *args, **kwargs)
+
+    @classmethod
+    def allow_recipient(cls, recipient, comment, *args, **kwargs):
         if recipient == comment.created_by:
             return False
         return True
