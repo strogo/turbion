@@ -134,7 +134,7 @@ from turbion.comments import signals as comment_signals
 class CommentAdd(EventDescriptor):
     class Meta:
         name = _( "new comment added" )
-
+        to_object = True
         trigger = ( Comment, comment_signals.comment_added )
 
     @classmethod

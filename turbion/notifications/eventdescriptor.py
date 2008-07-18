@@ -101,13 +101,13 @@ class EventDescriptor( object ):
     @enshure_user
     def subscribe( cls, user, obj = None ):
         try:
-            con = Connection.objects.get( user = user,
+            con = Connection.objects.get(user = user,
                                           event = cls._get_event(),
-                                          **cls._create_connection( obj ) )
+                                          **cls._create_connection(obj))
         except Connection.DoesNotExist:
-            con = Connection.objects.create( user = user,
+            con = Connection.objects.create(user = user,
                                              event = cls._get_event(),
-                                             **cls._create_connection( obj ) )
+                                             **cls._create_connection(obj))
 
     @classmethod
     @enshure_user
