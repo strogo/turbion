@@ -165,9 +165,12 @@ class EventDescriptor( object ):
             if cls.allow_recipient( obj = obj, recipient = r, *args, **kwargs ) and email and email not in emails:
                 emails.add( email )
 
+                base_url =" http://%s" % domain
+
                 context = Context( { "event"     : event,
                                      "recipient" : r,
-                                     "base_url"  : "http://%s" % domain } )
+                                     "base_url"  : base_url,
+                                     "unsubscribe_url": "%s%s" % ( base_url, cls.get_unsubscribe_url(r, obj) )} )
 
                 context.update( kwargs )
 
