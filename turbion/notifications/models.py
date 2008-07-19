@@ -31,6 +31,9 @@ class Event( models.Model ):
         verbose_name_plural = "events"
         db_table            = "turbion_event"
 
+    class Admin:
+        pass
+
 class Connection( ActionModel, models.Model ):
     event = models.ForeignKey( Event )
     user = models.ForeignKey( User, related_name="notification_recipient" )
