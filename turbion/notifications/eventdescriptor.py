@@ -203,16 +203,16 @@ class EventDescriptor( object ):
 
     @classmethod
     @enshure_user
-    def get_user_hash( cls, user ):
+    def get_user_hash(cls, user):
         import md5
 
-        hash = md5.new( "%s.%s" % ( user._get_pk_val(), user.name ) ).hexdigest()
+        hash = md5.new( "%s.%s" % ( user._get_pk_val(), user ) ).hexdigest()
 
         return hash
 
     @classmethod
     @enshure_user
-    def get_unsubscribe_url( cls, user, obj = None ):
+    def get_unsubscribe_url(cls, user, obj=None):
         from django.core.urlresolvers import reverse
 
         url = reverse( "notifications_unsubscribe", args = ( user._get_pk_val(), cls._get_event()._get_pk_val() ) )
