@@ -41,7 +41,7 @@ def add_comment( request,
                 dispatcher.send( signal = comment and signals.comment_edited or signals.comment_added,
                                  sender = Comment,
                                  comment = new_comment,
-                                 connection = connection )
+                                 instance = connection )
 
                 return HttpResponseRedirect( redirect and redirect or new_comment.get_absolute_url() )
     else:
