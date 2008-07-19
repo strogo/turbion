@@ -153,7 +153,7 @@ class EventDescriptor( object ):
                 name = cls.meta.descriptor.replace( ".", "/" ) + ".html"
             template = loader.get_template( name )
         except TemplateDoesNotExist, e:
-            return
+            return "fail: %s" % e
 
         title = Template( event.subject_title )
 
@@ -177,6 +177,7 @@ class EventDescriptor( object ):
                                     [email])
                 msg.content_subtype = "html"  # Main content is now text/html
                 msg.send()
+        return "success"
 
     @classmethod
     def _get_recipients( cls, obj = None ):
