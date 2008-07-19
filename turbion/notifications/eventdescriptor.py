@@ -170,6 +170,7 @@ class EventDescriptor( object ):
                 context = Context( { "event"     : event,
                                      "recipient" : r,
                                      "base_url"  : base_url,
+                                     "obj": obj,
                                      "unsubscribe_url": "%s%s" % ( base_url, cls.get_unsubscribe_url(r, obj) )} )
 
                 context.update( kwargs )
