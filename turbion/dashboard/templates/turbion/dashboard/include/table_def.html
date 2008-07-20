@@ -2,9 +2,9 @@
 create_table = function() {
     YAHOO.example.Basic = new function() {
         var myColumnDefs = [
-            {key:"id", sortable:true, resizeable:true},
-            {key:"created_on", formatter:YAHOO.widget.DataTable.formatDate, sortable:true, sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},resizeable:true},
-            {key:"title", sortable:true, resizeable:true}
+            {%for field in schema.fields%}
+                {key:"{{field}}", sortable:true, resizeable:true},
+            {%endfor%}
         ];
 
         this.myDataSource = new YAHOO.util.DataSource("{%url dashboard_sources blog=blog.slug,name=name%}");
@@ -12,7 +12,7 @@ create_table = function() {
         this.myDataSource.connXhrMode = "queueRequests";
         this.myDataSource.responseSchema = {
             resultsList: "source",
-            fields: ["id","created_on","title"],
+            fields: [{%for field in schema.fields%}"{{field}}",{%endfor%}],
             metaFields: {
                totalRecords: 'total',
             }

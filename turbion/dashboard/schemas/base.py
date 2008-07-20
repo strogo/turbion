@@ -5,7 +5,7 @@
 #$Revision$
 #--------------------------------
 #Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
-from django.utils.encoding import smart_str
+from django.utils.encoding import smart_str, smart_unicode
 
 class SchemaSpot(type):
     def __new__(cls, name, bases, attrs):
@@ -27,6 +27,12 @@ class SchemaSpot(type):
 
         return t
 
+def get_attribute(obj, name):
+    attr = getattr(obj, name)
+    if callable(attr):
+        attr = attr()
+    return attr
+
 class Schema(object):
     __metaclass__ = SchemaSpot
 
@@ -45,8 +51,12 @@ class Schema(object):
         query_set = self.get_query_set()
 
         res = []
-        for line in query_set.values(*self.fields):
-            res.append( dict([(name, smart_str(field)) for name, field in line.iteritems()]) )
+        for obj in query_set:
+            line = {}
+            for field in self.fields:
+                line[field] = smart_unicode(get_attribute(obj,field))
+            res.append(line)
+
         return {"source": res, "total": len(query_set)}
 
     def get_schema(self):

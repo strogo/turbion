@@ -35,7 +35,10 @@ loader.insert();
 
 @register.inclusion_tag("turbion/dashboard/include/table_def.html", takes_context=True)
 def dashboard_create_table(context, name):
+    from turbion.dashboard.schemas import SchemaSpot
     blog = context["blog"]
+    schema = SchemaSpot.schemas[name](blog)
 
     return {"blog": blog,
+            "schema": schema,
             "name": name}
