@@ -46,7 +46,7 @@ class Schema(object):
 
         res = []
         for line in query_set.values(*self.fields):
-            res = dict([(name, smart_str(field)) for name, field in line.iteritems()])
+            res.append( dict([(name, smart_str(field)) for name, field in line.iteritems()]) )
         return {"source": res, "total": len(query_set)}
 
     def get_schema(self):
