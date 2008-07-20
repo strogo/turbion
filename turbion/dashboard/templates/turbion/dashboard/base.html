@@ -3,6 +3,8 @@
 "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>{{page_title}}</title>
 {% block head %}
     {{block.super}}
     <link rel="stylesheet" type="text/css"
@@ -23,13 +25,11 @@
     }
     </style>
 {% endblock %}
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>{{page_title}}</title>
-    <link rel="stylesheet" type="text/css" ref="reset-fonts-grids.css">
+
 </head>
 <body>
 {% block main %}
-<div id="doc3" class="yui-t2">
+<div id="doc3" class="yui-t2 yui-skin-sam">
   <div id="hd">
     <div>Turbion dashboard {%if blog%}<a href="{{blog.get_dashboard_url}}">{{blog.slug}}</a>{%endif%}</div>
     <div>

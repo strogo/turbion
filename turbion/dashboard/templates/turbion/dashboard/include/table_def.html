@@ -1,0 +1,25 @@
+<script type="text/javascript">
+create_table = function() {
+    YAHOO.example.Basic = new function() {
+        var myColumnDefs = [
+            {key:"id", sortable:true, resizeable:true},
+            {key:"created_on", formatter:YAHOO.widget.DataTable.formatDate, sortable:true, sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},resizeable:true},
+            {key:"title", sortable:true, resizeable:true}
+        ];
+
+        this.myDataSource = new YAHOO.util.DataSource("{%url dashboard_sources blog=blog.slug,name=name%}");
+        this.myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.myDataSource.connXhrMode = "queueRequests";
+        this.myDataSource.responseSchema = {
+            resultsList: "source",
+            fields: ["id","created_on","title"],
+            metaFields: {
+               totalRecords: 'total',
+            }
+        };
+
+        this.myDataTable = new YAHOO.widget.DataTable("dt",
+                myColumnDefs, this.myDataSource, {caption:"Posts",initialRequest:""});
+    };
+}
+</script>

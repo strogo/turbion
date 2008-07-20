@@ -19,9 +19,6 @@ urlpatterns = patterns('turbion.dashboard.views',
 
  url( r'^openid/',                               include( 'turbion.openid.urls' )  ),
 
- url( r'sources/posts/$',                        'sources.posts' ),
- url( r'sources/comments/$',                     'sources.comments' ),
- url( r'sources/users/$',                        'sources.users' ),
  url( r'^raw/',                                  include('django.contrib.admin.urls') ),
 )
 
@@ -33,6 +30,9 @@ def blog_url( regex, view, kwargs=None, name=None, prefix='' ):
 #blog specific pages
 urlpatterns += patterns('turbion.dashboard.views',
  blog_url( r'$',                                      'blog.dashbaord',    name = "dashboard_blog_index" ),
+
+ blog_url( r'sources/(?P<name>[\w_-]+)/$',            'sources.source',    name = "dashboard_sources"  ),
+ blog_url( r'sources/(?P<name>[\w_-]+)/schema/$',     'sources.schema',  name = "dashboard_sources_schema" ),
 
  blog_url( r'posts/$',                                'blog.index',    name = "dashboard_blog_posts" ),
  blog_url( r'post/new/$',                             'blog.post_new', name = "dashboard_blog_post_new" ),

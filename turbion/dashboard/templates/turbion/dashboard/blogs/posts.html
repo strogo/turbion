@@ -1,9 +1,14 @@
 {% extends "turbion/dashboard/blogs/base.html" %}
+{% load dashboard %}
+
+{% block head %}
+    {{block.super}}
+    {%dashboard_create_table "posts"%}
+    {%dashboard_yui_load "'datatable','event'" "create_table" "false"%}
+{%endblock%}
 
 {% block page_body %}
-<ul>
-    {% for post in object_list %}
-    <li>{{post.title}} - {{post.status}} - <a href="{% url dashboard_blog_post_edit blog.slug,post.id%}">edit</a> - <a href="{{post.get_absolute_url}}">go</a></li>
-    {% endfor %}
-</ul>
+
+    <div id="dt"></div>
+
 {% endblock %}
