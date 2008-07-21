@@ -82,8 +82,8 @@ class Comment( ActionModel, models.Model ):
     def is_edited(self):
         return self.created_on != self.edited_on
 
-    def __unicode__(self ):
-        return "%s - %s" % ( self.created_by, self.created_on )
+    def __unicode__(self):
+        return "%s - %s" % (self.created_by.name, self.created_on)
 
     def get_absolute_url( self ):
         return self.connection.get_absolute_url() +"#comment_%s" % self.id
