@@ -9,7 +9,7 @@ from turbion.dashboard.schemas import Schema
 
 from turbion.assets.models import Asset
 
-class AssetssSchema(Schema):
+class AssetsSchema(Schema):
     name = "asset"
     model = Asset
     fields = ['id', 'name', 'type', 'get_file_url', 'created_on']

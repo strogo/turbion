@@ -20,7 +20,7 @@ from pantheon.utils.decorators import titled, templated
 @templated( "turbion/dashboard/feedback/feedbacks.html")
 @titled( page = "Select page", section = "Pages" )
 @has_capability_for( BlogRoles.capabilities.review_feedback, "blog" )
-def pages( blog ):
+def pages( request, blog ):
     pages = Page.objects.filter( blog = blog )
 
     return { "blog" : blog,

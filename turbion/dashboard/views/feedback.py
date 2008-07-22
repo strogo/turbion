@@ -21,12 +21,9 @@ from pantheon.utils.decorators import titled, templated
 @blog_view
 @templated( "turbion/dashboard/feedback/feedbacks.html")
 @titled()
-@has_capability_for( BlogRoles.capabilities.review_feedback, "blog" )
-def feedbacks( request, blog ):
-    feedbacks = Feedback.objects.filter( blog = blog )
-
-    return { "blog" : blog,
-             "object_list" : feedbacks }
+@has_capability_for(BlogRoles.capabilities.review_feedback, "blog")
+def feedbacks(request, blog):
+    return {"blog" : blog}
 
 @never_cache
 @blog_view

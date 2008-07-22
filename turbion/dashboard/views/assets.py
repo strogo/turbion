@@ -61,8 +61,7 @@ def edit(request, blog, asset_id=None):
 
     return {"blog": blog,
             "form": form,
-            "asset": asset }
-    
+            "asset": asset}    
     
 @never_cache
 @blog_view
