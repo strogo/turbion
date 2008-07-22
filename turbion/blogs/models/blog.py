@@ -90,10 +90,10 @@ class Blog( models.Model ):
     @property
     def tags( self ):
         from turbion.blogs.models.post import Post
-        return Tag.objects.filter_for_model( Post, blog_id = self.id, **Post.published.lookups )
+        return Tag.objects.filter_for_model(Post, blog_id = self.id, **Post.published.lookups)
 
     def is_author(self, user):
-        return self.authors.filter( pk = user._get_pk_val() ).count()
+        return self.authors.filter(pk = user._get_pk_val()).count()
 
     class Meta:
         verbose_name        = 'blog'
@@ -102,52 +102,52 @@ class Blog( models.Model ):
         db_table            = "turbion_blog"
 
     class Admin:
-        list_display = ( "id", 'slug', 'name', 'created_on', "created_by" )
+        list_display = ("id", 'slug', 'name', 'created_on', "created_by")
 
 
-class BlogCalendar( Calendar ):
+class BlogCalendar(Calendar):
     date_field = "created_on"
 
     @models.permalink
-    def get_month_url( self, date ):
-        return ( "turbion.blogs.views.archive.month", (), { 'year_id' : date.year,
+    def get_month_url(self, date):
+        return ("turbion.blogs.views.archive.month", (), {'year_id': date.year,
                                                      'month_id' : date.month,
-                                                     'blog' :self.instance.slug } )
+                                                     'blog' :self.instance.slug})
 
-    def get_per_day_urls( self, dates ):
+    def get_per_day_urls(self, dates):
         from django.core.urlresolvers import reverse
-        return dict( [ ( date.date(), reverse( "turbion.blogs.views.archive.day",
-                                              kwargs = { 'year_id' : date.year,
-                                                         'month_id' : date.month,
-                                                       'day_id' : date.day,
-                                                       'blog' :self.instance.slug } ) ) for date in dates  ] )
+        return dict([(date.date(), reverse("turbion.blogs.views.archive.day",
+                                            kwargs = {'year_id': date.year,
+                                                      'month_id': date.month,
+                                                      'day_id': date.day,
+                                                      'blog':self.instance.slug})) for date in dates])
 
 
-class BlogRoles( roles.RoleSet ):
+class BlogRoles(roles.RoleSet):
     class Meta:
         model = Blog
 
     class Capabilities:
-        enter_dashboard    = roles.Capability( "Can enter blog dashboard" )
-        change_preferences = roles.Capability( "Can change blog preferences" )
-        add_post           = roles.Capability( "Can add new blog post" )
-        edit_post          = roles.Capability( "Can edit blog post" )
-        delete_post        = roles.Capability( "Can delete blog post" )
-        review_feedback    = roles.Capability( "Can review blog feedback entries" )
-        edit_feedback      = roles.Capability( "Can edit blog feedback entries" )
-        edit_comment       = roles.Capability( "Can edit blog comments" )
-        upload_asset       = roles.Capability( "Can upload blog asset" )
-        edit_asset         = roles.Capability( "Can edit blog asset" )
-        add_page           = roles.Capability( "Can add blog page" )
-        edit_page          = roles.Capability( "Can edit blog page" )
-        delete_page        = roles.Capability( "Can delete blog page" )
+        enter_dashboard    = roles.Capability("Can enter blog dashboard")
+        change_preferences = roles.Capability("Can change blog preferences")
+        add_post           = roles.Capability("Can add new blog post")
+        edit_post          = roles.Capability("Can edit blog post")
+        delete_post        = roles.Capability("Can delete blog post")
+        review_feedback    = roles.Capability("Can review blog feedback entries")
+        edit_feedback      = roles.Capability("Can edit blog feedback entries")
+        edit_comment       = roles.Capability("Can edit blog comments")
+        upload_asset       = roles.Capability("Can upload blog asset")
+        edit_asset         = roles.Capability("Can edit blog asset")
+        add_page           = roles.Capability("Can add blog page")
+        edit_page          = roles.Capability("Can edit blog page")
+        delete_page        = roles.Capability("Can delete blog page")
 
     class Roles:
-        blog_owner = roles.Role( "Blog owner",  ( "enter_dashboard",
-                                                  "add_post",
-                                                  "edit_post",
-                                                  "delete_post",
-                                                  "change_preferences",
-                                                  "review_feedback",
-                                                  "edit_feedback",
-                                                  "edit_comment" ) )
+        blog_owner = roles.Role("Blog owner", ("enter_dashboard",
+                                               "add_post",
+                                               "edit_post",
+                                               "delete_post",
+                                               "change_preferences",
+                                               "review_feedback",
+                                               "edit_feedback",
+                                               "edit_comment"))

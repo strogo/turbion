@@ -25,7 +25,7 @@ from pantheon.models import fields
 from pantheon.postprocessing.fields import PostprocessField
 from pantheon.utils.enum import Enum
 
-class Post( models.Model, CommentedModel ):
+class Post(models.Model, CommentedModel):
     statuses = Enum( draft     = _( "draft" ),
                      trash     = _( "trashed" ),
                      published = _( "published" )
@@ -39,16 +39,16 @@ class Post( models.Model, CommentedModel ):
                           registred = _( "registered" ),
             )
 
-    blog          = models.ForeignKey( Blog, verbose_name = _( "blog" ), related_name = "posts" )
-    comment_count = models.PositiveIntegerField( default = 0, editable = False, verbose_name = _( "comment count" ) )
+    blog          = models.ForeignKey(Blog, verbose_name = _("blog"), related_name = "posts" )
+    comment_count = models.PositiveIntegerField( default = 0, editable = False, verbose_name=_("comment count"))
 
-    created_on    = models.DateTimeField( default = datetime.now, editable = False, verbose_name = _( "created on" ) )
-    created_by    = models.ForeignKey( Profile, related_name = "created_posts", verbose_name = _( "created by" ) )
+    created_on    = models.DateTimeField(default = datetime.now, editable = False, verbose_name = _( "created on"))
+    created_by    = models.ForeignKey(Profile, related_name = "created_posts", verbose_name = _( "created by"))
 
     edited_on     = models.DateTimeField( null = True, editable = False, verbose_name = _( "edited on" ) )
-    edited_by     = models.ForeignKey( Profile, null = True, blank = True, related_name = "edited_blogs", verbose_name = _( "edited by" ) )
+    edited_by     = models.ForeignKey(Profile, null = True, blank = True, related_name = "edited_blogs", verbose_name = _( "edited by" ) )
 
-    review_count  = models.IntegerField( default = 0, editable = False, verbose_name = _( "review count" ) )
+    review_count  = models.IntegerField(default = 0, editable = False, verbose_name = _( "review count" ) )
 
     title         = models.CharField( max_length = 130, verbose_name = _( "title" ) )
     slug          = fields.ExtSlugField( for_field= "title", max_length = 130, editable = False, verbose_name = _( "slug" ) )
@@ -101,31 +101,28 @@ class Post( models.Model, CommentedModel ):
         self.review_count += 1
         self.save()
 
-    def per_page(self ):
-        return self.get_preference().comments_per_page
-
-    def __unicode__(self ):
+    def __unicode__(self):
         return self.title
 
-    def save( self ):
+    def save(self):
         if self.edited_by:
             self.edited_on = datetime.now()
 
-        self.text_html = self.postprocess.postprocess( self.text )
-        super( Post, self ).save()
+        self.text_html = self.postprocess.postprocess(self.text)
+        super(Post, self).save()
 
     class Admin:
-        list_display       = ('blog', 'title', "created_by", 'created_on', 'status', 'comment_count', 'notify', 'review_count' )
-        list_display_links = ( 'title', )
-        list_filter        = ( 'blog', "created_by", "status", )
+        list_display       = ('blog', 'title', "created_by", 'created_on', 'status', 'comment_count', 'notify', 'review_count')
+        list_display_links = ('title',)
+        list_filter        = ('blog', "created_by", "status",)
         list_per_page      = 50
-        search_fields      = ( "title", "created_by__username" )
+        search_fields      = ("title", "created_by__username")
 
     class Meta:
         verbose_name        = 'post'
         verbose_name_plural = 'posts'
         ordering            = ( '-created_on', )
-        unique_together     = ( ( "blog", "created_on", "title", "slug" ), )
+        unique_together     = (( "blog", "created_on", "title", "slug" ),)
         app_label           = "blogs"
         db_table            = "turbion_post"
 
@@ -133,9 +130,9 @@ from turbion.comments import signals as comment_signals
 
 class CommentAdd(EventDescriptor):
     class Meta:
-        name = _( "new comment added" )
+        name = _("new comment added")
         to_object = True
-        trigger = ( Comment, comment_signals.comment_added )
+        trigger = (Comment, comment_signals.comment_added)
 
     @classmethod
     def fire(cls, comment, *args, **kwargs):

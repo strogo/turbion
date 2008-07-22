@@ -75,8 +75,6 @@ class AssetForm( forms.ModelForm ):
         resize_to = self.cleaned_data.get("resize_to")
         thumbnail_to = self.cleaned_data.get("thumbnail_to")
         
-        self.instance
-        
         if rexize_to:
             pass
         
