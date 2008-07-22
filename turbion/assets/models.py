@@ -16,6 +16,7 @@ from django.contrib.contenttypes import generic
 from turbion.profiles.models import Profile
 
 from pantheon.models import fields
+from pantheon.utils.enum import Enum
 
 class AssetManager(models.Manager):
     def for_object(self, obj):
@@ -24,6 +25,13 @@ class AssetManager(models.Manager):
         return self.filter(connections__object_ct=ct, connections__object_id=obj._get_pk_val())
         
 class Asset(models.Model):
+    types = Enum(image = _("image"),
+                 application = _("application"),
+                 video = _("video"),
+                 audio = _("audio"),
+                 unknown = _("unknown")
+                )
+    
     name = models.CharField(max_length=250)
     filename = models.CharField(max_length=255)
 
@@ -36,7 +44,7 @@ class Asset(models.Model):
     description = models.TextField(null=True)
     mime_type = models.CharField(max_length=255)
 
-    type = models.CharField(max_length=255)
+    type = models.CharField(max_length=255, choices=types)
     file = models.FileField(upload_to=settings.TURBION_BASE_UPLOAD_PATH + "assets/")
     
     objects = AssetManager()

@@ -48,6 +48,8 @@ def edit(request, blog, asset_id=None):
             asset.edited_by = request.user.profile
             asset.save()
             
+            form.postprocess()
+            
             return http.HttpResponseRedirect(reverse("dashboard_blog_assets", args=(blog.slug,)))
     else:
         form = AssetForm(instance=asset)
