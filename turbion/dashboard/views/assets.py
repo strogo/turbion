@@ -22,29 +22,47 @@ from turbion.pingback import signals
 from turbion.roles.decorators import has_capability_for
 
 from turbion.assets.forms import AssetForm
+from turbion.assets.models import Asset
 
 @never_cache
 @blog_view
-@templated( "turbion/dashboard/assets/assets.html")
+@templated("turbion/dashboard/assets/assets.html")
 @titled()
 def index( request, blog ):
     return {"blog": blog}
 
 @never_cache
 @blog_view
-@templated( "turbion/dashboard/form.html")
+@templated("turbion/dashboard/form.html")
 @titled()
-def new( request, blog ):
+def edit(request, blog, asset_id=None):
+    if asset_id:
+        asset = get_object_or_404(Asset.objects.for_object(blog), pk=asset_id)
+    else:
+        asset = None
+    
     if request.POST:
-        form = AssetForm(request.POST, request.FILES)
+        form = AssetForm(request.POST, request.FILES, instance=asset)
         if form.is_valid():
             asset = form.save(False)
-            asset.created_by = request.user.profile
+            asset.edited_by = request.user.profile
             asset.save()
             
-        print form.errors
+            return http.HttpResponseRedirect(reverse("dashboard_blog_assets", args=(blog.slug,)))
     else:
-        form = AssetForm()
+        form = AssetForm(instance=asset)
 
     return {"blog": blog,
-            "form": form}
+            "form": form,
+            "asset": asset }
+    
+    
+@never_cache
+@blog_view
+def delete(request, blog, asset_id):
+    asset = get_object_or_404(Asset.objects.for_object(blog), pk=asset_id)
+    
+    asset.delete()
+    
+    return http.HttpResponseRedirect(reverse("dashboard_blog_assets", args=(blog.slug,)))
+    

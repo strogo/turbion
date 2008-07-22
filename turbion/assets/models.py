@@ -11,11 +11,18 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 from turbion.profiles.models import Profile
 
 from pantheon.models import fields
 
+class AssetManager(models.Manager):
+    def for_object(self, obj):
+        ct = ContentType.objects.get_for_model(obj.__class__)
+        
+        return self.filter(connections__object_ct=ct, connections__object_id=obj._get_pk_val())
+        
 class Asset(models.Model):
     name = models.CharField(max_length=250)
     filename = models.CharField(max_length=255)
@@ -31,6 +38,8 @@ class Asset(models.Model):
 
     type = models.CharField(max_length=255)
     file = models.FileField(upload_to=settings.TURBION_BASE_UPLOAD_PATH + "assets/")
+    
+    objects = AssetManager()
 
     def save( self ):
         if self.edited_by:
@@ -45,6 +54,7 @@ class Asset(models.Model):
 class Connection(models.Model):
     object_ct = models.ForeignKey(ContentType, related_name="assets_connections")
     object_id = models.PositiveIntegerField()
+    object    = generic.GenericForeignKey("object_ct","object_id")
 
     asset = models.ForeignKey(Asset, related_name="connections")
 
