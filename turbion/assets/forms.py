@@ -19,8 +19,8 @@ class AssetForm( forms.ModelForm ):
         model = Asset
         exclude = ["created_by", "created_on", "edited_by", "edited_on"]
     
-    resize_to    = form.CharField(required=False)
-    thumbnail_to = form.CharField(required=False)
+    resize_to    = forms.CharField(required=False)
+    thumbnail_to = forms.CharField(required=False)
     
     def __init__( self, *args, **kwargs ):
         super( AssetForm, self ).__init__( *args, **kwargs )
