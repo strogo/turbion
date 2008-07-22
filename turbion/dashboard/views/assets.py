@@ -44,9 +44,14 @@ def edit(request, blog, asset_id=None):
     if request.POST:
         form = AssetForm(request.POST, request.FILES, instance=asset)
         if form.is_valid():
-            asset = form.save(False)
-            asset.edited_by = request.user.profile
-            asset.save()
+            new_asset = form.save(False)
+            if not asset:
+                new_asset.created_by = request.user.profile
+            else:
+                new_asset.edited_by = request.user.profile
+            new_asset.save()
+            
+            new_asset.connect_to(blog)
             
             form.postprocess()
             

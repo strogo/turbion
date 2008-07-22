@@ -9,7 +9,7 @@ from turbion.dashboard.schemas import Schema
 
 from turbion.blogs.models import Post
 
-class PostsSchame(Schema):
+class PostsSchema(Schema):
     name = "posts"
     model = Post
     fields = ['id', 'created_on', 'title', 'status', 'get_absolute_url']

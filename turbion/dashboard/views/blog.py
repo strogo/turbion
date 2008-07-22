@@ -60,59 +60,53 @@ def preferences( request, blog ):
 
     return { "blog" : blog }
 
-@templated( 'turbion/dashboard/form.html' )
-@titled( page=u'Редактирование поста "{{post.title}}"' )
+@templated('turbion/dashboard/form.html')
+@titled(page=u'Редактирование поста "{{post.title}}"')
 @blog_view
-@has_capability_for( BlogRoles.capabilities.add_post, "blog" )
-def post_new( request, blog, post = None ):
-    draft = not post.is_published
+@has_capability_for(BlogRoles.capabilities.add_post, "blog")
+def post_new(request, blog, post=None):
+    was_draft = blog and not post.is_published
 
-    if request.method == 'POST':
-        form = forms.PostForm( data = request.POST, instance = post, blog = blog )
+    if request.POST:
+        form = forms.PostForm(data=request.POST, instance=post, blog=blog)
         if form.is_valid():
             if 'view' in request.POST:
-                post = form.save( False )
+                new_post = form.save(False)
             else:
-                post = form.save( False )
+                new_post = form.save(False)
+                new_post.blog = blog
+                
+                if not post:
+                    new_post.created_by = request.user.profile
+                else:
+                    new_post.edited_by = request.user.profile
 
-                try:
-                    post.blog
-                except Blog.DoesNotExist:
-                    post.blog = blog
+                if was_draft and new_post.is_published:#reset date of creation
+                    new_post.created_on = datetime.now()
 
-                try:
-                    post.created_by
-                except Profile.DoesNotExist:
-                    post.created_by = request.user.profile
-
-                post.edited_by = request.user.profile
-
-                if draft and post.is_published:#reset date of creation
-                    post.created_on = datetime.now()
-
-                post.save()
+                new_post.save()
                 form.save_tags()
 
-                if post.is_published and post.notify:
-                    CommentAdd.subscribe( post.created_by, post )
-
                 if post.is_published:
+                    if new_post.notify:
+                        CommentAdd.subscribe(post.created_by, new_post)
+
                     dispatcher.send( signal = signals.send_pingback,
                                      sender = Post,
-                                     instance = post,
+                                     instance = new_post,
                                      url = post.get_absolute_url(),
                                      text = post.text_html,
                                 )
 
-                return http.HttpResponseRedirect( reverse( "dashboard_blog_posts", args = ( blog.slug, ) ) )
+                return http.HttpResponseRedirect(reverse("dashboard_blog_posts", args = (blog.slug,)))
     else:
-        form = forms.PostForm( blog = blog, instance = post )
+        form = forms.PostForm(blog=blog, instance=post)
 
-    return { "blog" : blog,
-             "post" : post,
-             "form" : form }
+    return { "blog": blog,
+             "post": post,
+             "form": form }
 
-def post_edit( request, post_id, *args, **kwargs ):
-    post = Post.objects.get( pk = post_id )
+def post_edit(request, post_id, *args, **kwargs):
+    post = Post.objects.get(pk = post_id)
 
-    return post_new( request, post = post, *args, **kwargs )
+    return post_new(request, post = post, *args, **kwargs)

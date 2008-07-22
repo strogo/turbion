@@ -2,6 +2,7 @@
 
 {% block page_body %}
 <form {% if form.is_multipart %}enctype="multipart/form-data"{% endif %} method="POST" action="">
+	<p>{{form.errors}}</p>
 	{% for field in form %}
 		<p>{{field.label_tag}}{{field}}<p>
 	{% endfor %}

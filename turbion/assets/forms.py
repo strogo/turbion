@@ -45,7 +45,7 @@ class AssetForm( forms.ModelForm ):
     def _guess_type(self):
         mime = self.cleaned_data["mime_type"].split('/')[0]
         
-        if mime in types.__dict__:
+        if mime in Asset.types.__dict__:
             type = mime
         else:
             type = "unknown"
@@ -72,24 +72,18 @@ class AssetForm( forms.ModelForm ):
         return self.cleaned_data
     
     def postprocess(self):
+        import Image
+        
         resize_to = self.cleaned_data.get("resize_to")
         thumbnail_to = self.cleaned_data.get("thumbnail_to")
         
-        if rexize_to:
+        if resize_to:
             pass
         
         if thumbnail_to:
-            dimentions = thumbnail_to.split(':')
+            dimentions = map(int, thumbnail_to.split(':'))
             
-            filename = self.instance.get_file_filename()
-            
-            import Image
-            image = Image.open(filename)
-            
+            image = Image.open(self.instance.get_file_filename())
             image.thumbnail(dimentions, Image.ANTIALIAS)
-            
-            dirname = os.path.dirname(filename)
-            bits = os.path.splitext(os.path.basename(filename))
-            thumb_filename = os.path.join(dirname, bits[0] + "_thumb" + bits[1])
-            
-            image.save(thumb_filename)
+
+            image.save(self.instance.get_thumbnail_url())

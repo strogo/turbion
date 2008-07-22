@@ -45,10 +45,10 @@ class Post(models.Model, CommentedModel):
     created_on    = models.DateTimeField(default = datetime.now, editable = False, verbose_name = _( "created on"))
     created_by    = models.ForeignKey(Profile, related_name = "created_posts", verbose_name = _( "created by"))
 
-    edited_on     = models.DateTimeField( null = True, editable = False, verbose_name = _( "edited on" ) )
-    edited_by     = models.ForeignKey(Profile, null = True, blank = True, related_name = "edited_blogs", verbose_name = _( "edited by" ) )
+    edited_on     = models.DateTimeField(null=True, editable=False, verbose_name=_("edited on"))
+    edited_by     = models.ForeignKey(Profile, null=True, blank=True, related_name="edited_blogs", verbose_name=_("edited by"))
 
-    review_count  = models.IntegerField(default = 0, editable = False, verbose_name = _( "review count" ) )
+    review_count  = models.IntegerField(default=0, editable=False, verbose_name= _( "review count" ) )
 
     title         = models.CharField( max_length = 130, verbose_name = _( "title" ) )
     slug          = fields.ExtSlugField( for_field= "title", max_length = 130, editable = False, verbose_name = _( "slug" ) )

@@ -6,6 +6,7 @@
 #--------------------------------
 #Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
+import os
 
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
@@ -41,22 +42,45 @@ class Asset(models.Model):
     edited_by = models.ForeignKey(Profile, null=True, related_name="edited_assets")
     edited_on = models.DateTimeField(null=True)
 
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
     mime_type = models.CharField(max_length=255)
 
     type = models.CharField(max_length=255, choices=types)
     file = models.FileField(upload_to=settings.TURBION_BASE_UPLOAD_PATH + "assets/")
     
     objects = AssetManager()
+    
+    def __unicode__(self):
+        return self.name
+    
+    def get_thumbnail_url(self):
+        filename = self.get_file_filename()
+        dirname = os.path.dirname(filename)
+        bits = os.path.splitext(os.path.basename(filename))
+        return os.path.join(dirname, bits[0] + "_thumb" + bits[1])
+    
+    def connect_to(self, obj):
+        ct = ContentType.objects.get_for_model(obj.__class__)
+        id = obj._get_pk_val()
+        
+        Connection.objects.get_or_create(object_ct=ct, object_id=id, asset=self)
 
-    def save( self ):
+    def save(self):
         if self.edited_by:
             self.edited_on = datetime.now()
-        super( Asset, self ).save()
+        super(Asset, self).save()
+        
+    def delete(self):
+        super(Asset,self).delete()
+        
+        try:
+            os.remove(self.get_thumbnail_url())
+        except OSError:
+            pass
 
     class Meta:
-        verbose_name        = _( "asset" )
-        verbose_name_plural = _( "assets" )
+        verbose_name        = _("asset")
+        verbose_name_plural = _("assets")
         db_table            = "turbion_asset"
 
 class Connection(models.Model):

@@ -9,10 +9,10 @@ from turbion.dashboard.schemas import Schema
 
 from turbion.assets.models import Asset
 
-class PostsSchame(Schema):
+class AssetssSchema(Schema):
     name = "asset"
     model = Asset
-    fields = ['id', 'name', 'type', 'get_file_filename', 'created_on']
+    fields = ['id', 'name', 'type', 'get_file_url', 'created_on']
 
     def get_query_set(self):
         return Asset.objects.for_object(self.blog)
