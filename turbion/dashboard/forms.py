@@ -94,7 +94,7 @@ class LoginForm( forms.Form ):
 
         username = self.cleaned_data[ "username" ]
         password = self.cleaned_data[ "password" ]
-        print username, password
+
         user = auth.authenticate( username=username, password=password )
         if user:pass
             #if not user.is_active:

@@ -10,6 +10,7 @@ from datetime import datetime
 from django import http
 from django.dispatch import dispatcher
 from django.core.urlresolvers import reverse
+from django.views.decorators.cache import never_cache
 
 from pantheon.utils.decorators import titled, templated
 
@@ -20,8 +21,30 @@ from turbion.profiles.models import Profile
 from turbion.pingback import signals
 from turbion.roles.decorators import has_capability_for
 
-def index( request, blog ):
-    pass
+from turbion.assets.forms import AssetForm
 
+@never_cache
+@blog_view
+@templated( "turbion/dashboard/assets/assets.html")
+@titled()
+def index( request, blog ):
+    return {"blog": blog}
+
+@never_cache
+@blog_view
+@templated( "turbion/dashboard/form.html")
+@titled()
 def new( request, blog ):
-    pass
+    if request.POST:
+        form = AssetForm(request.POST, request.FILES)
+        if form.is_valid():
+            asset = form.save(False)
+            asset.created_by = request.user.profile
+            asset.save()
+            
+        print form.errors
+    else:
+        form = AssetForm()
+
+    return {"blog": blog,
+            "form": form}

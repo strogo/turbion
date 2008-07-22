@@ -37,7 +37,6 @@ class TagsField( forms.ModelMultipleChoiceField ):
             initial = form.instance.tags.all().values_list( "id", flat = True )
         else:
             initial = None
-        print initial
 
         widget     = TagsWidget( widgets = ( forms.SelectMultiple(),
                                              forms.CharField.widget() ) )

@@ -61,5 +61,3 @@ class OpenidLoginTest( TestCase ):
         self.test_submit_feedback()
         response = self.client.post( reverse( "openid_authenticate" ),
                                     QUERY_STRING = REDIRECT_URL_DATA )
-
-        print response.status_code

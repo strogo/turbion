@@ -30,7 +30,6 @@ def get_rpc_gateway( target_uri ):
         response = fetch( target_uri )
         return response.headers.get( 'X-Pingback', '') or search_link( response.content[ : 512 * 1024 ] )
     except (IOError, ValueError), e:
-        print e
         return None
 
 def call_ping( gateway, source_uri, target_uri ):
