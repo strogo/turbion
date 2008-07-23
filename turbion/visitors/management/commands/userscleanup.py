@@ -39,7 +39,7 @@ class Command(NoArgsCommand):
             try:
                 Session.objects.get(session_key=visitor.session_key, expire_date__gte=datetime.now())
             except Session.DoesNotExist:
-                if not visitor.user and not self._has_references(visitor, related_fields):
+                if not visitor.user.count() and not self._has_references(visitor, related_fields):
                     deleted_count += 1
                     if not self.dry:
                         pass#visitor.delete()
