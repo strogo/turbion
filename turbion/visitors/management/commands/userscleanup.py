@@ -16,9 +16,16 @@ from turbion.visitors.models import Visitor, User
 class Command(NoArgsCommand):
     help = 'Deletes visitors with expires session and users with no references'
 
+    option_list = NoArgsCommand.option_list + (
+        make_option('--dry', action='store_true', dest='dry',
+            help='Do not perform real delete.'),
+    )
+
     requires_model_validation = True
 
     def handle_noargs(self, **options):
+        self.dry = options.get("dry")
+
         self._cleanup_visitors()
         self._cleanup_users()
 
@@ -31,9 +38,12 @@ class Command(NoArgsCommand):
         for visitor in Visitor.objects.all():
             try:
                 Session.objects.get(session_key=visitor.session_key, expire_date__gte=datetime.now())
-            except:
+            except Session.DoesNotExist:
                 if not visitor.user and not self._has_references(visitor, related_fields):
-                    deleted_count += 1#visitor.delete()
+                    deleted_count += 1
+                    if not self.dry:
+                        pass#visitor.delete()
+
         print "Deleted %s from %s visitors" % (deleted_count, total_count)
 
     def _cleanup_users(self):
@@ -53,7 +63,10 @@ class Command(NoArgsCommand):
             try:
                 Session.objects.get(session_key=visitor.session_key, expire_date__gte=datetime.now())
             except Session.DoesNotExist:
-                deleted_count += 1#user.delete()
+                deleted_count += 1
+                if not self.dry:
+                    pass#user.delete()
+
         print "Deleted %s from %s users" % (deleted_count, total_count)
 
     def _has_references(self, instance, fields):

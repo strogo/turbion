@@ -19,7 +19,7 @@ from turbion.profiles.models import Profile
 from pantheon.models.models import ActionModel
 
 class Visitor(models.Model, ActionModel):
-    session_key = models.CharField( max_length = 40 )
+    session_key = models.CharField(max_length = 40, db_index=True)
 
     name = models.CharField( max_length = 150, verbose_name = "имя", null = True, blank = True, )
     email = models.EmailField( null = True, blank = True, verbose_name = "e-mail" )
