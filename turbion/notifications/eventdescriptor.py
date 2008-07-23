@@ -89,7 +89,7 @@ class EventDescriptor( object ):
     name = "Some event"
 
     @classmethod
-    def _create_connection( self, obj = None ):
+    def _create_connection(self, obj = None):
         if obj:
             return { "connection_ct" : ContentType.objects.get_for_model( obj.__class__ ),
                      "connection_id" : obj._get_pk_val() }
@@ -99,7 +99,7 @@ class EventDescriptor( object ):
 
     @classmethod
     @enshure_user
-    def subscribe( cls, user, obj = None ):
+    def subscribe(cls, user, obj = None):
         try:
             con = Connection.objects.get(user = user,
                                           event = cls._get_event(),
@@ -111,7 +111,7 @@ class EventDescriptor( object ):
 
     @classmethod
     @enshure_user
-    def unsubscribe( cls, user, obj = None ):
+    def unsubscribe(cls, user, obj = None):
         try:
             con = Connection.objects.get( user = user,
                                           event = cls._get_event(),
@@ -122,7 +122,7 @@ class EventDescriptor( object ):
 
     @classmethod
     @enshure_user
-    def has_subscription( cls, user, obj = None ):
+    def has_subscription(cls, user, obj = None):
         try:
             con = Connection.objects.get( user = user,
                                           event = cls._get_event(),
@@ -132,14 +132,15 @@ class EventDescriptor( object ):
             return False
 
     @classmethod
-    def fire( cls, instance = None, *args, **kwargs ):
+    def fire(cls, instance=None, *args, **kwargs):
         try:
             obj = cls.meta.link.im_func( instance )
         except AttributeError:
             obj = cls.meta.link( instance )
 
         recipients = cls._get_recipients( obj )
-        if not len( recipients ):
+
+        if not len(recipients):
             return
 
         domain = Site.objects.get_current().domain
@@ -151,36 +152,39 @@ class EventDescriptor( object ):
             name = event.template
             if not name:
                 name = cls.meta.descriptor.replace( ".", "/" ) + ".html"
-            template = loader.get_template( name )
+            template = loader.get_template(name)
         except TemplateDoesNotExist, e:
             return "fail: %s" % e
 
-        title = Template( event.subject_title )
+        title = Template(event.subject_title)
 
         emails = set()
 
         for r in recipients:
             email = r.email
 
-            if cls.allow_recipient( obj = obj, recipient = r, *args, **kwargs ) and email and email not in emails:
-                emails.add( email )
+            if cls.allow_recipient(obj=obj, recipient=r, *args, **kwargs) and email and email not in emails:
+                emails.add(email)
 
                 base_url =" http://%s" % domain
 
-                context = Context( { "event"     : event,
-                                     "recipient" : r,
-                                     "base_url"  : base_url,
-                                     "obj": obj,
-                                     "unsubscribe_url": "%s%s" % ( base_url, cls.get_unsubscribe_url(r, obj) )} )
+                context = Context({"event"    : event,
+                                   "recipient": r,
+                                   "base_url" : base_url,
+                                   "obj": obj,
+                                   "unsubscribe_url": "%s%s" % (base_url, cls.get_unsubscribe_url(r, obj))})
 
-                context.update( kwargs )
+                context.update(kwargs)
 
-                msg = EmailMessage( title.render( context ),
-                                    template.render( context ),
+                msg = EmailMessage( title.render(context),
+                                    template.render(context),
                                     from_email,
                                     [email])
                 msg.content_subtype = "html"  # Main content is now text/html
-                msg.send()
+                try:
+                    msg.send()
+                except Exception, e:
+                    return "fail: %s" % e
         return "success"
 
     @classmethod
@@ -189,17 +193,18 @@ class EventDescriptor( object ):
         if obj and not cls.meta.to_object:
             obj = None
         conn = cls._create_connection( obj )
-        users = User.objects.filter( pk__in = Connection.objects.filter( event = event, **conn ).values_list( "user", flat = True ) )
+        print conn, Connection.objects.filter(event=event, **conn).values_list("user", flat=True)
+        users = User.objects.filter( pk__in = Connection.objects.filter(event=event,**conn ).values_list( "user", flat = True ) )
 
         return users
 
     @classmethod
-    def _get_event( cls ):
+    def _get_event(cls):
         event, _ = Event.objects.get_or_create( descriptor = cls.meta.descriptor )
         return event
 
     @classmethod
-    def allow_recipient( cls, *args, **kwargs ):
+    def allow_recipient(cls, *args, **kwargs):
         return True
 
     @classmethod
@@ -207,7 +212,7 @@ class EventDescriptor( object ):
     def get_user_hash(cls, user):
         import md5
 
-        hash = md5.new( "%s.%s" % ( user._get_pk_val(), user ) ).hexdigest()
+        hash = md5.new( "%s.%s" % (user._get_pk_val(), user ) ).hexdigest()
 
         return hash
 

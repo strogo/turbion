@@ -35,8 +35,8 @@ class BlogTest( TestCase ):
         return response
 
     def setUp( self ):
-        self.blog = Blog.objects.get( slug = "wna" )
-        self.post = Post.objects.get( pk = 1 )
+        self.blog = Blog.objects.get(slug = "wna")
+        self.post = Post.objects.get(pk = 1)
 
     def test_index( self ):
         response = self.client.get( self.blog.get_absolute_url() )
@@ -97,8 +97,8 @@ class BlogTest( TestCase ):
         self.assertEqual( response.status_code, http.HttpResponseRedirect.status_code )
         post = Post.published.for_blog( self.blog ).get( pk = self.post.pk )
 
-        self.assertEqual( post.comment_count, 1 )
-        self.assertEqual( len( mail.outbox ), 1 )# post author subscription
+        self.assertEqual(post.comment_count, 1)
+        self.assertEqual(len( mail.outbox ), 1)# post author subscription
 
     def test_comment_add_visitor( self ):
         response = self.client.get( self.post.get_absolute_url() )
