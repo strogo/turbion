@@ -63,13 +63,3 @@ def feed( request, blog, url, feed_dict ):
     response = http.HttpResponse(mimetype=feedgen.mime_type)
     feedgen.write(response, 'utf-8')
     return response
-
-@templated( 'turbion/blogs/404.html' )
-@titled( page = u'Страница не найден' )
-def handler404( request ):
-    return { }
-
-@templated( 'turbion/blogs/500.html' )
-@titled( page = u'Страница не найден' )
-def handler500( request ):
-    return { }

@@ -31,7 +31,3 @@ MULTIPLE_SETUP = getattr( settings, 'TRUBION_BLOGS_MULTIPLE', False )
 
 if MULTIPLE_SETUP:
     urlpatterns += patterns('', url( r'^sitemap.xml$', 'turbion.blogs.views.blog.index_sitemap', name = "global_blog_sitemap" ) )
-
-
-handler404 = 'turbion.views.blog.handler404'
-handler500 = 'turbion.views.blog.handler500'
