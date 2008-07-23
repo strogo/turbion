@@ -4,21 +4,68 @@
 #$Author$
 #$Revision$
 #--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+#Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
+from datetime import datetime
+
 from django.core.management.base import NoArgsCommand
 from optparse import make_option
 
-class Command(BaseCommand):
-    help = 'Deletes visitors with expires sessions'
+from django.contrib.sessions.models import Session
+from turbion.visitors.models import Visitor, User
+
+class Command(NoArgsCommand):
+    help = 'Deletes visitors with expires session and users with no references'
 
     requires_model_validation = True
 
     def handle_noargs(self, **options):
-        from turbion.visitors.models import Visitor, User
-        from django.contrib.contenttypes.models import ContentType
+        self._cleanup_visitors()
+        self._cleanup_users()
 
-        visitors = Visitor.objects.all().extra( where=["ss.session_key != visitors_visitor.session_key",
-                                                       "gu.visitor_id != visitors_visitor.id" ],
-                                                tables=['django_session as ss','visitors_genericuser as gu'] ).distinct()
+    def _cleanup_visitors(self):
+        related_fields = Visitor._meta.get_all_related_objects()
 
-        visitors.delete()
+        total_count = Visitor.objects.all().count()
+        deleted_count = 0
+
+        for visitor in Visitor.objects.all():
+            try:
+                Session.objects.get(session_key=visitor.session_key, expire_date__gte=datetime.now())
+            except:
+                has_reference = visitor.user or self._has_references(visitor, related_fields)
+
+                if not has_reference:
+                    deleted_count += 1#visitor.delete()
+        print "Deleted %s from %s visitors" % (deleted_count, total_count)
+
+    def _cleanup_users(self):
+        related_fields = User._meta.get_all_related_objects()
+
+        total_count = User.objects.all().count()
+        deleted_count = 0
+
+        for user in User.guests.all():
+            #check whenever have links to this user
+            if self._has_references(user, related_fields):
+                continue
+
+            #check visitor session expires
+            visitor = user.raw_user
+
+            try:
+                Session.objects.get(session_key=visitor.session_key, expire_date__gte=datetime.now())
+            except Session.DoesNotExist:
+                deleted_count += 1#user.delete()
+        print "Deleted %s from %s users" % (deleted_count, total_count)
+
+    def _has_references(self, instance, fields):
+        has_reference = False
+        for field in fields:
+            model = field.model
+
+            objs = model._default_manager.filter(**{field.field.name: instance})
+
+            if objs.count():
+                has_reference = True
+
+        return has_reference
