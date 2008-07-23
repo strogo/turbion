@@ -42,7 +42,7 @@ class Command(NoArgsCommand):
                 if not visitor.user.count() and not self._has_references(visitor, related_fields):
                     deleted_count += 1
                     if not self.dry:
-                        pass#visitor.delete()
+                        visitor.delete()
 
         print "Deleted %s from %s visitors" % (deleted_count, total_count)
 
@@ -65,7 +65,7 @@ class Command(NoArgsCommand):
             except Session.DoesNotExist:
                 deleted_count += 1
                 if not self.dry:
-                    pass#user.delete()
+                    user.delete()
 
         print "Deleted %s from %s users" % (deleted_count, total_count)
 
@@ -76,7 +76,6 @@ class Command(NoArgsCommand):
 
             objs = model._default_manager.filter(**{field.field.name: instance})
 
-            if objs.count():
-                has_reference = True
+            has_reference = objs.count() > 0
 
         return has_reference
