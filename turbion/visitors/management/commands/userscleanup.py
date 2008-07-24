@@ -70,12 +70,12 @@ class Command(NoArgsCommand):
         print "Deleted %s from %s users" % (deleted_count, total_count)
 
     def _has_references(self, instance, fields):
-        has_reference = False
         for field in fields:
             model = field.model
 
             objs = model._default_manager.filter(**{field.field.name: instance})
 
-            has_reference = objs.count() > 0
+            if objs.count() > 0:
+                return True
 
-        return has_reference
+        return False
