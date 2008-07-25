@@ -45,7 +45,7 @@ class Visitor(models.Model, ActionModel):
 
     class Admin:
         list_display = ( "name", "session_key", "email", "action_delete" )
-        search_fields = ( "name", "email", "site" )
+        search_fields = ( "name", "email", "site", 'session_key' )
         list_per_page = 25
 
 class User(models.Model):
