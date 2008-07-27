@@ -110,18 +110,18 @@ class Comment( ActionModel, models.Model ):
         db_table            = "turbion_comment"
 
 
-def update_comment_count( connection ):
+def update_comment_count(connection):
     try:
         connection.update_comment_count()
     except AttributeError:
         pass
 
-def post_save( instance, created ):
+def post_save(instance, created):
     if created:
-        update_comment_count( instance.connection )
+        update_comment_count(instance.connection)
 
 def post_delete( instance ):
-    update_comment_count( instance.connection )
+    update_comment_count(instance.connection)
 
-dispatcher.connect( post_save,   sender = Comment, signal = signals.post_save  )
-dispatcher.connect( post_delete, sender = Comment, signal = signals.post_delete  )
+dispatcher.connect(post_save,   sender = Comment, signal = signals.post_save)
+dispatcher.connect(post_delete, sender = Comment, signal = signals.post_delete)

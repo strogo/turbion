@@ -23,7 +23,7 @@ sitemaps = {
     'comments' : CommentSitemap
 }
 
-post_url_pattern = r"^post/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/(?P<post_slug>[\w_-]+)/"
+post_url_pattern = r"^%s(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/(?P<post_slug>[\w_-]+)/" % settings.TURBION_POST_PERMALINK_PREFIX.lstrip('/')
 
 urlpatterns = patterns('turbion.blogs.views',
  url( r'^$',                                                'post.blog', name = "blog_index" ),
