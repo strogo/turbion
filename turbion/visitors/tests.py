@@ -7,7 +7,7 @@
 #Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.test import TestCase
 from django.db import models
-from django import newforms as forms
+from django import forms
 
 from turbion.profiles.models import Profile
 from turbion.visitors.models import User, Visitor

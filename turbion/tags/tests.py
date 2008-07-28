@@ -7,7 +7,7 @@
 #Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.db import models
 from django.test import TestCase
-from django import newforms as forms
+from django import forms
 
 from turbion.tags.models import Tag
 from turbion.tags.fields import TagsField

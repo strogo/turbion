@@ -7,7 +7,7 @@
 #Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 import re
 
-from django import newforms as forms
+from django import forms
 from turbion.profiles.models import Profile
 
 from turbion.registration.models import IllegalName

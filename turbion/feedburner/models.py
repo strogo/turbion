@@ -27,9 +27,6 @@ class Account( models.Model ):
     def __unicode__(self):
         return "%s: %s" % ( self.user, self.name )
 
-    class Admin:
-        pass
-
     class Meta:
         verbose_name = "аккаунт"
         verbose_name_plural = "аккаунты"
@@ -63,11 +60,6 @@ class Feed( ActionModel, models.Model ):
             return '<a href="%s">Create</a>' % reverse( "turbion.feedburner.views.add_to_feedburner", args = (self.id,) )
         return ""
     create.allow_tags = True
-
-    class Admin:
-        list_display = ( "source", "name", "account", "created", "get_feedburner_url", "create", "action_delete" )
-        list_filter = ( "created", "account" )
-        list_per_page = 25
 
     class Meta:
         verbose_name = "фид"

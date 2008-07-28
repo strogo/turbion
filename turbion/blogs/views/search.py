@@ -6,7 +6,7 @@
 #--------------------------------
 #Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.core.urlresolvers import reverse
-from django import newforms as forms
+from django import forms
 
 from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Post

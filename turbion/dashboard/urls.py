@@ -18,8 +18,6 @@ urlpatterns = patterns('turbion.dashboard.views',
  url( r'^logout/$',                              'global.logout',           name = "dashboard_logout" ),
 
  url( r'^openid/',                               include( 'turbion.openid.urls' )  ),
-
- url( r'^raw/',                                  include('django.contrib.admin.urls') ),
 )
 
 blog_slug = r"^(?P<blog>[\w_-]+)/"
@@ -49,7 +47,7 @@ urlpatterns += patterns('turbion.dashboard.views',
  blog_url( r'assets/new/$',                           'assets.edit',       name = "dashboard_blog_assets_new" ),
  blog_url( r'assets/(?P<asset_id>\d+)/edit/$',        'assets.edit',       name = "dashboard_blog_assets_edit"),
  blog_url( r'assets/(?P<asset_id>\d+)/delete/$',      'assets.delete',     name = "dashboard_blog_assets_delete"),
- 
+
  blog_url( r'pages/$',                                'pages.pages',       name = "dashboard_blog_pages" ),
 
  blog_url( r'feedbacks/$',                            'feedback.feedbacks', name = "dashboard_blog_feedbacks" ),

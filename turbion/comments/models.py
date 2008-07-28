@@ -96,13 +96,6 @@ class Comment( ActionModel, models.Model ):
 
         super( Comment, self ).save()
 
-    class Admin:
-        list_display = ('created_on', "created_by", "text", "status", "connection_ct", "action_delete" )
-        list_per_page = 25
-
-        date_hierarchy = 'created_on'
-        list_filter = ('status',)
-
     class Meta:
         ordering            = ( "created_on",)
         verbose_name        = _( 'comment' )

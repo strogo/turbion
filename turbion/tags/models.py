@@ -33,9 +33,6 @@ class Tag( models.Model ):
         verbose_name_plural = "tags"
         db_table            = "turbion_tag"
 
-    class Admin:
-        list_display = ( "name", "slug", )
-
 class TaggedItem( models.Model ):
     tag = models.ForeignKey( Tag, related_name = "items" )
 

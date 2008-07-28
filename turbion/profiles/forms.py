@@ -5,8 +5,8 @@
 #$Revision$
 #--------------------------------
 #Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
-from django import newforms as forms
-from django.newforms.extras import SelectDateWidget
+from django import forms
+from django.forms.extras import SelectDateWidget
 
 from datetime import date
 
