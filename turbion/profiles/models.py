@@ -18,11 +18,11 @@ from pantheon.utils.enum import Enum
 
 from turbion.roles.models import Role, Capability
 
-class ProfileManager( UserManager ):
-    def has_superuser( self ):
-        return self.filter( is_staff = True, is_superuser = True, is_active = True ).count() != 0
+class ProfileManager(UserManager):
+    def has_superuser(self):
+        return self.filter(is_staff=True, is_superuser=True, is_active=True ).count() != 0
 
-class Profile( User ):
+class Profile(User):
     names = Enum( nickname       = _( "nick" ),
                   full_name      = _( "full name" ),
                   full_name_nick = _( "full name with nick" ),
@@ -30,12 +30,15 @@ class Profile( User ):
     genders = Enum( male      = _( 'male' ),
                     female    = _( 'female' ) )
 
+    nickname = models.CharField(max_length=150, null=True)
     birth_date = models.DateField( null = True, blank = True, verbose_name = u'Дата рождения' )
     gender = models.CharField( max_length = 10,
                               verbose_name = u'Пол',
                               choices = genders,
                               null = True,
                               blank = True )
+
+    ip = models.IPAddressField(null=True)
 
     country = models.CharField( max_length = 50, verbose_name = u'Страна', null = True, blank = True )
     city = models.CharField( max_length = 50, verbose_name = u'Город', null = True, blank = True )
@@ -82,11 +85,6 @@ class Profile( User ):
     @models.permalink
     def get_absolute_url(self):
         return ( "turbion.profiles.views.profile", (), { "profile_user" : self.username } )
-
-    class Admin:
-        list_display = ( "username", "first_name", "last_name", "email", "birth_date", "gender")
-        list_per_page = 25
-        list_filter = ( "gender", "country", "city" )
 
     class Meta:
         verbose_name        = 'profile'
