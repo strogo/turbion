@@ -65,7 +65,7 @@ def preferences( request, blog ):
 @blog_view
 @has_capability_for(BlogRoles.capabilities.add_post, "blog")
 def post_new(request, blog, post=None):
-    was_draft = blog and not post.is_published
+    was_draft = post and not post.is_published
 
     if request.POST:
         form = forms.PostForm(data=request.POST, instance=post, blog=blog)
@@ -75,7 +75,7 @@ def post_new(request, blog, post=None):
             else:
                 new_post = form.save(False)
                 new_post.blog = blog
-                
+
                 if not post:
                     new_post.created_by = request.user.profile
                 else:
