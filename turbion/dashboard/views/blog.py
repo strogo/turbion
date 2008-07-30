@@ -87,15 +87,15 @@ def post_new(request, blog, post=None):
                 new_post.save()
                 form.save_tags()
 
-                if post.is_published:
+                if new_post.is_published:
                     if new_post.notify:
                         CommentAdd.subscribe(post.created_by, new_post)
 
                     dispatcher.send( signal = signals.send_pingback,
                                      sender = Post,
                                      instance = new_post,
-                                     url = post.get_absolute_url(),
-                                     text = post.text_html,
+                                     url = new_post.get_absolute_url(),
+                                     text = new_post.text_html,
                                 )
 
                 return http.HttpResponseRedirect(reverse("dashboard_blog_posts", args = (blog.slug,)))
