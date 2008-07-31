@@ -40,8 +40,7 @@ TURBION_APPS = [
 ]
 
 TURBION_MIDDLEWARE_CLASSES = [
-    ( 0,    'turbion.aliases.middleware.AliasesMiddleware', ),
-    ( None, 'turbion.visitors.middleware.VisitorsMiddleware', )
+    ( 0,    'turbion.aliases.middleware.AliasesMiddleware', ),#TODO: add profile middleware definition
 ]
 
 TURBION_TEMPLATE_LOADERS = [
