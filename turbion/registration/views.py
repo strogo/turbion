@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from django.contrib import auth
 from django import http
 from django.core.urlresolvers import reverse
@@ -33,7 +27,7 @@ def restore_password_request( request ):
             user = form.cleaned_data[ 'user' ]
             code = Code.objects.create( user = user,
                                         type = "password_restore" )
-                
+
             mail.RestorePasswordRequestMessage( code.user.email, { "code" :code.code } ).send()
             return info_page( request,
                               title=_( "Password request notification" ),
@@ -49,28 +43,28 @@ def restore_password_request( request ):
 
 def restore_password( request ):
     code = request.GET.get( "code", None )
-    
+
     if code:
         restore_request = get_object_or_404( Code, code = code )
         user = restore_request.user
-        
+
         new_password = Profile.objects.make_random_password()
-        
+
         user.set_password( new_password )
         user.save()
-        
+
         mail.RestorePasswordMessage( restore_request.user.email, { "user":user,
                                                                    "new_password":new_password} ).send()
-        
+
         restore_request.delete()
-        
+
         return info_page( request,
                           title= _( "Notification" ),
                           section=SECTION,
                           message=_( "Check your e-mail inbox for new creditionals" ),
                           next= "/",
                           template="turbion/registration/info.html" )
-    
+
     raise http.Http404
 
 
@@ -84,7 +78,7 @@ def change_email( request ):
             code = Code.objects.create( user = request.user.profile,
                                         type = "email_change",
                                         data = form.cleaned_data["email"] )
-            
+
             mail.ChangeEmailMessage( code.user.email, { "code" : code } ).send()
             return info_page( request,
                               title= _( "E-mail change notification" ),
@@ -94,7 +88,7 @@ def change_email( request ):
                               template="turbion/registration/info.html" )
     else:
         form = forms.ChangeEmailForm()
-    
+
     return { "form" : form }
 
 
@@ -107,7 +101,7 @@ def change_email_confirm( request ):
         code = get_object_or_404( Code, user = request.user, type = "email_change", code = code )
         code.user.email = code.data
         code.user.save()
-            
+
         code.delete()
         return info_page( request,
                           title= _( "Notification" ),
@@ -126,7 +120,7 @@ def change_password( request ):
         if form.is_valid():
             request.user.set_password( form.cleaned_data[ "password" ] )
             request.user.save()
-            
+
             return info_page( request,
                               title= _( "Password has changed" ),
                               section = SECTION,
@@ -135,7 +129,7 @@ def change_password( request ):
                               template="turbion/registration/info.html" )
     else:
         form = forms.ChangePasswordForm()
-    
+
     return { "change_password_form": form }
 
 @templated( 'turbion/registration/registration.html' )
@@ -145,14 +139,14 @@ def registration( request ):
         form = forms.RegistrationForm( data = request.POST )
         if form.is_valid():
             data = form.cleaned_data
-            
+
             user = Profile.objects.create_user( **data )
             user.is_active = False
             user.save()
-            
+
             code = Code.objects.create( user = user )
             mail.RegistrationConfirmMessage( user.email, { "user" : user, "code":code } ).send()
-            
+
             return info_page( request,
                               title= _( "Registration notification" ),
                               section=SECTION,
@@ -166,7 +160,7 @@ def registration( request ):
 
 def registration_confirm( request ):
     code = request.GET.get( 'code', None )
-    if code:        
+    if code:
         code = get_object_or_404( Code, code = code )
         code.user.is_active = True
         code.user.save()

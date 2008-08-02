@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 import re
 
 from django import forms
@@ -21,22 +15,22 @@ def check_username( username ):
             raise forms.ValidationError( u"Пользователь с именем %s уже существует. Выберете другое имя." % username )
         except IllegalName.DoesNotExist:
             pass
-        
+
         try:
             Profile.objects.get( username = username )
             raise forms.ValidationError( u"Пользователь с именем %s уже существует. Выберете другое имя." % username )
         except Profile.DoesNotExist:
             pass
     else:
-        raise forms.ValidationError( u"Имя пользователя должно содержать только латинские буквы, цифры или _" ) 
-        
+        raise forms.ValidationError( u"Имя пользователя должно содержать только латинские буквы, цифры или _" )
+
     return  username
 
 def check_email( email ):
     try:
         Profile.objects.get( email = email )
-        raise forms.ValidationError( u"Данный адрес почты %s уже существует в системе" % email ) 
+        raise forms.ValidationError( u"Данный адрес почты %s уже существует в системе" % email )
     except Profile.DoesNotExist:
         pass
-    
+
     return email

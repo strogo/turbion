@@ -12,8 +12,8 @@ from django.conf import settings
 from turbion.openid import utils
 from turbion.registration.forms import RegistrationFormBase
 
-class OpenidLoginForm( forms.Form ):
-    openid = forms.URLField( label = "openid url", required = True )
+class OpenidLoginForm(forms.Form):
+    openid = forms.URLField(label="openid url", required=True)
 
     def __init__(self, request, **kwargs ):
         super( OpenidLoginForm, self ).__init__( **kwargs )
