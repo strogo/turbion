@@ -52,8 +52,8 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
             def __init__(self, initial=None, *args, **kwargs ):
                 if not initial:
                     initial = {}
-                if request.user.is_authenticated():
-                    initial.update(request.user.__dict__)
+    
+                initial.update(request.user.__dict__)
                 super(UserForm, self).__init__(initial=initial, *args, **kwargs)
 
             def get_user(self):
