@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY
+from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, load_backend
 
 from turbion.profiles.models import Profile
 
