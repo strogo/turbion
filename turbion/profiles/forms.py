@@ -58,7 +58,7 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
 
             def get_user(self):
                 form_data = dict([(key, value) for key, value in self.cleaned_data.iteritems()\
-                                                if key in self.fields.keys()])
+                                                if key in UserForm.base_fields.keys()])
 
                 profile = request.user
 
