@@ -67,7 +67,7 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
                     from turbion.registration.backend import OnlyActiveBackend
                     profile = Profile.objects.create_guest_profile(**form_data)
 
-                    profile.backend = "%s.%s" % (OnlyActiveBackend.__module__, OnlyActiveBackend.__class__.__name__)
+                    profile.backend = "%s.%s" % (OnlyActiveBackend.__module__, OnlyActiveBackend.__name__)
                     login(request, profile)
                 else:
                     profile.__dict__.update(form_data)
