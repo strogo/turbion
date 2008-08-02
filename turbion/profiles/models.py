@@ -23,7 +23,7 @@ class ProfileManager(UserManager):
 
     def create_guest_profile(self, nickname, email=None, site=None):
         profile = self.create_user(username=self.generate_username([nickname,email,site]),
-                                   email=email,
+                                   email=email and email and "",
                                    password=None)
 
         profile.nickname = nickname
