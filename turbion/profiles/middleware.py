@@ -53,7 +53,7 @@ class AuthenticationMiddleware(object):
         request.__class__.user = LazyUser()
 
         if request.user.is_authenticated():
-            request.user.last_visit = detetime.now()
+            request.user.last_visit = datetime.now()
             request.user.save()
 
         return None
