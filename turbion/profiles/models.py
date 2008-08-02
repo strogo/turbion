@@ -17,7 +17,7 @@ class ProfileManager(UserManager):
 
         base = "turbion_"
 
-        hash = md5.new(repr(data)+str(random.random())).hexdigest()
+        hash = md5.new(repr(data)+str(random.random())).hexdigest()[:30-len(base)]
 
         return base + hash
 
