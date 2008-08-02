@@ -94,10 +94,11 @@ class Profile(User):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return ("turbion.profiles.views.profile", (), {"profile_user": self.username})
-
+        if self.is_confirmed:
+            return models.permalink(lambda:("turbion.profiles.views.profile", (), {"profile_user": self.username}))()
+        return self.site
+    
     class Meta:
         verbose_name        = _('profile')
         verbose_name_plural = _('profiles')
