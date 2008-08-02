@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.template import loader
 from django.template import Context, Template, TemplateDoesNotExist
 from django.contrib.sites.models import Site
@@ -17,128 +11,105 @@ from django.utils.functional import curry
 from turbion.notifications.models import Event, Connection
 from turbion.visitors.models import User
 
-class EventMeta( object ):
-    def __init__( self, name, link = lambda x: x, to_object = False ):
+class EventMeta(object):
+    def __init__(self, name, link=lambda x: x, to_object=False):
         self.name = name
         self.link = link
         self.to_object = to_object
 
-def enshure_user( func ):
-    def _decorator( cls, user, *args, **kwargs ):
-        from turbion.profiles.models import Profile
-        from turbion.visitors.models import Visitor
-
-        if isinstance( user, User ):
-            pass
-        elif isinstance( user, ( Profile, Visitor ) ):
-            user = User.objects.get_or_create_for( user )[ 0 ]
-        else:
-            raise ValueError, "User object must be Profile or Visitor instance"
-
-        return func( cls, user, *args, **kwargs )
-    return _decorator
-
-class EventSpot( type ):
-    def __new__( cls, name, bases, attrs ):
+class EventSpot(type):
+    def __new__(cls, name, bases, attrs):
         try:
             EventDescriptor
         except NameError:
             cls.descriptors = {}
 
-            return super( EventSpot, cls ).__new__(cls, name, bases, attrs)
+            return super(EventSpot, cls).__new__(cls, name, bases, attrs)
 
         if "Meta" in attrs:
-            Meta = attrs.pop( "Meta" )
+            Meta = attrs.pop("Meta")
 
-            link       = getattr( Meta, "link", lambda x: x )
-            trigger    = getattr( Meta, "trigger", None )
-            event_name = getattr( Meta, "name", name )
-            to_object  = getattr( Meta, "to_object", False )
+            link       = getattr(Meta, "link", lambda x: x)
+            trigger    = getattr(Meta, "trigger", None)
+            event_name = getattr(Meta, "name", name)
+            to_object  = getattr(Meta, "to_object", False)
 
-            meta = EventMeta( link = link, name = event_name, to_object = to_object )
+            meta = EventMeta(link=link, name=event_name, to_object=to_object)
         else:
-            meta = EventMeta( name = name )
+            meta = EventMeta(name=name)
             trigger = None
 
-        attrs[ "meta" ] = meta
+        attrs["meta"] = meta
 
-        t = type.__new__( cls, name, bases, attrs )
+        t = type.__new__(cls, name, bases, attrs)
 
-        descriptor = "%s.%s" % ( t.__module__, name )
+        descriptor = "%s.%s" % (t.__module__, name)
 
         t.meta.descriptor = descriptor
-        cls.descriptors[ descriptor ] = t
+        cls.descriptors[descriptor] = t()
 
         if trigger:
-            if isinstance( trigger, (tuple,list) ):
-                sender = trigger[ 0 ]
-                signal = trigger[ 1 ]
+            if isinstance(trigger, (tuple,list)):
+                sender = trigger[0]
+                signal = trigger[1]
             else:
                 sender = dispatcher.Any
                 signal = trigger
 
             dispatcher.connect( t.fire,
-                                sender = sender,
-                                signal = signal )
+                                sender=sender,
+                                signal=signal)
 
         return t
 
-class EventDescriptor( object ):
+class EventDescriptor(object):
     __metaclass__ = EventSpot
 
     name = "Some event"
 
-    @classmethod
-    def _create_connection(self, obj = None):
+    def _create_connection(self, obj=None):
         if obj:
-            return { "connection_ct" : ContentType.objects.get_for_model( obj.__class__ ),
-                     "connection_id" : obj._get_pk_val() }
+            return {"connection_ct": ContentType.objects.get_for_model(obj.__class__),
+                    "connection_id": obj._get_pk_val() }
         else:
-            return { "connection_ct" : None,
-                     "connection_id" : None }
+            return {"connection_ct": None,
+                    "connection_id": None }
 
-    @classmethod
-    @enshure_user
-    def subscribe(cls, user, obj = None):
+    def subscribe(cls, user, obj=None):
         try:
-            con = Connection.objects.get(user = user,
-                                          event = cls._get_event(),
-                                          **cls._create_connection(obj))
+            con = Connection.objects.get(user=user,
+                                        event=cls._get_event(),
+                                        **cls._create_connection(obj))
         except Connection.DoesNotExist:
-            con = Connection.objects.create(user = user,
-                                             event = cls._get_event(),
-                                             **cls._create_connection(obj))
+            con = Connection.objects.create(user=user,
+                                            event=cls._get_event(),
+                                            **cls._create_connection(obj))
 
-    @classmethod
-    @enshure_user
-    def unsubscribe(cls, user, obj = None):
+    def unsubscribe(cls, user, obj=None):
         try:
-            con = Connection.objects.get( user = user,
-                                          event = cls._get_event(),
-                                          **cls._create_connection( obj ) )
+            con = Connection.objects.get( user=user,
+                                          event=cls._get_event(),
+                                          **cls._create_connection(obj))
             con.delete()
         except Connection.DoesNotExist:
             pass
 
-    @classmethod
-    @enshure_user
-    def has_subscription(cls, user, obj = None):
+    def has_subscription(cls, user, obj=None):
         try:
-            con = Connection.objects.get( user = user,
-                                          event = cls._get_event(),
-                                          **cls._create_connection( obj ) )
+            con = Connection.objects.get( user=user,
+                                          event=cls._get_event(),
+                                          **cls._create_connection(obj))
             return True
         except Connection.DoesNotExist:
             return False
 
-    @classmethod
     def fire(cls, instance=None, *args, **kwargs):
         try:
-            obj = cls.meta.link.im_func( instance )
+            obj = cls.meta.link.im_func(instance)
         except AttributeError:
-            obj = cls.meta.link( instance )
+            obj = cls.meta.link(instance)
 
-        recipients = cls._get_recipients( obj )
+        recipients = cls._get_recipients(obj)
 
         if not len(recipients):
             return
@@ -151,7 +122,7 @@ class EventDescriptor( object ):
         try:
             name = event.template
             if not name:
-                name = cls.meta.descriptor.replace( ".", "/" ) + ".html"
+                name = cls.meta.descriptor.replace(".", "/") + ".html"
             template = loader.get_template(name)
         except TemplateDoesNotExist, e:
             return "fail: %s" % e
@@ -187,49 +158,42 @@ class EventDescriptor( object ):
                     return "fail: %s" % e
         return "success"
 
-    @classmethod
-    def _get_recipients( cls, obj = None ):
+    def _get_recipients(cls, obj=None):
         event = cls._get_event()
         if obj and not cls.meta.to_object:
             obj = None
-        conn = cls._create_connection( obj )
+        conn = cls._create_connection(obj)
         print conn, Connection.objects.filter(event=event, **conn).values_list("user", flat=True)
-        users = User.objects.filter( pk__in = Connection.objects.filter(event=event,**conn ).values_list( "user", flat = True ) )
+        users = User.objects.filter(pk__in=Connection.objects.filter(event=event,**conn).values_list("user", flat=True))
 
         return users
 
-    @classmethod
     def _get_event(cls):
-        event, _ = Event.objects.get_or_create( descriptor = cls.meta.descriptor )
+        event, _ = Event.objects.get_or_create(descriptor=cls.meta.descriptor)
         return event
 
-    @classmethod
     def allow_recipient(cls, *args, **kwargs):
         return True
 
-    @classmethod
-    @enshure_user
     def get_user_hash(cls, user):
         import md5
 
-        hash = md5.new( "%s.%s" % (user._get_pk_val(), user ) ).hexdigest()
+        hash = md5.new("%s.%s" % (user._get_pk_val(), user)).hexdigest()
 
         return hash
 
-    @classmethod
-    @enshure_user
     def get_unsubscribe_url(cls, user, obj=None):
         from django.core.urlresolvers import reverse
 
-        url = reverse( "notifications_unsubscribe", args = ( user._get_pk_val(), cls._get_event()._get_pk_val() ) )
+        url = reverse("notifications_unsubscribe", args=(user._get_pk_val(), cls._get_event()._get_pk_val()))
 
         if obj:
-            url += "?connection_ct_id=%s&connection_id=%s" % ( ContentType.objects.get_for_model( obj.__class__ )._get_pk_val(),
-                                                               obj._get_pk_val() )
+            url += "?connection_ct_id=%s&connection_id=%s" % (ContentType.objects.get_for_model(obj.__class__)._get_pk_val(),
+                                                               obj._get_pk_val())
         else:
             url += "?"
 
-        hash = cls.get_user_hash( user )
+        hash = cls.get_user_hash(user)
         url += "&code=%s" % hash
 
         return url

@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007,2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
 
 from django.db import models
@@ -134,14 +128,12 @@ class CommentAdd(EventDescriptor):
         to_object = True
         trigger = (Comment, comment_signals.comment_added)
 
-    @classmethod
-    def fire(cls, comment, *args, **kwargs):
+    def fire(self, comment, *args, **kwargs):
         if comment.notify:
-            cls.subscribe(comment.created_by, comment.connection)
-        super(CommentAdd, cls).fire(comment=comment, *args, **kwargs)
+            self.subscribe(comment.created_by, comment.connection)
+        super(CommentAdd, self).fire(comment=comment, *args, **kwargs)
 
-    @classmethod
-    def allow_recipient(cls, recipient, comment, *args, **kwargs):
+    def allow_recipient(self, recipient, comment, *args, **kwargs):
         if recipient == comment.created_by:
             return False
         return True
