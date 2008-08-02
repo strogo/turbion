@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY
 
 from turbion.profiles.models import Profile
 
@@ -51,7 +52,7 @@ class AuthenticationMiddleware(object):
         assert hasattr(request, 'session'), "The Turbion profile authentication middleware requires session middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'."
         request.__class__.user = LazyUser()
 
-        if user.is_authenticated():
+        if request.user.is_authenticated():
             request.user.last_visit = detetime.now()
             request.user.save()
 

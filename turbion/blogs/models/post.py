@@ -105,13 +105,6 @@ class Post(models.Model, CommentedModel):
         self.text_html = self.postprocess.postprocess(self.text)
         super(Post, self).save()
 
-    class Admin:
-        list_display       = ('blog', 'title', "created_by", 'created_on', 'status', 'comment_count', 'notify', 'review_count')
-        list_display_links = ('title',)
-        list_filter        = ('blog', "created_by", "status",)
-        list_per_page      = 50
-        search_fields      = ("title", "created_by__username")
-
     class Meta:
         verbose_name        = 'post'
         verbose_name_plural = 'posts'

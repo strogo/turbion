@@ -42,23 +42,23 @@ def archive_pad( context, blog ):
     }
 
 @cached_inclusion_tag(register,
-                      trigger = { "sender" : Comment,
-                                  "signal" : signals.post_save,
-                                  "suffix" : lambda instance, *args, **kwargs: instance.connection.blog.id },
-                      suffix = lambda context, blog: blog.id,
+                      trigger={"sender": Comment,
+                               "signal": signals.post_save,
+                               "suffix": lambda instance, *args, **kwargs: instance.connection.blog.id},
+                      suffix=lambda context, blog: blog.id,
                       file_name='turbion/blogs/pads/top_commenters_pad.html',
                       takes_context=True)
 def top_commenters_pad(context, blog, count=5):
-    ct = ContentType.objects.get_for_model( Post )
-    extra_where = [ "%s.id = %s.created_by_id" % ( users_table_name, comments_table_name ),
-                    "%s.connection_ct_id = %s " % ( comments_table_name, ct.id ),
-                    "%s.blog_id = %s" % ( posts_table_name, blog._get_pk_val() )
+    ct = ContentType.objects.get_for_model(Post)
+    extra_where = [ "%s.id = %s.created_by_id" % (users_table_name, comments_table_name),
+                    "%s.connection_ct_id = %s " % (comments_table_name, ct.id),
+                    "%s.blog_id = %s" % (posts_table_name, blog._get_pk_val())
                      ]
 
-    return  { "commenters" : Profile.objects.select_related()\
-             .extra( select = { "comment_count" : "SELECT COUNT(*) FROM %s as cc WHERE cc.created_by_id = turbion_user.id" % comments_table_name } )\
-             .extra( where = extra_where, tables = [ comments_table_name, posts_table_name ] )\
-             .order_by('-comment_count').distinct()[:count] }
+    return  {"commenters": Profile.objects.select_related()\
+             .extra(select={"comment_count": "SELECT COUNT(*) FROM %s as cc WHERE cc.created_by_id = turbion_profile.id" % (comments_table_name, profiles_table_name)} )\
+             .extra(where=extra_where, tables=[comments_table_name, posts_table_name])\
+             .order_by('-comment_count').distinct()[:count]}
 
 
 @cached_inclusion_tag(register,

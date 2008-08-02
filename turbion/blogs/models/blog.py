@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007-2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
 
 from django.db import models
@@ -26,7 +20,7 @@ from turbion.socialbookmarks.models import Group
 from turbion.comments.models import Comment
 from turbion import roles
 
-class Blog( models.Model ):
+class Blog(models.Model):
     review_count = models.IntegerField( default = 0, editable = False, verbose_name = _( "review count" ) )
 
     slug = models.CharField( max_length = 50,
@@ -55,17 +49,14 @@ class Blog( models.Model ):
 
     def get_post_count(self):
         from turbion.blogs.models.post import Post
-        return Post.published.for_blog( self ).count()
-
-    def get_comment_count(self):
-        return Comment.objects.filter( blog_posts__blog = self ).count()#FIXME: old comment table
+        return Post.published.for_blog(self).count()
 
     @property
-    def calendar( self ):
-        if not hasattr( self, "_calendar" ):
+    def calendar(self):
+        if not hasattr(self, "_calendar"):
             from turbion.blogs.models import Post
-            self._calendar = BlogCalendar( self,
-                                           Post.published.for_blog( Blog.objects.get( pk = self._get_pk_val() ) ) )
+            self._calendar = BlogCalendar(self,
+                                          Post.published.for_blog(Blog.objects.get(pk=self._get_pk_val())))
         return self._calendar
 
     def inc_reviews(self):
@@ -73,22 +64,22 @@ class Blog( models.Model ):
         self.save()
 
     @utils.permalink
-    def get_absolute_url( self ):
-        return ( "blog_index", ( self.slug, ) )
+    def get_absolute_url(self):
+        return ("blog_index", (self.slug,))
 
     @models.permalink
-    def get_dashboard_url( self ):
-        return ( "dashboard_blog_index", ( self.slug, ) )
+    def get_dashboard_url(self):
+        return ("dashboard_blog_index", (self.slug,))
 
     @utils.permalink
     def get_atom_feed_url(self):
-        return ( "blog_atom", ( self.slug, 'posts', ) )
+        return ("blog_atom", (self.slug, 'posts',))
 
-    def per_page(self ):
+    def per_page(self):
         return self.post_per_page
 
     @property
-    def tags( self ):
+    def tags(self):
         from turbion.blogs.models.post import Post
         return Tag.objects.filter_for_model(Post, blog_id = self.id, **Post.published.lookups)
 
@@ -96,14 +87,10 @@ class Blog( models.Model ):
         return self.authors.filter(pk = user._get_pk_val()).count()
 
     class Meta:
-        verbose_name        = 'blog'
-        verbose_name_plural = 'blogs'
+        verbose_name        = _('blog')
+        verbose_name_plural = _('blogs')
         app_label           = 'blogs'
         db_table            = "turbion_blog"
-
-    class Admin:
-        list_display = ("id", 'slug', 'name', 'created_on', "created_by")
-
 
 class BlogCalendar(Calendar):
     date_field = "created_on"

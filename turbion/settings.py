@@ -34,7 +34,8 @@ TURBION_APPS = [
 ]
 
 TURBION_MIDDLEWARE_CLASSES = [
-    ( 0,    'turbion.aliases.middleware.AliasesMiddleware', ),#TODO: add profile middleware definition
+    (0,    'turbion.aliases.middleware.AliasesMiddleware', ),
+    ('django.contrib.auth.middleware.AuthenticationMiddleware', 'turbion.profiles.middleware.AuthenticationMiddleware')
 ]
 
 TURBION_TEMPLATE_LOADERS = [
@@ -42,42 +43,51 @@ TURBION_TEMPLATE_LOADERS = [
 ]
 
 TURBION_AUTHENTICATION_BACKENDS = [
-    'turbion.openid.backend.OpenidBackend'
+    (None, 'turbion.openid.backend.OpenidBackend'),
+    ('django.contrib.auth.backends.ModelBackend', "turbion.registration.backend.OnlyActiveBackend")
 ]
 
-def to_list( func ):
-    def _decorator( value, *args, **kwargs ):
-        if isinstance( value, tuple ):
-            value = list( value )
-        elif isinstance( value, list ):
+def to_list(func):
+    def _decorator(value, *args, **kwargs):
+        if isinstance(value, tuple):
+            value = list(value)
+        elif isinstance(value, list):
             pass
         else:
             raise ValueError
 
-        return func( value, *args, **kwargs )
+        return func(value, *args, **kwargs)
     return _decorator
 
-def append( source ):
+def append(source):
     @to_list
-    def _func( value ):
+    def _func(value):
         return value + source
     return _func
 
-def insert( source ):
+def insert(source):
     @to_list
     def _func( value ):
         for pos, klass in source:
             if pos is not None:
-                value.insert( pos, klass )
-            value.append( klass )
+                if isinstance(pos, basestring):
+                    try:
+                        i = value.index(pos)
+                        value[i] = klass
+                    except ValueError:
+                        value.append(klass)
+                else:
+                    value.insert(pos, klass)
+            else:
+                value.append(klass)
         return value
     return _func
 
-patch_installed_apps     = append( TURBION_APPS )
-patch_middleware_classes = insert( TURBION_MIDDLEWARE_CLASSES )
-patch_context_processors = append( TURBION_CONTEXT_PROCESSORS )
-patch_template_loaders   = insert( TURBION_TEMPLATE_LOADERS )
-patch_authenticated_backends_loaders = append( TURBION_AUTHENTICATION_BACKENDS )
+patch_installed_apps     = append(TURBION_APPS)
+patch_middleware_classes = insert(TURBION_MIDDLEWARE_CLASSES)
+patch_context_processors = append(TURBION_CONTEXT_PROCESSORS)
+patch_template_loaders   = insert(TURBION_TEMPLATE_LOADERS)
+patch_authenticated_backends_loaders = insert(TURBION_AUTHENTICATION_BACKENDS)
 
 TURBION_BLOGS_MULTIPLE = False
 PANTHEON_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'

@@ -86,7 +86,7 @@ class BlogTest( TestCase ):
 
     def test_comment_add( self ):
         url = blog_reverse( "blog_comment_add", kwargs = { "blog" : self.blog.slug, "post_id" : self.post.id } )
-        CommentAdd.subscribe( self.post.created_by )
+        CommentAdd.instance.subscribe( self.post.created_by )
 
         self.client.login( **CREDENTIALS )
 
