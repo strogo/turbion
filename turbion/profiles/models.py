@@ -28,6 +28,7 @@ class ProfileManager(UserManager):
 
         profile.nickname = nickname
         profile.site = site
+        profile.name_view = Profile.names.nickname
         profile.save()
 
         return profile
