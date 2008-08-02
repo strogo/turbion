@@ -9,7 +9,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.blogs.models import Comment
-from turbion.profile.forms import combine_profile_form_with
+from turbion.profiles.forms import combine_profile_form_with
 
 class _CommentForm(forms.ModelForm):
     class Meta:

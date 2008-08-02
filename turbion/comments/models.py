@@ -47,12 +47,12 @@ class Comment(ActionModel, models.Model):
     connection_id = models.PositiveIntegerField(editable=False)
     connection = generic.GenericForeignKey("connection_ct", "connection_id")
 
-    statuses = Enum(published  = "published",
-                    moderation = "on moderation",)
+    statuses = Enum(published ="published",
+                    moderation="on moderation")
 
     created_on = models.DateTimeField(default=datetime.now, verbose_name=_("created on"))
 
-    created_by = models.ForeignKey( User, related_name = "created_comments", verbose_name = _("created by"), raw_id_admin = True )
+    created_by = models.ForeignKey(User, related_name="created_comments", verbose_name=_("created by"))
     created_by_profile = models.ForeignKey(Profile, related_name="created_comments", verbose_name=_("created by"))
 
     edited_on = models.DateTimeField(null=True, verbose_name=_("edited on"))

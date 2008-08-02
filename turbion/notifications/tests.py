@@ -28,27 +28,26 @@ class AnimalAdd(EventDescriptor):
         trigger = (Animal, signals.post_save)
         to_object = True
 
-        link_model = Owner
-        link = lambda animal: animal.owner
+    def get_connection(self, instance):
+        return instance.owner
 
 class NotifTestCase(TestCase):
     fixtures = ["profiles", "dbtemplates"]
 
     def setUp(self):
         self.profile = Profile.objects.get(username = "daev")
-        self.user, created = User.objects.get_or_create_for(self.profile)
 
         self.owner = Owner.objects.create(name="Sam")
 
     def test_model_notif(self):
-        AnimalAdd.subscribe(self.user, self.owner)
+        AnimalAdd.instance.subscribe(self.profile, self.owner)
 
         anim = Animal.objects.create(owner=self.owner, name="dog")
 
         self.assertEqual(len(mail.outbox), 1)
 
     def test_model_notif_another_obj(self):
-        AnimalAdd.subscribe(self.user, self.owner)
+        AnimalAdd.instance.subscribe(self.profile, self.owner)
 
         owner = Owner.objects.create(name="Dave")
         anim = Animal.objects.create(owner=owner, name="dog")
@@ -58,12 +57,12 @@ class NotifTestCase(TestCase):
     def test_unsubscribe(self):
         from django.core.urlresolvers import reverse
 
-        AnimalAdd.subscribe(self.user, self.owner)
+        AnimalAdd.instance.subscribe(self.profile, self.owner)
 
-        url, data = AnimalAdd.get_unsubscribe_url(self.user, self.owner).split("?")
+        url, data = AnimalAdd.instance.get_unsubscribe_url(self.profile, self.owner).split("?")
 
         response = self.client.get(url, dict(d.split('=') for d in data.split('&')))
 
         self.assertEqual(response.status_code, 200)
 
-        self.assert_(not AnimalAdd.has_subscription(self.user, self.owner))
+        self.assert_(not AnimalAdd.instance.has_subscription(self.profile, self.owner))

@@ -33,7 +33,7 @@ class ProfileManager(UserManager):
         return profile
 
     def has_superuser(self):
-        return self.filter(is_staff=True, is_superuser=True, is_active=True).count() != 0
+        return self.filter(is_staff=True, is_superuser=True, is_active=True, is_confirmed=True).count() != 0
 
 class Profile(User):
     names = Enum(nickname      =_("nick"),
@@ -61,16 +61,19 @@ class Profile(User):
     education = models.TextField(null=True, blank=True, verbose_name=_("education"))
     work = models.TextField(null=True, blank=True, verbose_name=_("work"))
 
-    icq = models.CharField(max_length=10, blank=True,null=True, verbose_name=_('icq uin'))
+    icq = models.CharField(max_length=10, blank=True, null=True, verbose_name=_('icq uin'))
     jabber = models.CharField(max_length=50, null=True, blank=True, verbose_name=_('jabber id'))
-    skype = models.CharField(max_length=15, blank=True,null=True, verbose_name=_('skype'))
+    skype = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('skype'))
 
     name_view = models.CharField(max_length=10, choices=names, null=True, blank=True)
 
-    roles = models.ManyToManyField(Role, blank = True, related_name="profiles")
-    capabilities = models.ManyToManyField(Capability, blank = True, related_name="profiles")
+    roles = models.ManyToManyField(Role, blank=True, related_name="profiles")
+    capabilities = models.ManyToManyField(Capability, blank=True, related_name="profiles")
 
     objects = ProfileManager()
+
+    def is_authenticated(self):
+        return super(Profile, self).is_authenticated() and self.is_confirmed
 
     @property
     def full_name(self):

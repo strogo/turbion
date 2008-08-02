@@ -21,7 +21,7 @@ from turbion.blogs.decorators import blog_view
 @blog_view
 def index( request, blog ):
     if request.method == 'POST':
-        feedback_form = FeedbackForm( request = request, blog = blog, data = request.POST )
+        feedback_form = FeedbackForm(request=request, blog=blog, data=request.POST)
         if feedback_form.is_valid():
             feedback = feedback_form.save( False )
             feedback.blog = blog
@@ -38,7 +38,7 @@ def index( request, blog ):
                               message= _( u"Thanks. Your request will be handled by the administrator." ),
                               template="info_page.html" )
     else:
-        feedback_form = FeedbackForm( request = request, blog = blog )
+        feedback_form = FeedbackForm(request=request, blog=blog)
 
     return { "feedback_form": feedback_form,
              "blog" : blog }

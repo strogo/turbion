@@ -83,7 +83,7 @@ def post_new(request, blog, post=None):
 
                 if new_post.is_published:
                     if new_post.notify:
-                        CommentAdd.subscribe(post.created_by, new_post)
+                        CommentAdd.instance.subscribe(post.created_by, new_post)
 
                     dispatcher.send( signal = signals.send_pingback,
                                      sender = Post,

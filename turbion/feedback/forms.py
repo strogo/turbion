@@ -7,7 +7,7 @@
 #Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django import forms
 
-from turbion.profile.forms import combine_profile_form_with
+from turbion.profiles.forms import combine_profile_form_with
 from turbion.feedback.models import Feedback
 
 class _FeedbackForm(forms.ModelForm):

@@ -9,12 +9,11 @@ from django.db import models
 from django.utils.functional import curry
 
 from turbion.notifications.models import Event, Connection
-from turbion.visitors.models import User
+from turbion.profiles.models import Profile
 
 class EventMeta(object):
-    def __init__(self, name, link=lambda x: x, to_object=False):
+    def __init__(self, name, to_object=False):
         self.name = name
-        self.link = link
         self.to_object = to_object
 
 class EventSpot(type):
@@ -29,12 +28,11 @@ class EventSpot(type):
         if "Meta" in attrs:
             Meta = attrs.pop("Meta")
 
-            link       = getattr(Meta, "link", lambda x: x)
             trigger    = getattr(Meta, "trigger", None)
             event_name = getattr(Meta, "name", name)
             to_object  = getattr(Meta, "to_object", False)
 
-            meta = EventMeta(link=link, name=event_name, to_object=to_object)
+            meta = EventMeta(name=event_name, to_object=to_object)
         else:
             meta = EventMeta(name=name)
             trigger = None
@@ -46,7 +44,10 @@ class EventSpot(type):
         descriptor = "%s.%s" % (t.__module__, name)
 
         t.meta.descriptor = descriptor
-        cls.descriptors[descriptor] = t()
+        instance = t()
+
+        cls.descriptors[descriptor] = instance
+        t.instance = instance
 
         if trigger:
             if isinstance(trigger, (tuple,list)):
@@ -56,9 +57,9 @@ class EventSpot(type):
                 sender = dispatcher.Any
                 signal = trigger
 
-            dispatcher.connect( t.fire,
-                                sender=sender,
-                                signal=signal)
+            dispatcher.connect(instance.fire,
+                               sender=sender,
+                               signal=signal)
 
         return t
 
@@ -66,6 +67,9 @@ class EventDescriptor(object):
     __metaclass__ = EventSpot
 
     name = "Some event"
+
+    def get_connection(self, instance):
+        return instance
 
     def _create_connection(self, obj=None):
         if obj:
@@ -75,41 +79,38 @@ class EventDescriptor(object):
             return {"connection_ct": None,
                     "connection_id": None }
 
-    def subscribe(cls, user, obj=None):
+    def subscribe(self, user, obj=None):
         try:
             con = Connection.objects.get(user=user,
-                                        event=cls._get_event(),
-                                        **cls._create_connection(obj))
+                                        event=self._get_event(),
+                                        **self._create_connection(obj))
         except Connection.DoesNotExist:
             con = Connection.objects.create(user=user,
-                                            event=cls._get_event(),
-                                            **cls._create_connection(obj))
+                                            event=self._get_event(),
+                                            **self._create_connection(obj))
 
-    def unsubscribe(cls, user, obj=None):
+    def unsubscribe(self, user, obj=None):
         try:
             con = Connection.objects.get( user=user,
-                                          event=cls._get_event(),
-                                          **cls._create_connection(obj))
+                                          event=self._get_event(),
+                                          **self._create_connection(obj))
             con.delete()
         except Connection.DoesNotExist:
             pass
 
-    def has_subscription(cls, user, obj=None):
+    def has_subscription(self, user, obj=None):
         try:
-            con = Connection.objects.get( user=user,
-                                          event=cls._get_event(),
-                                          **cls._create_connection(obj))
+            con = Connection.objects.get(user=user,
+                                         event=self._get_event(),
+                                         **self._create_connection(obj))
             return True
         except Connection.DoesNotExist:
             return False
 
-    def fire(cls, instance=None, *args, **kwargs):
-        try:
-            obj = cls.meta.link.im_func(instance)
-        except AttributeError:
-            obj = cls.meta.link(instance)
+    def fire(self, instance=None, *args, **kwargs):
+        obj = self.get_connection(instance)
 
-        recipients = cls._get_recipients(obj)
+        recipients = self._get_recipients(obj)
 
         if not len(recipients):
             return
@@ -117,12 +118,12 @@ class EventDescriptor(object):
         domain = Site.objects.get_current().domain
         from_email = "notifications@%s" % domain
 
-        event = cls._get_event()
+        event = self._get_event()
 
         try:
             name = event.template
             if not name:
-                name = cls.meta.descriptor.replace(".", "/") + ".html"
+                name = self.meta.descriptor.replace(".", "/") + ".html"
             template = loader.get_template(name)
         except TemplateDoesNotExist, e:
             return "fail: %s" % e
@@ -134,7 +135,7 @@ class EventDescriptor(object):
         for r in recipients:
             email = r.email
 
-            if cls.allow_recipient(obj=obj, recipient=r, *args, **kwargs) and email and email not in emails:
+            if self.allow_recipient(obj=obj, recipient=r, *args, **kwargs) and email and email not in emails:
                 emails.add(email)
 
                 base_url =" http://%s" % domain
@@ -143,7 +144,7 @@ class EventDescriptor(object):
                                    "recipient": r,
                                    "base_url" : base_url,
                                    "obj": obj,
-                                   "unsubscribe_url": "%s%s" % (base_url, cls.get_unsubscribe_url(r, obj))})
+                                   "unsubscribe_url": "%s%s" % (base_url, self.get_unsubscribe_url(r, obj))})
 
                 context.update(kwargs)
 
@@ -158,34 +159,34 @@ class EventDescriptor(object):
                     return "fail: %s" % e
         return "success"
 
-    def _get_recipients(cls, obj=None):
-        event = cls._get_event()
-        if obj and not cls.meta.to_object:
+    def _get_recipients(self, obj=None):
+        event = self._get_event()
+        if obj and not self.meta.to_object:
             obj = None
-        conn = cls._create_connection(obj)
-        print conn, Connection.objects.filter(event=event, **conn).values_list("user", flat=True)
-        users = User.objects.filter(pk__in=Connection.objects.filter(event=event,**conn).values_list("user", flat=True))
+        conn = self._create_connection(obj)
+
+        users = Profile.objects.filter(pk__in=Connection.objects.filter(event=event, **conn).values_list("user", flat=True))
 
         return users
 
-    def _get_event(cls):
-        event, _ = Event.objects.get_or_create(descriptor=cls.meta.descriptor)
+    def _get_event(self):
+        event, _ = Event.objects.get_or_create(descriptor=self.meta.descriptor)
         return event
 
-    def allow_recipient(cls, *args, **kwargs):
+    def allow_recipient(self, *args, **kwargs):
         return True
 
-    def get_user_hash(cls, user):
+    def get_user_hash(self, user):
         import md5
 
         hash = md5.new("%s.%s" % (user._get_pk_val(), user)).hexdigest()
 
         return hash
 
-    def get_unsubscribe_url(cls, user, obj=None):
+    def get_unsubscribe_url(self, user, obj=None):
         from django.core.urlresolvers import reverse
 
-        url = reverse("notifications_unsubscribe", args=(user._get_pk_val(), cls._get_event()._get_pk_val()))
+        url = reverse("notifications_unsubscribe", args=(user._get_pk_val(), self._get_event()._get_pk_val()))
 
         if obj:
             url += "?connection_ct_id=%s&connection_id=%s" % (ContentType.objects.get_for_model(obj.__class__)._get_pk_val(),
@@ -193,7 +194,7 @@ class EventDescriptor(object):
         else:
             url += "?"
 
-        hash = cls.get_user_hash(user)
+        hash = self.get_user_hash(user)
         url += "&code=%s" % hash
 
         return url

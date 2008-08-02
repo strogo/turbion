@@ -3,14 +3,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from django import http
 
-from turbion.visitors.models import User
+from turbion.profiles.models import Profile
 from turbion.notifications.models import Event
 from turbion.notifications.eventdescriptor import EventSpot
 
 from pantheon.utils.views import info_page
 
 def unsubscribe(request, user_id, event_id):
-    user  = get_object_or_404(User, pk=user_id)
+    user  = get_object_or_404(Profile, pk=user_id)
     event = get_object_or_404(Event, pk=event_id)
 
     try:
