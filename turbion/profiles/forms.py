@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.extras import SelectDateWidget
@@ -43,7 +37,7 @@ class ProfileForm( forms.ModelForm ):
         return username
 
 def extract_profile_data(request):
-    return {"ip": request.META.get("REMOTE_ADDR", "0.0.0.0")}
+    return {"ip": request.META.get("REMOTE_ADDR")}
 
 def combine_profile_form_with(form_class, request, field="created_by", need_captcha=True):
     profile = request.user

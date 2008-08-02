@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.core import urlresolvers
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
@@ -45,7 +39,7 @@ def ping( source_uri, target_uri, model_id, id ):
     try:
         domain = Site.objects.get_current().domain
         scheme, server, path, query, fragment = urlsplit(target_uri)
-        
+
         model = resolve_model( model_id )
 
         obj = resolve_object( model, id )

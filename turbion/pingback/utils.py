@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.conf import settings
 #from django.contrib.sites.models import Site
 from django.utils.html import strip_tags

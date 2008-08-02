@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.db import models, connection
 from django.contrib.auth.models import User, UserManager
-from django.db.models import signals
-from django.dispatch import dispatcher
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
@@ -22,8 +14,11 @@ class ProfileManager(UserManager):
     def generate_username(self):
         pass
 
+    def create_quest_profile(self, nickname, email=None, site=None):
+        pass
+
     def has_superuser(self):
-        return self.filter(is_staff=True, is_superuser=True, is_active=True ).count() != 0
+        return self.filter(is_staff=True, is_superuser=True, is_active=True).count() != 0
 
 class Profile(User):
     names = Enum( nickname       = _("nick"),
@@ -37,33 +32,33 @@ class Profile(User):
     ip = models.IPAddressField(null=True)
     is_confirmed = models.BooleanField(default=False)
 
-    birth_date = models.DateField( null = True, blank = True, verbose_name = u'birth date' )
-    gender = models.CharField( max_length = 10,
-                              verbose_name = u'gender',
-                              choices = genders,
-                              null = True,
-                              blank = True )
+    birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
+    gender = models.CharField(max_length=10,
+                              verbose_name =_('gender'),
+                              choices=genders,
+                              null=True,
+                              blank=True )
 
 
 
-    country = models.CharField(max_length = 50, verbose_name = u'country', null = True, blank = True)
-    city = models.CharField(max_length = 50, verbose_name = u'city', null = True, blank = True)
+    country = models.CharField(max_length=50, verbose_name=_('country'), null=True, blank=True)
+    city = models.CharField(max_length=50, verbose_name=_('city'), null=True, blank=True)
 
-    site = models.CharField(blank = True, max_length = 100, null = True, verbose_name = u'site')
+    site = models.CharField(blank=True, max_length=100, null=True, verbose_name=('site'))
 
-    biography = models.TextField(null = True,blank = True, verbose_name = u'biography')
-    interests = models.TextField(null = True,blank = True, verbose_name = u'interests')
-    education = models.TextField(null = True,blank = True, verbose_name = u"education")
-    work = models.TextField(null = True,blank = True, verbose_name = u"work")
+    biography = models.TextField(null=True, blank=True, verbose_name=_('biography'))
+    interests = models.TextField(null=True, blank=True, verbose_name=_('interests'))
+    education = models.TextField(null=True, blank=True, verbose_name=_("education"))
+    work = models.TextField(null=True, blank=True, verbose_name=_("work"))
 
-    icq = models.CharField(max_length=10, blank=True,null=True, verbose_name='icq uin')
-    jabber = models.CharField(max_length=50, null=True, blank=True, verbose_name='jabber id')
-    skype = models.CharField(max_length=15, blank=True,null=True, verbose_name='skype')
+    icq = models.CharField(max_length=10, blank=True,null=True, verbose_name=_('icq uin'))
+    jabber = models.CharField(max_length=50, null=True, blank=True, verbose_name=_('jabber id'))
+    skype = models.CharField(max_length=15, blank=True,null=True, verbose_name=_('skype'))
 
-    name_view = models.CharField( max_length = 10,
-                                  choices = names,
-                                  null = True,
-                                  blank = True )
+    name_view = models.CharField(max_length=10,
+                                choices=names,
+                                null=True,
+                                blank=True)
 
     roles = models.ManyToManyField(Role, blank = True, related_name="profiles")
     capabilities = models.ManyToManyField(Capability, blank = True, related_name="profiles")
@@ -80,9 +75,9 @@ class Profile(User):
 
     @property
     def name(self):
-        type_map = { Profile.names.nickname       : self.username,
-                     Profile.names.full_name      : self.full_name,
-                     Profile.names.full_name_nick : self.full_name_with_nick }
+        type_map = {Profile.names.nickname      : self.nickname,
+                    Profile.names.full_name     : self.full_name,
+                    Profile.names.full_name_nick: self.full_name_with_nick}
         return type_map.get(self.name_view, self.username)
 
     def __unicode__(self):
@@ -93,8 +88,8 @@ class Profile(User):
         return ("turbion.profiles.views.profile", (), {"profile_user": self.username})
 
     class Meta:
-        verbose_name        = 'profile'
-        verbose_name_plural = 'profiles'
+        verbose_name        = _('profile')
+        verbose_name_plural = _('profiles')
         db_table            = "turbion_profile"
 
     @property
