@@ -12,3 +12,9 @@ class OnlyActiveBackend(ModelBackend):
                 return user
         except Profile.DoesNotExist:
             return None
+
+    def get_user(self, user_id):
+        try:
+            return Profile.objects.get(pk=user_id)
+        except Profile.DoesNotExist:
+            return None
