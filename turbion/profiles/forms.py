@@ -40,9 +40,7 @@ def extract_profile_data(request):
     return {"ip": request.META.get("REMOTE_ADDR")}
 
 def combine_profile_form_with(form_class, request, field="created_by", need_captcha=True):
-    profile = request.user
-
-    if not profile.is_authenticated() or not profile.is_confirmed:
+    if not request.is_authenticated():
         class UserForm(form_class, forms.ModelForm):
             nickname  = forms.CharField(required=True, label=_ ("name"))
             email = forms.EmailField(required=False, label=_("email"))
@@ -54,13 +52,16 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
             def __init__(self, initial=None, *args, **kwargs ):
                 if not initial:
                     initial = {}
-                if profile.is_authenticated():
-                    initial.update(profile.__dict__)
+                if request.user.is_authenticated():
+                    initial.update(request.user.__dict__)
                 super(UserForm, self).__init__(initial=initial, *args, **kwargs)
 
             def get_user(self):
                 form_data = dict([(key, value) for key, value in self.cleaned_data.iteritems()\
                                                 if key in self.fields.keys()])
+
+                profile = request.user
+
                 if not profile.is_authenticated():
                     from django.contrib.auth import login
                     profile = Profile.objects.create_guest_profile(**form_data)
@@ -89,7 +90,7 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
 
     def save(self, commit=True):
         obj = form_save(self, commit=False)
-        setattr(obj, field, profile)
+        setattr(obj, field, request.user)
         if commit:
             obj.save()
 
