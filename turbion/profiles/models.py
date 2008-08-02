@@ -11,11 +11,26 @@ from pantheon.utils.enum import Enum
 from turbion.roles.models import Role, Capability
 
 class ProfileManager(UserManager):
-    def generate_username(self):
-        pass
+    def generate_username(self, data):
+        import md5
+        import random
 
-    def create_quest_profile(self, nickname, email=None, site=None):
-        pass
+        base = "turbion_"
+
+        hash = md5.new(repr(data)+str(random.random())).hexdigest()
+
+        return base + hash
+
+    def create_guest_profile(self, nickname, email=None, site=None):
+        profile = self.create_user(username=self.generate_username([nickname,email,site]),
+                                   email=email,
+                                   password=None)
+
+        profile.nickname = nickname
+        profile.site = site
+        profile.save()
+
+        return profile
 
     def has_superuser(self):
         return self.filter(is_staff=True, is_superuser=True, is_active=True).count() != 0
