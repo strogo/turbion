@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
 
 from django import http
@@ -40,35 +34,34 @@ def edit(request, blog, asset_id=None):
         asset = get_object_or_404(Asset.objects.for_object(blog), pk=asset_id)
     else:
         asset = None
-    
+
     if request.POST:
         form = AssetForm(request.POST, request.FILES, instance=asset)
         if form.is_valid():
             new_asset = form.save(False)
             if not asset:
-                new_asset.created_by = request.user.profile
+                new_asset.created_by = request.user
             else:
-                new_asset.edited_by = request.user.profile
+                new_asset.edited_by = request.user
             new_asset.save()
-            
+
             new_asset.connect_to(blog)
-            
+
             form.postprocess()
-            
+
             return http.HttpResponseRedirect(reverse("dashboard_blog_assets", args=(blog.slug,)))
     else:
         form = AssetForm(instance=asset)
 
     return {"blog": blog,
             "form": form,
-            "asset": asset}    
-    
+            "asset": asset}
+
 @never_cache
 @blog_view
 def delete(request, blog, asset_id):
     asset = get_object_or_404(Asset.objects.for_object(blog), pk=asset_id)
-    
+
     asset.delete()
-    
+
     return http.HttpResponseRedirect(reverse("dashboard_blog_assets", args=(blog.slug,)))
-    

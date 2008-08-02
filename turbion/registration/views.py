@@ -71,15 +71,15 @@ def restore_password( request ):
 @templated( 'turbion/registration/change_email.html' )
 @titled( page = _( "E-mail change" ) )
 @login_required
-def change_email( request ):
+def change_email(request):
     if request.method == 'POST':
-        form = forms.ChangeEmailForm( data = request.POST )
+        form = forms.ChangeEmailForm(data=request.POST)
         if form.is_valid():
-            code = Code.objects.create( user = request.user.profile,
-                                        type = "email_change",
-                                        data = form.cleaned_data["email"] )
+            code = Code.objects.create(user=request.user,
+                                       type="email_change",
+                                       data=form.cleaned_data["email"])
 
-            mail.ChangeEmailMessage( code.user.email, { "code" : code } ).send()
+            mail.ChangeEmailMessage(code.user.email, {"code": code}).send()
             return info_page( request,
                               title= _( "E-mail change notification" ),
                               section=SECTION,

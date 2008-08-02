@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
 
 from django import http
@@ -77,9 +71,9 @@ def post_new(request, blog, post=None):
                 new_post.blog = blog
 
                 if not post:
-                    new_post.created_by = request.user.profile
+                    new_post.created_by = request.user
                 else:
-                    new_post.edited_by = request.user.profile
+                    new_post.edited_by = request.user
 
                 if was_draft and new_post.is_published:#reset date of creation
                     new_post.created_on = datetime.now()

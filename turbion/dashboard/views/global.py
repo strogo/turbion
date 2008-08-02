@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django import http
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -62,12 +56,12 @@ def create_superuser( request ):
 @decorators.superuser_required
 @templated( "turbion/dashboard/global/create_blog.html" )
 @titled()
-def create_blog( request ):
+def create_blog(request):
     if request.POST:
-        form = forms.CreateBlogForm( request.POST )
+        form = forms.CreateBlogForm(request.POST)
         if form.is_valid():
-            blog = form.save( False )
-            blog.created_by = request.user.profile
+            blog = form.save(False)
+            blog.created_by = request.user
             blog.save()
 
             owner = form.cleaned_data[ "owner" ]
@@ -82,18 +76,18 @@ def create_blog( request ):
 
 @templated( 'turbion/dashboard/global/login.html' )
 @titled()
-def login( request ):
+def login(request):
     if request.POST:
-        form = forms.LoginForm( request.POST )
+        form = forms.LoginForm(request.POST)
         if form.is_valid():
-            user = form.cleaned_data[ "user" ]
-            auth.login( request, user )
+            user = form.cleaned_data["user"]
+            auth.login(request, user)
 
-            return http.HttpResponseRedirect( request.GET.get( 'next', user.profile.get_absolute_url() ) )
+            return http.HttpResponseRedirect(request.GET.get('next', user.get_absolute_url()))
     else:
         form = forms.LoginForm()
 
-    return { "form": form }
+    return {"form": form}
 
 @login_required
 def logout( request ):

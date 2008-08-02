@@ -21,25 +21,20 @@ class ProfileManager(UserManager):
         return self.filter(is_staff=True, is_superuser=True, is_active=True).count() != 0
 
 class Profile(User):
-    names = Enum( nickname       = _("nick"),
-                  full_name      = _("full name"),
-                  full_name_nick = _("full name with nick"),
+    names = Enum(nickname      =_("nick"),
+                 full_name     =_("full name"),
+                 full_name_nick=_("full name with nick"),
                 )
-    genders = Enum( male      = _('male'),
-                    female    = _('female'))
+    genders = Enum(male  =_('male'),
+                   female=_('female')
+                )
 
     nickname = models.CharField(max_length=150, null=True)
     ip = models.IPAddressField(null=True)
     is_confirmed = models.BooleanField(default=False)
 
     birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
-    gender = models.CharField(max_length=10,
-                              verbose_name =_('gender'),
-                              choices=genders,
-                              null=True,
-                              blank=True )
-
-
+    gender = models.CharField(max_length=10, verbose_name =_('gender'), choices=genders, null=True, blank=True)
 
     country = models.CharField(max_length=50, verbose_name=_('country'), null=True, blank=True)
     city = models.CharField(max_length=50, verbose_name=_('city'), null=True, blank=True)
@@ -55,10 +50,7 @@ class Profile(User):
     jabber = models.CharField(max_length=50, null=True, blank=True, verbose_name=_('jabber id'))
     skype = models.CharField(max_length=15, blank=True,null=True, verbose_name=_('skype'))
 
-    name_view = models.CharField(max_length=10,
-                                choices=names,
-                                null=True,
-                                blank=True)
+    name_view = models.CharField(max_length=10, choices=names, null=True, blank=True)
 
     roles = models.ManyToManyField(Role, blank = True, related_name="profiles")
     capabilities = models.ManyToManyField(Capability, blank = True, related_name="profiles")

@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import *
@@ -23,7 +17,7 @@ def profile_view( view_func ):
 def owner_required( view_func ):
     def _check_author(request, profile, *args, **kwargs):
         if request.user.is_authenticated():
-            if profile == request.user.profile:
+            if profile == request.user:
                 return view_func(request, profile = profile, *args, **kwargs)
             else:
                 return HttpResponseRedirect( request.blog.get_absolute_url() + 'profile/author_required/' )

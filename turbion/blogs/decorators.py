@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -39,12 +33,12 @@ def blog_view( view_func ):
     _decor.__dict__ = view_func.__dict__
     return _decor
 
-def post_view( view_func ):
-    def _decor( request, blog, *args, **kwargs ):
-        if request.user.is_authenticated() and request.user.profile.has_capability_for( BlogRoles.capabilities.edit_post, blog ):
-            query_set = Post.objects.for_blog( blog )
+def post_view(view_func):
+    def _decor(request, blog, *args, **kwargs):
+        if request.user.is_authenticated() and request.user.has_capability_for(BlogRoles.capabilities.edit_post, blog):
+            query_set = Post.objects.for_blog(blog)
         else:
-            query_set = Post.published.for_blog( blog )
+            query_set = Post.published.for_blog(blog)
 
         post = get_object_or_404( query_set, created_on__year = kwargs.pop( 'year_id' ),
                                         created_on__month     = kwargs.pop( 'month_id' ),

@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlencode
 
-def has_capability_for(perm, obj_name = None, cond = "AND"):
+def has_capability_for(perm, obj_name=None, cond="AND"):
     def _wrapper(func):
         @login_required
         def _decorator(request, *args, **kwargs):
@@ -15,7 +15,7 @@ def has_capability_for(perm, obj_name = None, cond = "AND"):
                     obj = kwargs[obj_name]
             else:
                 obj = None
-            if request.user.profile.has_capability_for(perm, obj, cond):
+            if request.user.has_capability_for(perm, obj, cond):
                 return func(request, *args, **kwargs)
             else:
                 return http.HttpResponseRedirect(reverse("no_capability") + "?" + urlencode({"from": request.path}, doseq=True))

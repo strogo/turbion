@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 import re
 
 from django import template
@@ -30,19 +24,19 @@ class IfHasCapNode(template.Node):
             yield node
 
     def render(self, context):
-        user = context[ "user" ]
+        user = context["user"]
 
         if user.is_authenticated():
-            profile = user.profile
+            profile = user
             caps = []
 
             for cap in self.caps:
                 try:
-                    path, attr, name = CAP_RE.match( cap ).groups()
+                    path, attr, name = CAP_RE.match(cap).groups()
 
-                    module, set_name = path.rsplit( ".", 1 )
+                    module, set_name = path.rsplit(".", 1)
 
-                    mod = __import__( module, {}, {}, [ '' ] )
+                    mod = __import__(module, {}, {}, [''])
 
                     role_set = getattr( mod, set_name )
                     manager  = getattr( role_set, attr )
