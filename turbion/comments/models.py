@@ -41,7 +41,7 @@ class CommentManager(manager.GenericManager):
         return self.filter(connection_ct=ct,
                            connection_id=obj._get_pk_val())
 
-class Comment(ActionModel, models.Model):
+class Comment(models.Model):
     connection_ct = models.ForeignKey(ContentType, editable=False)
     connection_id = models.PositiveIntegerField(editable=False)
     connection = generic.GenericForeignKey("connection_ct", "connection_id")
