@@ -9,7 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from datetime import datetime
 
-from turbion.visitors.models import User
 from turbion.profiles.models import Profile
 
 from pantheon.postprocessing.fields import PostprocessField

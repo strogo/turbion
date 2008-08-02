@@ -14,7 +14,7 @@ from django.db import connection
 from django.contrib.contenttypes.models import ContentType
 
 from turbion.blogs.models import Post, Comment
-from turbion.visitors.models import User
+from turbion.profiles.models import Profile
 
 from pantheon.cache.tags import cached_inclusion_tag
 
@@ -24,7 +24,7 @@ quote_name = connection.ops.quote_name
 
 posts_table_name    = quote_name(Post._meta.db_table)
 comments_table_name = quote_name(Comment._meta.db_table)
-users_table_name    = quote_name(User._meta.db_table)
+profiles_table_name = quote_name(Profile._meta.db_table)
 
 @cached_inclusion_tag(register,
                       trigger = { "sender" : Post,
@@ -55,7 +55,7 @@ def top_commenters_pad(context, blog, count=5):
                     "%s.blog_id = %s" % ( posts_table_name, blog._get_pk_val() )
                      ]
 
-    return  { "commenters" : User.objects.select_related()\
+    return  { "commenters" : Profile.objects.select_related()\
              .extra( select = { "comment_count" : "SELECT COUNT(*) FROM %s as cc WHERE cc.created_by_id = turbion_user.id" % comments_table_name } )\
              .extra( where = extra_where, tables = [ comments_table_name, posts_table_name ] )\
              .order_by('-comment_count').distinct()[:count] }

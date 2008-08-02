@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.blogs.models import Blog
 from turbion.notifications import EventDescriptor
 from turbion.feedback import signals
-from turbion.visitors.models import User
 from turbion.profiles.models import Profile
 
 from pantheon.models.models import ActionModel

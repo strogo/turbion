@@ -14,7 +14,6 @@ from django.db import connection
 from django.contrib.contenttypes.models import ContentType
 
 from turbion.blogs.models import Post, Comment
-from turbion.visitors.models import User
 from turbion.blogs.utils import blog_reverse
 
 from pantheon.cache.tags import cached_inclusion_tag

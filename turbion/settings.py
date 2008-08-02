@@ -17,12 +17,12 @@ TURBION_APPS = [
     'turbion.profiles',
     'turbion.feedback',
     'turbion.staticpages',
-    'turbion.visitors',
+
     'turbion.socialbookmarks',
     'turbion.pingback',
     'turbion.notifications',
     'turbion.gears',
-    #'turbion.feedburner',
+
     'turbion.dbtemplates',
     'turbion.roles',
     'turbion.options',

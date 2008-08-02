@@ -10,7 +10,6 @@ from django.db import models
 
 from turbion.comments.models import Comment
 from turbion.comments import views
-from turbion.visitors.models import User
 
 class Article( models.Model ):
     title = models.CharField( max_length = 20 )

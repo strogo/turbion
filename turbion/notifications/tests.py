@@ -13,7 +13,6 @@ from django.core import mail
 
 from turbion.notifications import EventDescriptor
 from turbion.profiles.models import Profile
-from turbion.visitors.models import User
 
 class Owner(models.Model):
     name = models.CharField(max_length=50)
