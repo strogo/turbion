@@ -4,16 +4,16 @@ import re
 from django import forms
 from turbion.profiles.models import Profile
 
-from turbion.registration.models import IllegalName
+from turbion.registration.models import ForbiddenName
 
 user_name_regexp = re.compile( "^[A-Za-z0-9_]*$" )
 
 def check_username( username ):
     if user_name_regexp.match( username ):
         try:
-            IllegalName.objects.get( name = username )
+            ForbiddenName.objects.get( name = username )
             raise forms.ValidationError( u"Пользователь с именем %s уже существует. Выберете другое имя." % username )
-        except IllegalName.DoesNotExist:
+        except ForbiddenName.DoesNotExist:
             pass
 
         try:

@@ -6,7 +6,7 @@ from django.conf import settings
 
 from pantheon.supernovaforms.captcha import manager
 
-from turbion.registration.models import Code
+from turbion.registration.models import Offer
 from turbion.profiles.models import Profile
 
 USERNAME = "daevaorn"
@@ -42,7 +42,7 @@ class NewProfileRegistrationTest( TestCase ):
         self.assertEqual( user.is_active, False )
 
         #process confirm
-        tu = Code.objects.get( user = user )
+        tu = Offer.objects.get( user = user )
 
         response = self.client.get(reverse( "registration_confirm" ), data = { "code" : tu.code } )
         self.assertEqual( response.status_code, 200 )
@@ -79,10 +79,10 @@ class PasswordRestoreTest( RegTestBase, TestCase ):
         self.assertEqual( response.status_code, 200 )
         self.assertEqual( len( mail.outbox ), 1 )
 
-        request = Code.objects.get( user = self.user )
+        request = Offer.objects.get( user = self.user )
         response = self.client.get( reverse( "turbion.registration.views.restore_password" ), data = { "code" : request.code } )
         self.assertEqual( response.status_code, 200 )
-        self.assertEqual( Code.objects.count(), 0 )
+        self.assertEqual( Offer.objects.count(), 0 )
 
 class ChangePasswordTest( RegTestBase, TestCase ):
     def test_good_change(self):

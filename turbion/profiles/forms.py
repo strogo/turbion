@@ -39,7 +39,7 @@ class ProfileForm( forms.ModelForm ):
 def extract_profile_data(request):
     return {"ip": request.META.get("REMOTE_ADDR")}
 
-def combine_profile_form_with(form_class, request, field="created_by", need_captcha=True):
+def combine_profile_form_with(form_class, request, field="created_by", need_captcha=True, fields=None):
     if not request.user.is_authenticated():
         class UserForm(form_class, forms.ModelForm):
             nickname  = forms.CharField(required=True, label=_ ("name"))
@@ -52,7 +52,7 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
             def __init__(self, initial=None, *args, **kwargs ):
                 if not initial:
                     initial = {}
-    
+
                 initial.update(request.user.__dict__)
                 super(UserForm, self).__init__(initial=initial, *args, **kwargs)
 

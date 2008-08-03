@@ -7,7 +7,6 @@
 #Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.db import models
 
-
 from pantheon.models.manager import GenericManager
 
 class Alias( models.Model ):
