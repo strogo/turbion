@@ -8,7 +8,6 @@ from django.shortcuts import *
 import re
 
 from turbion.blogs.models import Blog, Post, BlogRoles
-from turbion.registration.models import IllegalName
 
 from pantheon.utils.decorators import special_titled
 
