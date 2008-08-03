@@ -9,11 +9,10 @@ from turbion.notifications import EventDescriptor
 from turbion.feedback import signals
 from turbion.profiles.models import Profile
 
-from pantheon.models.models import ActionModel
 from pantheon.utils.enum import Enum
 from pantheon.models.manager import GenericManager
 
-class Feedback(ActionModel, models.Model):
+class Feedback(models.Model):
     statuses = Enum(accepted=_("accepted"),
                     rejected=_("rejected"),
                     done    =_("done"),

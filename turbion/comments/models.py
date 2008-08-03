@@ -12,7 +12,6 @@ from datetime import datetime
 from turbion.profiles.models import Profile
 
 from pantheon.postprocessing.fields import PostprocessField
-from pantheon.models.models import ActionModel
 from pantheon.models import manager
 from pantheon.utils.enum import Enum
 

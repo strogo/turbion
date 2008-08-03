@@ -13,7 +13,7 @@ class Incoming(models.Model):
     types = Enum( pingback  = "pingback",
                   trackback = "trackback" )
 
-    type         = models.CharField( max_length = 10, choices = types, default = types.pingback )
+    type         = models.CharField(max_length=10, choices=types, default=types.pingback)
 
     source_url   = models.URLField()
     target_url   = models.CharField( max_length=255 )

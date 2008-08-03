@@ -7,8 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.profiles.models import Profile
 
-from pantheon.models.models import ActionModel
-
 class EventManager(models.Manager):
     pass
 
@@ -29,7 +27,7 @@ class Event(models.Model):
     class Admin:
         pass
 
-class Connection(ActionModel, models.Model):
+class Connection(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(Profile, related_name="notification_recipient")
 
