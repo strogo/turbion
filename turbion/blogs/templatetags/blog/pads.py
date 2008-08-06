@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from django import template
 from django.template import resolve_variable, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str
@@ -80,20 +74,20 @@ def last_comments_pad(context, blog, count=5):
                       suffix = lambda context, blog: blog.id,
                       file_name='turbion/blogs/pads/top_posts_pad.html',
                       takes_context=True)
-def top_posts_pad( context, blog, count = 5 ):
-    return  { "posts" : Post.published.for_blog( blog ).select_related("blog").order_by('-comment_count')[:count] }
+def top_posts_pad(context, blog, count=5):
+    return  {"posts": Post.published.for_blog(blog).select_related("blog").order_by('-comment_count')[:count]}
 
 @cached_inclusion_tag(register,
-                      trigger = { "sender" : Post,
-                                  "signal" : signals.post_save,
-                                  "suffix" : lambda instance, created, *args, **kwargs: instance.blog.id },
+                      trigger={"sender": Post,
+                                "signal": signals.post_save,
+                                "suffix": lambda instance, created, *args, **kwargs: instance.blog.id},
                       suffix = lambda context, blog: blog.id,
                       file_name='turbion/blogs/pads/tags_pad.html',
                       takes_context=True)
-def tags_pad( context, blog ):
-    return { "blog": blog,
-             "tags" : blog.tags
-              }
+def tags_pad(context, blog):
+    return {"blog": blog,
+            "tags" : blog.tags
+        }
 
 @cached_inclusion_tag(register,
                       trigger = { "sender" : Post,
@@ -102,14 +96,14 @@ def tags_pad( context, blog ):
                       suffix = lambda context, blog: ( blog.id, blog.calendar.current ),
                       file_name='turbion/blogs/pads/calendar_pad.html',
                       takes_context=True)
-def calendar_pad( context, blog ):
-    return { "blog":blog }
+def calendar_pad(context, blog):
+    return {"blog": blog}
 
 @cached_inclusion_tag(register,
-                      trigger = { "sender" : Post,
-                                  "signal" : signals.post_save,
-                                  "checker" :  lambda  *args,**kwargs: True },
-                      suffix = lambda context, post: [post.blog.id, post.id],
+                      trigger={"sender" : Post,
+                                "signal" : signals.post_save,
+                                "checker" :  lambda  *args,**kwargs: True },
+                      suffix=lambda context, post: [post.blog.id, post.id],
                       file_name='turbion/blogs/pads/prevnext_pad.html',
                       takes_context=True)
 def prevnext_pad(context, post):
@@ -124,5 +118,5 @@ def prevnext_pad(context, post):
     except Post.DoesNotExist:
         next_post = None
 
-    return { "prev_post": prev_post,
-             "next_post" : next_post }
+    return {"prev_post": prev_post,
+            "next_post": next_post}

@@ -99,3 +99,5 @@ TURBION_BASE_UPLOAD_PATH = "upload/turbion/"
 TURBION_POST_PERMALINK_PREFIX = ""
 
 from turbion.pingback.settings import *
+
+

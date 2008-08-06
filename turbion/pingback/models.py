@@ -4,7 +4,6 @@ from datetime import datetime
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.dispatch import dispatcher
 from turbion.pingback import client, signals
 
 from pantheon.utils.enum import Enum
@@ -50,4 +49,4 @@ class Outgoing(models.Model):
         verbose_name_plural = "исходящие"
         db_table            = "turbion_pingback_outgoing"
 
-dispatcher.connect( client.process_for_pingback, signal=signals.send_pingback )
+signals.send_pingback.connect(client.process_for_pingback)

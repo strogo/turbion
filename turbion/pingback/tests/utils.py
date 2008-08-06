@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
-from django.dispatch import dispatcher
 from django.db import models
 from django.contrib.sites.models import Site
 from django.test import TestCase
@@ -15,7 +8,7 @@ from turbion.pingback import signals
 
 from pantheon.utils.urlfetch import UrlFetcher, ResponseObject
 
-class TestEntry( models.Model ):
+class TestEntry(models.Model):
     text = models.TextField()
 
     class Meta:
@@ -25,7 +18,7 @@ class TestEntry( models.Model ):
         return "/entry/%s/" % self.id
 
     def process( self ):
-        dispatcher.send( signal  = signals.send_pingback,
+        signals.send_pingback.send(
                         sender   = self.__class__,
                         instance = self,
                         url      = self.get_absolute_url(),

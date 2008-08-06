@@ -3,7 +3,6 @@ from django import http
 from django.db.models import ObjectDoesNotExist
 from django.shortcuts import *
 from django.conf import settings
-from django.dispatch import dispatcher
 
 from pantheon.xmlrpc import ServerGateway
 from turbion.pingback import utils, server, signals, models
@@ -46,8 +45,11 @@ def trackback( request, model, id ):
             incoming.object = object
 
             incoming.save()
-            dispatcher.send(signal=signals.trackback_recieved, sender=object.__class__,
-                        instance=object, incoming=incoming)
+            signals.trackback_recieved.send(
+                        sender=object.__class__,
+                        instance=object,
+                        incoming=incoming
+                )
         except KeyError:
             error = 1
             message = "Source url is needed"

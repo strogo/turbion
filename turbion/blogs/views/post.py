@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import *
 from django.contrib.auth.models import User
-from django.dispatch import dispatcher
 
 from turbion.blogs.decorators import blog_view, post_view, login_required, titled
 from turbion.blogs.models import Blog, Post, Comment

@@ -4,7 +4,6 @@ from django.template import Context, Template, TemplateDoesNotExist
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.contrib.contenttypes.models import ContentType
-from django.dispatch import dispatcher
 from django.db import models
 from django.utils.functional import curry
 
@@ -50,16 +49,16 @@ class EventSpot(type):
         t.instance = instance
 
         if trigger:
-            if isinstance(trigger, (tuple,list)):
+            if isinstance(trigger, (tuple, list)):
                 sender = trigger[0]
                 signal = trigger[1]
             else:
-                sender = dispatcher.Any
+                sender = None
                 signal = trigger
 
-            dispatcher.connect(instance.fire,
-                               sender=sender,
-                               signal=signal)
+            signal.connect(instance.fire,
+                           sender=sender,
+                    )
 
         return t
 

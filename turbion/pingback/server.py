@@ -2,7 +2,6 @@
 from django.core import urlresolvers
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
-from django.dispatch import dispatcher
 from django.contrib.sites.models import Site
 
 import urllib2
@@ -58,14 +57,17 @@ def ping( source_uri, target_uri, model_id, id ):
 
         parser = utils.SourceParser( doc )
         title = incoming.title = parser.get_title()
-        paragraph = incoming.paragraph = parser.get_paragraph( target_uri )
+        paragraph = incoming.paragraph = parser.get_paragraph(target_uri)
 
         status = incoming.status = 'Pingback from %s to %s registered. Keep the web talking! :-)' % ( source_uri, target_uri )
 
         incoming.save()
 
-        dispatcher.send(signal=signals.pingback_recieved, sender=obj.__class__,
-                        instance=obj, incoming=incoming)
+        signals.pingback_recieved.send(
+                    sender=obj.__class__,
+                    instance=obj,
+                    incoming=incoming
+            )
 
         return { "status" : status,
                  "source_title": title,

@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from django.db import models
 from django.db.models import signals
-from django.dispatch import dispatcher
 
 from turbion.options.option import BaseOption
 from turbion.options.models import Option
@@ -56,24 +49,24 @@ class OptionManager( object ):
     def __setattr__( self, name, value ):
         self.option_set.set( name, value, self.object, self.cls )
 
-class OptionSetDescriptor( object ):
-    def __init__( self, option_set ):
+class OptionSetDescriptor(object):
+    def __init__(self, option_set):
         self.option_set = option_set
 
     def __get__(self, instance, instance_type=None):
-        return OptionManager( self.option_set, cls = instance_type, object = instance )
+        return OptionManager(self.option_set, cls=instance_type, object=instance)
 
     def __set__(self, instance, value):
         raise RuntimeError
 
-def create_handler( option_set ):
-    def model_post_save_handler( sender, created, instance ):
+def create_handler(option_set):
+    def model_post_save_handler(sender, created, instance):
         if created:
-            option_set.create( instance = instance )
+            option_set.create(instance=instance)
     return model_post_save_handler
 
-class OptionSetSpot( type ):
-    def __new__( cls, name, bases, attrs ):
+class OptionSetSpot(type):
+    def __new__(cls, name, bases, attrs):
         try:
             OptionSet
         except NameError:
@@ -82,14 +75,14 @@ class OptionSetSpot( type ):
             return super(OptionSetSpot, cls).__new__(cls, name, bases, attrs)
 
         if "Meta" in attrs:
-            meta = attrs.pop( "Meta")
+            meta = attrs.pop("Meta")
 
-            model = getattr( meta, "model", None )
-            if not issubclass( model, ( models.Model, ) ):
-                raise ValueError, "model attribute must be django.db.models.Model class instance"
+            model = getattr(meta, "model", None)
+            if not issubclass(model, ( models.Model,)):
+                raise ValueError("model attribute must be django.db.models.Model class instance")
 
-            to_object = getattr( meta, "to_object", False )
-            set_name = getattr( meta, "name", "options" )
+            to_object = getattr(meta, "to_object", False)
+            set_name = getattr(meta, "name", "options")
         else:
             model = None
             to_object = False
@@ -98,11 +91,11 @@ class OptionSetSpot( type ):
         fields = {}
 
         for key, field in attrs.items():
-            if isinstance( field, BaseOption ):
-                attrs.pop( key )
+            if isinstance(field, BaseOption):
+                attrs.pop(key)
 
                 field.name = key
-                fields[ key ] = field
+                fields[key] = field
 
 
         attrs[ "_meta" ] = OptionSetMeta( fields,
@@ -116,48 +109,47 @@ class OptionSetSpot( type ):
 
         #TODO: add name checks
         if model:
-            model.add_to_class( set_name, OptionSetDescriptor( instance ) )
+            model.add_to_class(set_name, OptionSetDescriptor(instance))
         else:
-            setattr( t, "instance", OptionSetDescriptor( instance ) )
+            setattr(t, "instance", OptionSetDescriptor(instance))
 
         if model and to_object:
-            dispatcher.connect( create_handler( instance ),
-                                signal = signals.post_save,
-                                sender = model,
-                                weak = False
+            signals.post_save.connect(create_handler(instance),
+                                sender=model,
+                                weak=False
                                )
             #TODO: add delete handler
 
-        descriptor = "%s.%s" % ( t.__module__, name )
+        descriptor = "%s.%s" % (t.__module__, name)
         t._meta.descriptor = descriptor#FIXME: refactor descriptor assigment
 
-        cls.sets.add( descriptor, instance )
+        cls.sets.add(descriptor, instance)
 
         return t
 
-class OptionSet( object ):
+class OptionSet(object):
     __metaclass__ = OptionSetSpot
 
-    def get( self, name, object = None, cls = None ):
-        field = self._meta.fields.get( name, None )
+    def get(self, name, object=None, cls=None):
+        field = self._meta.fields.get(name, None)
 
         if not field:
-            raise AttributeError, "Option with name `%s` not found" % name
+            raise AttributeError("Option with name `%s` not found")
 
         try:
-            return field.to_python( Option.active.get_option( name, self._meta.descriptor, object, cls ).value )
+            return field.to_python(Option.active.get_option(name, self._meta.descriptor, object, cls).value)
         except Option.DoesNotExist:
             return None
 
-    def set( self, name, value, object = None, cls = None ):
-        field = self._meta.fields.get( name, None )
+    def set(self, name, value, object=None, cls=None):
+        field = self._meta.fields.get(name, None)
 
         if not field:
-            raise AttributeError, "Option with name `%s` not found" % name
+            raise AttributeError("Option with name `%s` not found")
 
-        Option.active.set_option( name, field.to_db( value ), self._meta.descriptor, object, cls )
+        Option.active.set_option(name, field.to_db(value), self._meta.descriptor, object, cls)
 
-    def create( self, instance = None, pk = None ):
+    def create(self, instance=None, pk=None):
         meta = self._meta
         if meta.to_object and meta.model:
             if pk is None and instance is None:
@@ -174,7 +166,7 @@ class OptionSet( object ):
                                               id = pk )
         elif meta.model:
             for name, option in meta.fields.iteritems():
-                Option.active.add_option( option.name,
+                Option.active.add_option(option.name,
                                         option.to_db( option.default ),
                                         descriptor = meta.descriptor,
                                         cls = meta.model )

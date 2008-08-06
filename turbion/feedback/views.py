@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.utils.translation import ugettext_lazy as _
-from django.dispatch import dispatcher
 
 from pantheon.utils.decorators import templated, titled
 from pantheon.utils.views import info_page
@@ -27,9 +20,10 @@ def index( request, blog ):
             feedback.blog = blog
             feedback.save()
 
-            dispatcher.send( signals.feedback_added,
-                             sender = Feedback,
-                             instance = feedback )
+            signals.feedback_added.send(
+                             sender=Feedback,
+                             instance=feedback
+                    )
 
             return info_page( request,
                               title=_(u"Thanks"),

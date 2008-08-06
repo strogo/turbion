@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect
 from django.shortcuts import *
-from django.dispatch import dispatcher
 
 from turbion.blogs.models import Comment
 from turbion.comments import signals
@@ -32,10 +31,15 @@ def add_comment(request,
                 new_comment.__dict__.update(defaults)
                 new_comment.save()
 
-                dispatcher.send(signal=comment and signals.comment_edited or signals.comment_added,
-                                sender=Comment,
-                                comment=new_comment,
-                                instance=connection)
+                if comment:
+                    signal = signals.comment_edited
+                else:
+                    signal = signals.comment_added
+
+                signal.send(sender=Comment,
+                            comment=new_comment,
+                            instance=connectio
+                        )
 
                 return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
     else:

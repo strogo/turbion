@@ -2,7 +2,6 @@
 from datetime import datetime
 
 from django import http
-from django.dispatch import dispatcher
 from django.core.urlresolvers import reverse
 
 from pantheon.utils.decorators import titled, templated
@@ -85,7 +84,7 @@ def post_new(request, blog, post=None):
                     if new_post.notify:
                         CommentAdd.instance.subscribe(post.created_by, new_post)
 
-                    dispatcher.send( signal = signals.send_pingback,
+                    signals.send_pingback.send(
                                      sender = Post,
                                      instance = new_post,
                                      url = new_post.get_absolute_url(),

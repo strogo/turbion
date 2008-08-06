@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from django.contrib.sitemaps import Sitemap
 from turbion.blogs.models import Post, Comment
 
 from django.utils.functional import curry
 from django.db.models import signals
-from django.dispatch import dispatcher
 from django.conf import settings
 from django.core.urlresolvers import reverse
 

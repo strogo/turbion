@@ -3,7 +3,6 @@ from django.db import models
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.generic import GenericForeignKey
-from django.dispatch import dispatcher
 
 from turbion.roles.managers import CapabilityManager, RoleManager
 

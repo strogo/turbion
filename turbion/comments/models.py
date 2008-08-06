@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models, connection
 from django.conf import settings
-from django.dispatch import dispatcher
 from django.db.models import signals
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic

@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+from django.dispatch import Signal
 
-pingback_recieved = object() 
-send_pingback = object()
+pingback_recieved = Signal()
+send_pingback = Signal()
 
-trackback_recieved = object()
-send_trackback = object()
+trackback_recieved = Signal()
+send_trackback = Signal()

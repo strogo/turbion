@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+from django.dispatch import Signal
 
-comment_added = object()
-comment_edited = object()
+comment_added = Signal()
+comment_edited = Signal()

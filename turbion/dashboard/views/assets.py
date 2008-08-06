@@ -2,7 +2,6 @@
 from datetime import datetime
 
 from django import http
-from django.dispatch import dispatcher
 from django.core.urlresolvers import reverse
 from django.views.decorators.cache import never_cache
 
