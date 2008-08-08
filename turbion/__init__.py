@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+TURBION_PREFIX = "TURBION_"
+
 def prepare_turbion_settings(outer_settings, options):
     from django.conf import global_settings
     from django.core.exceptions import ImproperlyConfigured
@@ -12,8 +14,8 @@ def prepare_turbion_settings(outer_settings, options):
     
     for name in dir(settings):
         if name.upper() == name:
-            if "TURBION_" in name:
-                raw_name = name[8:]
+            if TURBION_PREFIX in name:
+                raw_name = name[len(TURBION_PREFIX):]
                 
                 result[name] = options.pop(raw_name, getattr(settings, name))           
             else:
@@ -32,7 +34,7 @@ def prepare_turbion_settings(outer_settings, options):
                 result[name] = value
     
     if options:
-        result.update([("TURBION_%s" % key, value) for key, value in options.items()])
+        result.update([("%s%s" % (TURBION_PREFIX, key), value) for key, value in options.items()])
     
     return result
                 

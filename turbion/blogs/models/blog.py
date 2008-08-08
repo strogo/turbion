@@ -81,10 +81,10 @@ class Blog(models.Model):
     @property
     def tags(self):
         from turbion.blogs.models.post import Post
-        return Tag.objects.filter_for_model(Post, blog_id = self.id, **Post.published.lookups)
+        return Tag.objects.filter_for_model(Post, blog_id=self.id, **Post.published.lookups)
 
     def is_author(self, user):
-        return self.authors.filter(pk = user._get_pk_val()).count()
+        return self.authors.filter(pk=user._get_pk_val()).count()
 
     class Meta:
         verbose_name        = _('blog')

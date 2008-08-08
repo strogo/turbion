@@ -6,7 +6,6 @@ from django.utils.html import strip_tags
 from urlparse import urlsplit
 from BeautifulSoup import BeautifulSoup
 
-
 def parse_html_links( text, domain ):
     def is_external(external):
         path_e = urlsplit(external)[2]
