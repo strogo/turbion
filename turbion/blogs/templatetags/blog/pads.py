@@ -63,19 +63,19 @@ def top_commenters_pad(context, blog, count=5):
                       file_name='turbion/blogs/pads/last_comments_pad.html',
                       takes_context=True)
 def last_comments_pad(context, blog, count=5):
-    comments = Comment.published.for_model_with_rel( Post, blog ).order_by("-created_on").distinct()[:count]
+    comments = Comment.published.for_model_with_rel(Post, blog).order_by("-created_on").distinct()[:count]
 
     return  { "comments" : comments }
 
 @cached_inclusion_tag(register,
-                      trigger = { "sender" : Post,
-                                  "signal" : signals.post_save,
-                                  "suffix" : lambda instance, created, *args, **kwargs: instance.blog.id },
-                      suffix = lambda context, blog: blog.id,
+                      trigger={"sender": Post,
+                               "signal": signals.post_save,
+                               "suffix": lambda instance, created, *args, **kwargs: instance.blog.id},
+                      suffix=lambda context, blog: blog.id,
                       file_name='turbion/blogs/pads/top_posts_pad.html',
                       takes_context=True)
 def top_posts_pad(context, blog, count=5):
-    return  {"posts": Post.published.for_blog(blog).select_related("blog").order_by('-comment_count')[:count]}
+    return  {"posts": Post.published.for_blog(blog).order_by('-comment_count')[:count]}
 
 @cached_inclusion_tag(register,
                       trigger={"sender": Post,
@@ -90,10 +90,10 @@ def tags_pad(context, blog):
         }
 
 @cached_inclusion_tag(register,
-                      trigger = { "sender" : Post,
-                                  "signal" : signals.post_save,
-                                  "checker" :  lambda *args,**kwargs: True },
-                      suffix = lambda context, blog: ( blog.id, blog.calendar.current ),
+                      trigger={"sender": Post,
+                               "signal": signals.post_save,
+                               "checker":  lambda *args,**kwargs: True },
+                      suffix=lambda context, blog: ( blog.id, blog.calendar.current ),
                       file_name='turbion/blogs/pads/calendar_pad.html',
                       takes_context=True)
 def calendar_pad(context, blog):

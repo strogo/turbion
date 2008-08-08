@@ -30,7 +30,7 @@ class PostManager(GenericManager):
         return quote_name( self.model._meta.db_table)
     
     def get_query_set(self):
-        return super(PostManager, self).get_query_set().select_related("created_by")
+        return super(PostManager, self).get_query_set().select_related("created_by", "blog")
 
     def for_blog(self, blog):
         return self.filter(blog=blog)
@@ -43,4 +43,4 @@ class PostManager(GenericManager):
         return self.filter(blog=blog).extra(where=["%s.tag_id = %s" % (taggeditems_table_name, tag.id),
                                                            "%s.item_ct_id = %s" % (taggeditems_table_name, self.content_type.id),
                                                            "%s.item_id = %s.id" % (taggeditems_table_name, self.table_name)],
-                                            ables=[TaggedItem._meta.db_table])
+                                            tables=[TaggedItem._meta.db_table])
