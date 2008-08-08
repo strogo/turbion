@@ -17,12 +17,8 @@ def prepare_turbion_settings(outer_settings, options):
                 
                 result[name] = options.pop(raw_name, getattr(settings, name))           
             else:
-                base_value = None
-                if name in outer_settings:
-                    base_value = outer_settings[name]
-                else:
-                    base_value = getattr(global_settings, name, None)
-                    
+                base_value = outer_settings.get(name, getattr(global_settings, name, None))
+                
                 value = getattr(settings, name)
                 
                 if callable(value):

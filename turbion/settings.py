@@ -83,11 +83,11 @@ def insert(source):
         return value
     return _func
 
-patch_installed_apps     = append(TURBION_APPS)
-patch_middleware_classes = insert(TURBION_MIDDLEWARE_CLASSES)
-patch_context_processors = append(TURBION_CONTEXT_PROCESSORS)
-patch_template_loaders   = insert(TURBION_TEMPLATE_LOADERS)
-patch_authenticated_backends_loaders = insert(TURBION_AUTHENTICATION_BACKENDS)
+INSTALLED_APPS     = append(TURBION_APPS)
+MIDDLEWARE_CLASSES = insert(TURBION_MIDDLEWARE_CLASSES)
+TEMPLATE_CONTEXT_PROCESSORS = append(TURBION_CONTEXT_PROCESSORS)
+TEMPLATE_LOADERS   = insert(TURBION_TEMPLATE_LOADERS)
+AUTHENTICATION_BACKENDS = insert(TURBION_AUTHENTICATION_BACKENDS)
 
 TURBION_BLOGS_MULTIPLE = False
 PANTHEON_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'
