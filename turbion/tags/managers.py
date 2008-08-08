@@ -7,15 +7,15 @@ quote_name = connection.ops.quote_name
 class TagManager(models.Manager):
     def filter_for_object(self, obj):
         from turbion.tags.models import TaggedItem, Tag
-        items = TaggedItem.objects.filter_for_object(obj).distinct()
+        pks = TaggedItem.objects.filter_for_object(obj).values_list("tag", flat=True).distinct()
 
-        return Tag.objects.filter(pk__in=[i.tag_id for i in items])
+        return Tag.objects.filter(pk__in=pks.query)
 
     def filter_for_model(self, model, **kwargs):
         from turbion.tags.models import TaggedItem, Tag
         pks = TaggedItem.objects.filter_for_model(model, **kwargs).values_list("tag", flat=True).distinct()
 
-        return Tag.objects.filter(pk__in=pks)
+        return Tag.objects.filter(pk__in=pks.query)
 
 class TaggedItemManager(models.Manager):
     def filter_for_object(self, obj):
