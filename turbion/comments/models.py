@@ -22,6 +22,9 @@ class CommentedModel(object):
         self.save()
 
 class CommentManager(manager.GenericManager):
+    def get_query_set(self):
+        return super(CommentManager, self).get_query_set().select_related("created_by")
+    
     def for_model_with_rel(self, model, obj):
         ct = ContentType.objects.get_for_model(model)
 
