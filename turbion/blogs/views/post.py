@@ -18,17 +18,17 @@ from pantheon.utils.decorators import paged, templated
 
 @blog_view
 @paged
-@templated( 'turbion/blogs/list.html' )
-@titled( page = u'Блог' )
+@templated('turbion/blogs/list.html')
+@titled(page=u'Блог')
 def blog( request, blog ):
     blog.inc_reviews()
 
-    post_paginator = paginate( Post.published.for_blog( blog ),
+    post_paginator = paginate(Post.published.for_blog(blog),
                               request.page,
-                              blog.post_per_page )
+                              blog.post_per_page)
 
-    context = { "blog" : blog,
-            "post_paginator" : post_paginator }
+    context = {"blog": blog,
+            "post_paginator": post_paginator}
 
     return context
 
