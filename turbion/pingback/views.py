@@ -4,12 +4,12 @@ from django.db.models import ObjectDoesNotExist
 from django.shortcuts import *
 from django.conf import settings
 
-from pantheon.xmlrpc import ServerGateway
+from turbion.utils import xmlrpc
 from turbion.pingback import utils, server, signals, models
 
 from datetime import datetime
 
-gateway = ServerGateway("pingback")
+gateway = xmlrpc.ServerGateway("pingback")
 
 @gateway.connect
 def ping(source_uri, target_uri, model_id, id):
