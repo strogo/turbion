@@ -9,8 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from turbion.blogs.models import Post, Comment
 from turbion.profiles.models import Profile
-
-from pantheon.cache.tags import cached_inclusion_tag
+from turbion.utils.cache.tags import cached_inclusion_tag
 
 register = template.Library()
 
