@@ -38,6 +38,9 @@ def post_view(view_func):
             query_set = Post.objects.for_blog(blog)
         else:
             query_set = Post.published.for_blog(blog)
+            
+            if not request.user.is_authenticated_confirmed():
+                query_set = query_set.filter(showing=Post.show_settings.everybody)
 
         post = get_object_or_404( query_set, created_on__year = kwargs.pop( 'year_id' ),
                                         created_on__month     = kwargs.pop( 'month_id' ),

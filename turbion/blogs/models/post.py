@@ -20,72 +20,72 @@ from pantheon.postprocessing.fields import PostprocessField
 from pantheon.utils.enum import Enum
 
 class Post(models.Model, CommentedModel):
-    statuses = Enum( draft     = _( "draft" ),
-                     trash     = _( "trashed" ),
-                     published = _( "published" )
+    statuses = Enum(draft    =_("draft"),
+                    trash    =_("trashed"),
+                    published=_("published")
                 )
 
-    commenting_settings = Enum( allow    = _( "allow" ),
-                                disallow = _( "disallow" ),
+    commenting_settings = Enum(allow   =_("allow"),
+                               disallow=_("disallow"),
             )
 
-    show_settings = Enum( everybody = _( "everybody" ),
-                          registred = _( "registered" ),
+    show_settings = Enum(everybody=_("everybody"),
+                         registred=_("registered"),
             )
 
-    blog          = models.ForeignKey(Blog, verbose_name = _("blog"), related_name = "posts" )
-    comment_count = models.PositiveIntegerField( default = 0, editable = False, verbose_name=_("comment count"))
+    blog          = models.ForeignKey(Blog, verbose_name=_("blog"), related_name="posts")
+    comment_count = models.PositiveIntegerField(default=0, editable=False, verbose_name=_("comment count"))
 
-    created_on    = models.DateTimeField(default = datetime.now, editable = False, verbose_name = _( "created on"))
-    created_by    = models.ForeignKey(Profile, related_name = "created_posts", verbose_name = _( "created by"))
+    created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_( "created on"))
+    created_by    = models.ForeignKey(Profile, related_name="created_posts", verbose_name=_( "created by"))
 
     edited_on     = models.DateTimeField(null=True, editable=False, verbose_name=_("edited on"))
     edited_by     = models.ForeignKey(Profile, null=True, blank=True, related_name="edited_blogs", verbose_name=_("edited by"))
 
-    review_count  = models.IntegerField(default=0, editable=False, verbose_name= _( "review count" ) )
+    review_count  = models.IntegerField(default=0, editable=False, verbose_name=_("review count"))
 
-    title         = models.CharField( max_length = 130, verbose_name = _( "title" ) )
-    slug          = fields.ExtSlugField( for_field= "title", max_length = 130, editable = False, verbose_name = _( "slug" ) )
+    title         = models.CharField(max_length=130, verbose_name=_("title"))
+    slug          = models.CharField(max_length=130, editable=False, verbose_name=_("slug"))
 
-    mood          = models.CharField( max_length = 50, null = True, blank = True, verbose_name = _( "mood" ) )
-    location      = models.CharField( max_length = 100, null = True, blank = True, verbose_name = _( "location" ) )
-    music         = models.CharField( max_length = 100, null = True, blank = True, verbose_name = _( "music" ) )
+    mood          = models.CharField(max_length = 50, null = True, blank = True, verbose_name = _( "mood" ) )
+    location      = models.CharField(max_length = 100, null = True, blank = True, verbose_name = _( "location" ) )
+    music         = models.CharField(max_length = 100, null = True, blank = True, verbose_name = _( "music" ) )
 
-    text          = models.TextField( verbose_name = _( "text" ) )
-    text_html     = models.TextField( verbose_name = _( "text html" ) )
+    text          = models.TextField(verbose_name=_("text"))
+    text_html     = models.TextField(verbose_name=_("text html"))
 
-    status        = models.CharField( max_length = 10, choices = statuses, default = statuses.draft, verbose_name= _( "status" ) )
+    status        = models.CharField(max_length=10, choices=statuses, default=statuses.draft, verbose_name=_("status"))
 
-    postprocess   = PostprocessField( verbose_name = _( "postprocessor" ) )
+    postprocess   = PostprocessField(verbose_name=_("postprocessor"))
 
-    commenting    = models.CharField( max_length = 10,
-                                      choices = commenting_settings,
-                                      default = commenting_settings.allow,
-                                      verbose_name = _( "commenting" ) )
-    showing       = models.CharField( max_length = 10,
-                                      choices = show_settings,
-                                      default = show_settings.everybody,
-                                      verbose_name= _( "showing" ) )
+    commenting    = models.CharField(max_length=10,
+                                     choices = commenting_settings,
+                                     default = commenting_settings.allow,
+                                     verbose_name=_("commenting"))
+    showing       = models.CharField(max_length = 10,
+                                     choices = show_settings,
+                                     default = show_settings.everybody,
+                                     verbose_name=_("showing"))
 
-    notify        = models.BooleanField( default = True,
-                                         verbose_name= _( "e-mail notifications" ) )
+    notify        = models.BooleanField(default=True,
+                                        verbose_name=_("e-mail notifications"))
 
     objects = managers.PostManager()
 
-    published = managers.PostManager( status = statuses.published )
+    published = managers.PostManager(status=statuses.published)
 
     tags = TagsField()
 
     @utils.permalink
     def get_absolute_url(self):
-        return ( "turbion.blogs.views.post.post", (), { "year_id"   : self.created_on.year,
-                                                         "month_id"  : self.created_on.month,
-                                                         "day_id"    : self.created_on.day,
-                                                         "post_slug" : self.slug,
-                                                         "blog"      : self.blog.slug  } )
+        return ("turbion.blogs.views.post.post", (), { "year_id"   : self.created_on.year,
+                                                        "month_id"  : self.created_on.month,
+                                                        "day_id"    : self.created_on.day,
+                                                        "post_slug" : self.slug,
+                                                        "blog"      : self.blog.slug})
 
-    is_published = property( lambda self: self.status == Post.statuses.published )
-    allow_comments = property( lambda self: self.commenting == Post.commenting_settings.allow )
+    is_published = property(lambda self: self.status == Post.statuses.published)
+    allow_comments = property(lambda self: self.commenting == Post.commenting_settings.allow)
 
     @models.permalink
     def get_atom_feed_url(self):
@@ -99,6 +99,9 @@ class Post(models.Model, CommentedModel):
         return self.title
 
     def save(self):
+        if not self.slug:
+            from turbion.utils.text import slugify
+            self.slug = slugify(self.title)
         if self.edited_by:
             self.edited_on = datetime.now()
 

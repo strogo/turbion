@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import *
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
 from turbion.blogs.decorators import blog_view, post_view, login_required, titled
@@ -20,10 +20,15 @@ from pantheon.utils.decorators import paged, templated
 @paged
 @templated('turbion/blogs/list.html')
 @titled(page=u'Блог')
-def blog( request, blog ):
+def blog(request, blog):
     blog.inc_reviews()
-
-    post_paginator = paginate(Post.published.for_blog(blog),
+    
+    posts = Post.published.for_blog(blog)
+    
+    if not request.user.is_authenticated_confirmed():
+        posts = posts.filter(showing=Post.show_settings.everybody)
+    
+    post_paginator = paginate(posts,
                               request.page,
                               blog.post_per_page)
 
@@ -34,44 +39,47 @@ def blog( request, blog ):
 
 @blog_view
 @paged
-@templated( 'turbion/blogs/tags.html' )
-@titled( page=u'Теги')
-def tags( request, blog ):
+@templated('turbion/blogs/tags.html')
+@titled(page=u'Теги')
+def tags(request, blog):
     _tags = blog.tags
 
-    return { "blog" : blog,
-            "tags" : _tags,
+    return {"blog": blog,
+            "tags": _tags,
             }
 @blog_view
 @paged
-@templated( 'turbion/blogs/list.html' )
-@titled( page=u'Тег "{{tag}}"' )
-def tag( request, blog, tag_slug ):
-    _tag = get_object_or_404( blog.tags, slug = tag_slug )
-    posts = Post.published.for_tag( blog, _tag )
+@templated('turbion/blogs/list.html')
+@titled(page=u'Тег "{{tag}}"')
+def tag(request, blog, tag_slug):
+    _tag = get_object_or_404(blog.tags, slug=tag_slug)
+    posts = Post.published.for_tag(blog, _tag)
+    
+    if not request.user.is_authenticated_confirmed():
+        posts = posts.filter(showing=Post.show_settings.everybody)
+    
+    post_paginator = paginate(posts,
+                              request.page,
+                              blog.post_per_page)
 
-    post_paginator = paginate( posts,
-                               request.page,
-                               blog.post_per_page )
-
-    return { "blog" : blog,
-             "tag" : _tag,
-             "post_paginator" : post_paginator
+    return {"blog": blog,
+            "tag": _tag,
+            "post_paginator": post_paginator
             }
 
 @blog_view
 @post_view
-@templated( 'turbion/blogs/post.html' )
-@titled( page='{{post.title}}' )
-def post( request, blog, post ):
+@templated('turbion/blogs/post.html')
+@titled(page='{{post.title}}')
+def post(request, blog, post):
     post.inc_reviews()
-    comment_form = comments_forms.CommentForm( request = request )
-    form_action = blog_reverse( "blog_comment_add", args = ( post.blog.slug, post.id ) )
+    comment_form = comments_forms.CommentForm(request=request)
+    form_action = blog_reverse("blog_comment_add", args=(post.blog.slug, post.id))
 
-    comments = Comment.published.for_object( post ).select_related("created_by")
+    comments = Comment.published.for_object(post).select_related("created_by")
 
-    return {"blog" : blog,
-            "post" : post,
-            "comments" : comments,
-            "comment_form" : comment_form,
+    return {"blog": blog,
+            "post": post,
+            "comments": comments,
+            "comment_form": comment_form,
             "form_action": form_action }

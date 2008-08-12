@@ -28,7 +28,7 @@ profiles_table_name = quote_name(Profile._meta.db_table)
                       file_name='turbion/blogs/pads/archive_pad.html',
                       takes_context=True)
 def archive_pad( context, blog ):
-    months = Post.published.for_blog( blog ).dates("created_on", "month", order='DESC').distinct()
+    months = Post.published.for_blog(blog).dates("created_on", "month", order='DESC').distinct()
 
     return {
         'blog': blog,

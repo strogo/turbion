@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
+from django.dispatch import Signal
 
-post_add = object()
-post_edit = object()
-post_status_change = object()
-post_delete = object()
+post_add = Signal()
+post_edit = Signal()
+post_status_change = Signal()
+post_delete = Signal()
 
-comment_add = object()
-comment_edit = object()
-comment_delete = object()
+comment_add = Signal()
+comment_edit = Signal()
+comment_delete = Signal()

@@ -26,6 +26,9 @@ class AnonymousProfile(AnonymousUser):
 
     def has_capability_for(self, *args, **kwargs):
         return False
+    
+    def is_authenticated_confirmed(self):
+        return False
 
 def get_profile(request):
     try:

@@ -73,8 +73,8 @@ class Profile(User):
 
     objects = ProfileManager()
 
-    def is_authenticated(self):
-        return super(Profile, self).is_authenticated() and self.is_confirmed
+    def is_authenticated_confirmed(self):
+        return self.is_authenticated() and self.is_confirmed
 
     @property
     def full_name(self):
