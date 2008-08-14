@@ -39,14 +39,7 @@ def archive_pad( context, blog ):
                                "signal": (signals.post_save, signals.post_delete),
                                "suffix": lambda instance, *args, **kwargs: instance.connection.blog.id},
                       suffix=lambda context, blog: blog.id,
-                      file_name='turbion/<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-var pageTracker = _gat._getTracker("UA-2177231-7");
-pageTracker._trackPageview();
-</script>blogs/pads/top_commenters_pad.html',
+                      file_name='turbion/blogs/pads/top_commenters_pad.html',
                       takes_context=True)
 def top_commenters_pad(context, blog, count=5):
     ct = ContentType.objects.get_for_model(Post)
