@@ -45,10 +45,10 @@ def top_commenters_pad(context, blog, count=5):
     ct = ContentType.objects.get_for_model(Post)
 
     extra_select="""SELECT COUNT(*) FROM %s as cc
-            WHERE cc.connection_ct=%s
+            WHERE cc.connection_ct_id=%s
                     AND cc.connection_id=%s
                     AND cc.created_by_id=%s.id
-    """ % (comments_table_name, ct.id, blog._get_pk_val(), profiles_table_name)
+    """ % (comments_table_name, ct._get_pk_val(), blog._get_pk_val(), profiles_table_name)
 
     return  {"commenters": Profile.objects.select_related()\
              .extra(select={"comment_count": extra_select} )\
