@@ -11,6 +11,7 @@ TURBION_APPS = [
 
     'dxapian',
 
+    'turbion.utils',
     'turbion.tags',
     'turbion.comments',
     'turbion.blogs',
@@ -99,5 +100,3 @@ TURBION_BASE_UPLOAD_PATH = "upload/turbion/"
 TURBION_POST_PERMALINK_PREFIX = ""
 
 from turbion.pingback.settings import *
-
-

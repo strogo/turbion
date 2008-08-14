@@ -9,7 +9,7 @@ from turbion.blogs.models import Comment, Post
 from turbion.tags.models import Tag
 from turbion.blogs import utils
 
-from pantheon.utils.title import gen_title
+from turbion.utils.title import gen_title
 
 class BlogFieldBase(Feed):
     def __init__(self, blog, *args, **kwargs):

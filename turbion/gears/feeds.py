@@ -2,7 +2,7 @@
 from django.contrib.syndication.feeds import Feed
 from django.utils.feedgenerator import Atom1Feed
 
-from pantheon.utils.title import gen_title
+from turbion.utils.title import gen_title
 from django.shortcuts import *
 from django.core.urlresolvers import reverse
 

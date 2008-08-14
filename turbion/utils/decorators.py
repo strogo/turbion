@@ -7,7 +7,7 @@ from django.utils.encoding import smart_unicode
 from django import http
 from django.template.context import get_standard_processors
 
-from pantheon.utils.title import gen_title
+from turbion.utils.title import gen_title
 
 __all__ = ["paged", "templated", "titled", "special_titled"]
 
