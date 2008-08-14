@@ -7,8 +7,7 @@ from django.contrib.sites.models import Site
 import urllib2
 from urlparse import urlparse, urlsplit
 
-from pantheon.utils.urlfetch import fetch
-
+from turbion.utils.urlfetch import fetch
 from turbion.pingback import signals
 from turbion.pingback import client
 from turbion.pingback.models import Incoming

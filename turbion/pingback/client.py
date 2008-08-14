@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 
-from pantheon.utils.urlfetch import fetch
+from turbion.utils.urlfetch import fetch
 
 def search_link(content):
     match = re.search(r'<link rel="pingback" href="([^"]+)" ?/?>', content)

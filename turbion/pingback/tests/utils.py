@@ -5,8 +5,7 @@ from django.test import TestCase
 from django.conf import settings
 
 from turbion.pingback import signals
-
-from pantheon.utils.urlfetch import UrlFetcher, ResponseObject
+from turbion.utils.urlfetch import UrlFetcher, ResponseObject
 
 class TestEntry(models.Model):
     text = models.TextField()
