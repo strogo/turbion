@@ -9,7 +9,7 @@ from turbion.notifications import EventDescriptor
 from turbion.feedback import signals
 from turbion.profiles.models import Profile
 
-from pantheon.utils.enum import Enum
+from turbion.utils.enum import Enum
 from pantheon.models.manager import GenericManager
 
 class Feedback(models.Model):

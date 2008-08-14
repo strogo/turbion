@@ -13,7 +13,7 @@ from turbion.staticpages.models import Page
 from turbion.blogs.models import BlogRoles
 from turbion.roles.decorators import has_capability_for
 
-from pantheon.utils.decorators import titled, templated
+from turbion.utils.decorators import titled, templated
 
 @never_cache
 @blog_view

@@ -13,7 +13,7 @@ from turbion.blogs.models import Post
 from turbion.blogs.models import Comment
 from turbion.tags.models import Tag
 
-from pantheon.utils.decorators import templated, paged
+from turbion.utils.decorators import templated, paged
 
 class SearchForm( forms.Form ):
     query = forms.CharField( required = True, label = 'Поиск' )

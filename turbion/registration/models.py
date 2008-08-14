@@ -2,7 +2,7 @@
 from django.db import models
 from datetime import datetime
 
-from pantheon.utils.enum import Enum
+from turbion.utils.enum import Enum
 
 from turbion.profiles.models import Profile
 

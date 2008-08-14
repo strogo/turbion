@@ -13,7 +13,7 @@ from turbion.blogs.decorators import blog_view, post_view, titled
 from turbion.comments import views, models
 from turbion.blogs.models import Post
 
-from pantheon.utils.decorators import templated, paged
+from turbion.utils.decorators import templated, paged
 
 @blog_view
 @templated( 'turbion/blogs/edit_comment.html' )

@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from datetime import date
 
-from pantheon.utils.enum import Enum
+from turbion.utils.enum import Enum
 
 from turbion.roles.models import Role, Capability
 

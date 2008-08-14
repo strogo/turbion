@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 
-from pantheon.utils.decorators import templated, titled
+from turbion.utils.decorators import templated, titled
 from pantheon.utils.views import info_page
 
 from turbion.feedback.forms import FeedbackForm

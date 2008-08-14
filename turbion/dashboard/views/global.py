@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 
-from pantheon.utils.decorators import templated, titled
+from turbion.utils.decorators import templated, titled
 
 from turbion.blogs.models.blog import Blog, BlogRoles
 from turbion.dashboard import forms, decorators

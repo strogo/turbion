@@ -17,7 +17,7 @@ from turbion.blogs import utils
 
 from pantheon.models import fields
 from pantheon.postprocessing.fields import PostprocessField
-from pantheon.utils.enum import Enum
+from turbion.utils.enum import Enum
 
 class Post(models.Model, CommentedModel):
     statuses = Enum(draft    =_("draft"),

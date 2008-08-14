@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from turbion.pingback import client, signals
 
-from pantheon.utils.enum import Enum
+from turbion.utils.enum import Enum
 
 class Incoming(models.Model):
     types = Enum( pingback  = "pingback",

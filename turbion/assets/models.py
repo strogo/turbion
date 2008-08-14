@@ -17,7 +17,7 @@ from django.contrib.contenttypes import generic
 from turbion.profiles.models import Profile
 
 from pantheon.models import fields
-from pantheon.utils.enum import Enum
+from turbion.utils.enum import Enum
 
 class AssetManager(models.Manager):
     def for_object(self, obj):

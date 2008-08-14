@@ -4,7 +4,7 @@ from datetime import datetime
 from django import http
 from django.core.urlresolvers import reverse
 
-from pantheon.utils.decorators import titled, templated
+from turbion.utils.decorators import titled, templated
 
 from turbion.blogs.decorators import blog_view, post_view
 from turbion.blogs.models import Blog, BlogRoles, Post, CommentAdd, Comment

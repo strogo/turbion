@@ -18,7 +18,7 @@ from django.template import loader
 from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Blog, Post, Comment
 
-from pantheon.utils.decorators import paged, templated
+from turbion.utils.decorators import paged, templated
 from turbion.utils.pagination import paginate
 
 @blog_view

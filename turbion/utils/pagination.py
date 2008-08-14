@@ -16,8 +16,8 @@ def split_page_number(number, per_page, page_count=None):
 
     return offset, count
 
-def paginate(data_set, number, per_page):
-    paginator = QuerySetPaginator(data_set, int(per_page))
+def paginate(data_set, number, per_page, paginator_class=QuerySetPaginator):
+    paginator = paginator_class(data_set, int(per_page))
 
     if number == 'last':
         number = paginator.num_pages

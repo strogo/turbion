@@ -9,7 +9,7 @@ import re
 
 from turbion.blogs.models import Blog, Post, BlogRoles
 
-from pantheon.utils.decorators import special_titled
+from turbion.utils.decorators import special_titled
 
 titled = special_titled( section = u"{{blog.name}}" )
 

@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 
 from turbion.openid import forms, utils, models
 
-from pantheon.utils.decorators import templated, titled
+from turbion.utils.decorators import templated, titled
 
 def post_redirect( request ):
     redirect = request.GET.get( "redirect", None ) or request.META.get( "HTTP_REFERER", "/" )

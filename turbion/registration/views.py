@@ -12,7 +12,7 @@ from turbion.registration.models import Offer
 from turbion.registration import mail
 from turbion.profiles.models import Profile
 
-from pantheon.utils.decorators import templated, special_titled
+from turbion.utils.decorators import templated, special_titled
 from pantheon.utils.views import info_page
 
 SECTION = _("Registration")

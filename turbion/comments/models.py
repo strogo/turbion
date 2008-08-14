@@ -12,7 +12,7 @@ from turbion.profiles.models import Profile
 
 from pantheon.postprocessing.fields import PostprocessField
 from pantheon.models import manager
-from pantheon.utils.enum import Enum
+from turbion.utils.enum import Enum
 
 quote_name = connection.ops.quote_name
 

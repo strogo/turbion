@@ -9,7 +9,7 @@ from turbion.profiles.models import Profile
 from turbion.profiles.decorators import profile_view, owner_required
 
 from django.shortcuts import *
-from pantheon.utils.decorators import titled, templated
+from turbion.utils.decorators import titled, templated
 
 @profile_view
 @templated( 'turbion/profiles/profile.html' )

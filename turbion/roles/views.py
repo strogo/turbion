@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pantheon.utils.decorators import titled, templated
+from turbion.utils.decorators import titled, templated
 
 @templated( "turbion/roles/no_capability.html" )
 @titled(  )
