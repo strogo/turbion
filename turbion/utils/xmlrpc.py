@@ -24,7 +24,7 @@ class ServerGateway(object):
         if not func:
             return _connector
         else:
-            _connector(fun)
+            _connector(func)
             return func
 
     def __call__(self, request, *args, **kwargs):

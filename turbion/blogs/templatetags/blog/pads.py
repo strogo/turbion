@@ -36,23 +36,31 @@ def archive_pad( context, blog ):
 
 @cached_inclusion_tag(register,
                       trigger={"sender": Comment,
-                               "signal": signals.post_save,
+                               "signal": (signals.post_save, signals.post_delete),
                                "suffix": lambda instance, *args, **kwargs: instance.connection.blog.id},
                       suffix=lambda context, blog: blog.id,
-                      file_name='turbion/blogs/pads/top_commenters_pad.html',
+                      file_name='turbion/<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-2177231-7");
+pageTracker._trackPageview();
+</script>blogs/pads/top_commenters_pad.html',
                       takes_context=True)
 def top_commenters_pad(context, blog, count=5):
     ct = ContentType.objects.get_for_model(Post)
-    extra_where = [ "%s.id = %s.created_by_id" % (users_table_name, comments_table_name),
-                    "%s.connection_ct_id = %s " % (comments_table_name, ct.id),
-                    "%s.blog_id = %s" % (posts_table_name, blog._get_pk_val())
-                     ]
+
+    extra_select="""SELECT COUNT(*) FROM %s as cc
+            WHERE cc.connection_ct=%s
+                    AND cc.connection_id=%s
+                    AND cc.created_by_id=%s.id
+    """ % (comments_table_name, ct.id, blog._get_pk_val(), profiles_table_name)
 
     return  {"commenters": Profile.objects.select_related()\
-             .extra(select={"comment_count": "SELECT COUNT(*) FROM %s as cc WHERE cc.created_by_id = turbion_profile.id" % (comments_table_name, profiles_table_name)} )\
-             .extra(where=extra_where, tables=[comments_table_name, posts_table_name])\
+             .extra(select={"comment_count": extra_select} )\
+             .extra(where=["comment_count != 0"])\
              .order_by('-comment_count').distinct()[:count]}
-
 
 @cached_inclusion_tag(register,
                       trigger = { "sender" : Comment,
