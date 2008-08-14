@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import never_cache
 from django import http

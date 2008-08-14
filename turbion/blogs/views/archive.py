@@ -6,7 +6,7 @@
 #--------------------------------
 #Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from pantheon.utils.decorators import paged, templated
-from pantheon.utils.paging import paginate
+from turbion.utils.pagination import paginate
 
 from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Post
