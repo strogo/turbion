@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date: 2008-03-24 00:39:53 +0300 (Mon, 24 Mar 2008) $
-#$Author: daev $
-#$Revision: 1217 $
-#--------------------------------
-#Copyright (C) 2007-2008 Alexander Koshelev (daevaorn@gmail.com)
 from inspect import getargspec
 
 from django.template import TemplateSyntaxError, Node, Variable, generic_tag_compiler, Context
@@ -13,7 +7,7 @@ from django.utils.functional import curry
 from django.utils.encoding import smart_str
 from django.conf import settings
 
-from pantheon.cache.utils import CacheWrapper
+from turbion.cache.utils import CacheWrapper
 
 def cached_inclusion_tag( register, trigger, suffix, file_name, context_class=Context, takes_context = False ):
     def _wrapper( func ):

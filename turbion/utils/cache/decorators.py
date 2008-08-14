@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date: 2008-03-24 00:39:53 +0300 (Mon, 24 Mar 2008) $
-#$Author: daev $
-#$Revision: 1217 $
-#--------------------------------
-#Copyright (C) 2007-2008 Alexander Koshelev (daevaorn@gmail.com)
-from pantheon.cache.utils import CacheWrapper
+from turbion.cache.utils import CacheWrapper
 
 def cached( trigger, suffix = None, base_name = None ):
     def _wrapper( func ):
