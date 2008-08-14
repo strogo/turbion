@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
 from datetime import datetime
 import os
 
@@ -15,16 +9,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
 from turbion.profiles.models import Profile
-
-from pantheon.models import fields
 from turbion.utils.enum import Enum
 
 class AssetManager(models.Manager):
     def for_object(self, obj):
         ct = ContentType.objects.get_for_model(obj.__class__)
-        
+
         return self.filter(connections__object_ct=ct, connections__object_id=obj._get_pk_val())
-        
+
 class Asset(models.Model):
     types = Enum(image = _("image"),
                  application = _("application"),
@@ -32,7 +24,7 @@ class Asset(models.Model):
                  audio = _("audio"),
                  unknown = _("unknown")
                 )
-    
+
     name = models.CharField(max_length=250)
     filename = models.CharField(max_length=255)
 
@@ -47,32 +39,32 @@ class Asset(models.Model):
 
     type = models.CharField(max_length=255, choices=types)
     file = models.FileField(upload_to=settings.TURBION_BASE_UPLOAD_PATH + "assets/")
-    
+
     objects = AssetManager()
-    
+
     def __unicode__(self):
         return self.name
-    
+
     def get_thumbnail_url(self):
         filename = self.get_file_filename()
         dirname = os.path.dirname(filename)
         bits = os.path.splitext(os.path.basename(filename))
         return os.path.join(dirname, bits[0] + "_thumb" + bits[1])
-    
+
     def connect_to(self, obj):
         ct = ContentType.objects.get_for_model(obj.__class__)
         id = obj._get_pk_val()
-        
+
         Connection.objects.get_or_create(object_ct=ct, object_id=id, asset=self)
 
     def save(self):
         if self.edited_by:
             self.edited_on = datetime.now()
         super(Asset, self).save()
-        
+
     def delete(self):
         super(Asset,self).delete()
-        
+
         try:
             os.remove(self.get_thumbnail_url())
         except OSError:

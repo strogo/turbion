@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from pantheon.postprocessing.fields import PostprocessField
 from turbion.utils.enum import Enum
-from pantheon.models.manager import GenericManager
+from turbion.utils.models import GenericManager
 
 from turbion.profiles.models import Profile
 from turbion.blogs.models import Blog

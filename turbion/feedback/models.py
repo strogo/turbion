@@ -10,7 +10,7 @@ from turbion.feedback import signals
 from turbion.profiles.models import Profile
 
 from turbion.utils.enum import Enum
-from pantheon.models.manager import GenericManager
+from turbion.utils.models import GenericManager
 
 class Feedback(models.Model):
     statuses = Enum(accepted=_("accepted"),

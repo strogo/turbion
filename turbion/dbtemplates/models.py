@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007-2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.db import models
 
-from pantheon.models import manager
+from turbion.utils.models import GenericManager
 
 class Template(models.Model):
     path = models.CharField(max_length=250, unique=True)
@@ -15,7 +9,7 @@ class Template(models.Model):
     text = models.TextField()
 
     objects = models.Manager()
-    active = manager.GenericManager(is_active=True)
+    active = GenericManager(is_active=True)
 
     def __unicode__(self):
         return self.path

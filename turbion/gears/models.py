@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from django.db import models
 
-from pantheon.models.manager import GenericManager
+from turbion.utils.models import GenericManager
 
 class GearInfo( models.Model ):
     name = models.CharField( max_length = 150 )

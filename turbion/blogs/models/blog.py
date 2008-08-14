@@ -7,7 +7,6 @@ from django import db
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from pantheon.models import fields
 from pantheon.utils.generic_calendar import Calendar
 from pantheon.postprocessing.fields import PostprocessField
 

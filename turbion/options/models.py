@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.generic import GenericForeignKey
 
-from pantheon.models.manager import GenericManager
+from turbion.utils.models import GenericManager
 
 class OptionManager(GenericManager):
     def _make_lookup(self, object, cls, id=None):

@@ -5,7 +5,7 @@ from django.db import models
 from django.db import connection
 from django.contrib.contenttypes.models import ContentType
 
-from pantheon.models.manager import GenericManager
+from turbion.utils.models import GenericManager
 
 from turbion.comments.models import Comment
 from turbion.tags.models import TaggedItem
@@ -28,7 +28,7 @@ class PostManager(GenericManager):
     @property
     def table_name(self):
         return quote_name( self.model._meta.db_table)
-    
+
     def get_query_set(self):
         return super(PostManager, self).get_query_set().select_related("created_by", "blog")
 

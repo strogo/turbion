@@ -11,7 +11,7 @@ from datetime import datetime
 from turbion.profiles.models import Profile
 
 from pantheon.postprocessing.fields import PostprocessField
-from pantheon.models import manager
+from turbion.utils.models import GenericManager
 from turbion.utils.enum import Enum
 
 quote_name = connection.ops.quote_name
@@ -21,10 +21,10 @@ class CommentedModel(object):
         self.comment_count = Comment.published.for_object(self).count()
         self.save()
 
-class CommentManager(manager.GenericManager):
+class CommentManager(GenericManager):
     def get_query_set(self):
         return super(CommentManager, self).get_query_set().select_related("created_by")
-        
+
     def for_model_with_rel(self, model, obj):
         ct = ContentType.objects.get_for_model(model)
 
