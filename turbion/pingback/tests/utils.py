@@ -49,4 +49,4 @@ class TestFetcher( UrlFetcher ):
 
 test_fetcher = TestFetcher()
 
-settings.PANTHEON_URLFETCHER = test_fetcher
+settings.TURBION_URLFETCHER = test_fetcher

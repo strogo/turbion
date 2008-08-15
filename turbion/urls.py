@@ -6,7 +6,6 @@ from turbion.blogs.utils import blog_url
 
 urlpatterns = patterns('',
     url( r'^profile/',                      include( 'turbion.profiles.urls' ) ),#FIXME: remove profile link
-    url( r'^captcha/(?P<id>\w+)/$',         "pantheon.supernovaforms.views.captcha_image" ),
     url( r'^pingback/',                     include( 'turbion.pingback.urls' )  ),
     url( r'^notifications/',                include( 'turbion.notifications.urls' )  ),
     #url( r'^feedburner/',                   include( 'turbion.feedburner.urls' )  ),
