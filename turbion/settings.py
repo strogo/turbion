@@ -6,7 +6,7 @@ TURBION_CONTEXT_PROCESSORS = [
 
 TURBION_APPS = [
     'pantheon.utils',
-    'pantheon.postprocessing',
+    'turbion.utils.postprocessing',
 
     'dxapian',
 

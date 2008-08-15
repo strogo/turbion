@@ -15,7 +15,7 @@ from turbion.tags.fields import TagsField
 from turbion.profiles.models import Profile
 from turbion.blogs import utils
 
-from pantheon.postprocessing.fields import PostprocessField
+from turbion.utils.postprocessing.fields import PostprocessField
 from turbion.utils.enum import Enum
 
 class Post(models.Model, CommentedModel):

@@ -5,7 +5,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from pantheon.postprocessing.fields import PostprocessField
+from turbion.utils.postprocessing.fields import PostprocessField
 from turbion.utils.enum import Enum
 from turbion.utils.models import GenericManager
 

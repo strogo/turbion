@@ -8,7 +8,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from pantheon.utils.generic_calendar import Calendar
-from pantheon.postprocessing.fields import PostprocessField
+from turbion.utils.postprocessing.fields import PostprocessField
 
 from turbion.blogs import managers
 from turbion.tags.models import Tag

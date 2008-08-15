@@ -10,7 +10,7 @@ from datetime import datetime
 
 from turbion.profiles.models import Profile
 
-from pantheon.postprocessing.fields import PostprocessField
+from turbion.utils.postprocessing.fields import PostprocessField
 from turbion.utils.models import GenericManager
 from turbion.utils.enum import Enum
 
