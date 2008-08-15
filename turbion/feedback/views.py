@@ -2,7 +2,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.utils.decorators import templated, titled
-from pantheon.utils.views import info_page
+from turbion.utils.views import status_redirect
 
 from turbion.feedback.forms import FeedbackForm
 from turbion.feedback.models import Feedback
@@ -25,12 +25,12 @@ def index( request, blog ):
                              instance=feedback
                     )
 
-            return info_page( request,
+            return status_redirect( request,
                               title=_(u"Thanks"),
                               section= _(u"Feedback"),
                               next = "/",
-                              message= _( u"Thanks. Your request will be handled by the administrator." ),
-                              template="info_page.html" )
+                              message= _( u"Thanks. Your request will be handled by the administrator." )
+                        )
     else:
         feedback_form = FeedbackForm(request=request, blog=blog)
 

@@ -13,7 +13,7 @@ from turbion.registration import mail
 from turbion.profiles.models import Profile
 
 from turbion.utils.decorators import templated, special_titled
-from pantheon.utils.views import info_page
+from turbion.utils.views import status_redirect
 
 SECTION = _("Registration")
 titled = special_titled(section=SECTION)
@@ -29,12 +29,12 @@ def restore_password_request(request):
                                         type="password_restore")
 
             mail.RestorePasswordRequestMessage(code.user.email, {"code": code.code}).send()
-            return info_page( request,
+            return status_redirect(request,
                               title=_("Password request notification"),
                               section=SECTION,
                               message=_("Check your e-mail inbox for notification message"),
                               next=u"/",
-                              template="turbion/registration/info.html")
+                )
     else:
         form = forms.RestorePasswordForm()
     action = "./"
@@ -58,12 +58,12 @@ def restore_password(request):
 
         restore_request.delete()
 
-        return info_page( request,
+        return status_redirect(request,
                           title= _( "Notification" ),
                           section=SECTION,
                           message=_( "Check your e-mail inbox for new creditionals" ),
                           next= "/",
-                          template="turbion/registration/info.html" )
+                )#template="turbion/registration/info.html"
 
     raise http.Http404
 
@@ -79,12 +79,12 @@ def change_email(request):
                                        data=form.cleaned_data["email"])
 
             mail.ChangeEmailMessage(code.user.email, {"code": code}).send()
-            return info_page( request,
+            return status_redirect(request,
                               title= _( "E-mail change notification" ),
                               section=SECTION,
                               message= _( "Check your e-mail inbox for instructions" ),
-                              next= "/",
-                              template="turbion/registration/info.html" )
+                              next= "/"
+                        )
     else:
         form = forms.ChangeEmailForm()
 
@@ -102,12 +102,12 @@ def change_email_confirm(request):
         code.user.save()
 
         code.delete()
-        return info_page( request,
+        return status_redirect(request,
                           title= _( "Notification" ),
                           section= SECTION,
                           message= _( "Your new e-mail has been confirmed" ),
-                          next= "/",
-                          template="turbion/registration/info.html" )
+                          next= "/"
+                    )
     raise http.Http404
 
 @templated('turbion/registration/change_password.html')
@@ -120,12 +120,12 @@ def change_password(request):
             request.user.set_password(form.cleaned_data["password"])
             request.user.save()
 
-            return info_page( request,
+            return status_redirect(request,
                               title= _( "Password has changed" ),
                               section = SECTION,
                               message= _( "Now you can sing-in with your new password" ),
-                              next = request.GET.get( 'redirect', '/' ),
-                              template="turbion/registration/info.html" )
+                              next = request.GET.get( 'redirect', '/' )
+                )
     else:
         form = forms.ChangePasswordForm()
 
@@ -146,12 +146,12 @@ def registration(request):
             code = Offer.objects.create(user=user)
             mail.RegistrationConfirmMessage(user.email, {"user": user, "code": code}).send()
 
-            return info_page( request,
+            return status_redirect(request,
                               title= _( "Registration notification" ),
                               section=SECTION,
                               message= _( "Check your e-mail inbox for instructions" ),
-                              next= "/",
-                              template="turbion/registration/info.html" )
+                              next= "/"
+                            )
     else:
         form = forms.RegistrationForm()
 
@@ -165,11 +165,11 @@ def registration_confirm(request):
         code.user.save()
         code.delete()
 
-        return info_page(request,
-                        title= _( "Registration finished" ),
-                        section = SECTION,
-                        message= _( "Now you can sing-in with your account" ),
-                        next= settings.LOGIN_URL,
-                        template="turbion/registration/info.html" )
+        return status_redirect(request,
+                        title=_("Registration finished"),
+                        section=SECTION,
+                        message= _("Now you can sing-in with your account"),
+                        next=settings.LOGIN_URL
+                    )
 
     raise http.Http404

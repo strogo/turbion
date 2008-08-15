@@ -6,8 +6,7 @@ from django import http
 from turbion.profiles.models import Profile
 from turbion.notifications.models import Event
 from turbion.notifications.eventdescriptor import EventSpot
-
-from pantheon.utils.views import info_page
+from turbion.utils.views import info_page
 
 def unsubscribe(request, user_id, event_id):
     user  = get_object_or_404(Profile, pk=user_id)
@@ -33,7 +32,7 @@ def unsubscribe(request, user_id, event_id):
 
     desc.unsubscribe(user, obj)
 
-    return info_page(request,
+    return status_redirect(request,
                     title  =u"Отписка",
                     section=u"Оповещения",
                     message=u'Вы отписаны от уведомлений в теме "%s"' % desc.name,
