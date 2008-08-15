@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url( r'^gears/',                        include( 'turbion.gears.urls' )  ),
     url( r'^registration/',                 include( 'turbion.registration.urls' )  ),
     url( r'^dashboard/',                    include( 'turbion.dashboard.urls' ) ),
+    url( r'^utils/',                        include( 'turbion.utils.urls' ) ),
 
     blog_url( r'',                          include( 'turbion.blogs.urls' ) ),
     blog_url( r'pages/',                    include( 'turbion.staticpages.urls' ) ),
