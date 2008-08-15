@@ -4,8 +4,6 @@ from django.core.urlresolvers import reverse
 from django.core import mail
 from django.conf import settings
 
-from pantheon.supernovaforms.captcha import manager
-
 from turbion.registration.models import Offer
 from turbion.profiles.models import Profile
 

@@ -22,24 +22,21 @@ from turbion import roles
 class Blog(models.Model):
     review_count = models.IntegerField( default = 0, editable = False, verbose_name = _( "review count" ) )
 
-    slug = models.CharField( max_length = 50,
-                             unique = True,
-                             verbose_name = _( "slug" ) )
+    slug = models.CharField(max_length = 50,
+                            unique = True,
+                            verbose_name=_("slug"))
 
-    name = models.CharField( max_length = 50, default = 'Turbion Blog', verbose_name = _( "name" ) )
+    name = models.CharField(max_length=50,default ='Turbion Blog', verbose_name=_("name"))
 
-    created_on = models.DateTimeField( default = datetime.now, editable = False, verbose_name = _( "created on" ) )
-    created_by = models.ForeignKey( Profile, related_name = "created_blogs", verbose_name = _( "created on" ) )
+    created_on = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
+    created_by = models.ForeignKey(Profile, related_name="created_blogs", verbose_name=_("created on"))
 
-    post_per_page = models.SmallIntegerField( default = 5, verbose_name = _( "posts per page" ) )
-    additional_post_fields = models.BooleanField( default = False )
-    socialbookmarks_group = models.ForeignKey( Group,verbose_name = u"Группа соц.закладок", null = True, blank = True )
+    post_per_page = models.SmallIntegerField(default=5, verbose_name=_("posts per page"))
+    additional_post_fields = models.BooleanField(default=False)
+    socialbookmarks_group = models.ForeignKey(Group, verbose_name=_("social bookmarks group"), null=True, blank=True)
 
-    posts_choice_postprocessor = models.BooleanField( default = True )
-    posts_default_postprocessor = PostprocessField( default = "pantheon.postprocessing.backends.markdown.Processor" )
-
-    comments_choice_postprocessor = models.BooleanField( default = False )
-    comments_default_postprocessor = PostprocessField( default = "pantheon.postprocessing.backends.markdown.Processor" )
+    posts_default_postprocessor = PostprocessField(default="markdown")
+    comments_default_postprocessor = PostprocessField(default="markdown")
 
     objects = managers.BlogManager()
 

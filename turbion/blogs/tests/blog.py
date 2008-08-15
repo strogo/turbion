@@ -108,7 +108,6 @@ class BlogTest( TestCase ):
         m = HASH_RE.search( response.content )
         if m:
             hash = m.groups()[0]
-            from pantheon.supernovaforms.captcha import manager
 
             test = manager.factory.get( hash )
             captcha = test.solutions[0]
