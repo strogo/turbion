@@ -14,8 +14,6 @@ from turbion.profiles.models import Profile
 from turbion.tags.forms import TagsField
 from turbion.feedback.models import Feedback
 
-from pantheon.supernovaforms import utils
-
 class CreateSuperuserForm(forms.Form):
     username         = forms.CharField(required=True, label=_("username"))
     email            = forms.EmailField(required=True, label= _("email"))

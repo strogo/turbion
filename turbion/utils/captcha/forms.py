@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
-import re
-
 from django.forms import fields
 from django import forms
 from django.forms.util import ValidationError
 from django.utils.translation import ugettext
-
 from django.forms.widgets import Widget, HiddenInput, TextInput
-from pantheon.supernovaforms import captcha
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.safestring import mark_safe

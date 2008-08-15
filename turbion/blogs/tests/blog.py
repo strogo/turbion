@@ -116,7 +116,7 @@ class BlogTest( TestCase ):
             captcha = ""
             hash = ""
 
-        url = blog_reverse( "blog_comment_add", kwargs = { "blog" : self.blog.slug, "post_id" : self.post.id } )
+        url = blog_reverse("blog_comment_add", kwargs = {"blog": self.blog.slug, "post_id": self.post.id})
 
         comment = { "text"  : "My comment",
                     "name"  : "Alex",

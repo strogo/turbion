@@ -3,8 +3,6 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 
-from pantheon.supernovaforms.fields import CaptchaField
-
 from turbion.profiles.models import Profile
 from turbion.registration import utils
 
@@ -83,7 +81,6 @@ class RegistrationForm( RegistrationFormBase, forms.Form ):
     password_confirm = forms.CharField( widget = forms.PasswordInput(), label = _( 'password confirm' ), required = True )
 
     #captcha = CaptchaField( label = _( 'Check' ), required = True )
-
     def clean(self):
         self.cleaned_data.pop( "captcha", None )
         del self.cleaned_data[ "password_confirm" ]

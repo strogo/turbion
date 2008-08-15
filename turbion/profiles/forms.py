@@ -5,7 +5,7 @@ from django.forms.extras import SelectDateWidget
 
 from datetime import date
 
-from pantheon.supernovaforms.fields import CaptchaField
+from turbion.utils.captcha.forms import CaptchaField
 
 from turbion.profiles.models import Profile
 
@@ -47,7 +47,7 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
             site  = forms.URLField(required=False, label=_("site"))
 
             if need_captcha:
-                captcha = CaptchaField(required=True, label=_("check"))
+                captcha = CaptchaField(request=request, required=True, label=_("check"))
 
             def __init__(self, initial=None, *args, **kwargs ):
                 if not initial:
