@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.core.paginator import QuerySetPaginator, Page, InvalidPage
+from django.core.paginator import Paginator, Page, InvalidPage
 from django import http
 
 def split_page_number(number, per_page, page_count=None):
@@ -16,7 +16,7 @@ def split_page_number(number, per_page, page_count=None):
 
     return offset, count
 
-def paginate(data_set, number, per_page, paginator_class=QuerySetPaginator):
+def paginate(data_set, number, per_page, paginator_class=Paginator):
     paginator = paginator_class(data_set, int(per_page))
 
     if number == 'last':
