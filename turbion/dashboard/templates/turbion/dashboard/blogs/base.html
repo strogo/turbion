@@ -1,5 +1,14 @@
 {% extends "turbion/dashboard/base.html" %}
 
+{%block top_menu%}
+ <a href="{% url dashboard_blog_posts blog.slug %}">posts</a>
+        <a href="">comments</a>
+        <a href="{% url dashboard_blog_assets blog.slug %}">assets</a>
+        <a href="">preferences</a>
+        <a href="{% url dashboard_blog_pages blog.slug %}">pages</a>
+        <a href="{% url dashboard_blog_feedbacks blog.slug %}">feedbacks</a>
+{% endblock top_menu %}
+
 {% block page_left %}
     <ul>
         <li><a href="{% url dashboard_blog_post_new blog.slug %}">New post</a></li>

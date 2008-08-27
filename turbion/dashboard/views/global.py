@@ -3,6 +3,7 @@ from django import http
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
+from django.conf import settings
 
 from turbion.utils.decorators import templated, titled
 
@@ -11,28 +12,25 @@ from turbion.dashboard import forms, decorators
 from turbion.profiles.models import Profile
 
 
-@templated( "turbion/dashboard/global/install.html" )
+@templated("turbion/dashboard/global/install.html")
 @titled()
-def install( request ):
+def install(request):
     if not Profile.objects.has_superuser():
-        return http.HttpResponseRedirect( reverse( "dashboard_create_superuser" ) )
+        return http.HttpResponseRedirect(reverse("dashboard_create_superuser"))
 
     return {}
 
 @login_required
 @decorators.superuser_required
-@templated( "turbion/dashboard/global/index.html" )
+@templated("turbion/dashboard/global/index.html")
 @titled()
-def index( request ):
-    if not Profile.objects.has_superuser():
-        return http.HttpResponseRedirect( reverse( "dashboard_create_superuser" ) )
+def index(request):
+    blogs = Blog.objects.all()
 
-    blogs = list( Blog.objects.all() )
+    if not len(blogs):
+        return http.HttpResponseRedirect(reverse("dashboard_create_blog"))
 
-    if not len( blogs ):
-        return http.HttpResponseRedirect( reverse( "dashboard_create_blog" ) )
-
-    return { "blogs" : blogs }
+    return {"blogs": blogs}
 
 
 @templated( "turbion/dashboard/global/create_superuser.html" )
