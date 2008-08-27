@@ -1,26 +1,21 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.conf.urls.defaults import url
 
-MULTIPLE_SETUP = getattr( settings, 'TURBION_BLOGS_MULTIPLE', False )
+MULTIPLE_SETUP = settings.TURBION_BLOGS_MULTIPLE
 
-def blog_reverse( viewname, urlconf=None, args=None, kwargs=None ):
+def blog_reverse(viewname, urlconf=None, args=None, kwargs=None):
     if not MULTIPLE_SETUP:
         if args:
-            args = list( args )
-            del args[ 0 ]
+            args = list(args)
+            del args[0]
         elif kwargs:
-            kwargs.pop( "blog", None )
-    url = reverse( viewname, urlconf, args, kwargs )
+            kwargs.pop("blog", None)
 
-    return url.replace( "?", "" )
+    url = reverse(viewname, urlconf, args, kwargs)
+
+    return url.replace("?", "")
 
 def permalink(func):
     def inner(*args, **kwargs):
@@ -33,5 +28,5 @@ if MULTIPLE_SETUP:
 else:
     blog_slug = r"^"
 
-def blog_url( regex, view, kwargs=None, name=None, prefix='' ):
-    return url( blog_slug + regex, view, kwargs, name, prefix )
+def blog_url(regex, view, kwargs=None, name=None, prefix=''):
+    return url(blog_slug + regex, view, kwargs, name, prefix)

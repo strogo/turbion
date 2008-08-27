@@ -13,7 +13,7 @@ def wrap(method):
     return _inner
 
 for name, func in ProcessorSpot.processors.iteritems():
-    register.filter(name.rsplit(".",2)[1], wrap(func.postprocess))
+    register.filter(name, wrap(func.postprocess))
 
 @register.filter
 def postprocess(instance, field, processor="postprocess"):

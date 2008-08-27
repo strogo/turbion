@@ -9,10 +9,11 @@ from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 
 from turbion.profiles.models import Profile
-
+from turbion.notifications import EventDescriptor
 from turbion.utils.postprocessing.fields import PostprocessField
 from turbion.utils.models import GenericManager
 from turbion.utils.enum import Enum
+from turbion.comments import signals as comment_signals
 
 quote_name = connection.ops.quote_name
 
@@ -61,11 +62,9 @@ class Comment(models.Model):
     text_html   = models.TextField(verbose_name=_("text html"))
 
     status = models.CharField(max_length=20,
-                               choices=statuses,
-                               default=statuses.published,
-                               verbose_name=_("status"))
-
-    notify = models.BooleanField(default=False, verbose_name=_("e-mail notifications"))
+                              choices=statuses,
+                              default=statuses.published,
+                              verbose_name=_("status"))
 
     postprocess = PostprocessField(verbose_name=_("postprocessor"))
 
@@ -111,3 +110,15 @@ class Comment(models.Model):
         verbose_name        = _('comment')
         verbose_name_plural = _('comments')
         db_table            = "turbion_comment"
+
+
+class CommentAdd(EventDescriptor):
+    class Meta:
+        name = _("new comment added")
+        to_object = True
+        trigger = (Comment, comment_signals.comment_added)
+
+    def allow_recipient(self, recipient, comment, *args, **kwargs):
+        if recipient == comment.created_by:
+            return False
+        return True

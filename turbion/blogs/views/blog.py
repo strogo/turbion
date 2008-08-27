@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 import datetime
 
 from django.contrib.auth.decorators import login_required
@@ -29,14 +23,14 @@ def index_sitemap( request, sitemaps ):
     current_site = Site.objects.get_current()
     sites = []
     protocol = request.is_secure() and 'https' or 'http'
-    
+
     for slug in Blog.objects.all().values_list( "slug", flat = True ):
         sitemap_url = urlresolvers.reverse( 'blog_sitemap', kwargs={'blog': slug})
         sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
-        
+
         sitemap_url = urlresolvers.reverse( 'page_sitemap', kwargs={'blog': slug})
         sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
-    
+
     xml = loader.render_to_string('sitemap_index.xml', {'sitemaps': sites})
     return http.HttpResponse(xml, mimetype='application/xml')
 

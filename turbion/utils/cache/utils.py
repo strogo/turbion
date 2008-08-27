@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date: 2008-08-06 23:53:57 +0400 (Wed, 06 Aug 2008) $
-#$Author: daev $
-#$Revision: 1792 $
-#--------------------------------
-#Copyright (C) 2007-2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.utils.functional import curry
 from django.core.cache import cache
 from django.utils.encoding import smart_str

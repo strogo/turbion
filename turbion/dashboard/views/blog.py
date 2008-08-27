@@ -7,51 +7,52 @@ from django.core.urlresolvers import reverse
 from turbion.utils.decorators import titled, templated
 
 from turbion.blogs.decorators import blog_view, post_view
-from turbion.blogs.models import Blog, BlogRoles, Post, CommentAdd, Comment
+from turbion.blogs.models import Blog, BlogRoles, Post, Comment
+from turbion.comments.models import CommentAdd
 from turbion.feedback.models import Feedback
 from turbion.dashboard import forms
 from turbion.profiles.models import Profile
 from turbion.pingback import signals
 from turbion.roles.decorators import has_capability_for
 
-@templated( "turbion/dashboard/blogs/dashboard.html" )
-@titled( page = "Dashboard", section = "Administration" )
+@templated("turbion/dashboard/blogs/dashboard.html")
+@titled(page="Dashboard", section="Administration")
 @blog_view
-@has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
-def dashbaord( request, blog ):
-    latest_posts = Post.objects.for_blog( blog ).order_by("-created_on")[:5]
-    latest_comments = Comment.published.for_model_with_rel( Post, blog ).order_by("-created_on").distinct()[:5]
+@has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
+def dashbaord(request, blog):
+    latest_posts = Post.objects.for_blog(blog).order_by("-created_on")[:5]
+    latest_comments = Comment.published.for_model_with_rel(Post, blog).order_by("-created_on").distinct()[:5]
     latest_feedbacks = Feedback.new.all()
 
-    return { "blog"            : blog,
-             "latest_posts"    : latest_posts,
-             "latest_comments" : latest_comments,
-             "latest_feedback": latest_feedbacks }
+    return {"blog"           : blog,
+            "latest_posts"   : latest_posts,
+            "latest_comments": latest_comments,
+            "latest_feedback": latest_feedbacks }
 
-@templated( "turbion/dashboard/blogs/posts.html" )
-@titled( page = "Dashboard", section = "Administration" )
+@templated("turbion/dashboard/blogs/posts.html")
+@titled(page="Dashboard", section="Administration")
 @blog_view
-@has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
-def index( request, blog ):
-    posts = Post.objects.for_blog( blog ).order_by( "-created_on" )
+@has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
+def index(request, blog):
+    posts = Post.objects.for_blog(blog).order_by("-created_on")
 
-    return { "blog"  : blog,
-             "object_list" : posts }
+    return {"blog": blog,
+            "object_list": posts}
 
-@templated( "turbion/dashboard/table.html" )
-@titled( page = "Dashboard", section = "Administration" )
+@templated("turbion/dashboard/table.html")
+@titled(page="Dashboard", section="Administration")
 @blog_view
-@has_capability_for( BlogRoles.capabilities.enter_dashboard, "blog" )
-def comments( request, blog ):
+@has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
+def comments(request, blog):
 
-    return { "blog" : blog }
+    return {"blog" : blog}
 
-@templated( "turbion/dashboard/table.html" )
-@titled( page = "Dashboard", section = "Administration" )
+@templated("turbion/dashboard/table.html")
+@titled(page="Dashboard", section="Administration")
 @blog_view
-def preferences( request, blog ):
+def preferences(request, blog):
 
-    return { "blog" : blog }
+    return {"blog": blog}
 
 @templated('turbion/dashboard/form.html')
 @titled(page=u'Редактирование поста "{{post.title}}"')
@@ -61,7 +62,7 @@ def post_new(request, blog, post=None):
     was_draft = post and not post.is_published
 
     if request.POST:
-        form = forms.PostForm(data=request.POST, instance=post, blog=blog)
+        form = forms.PostForm(data=request.POST, instance=post, request=request, blog=blog)
         if form.is_valid():
             if 'view' in request.POST:
                 new_post = form.save(False)
@@ -81,7 +82,7 @@ def post_new(request, blog, post=None):
                 form.save_tags()
 
                 if new_post.is_published:
-                    if new_post.notify:
+                    if form.cleaned_data["notify"]:
                         CommentAdd.instance.subscribe(post.created_by, new_post)
 
                     signals.send_pingback.send(
@@ -93,11 +94,11 @@ def post_new(request, blog, post=None):
 
                 return http.HttpResponseRedirect(reverse("dashboard_blog_posts", args = (blog.slug,)))
     else:
-        form = forms.PostForm(blog=blog, instance=post)
+        form = forms.PostForm(request=request, blog=blog, instance=post)
 
-    return { "blog": blog,
-             "post": post,
-             "form": form }
+    return {"blog": blog,
+            "post": post,
+            "form": form }
 
 def post_edit(request, post_id, *args, **kwargs):
     post = Post.objects.get(pk = post_id)

@@ -35,9 +35,6 @@ class Blog(models.Model):
     additional_post_fields = models.BooleanField(default=False)
     socialbookmarks_group = models.ForeignKey(Group, verbose_name=_("social bookmarks group"), null=True, blank=True)
 
-    posts_default_postprocessor = PostprocessField(default="markdown")
-    comments_default_postprocessor = PostprocessField(default="markdown")
-
     objects = managers.BlogManager()
 
     def __unicode__(self):

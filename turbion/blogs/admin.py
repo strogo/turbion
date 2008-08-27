@@ -9,7 +9,7 @@ class BlogAdmin(admin.ModelAdmin):
 admin.site.register(Blog, BlogAdmin)
 
 class PostAdmin(admin.ModelAdmin):
-    list_display       = ('blog', 'title', "created_by", 'created_on', 'status', 'comment_count', 'notify', 'review_count')
+    list_display       = ('blog', 'title', "created_by", 'created_on', 'status', 'comment_count', 'review_count')
     list_display_links = ('title',)
     list_filter        = ('blog', "created_by", "status",)
     list_per_page      = 50

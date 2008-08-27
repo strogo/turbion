@@ -2,7 +2,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import *
 
-from turbion.blogs.models import Comment
+from turbion.comments.models import Comment, CommentAdd
 from turbion.comments import signals
 from turbion.comments import forms
 
@@ -40,6 +40,9 @@ def add_comment(request,
                             comment=new_comment,
                             instance=connectio
                         )
+
+                if form.cleaned_data["notify"]:
+                    CommentAdd.instance.subscribe(new_comment.created_by, new_comment.connection)
 
                 return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
     else:

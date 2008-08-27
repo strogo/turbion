@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -59,24 +53,24 @@ class PostForm(forms.ModelForm):
         model = Post
         exclude = ['blog', 'created_by', 'edited_by', 'edited_on', 'text_html']
 
-    def __init__(self, blog, *args, **kwargs):
+    notify = forms.BooleanField(initial=False)
+
+    def __init__(self, request, blog, *args, **kwargs):
         self.blog = blog
 
-        super( PostForm, self ).__init__(*args, **kwargs)
+        initial = kwargs.pop("initial", {})
+        initial["postprocess"] = request.user.postprocessor
+
+        super(PostForm, self).__init__(initial=initial, *args, **kwargs)
 
         exclude_fields = []
         if not blog.additional_post_fields:
             exclude_fields.extend(["mood", "location", "music"])
-        if not blog.posts_choice_postprocessor:
-            exclude_fields.extend(["postprocess"])
 
         for f in exclude_fields:
             self.fields.pop(f)
 
-        self.fields["tags"] = TagsField(form = self)
-
-        if blog.posts_choice_postprocessor:
-            PostForm.base_fields["postprocess"].initial = blog.posts_default_postprocessor
+        self.fields["tags"] = TagsField(form=self)
 
 class BlogPrefForm(forms.ModelForm):
     class Meta:

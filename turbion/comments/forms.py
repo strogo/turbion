@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -14,7 +8,9 @@ from turbion.profiles.forms import combine_profile_form_with
 class _CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ("text", "notify")
+        fields = ("text",)
+
+    notify = forms.BooleanField(initial=False)
 
 class CommentForm(forms.Form):
     def __init__(self, request, *args, **kwargs ):

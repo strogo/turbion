@@ -39,11 +39,14 @@ urlpatterns = patterns('turbion.blogs.views',
  url(r'^archive/(?P<year_id>\d{4})/$',                                           'archive.year',  name="blog_archive_year"),
  url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/$',                     'archive.month', name="blog_archive_month"),
  url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/$', 'archive.day',   name="blog_archive_day"),
-
- url(r'^search/$',                                                               'search.search', name="blog_search"),
- url(r'^search/posts/$',                                                         'search.posts',  name="blog_search_posts"),
- url(r'^search/comments/$',                                                      'search.comments', name="blog_search_comments"),
 )
+
+if settings.TURBION_USE_DJAPIAN:
+    urlpatterns += patterns('turbion.blogs.views',
+     url(r'^search/$',                                     'search.search', name="blog_search"),
+     url(r'^search/posts/$',                               'search.posts',  name="blog_search_posts"),
+     url(r'^search/comments/$',                            'search.comments', name="blog_search_comments"),
+    )
 
 urlpatterns += patterns('turbion.blogs.views',
  url(r'^feeds/rss/(?P<url>.*)/$',   'blog.feed',    {"feed_dict": rss_feeds }, "blog_rss"),

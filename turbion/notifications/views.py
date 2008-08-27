@@ -6,7 +6,7 @@ from django import http
 from turbion.profiles.models import Profile
 from turbion.notifications.models import Event
 from turbion.notifications.eventdescriptor import EventSpot
-from turbion.utils.views import info_page
+from turbion.utils.views import status_redirect
 
 def unsubscribe(request, user_id, event_id):
     user  = get_object_or_404(Profile, pk=user_id)

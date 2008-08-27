@@ -28,8 +28,9 @@ def blog_view( view_func ):
 
         request.blog = blog
         return view_func( request, blog = blog, *args, **kwargs )
-    _decor.__doc__ = view_func.__doc__
+    _decor.__doc__  = view_func.__doc__
     _decor.__dict__ = view_func.__dict__
+    _decor.__name__ = view_func.__name__
     return _decor
 
 def post_view(view_func):
@@ -38,7 +39,7 @@ def post_view(view_func):
             query_set = Post.objects.for_blog(blog)
         else:
             query_set = Post.published.for_blog(blog)
-            
+
             if not request.user.is_authenticated_confirmed():
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
 
@@ -48,6 +49,7 @@ def post_view(view_func):
                                         slug            = kwargs.pop( 'post_slug' ) )
 
         return view_func( request, blog = blog, post = post, *args, **kwargs )
-    _decor.__doc__ = view_func.__doc__
+    _decor.__doc__  = view_func.__doc__
     _decor.__dict__ = view_func.__dict__
+    _decor.__name__ = view_func.__name__
     return _decor

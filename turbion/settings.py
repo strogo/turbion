@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from turbion.conf import merge
+
 TURBION_CONTEXT_PROCESSORS = [
     "turbion.options.context_processors.options_globals",
 ]
@@ -7,7 +9,7 @@ TURBION_CONTEXT_PROCESSORS = [
 TURBION_APPS = [
     'turbion.utils.postprocessing',
 
-    'dxapian',
+    'djapian',
 
     'turbion.utils',
     'turbion.tags',
@@ -46,47 +48,11 @@ TURBION_AUTHENTICATION_BACKENDS = [
     ('django.contrib.auth.backends.ModelBackend', "turbion.registration.backend.OnlyActiveBackend")
 ]
 
-def to_list(func):
-    def _decorator(value, *args, **kwargs):
-        if isinstance(value, tuple):
-            value = list(value)
-        elif isinstance(value, list):
-            pass
-        else:
-            raise ValueError
-
-        return func(value, *args, **kwargs)
-    return _decorator
-
-def append(source):
-    @to_list
-    def _func(value):
-        return value + source
-    return _func
-
-def insert(source):
-    @to_list
-    def _func( value ):
-        for pos, klass in source:
-            if pos is not None:
-                if isinstance(pos, basestring):
-                    try:
-                        i = value.index(pos)
-                        value[i] = klass
-                    except ValueError:
-                        value.append(klass)
-                else:
-                    value.insert(pos, klass)
-            else:
-                value.append(klass)
-        return value
-    return _func
-
-INSTALLED_APPS     = append(TURBION_APPS)
-MIDDLEWARE_CLASSES = insert(TURBION_MIDDLEWARE_CLASSES)
-TEMPLATE_CONTEXT_PROCESSORS = append(TURBION_CONTEXT_PROCESSORS)
-TEMPLATE_LOADERS   = insert(TURBION_TEMPLATE_LOADERS)
-AUTHENTICATION_BACKENDS = insert(TURBION_AUTHENTICATION_BACKENDS)
+INSTALLED_APPS              = merge(TURBION_APPS)
+MIDDLEWARE_CLASSES          = merge(TURBION_MIDDLEWARE_CLASSES)
+TEMPLATE_CONTEXT_PROCESSORS = merge(TURBION_CONTEXT_PROCESSORS)
+TEMPLATE_LOADERS            = merge(TURBION_TEMPLATE_LOADERS)
+AUTHENTICATION_BACKENDS     = merge(TURBION_AUTHENTICATION_BACKENDS)
 
 TURBION_BLOGS_MULTIPLE = False
 TURBION_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'
@@ -97,4 +63,9 @@ TURBION_BASE_UPLOAD_PATH = "upload/turbion/"
 
 TURBION_POST_PERMALINK_PREFIX = ""
 
+TURBION_USE_DJAPIAN = False
+
 from turbion.pingback.settings import *
+
+# Djapian related
+DJAPIAN_DATABASE_PATH = "djapian"

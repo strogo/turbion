@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.notifications import EventDescriptor
 from turbion.blogs import managers
 from turbion.blogs.models.blog import Blog
 from turbion.comments.models import Comment, CommentedModel
@@ -66,9 +65,6 @@ class Post(models.Model, CommentedModel):
                                      default = show_settings.everybody,
                                      verbose_name=_("showing"))
 
-    notify        = models.BooleanField(default=True,
-                                        verbose_name=_("e-mail notifications"))
-
     objects = managers.PostManager()
 
     published = managers.PostManager(status=statuses.published)
@@ -88,7 +84,7 @@ class Post(models.Model, CommentedModel):
 
     @models.permalink
     def get_atom_feed_url(self):
-        return ( "blog_atom", ( "%s/%s" % ( self.blog.slug, self.id ), ) )
+        return ("blog_atom", ( "%s/%s" % ( self.blog.slug, self.id ),))
 
     def inc_reviews(self):
         self.review_count += 1
@@ -110,25 +106,7 @@ class Post(models.Model, CommentedModel):
     class Meta:
         verbose_name        = 'post'
         verbose_name_plural = 'posts'
-        ordering            = ( '-created_on', )
-        unique_together     = (( "blog", "created_on", "title", "slug" ),)
+        ordering            = ('-created_on',)
+        unique_together     = (("blog", "created_on", "title", "slug"),)
         app_label           = "blogs"
         db_table            = "turbion_post"
-
-from turbion.comments import signals as comment_signals
-
-class CommentAdd(EventDescriptor):
-    class Meta:
-        name = _("new comment added")
-        to_object = True
-        trigger = (Comment, comment_signals.comment_added)
-
-    def fire(self, comment, *args, **kwargs):
-        if comment.notify:
-            self.subscribe(comment.created_by, comment.connection)
-        super(CommentAdd, self).fire(comment=comment, *args, **kwargs)
-
-    def allow_recipient(self, recipient, comment, *args, **kwargs):
-        if recipient == comment.created_by:
-            return False
-        return True

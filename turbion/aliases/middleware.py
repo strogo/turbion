@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django import http
 
 from turbion.aliases.models import Alias
 
 import re
 
-FEEDBURNER_REG = re.compile( '(feedburner|feedvalidator)', re.I )
-
-class AliasesMiddleware( object ):
+class AliasesMiddleware(object):
     def process_request(self, request):
         try:
-            alias = Alias.active.get( from_url = request.path )
-            if not FEEDBURNER_REG.match( request.META.get( "HTTP_USER_AGENT", "" ) ):
-                return http.HttpResponseRedirect( alias.to_url )
+            alias = Alias.active.get(from_url=request.path)
+
+            if alias.exclude_user_agent:
+                regexpr = re.compile(alias.exclude_user_agent, re.I)
+                if regexpr.match(request.META.get("HTTP_USER_AGENT", "")):
+                   return
+
+            response = http.HttpResponseRedirect(alias.to_url)
+            response.status_code = alias.status_code
+            return response
         except Alias.DoesNotExist:
             pass

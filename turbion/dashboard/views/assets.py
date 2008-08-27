@@ -8,7 +8,7 @@ from django.views.decorators.cache import never_cache
 from turbion.utils.decorators import titled, templated
 
 from turbion.blogs.decorators import blog_view, post_view
-from turbion.blogs.models import Blog, BlogRoles, Post, CommentAdd, Comment
+from turbion.blogs.models import Blog, BlogRoles, Post, Comment
 from turbion.dashboard import forms
 from turbion.profiles.models import Profile
 from turbion.pingback import signals

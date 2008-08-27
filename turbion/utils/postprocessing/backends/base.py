@@ -10,21 +10,21 @@ class ProcessorSpot(type):
             return type.__new__(cls, name, bases, attrs)
 
         if not "name" in attrs:
-            attrs["name"] = name.lower()
+            processor_name = attrs["name"] = name.lower()
+        else:
+            processor_name = attrs["name"]
 
         t = type.__new__(cls, name, bases, attrs)
+        t.descriptor = "%s.%s" % (t.__module__, name)
 
-        descriptor = "%s.%s" % (t.__module__, name)
-        t.descriptor = descriptor
-
-        cls.processors[name] = t()
+        cls.processors[processor_name] = t()
 
         return t
 
     @classmethod
     def get_processor(cls, name):
-        for descriptor, proc in cls.processors.iteritems():
-            if descriptor.endswith(name):
+        for proc_name, proc in cls.processors.iteritems():
+            if proc_name.endswith(name):
                 return proc
         raise ValueError("Postorocessor with name '%s' doesn't registered" % name)
 
@@ -41,7 +41,7 @@ class BaseProcessor(object):
         raise NotImplementedError
 
     def __unicode__(self):
-        return self.descriptor
+        return self.name
 
     def __str__(self):
         return str(self.__unicode__())

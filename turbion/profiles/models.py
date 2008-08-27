@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from datetime import date
 
 from turbion.utils.enum import Enum
-
+from turbion.utils.postprocessing.fields import PostprocessField
 from turbion.roles.models import Role, Capability
 
 class ProfileManager(UserManager):
@@ -46,8 +46,8 @@ class Profile(User):
                 )
 
     nickname = models.CharField(max_length=150, null=True)
-    ip = models.IPAddressField(null=True)
-    is_confirmed = models.BooleanField(default=False)
+    ip = models.IPAddressField(null=True, blank=True)
+    is_confirmed = models.BooleanField(default=True)
 
     birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
     gender = models.CharField(max_length=10, verbose_name =_('gender'), choices=genders, null=True, blank=True)
@@ -70,6 +70,8 @@ class Profile(User):
 
     roles = models.ManyToManyField(Role, blank=True, related_name="profiles")
     capabilities = models.ManyToManyField(Capability, blank=True, related_name="profiles")
+
+    postprocessor = PostprocessField()
 
     objects = ProfileManager()
 
@@ -98,7 +100,7 @@ class Profile(User):
         if self.is_confirmed:
             return models.permalink(lambda:("turbion.profiles.views.profile", (), {"profile_user": self.username}))()
         return self.site
-    
+
     class Meta:
         verbose_name        = _('profile')
         verbose_name_plural = _('profiles')
