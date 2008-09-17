@@ -16,9 +16,9 @@ from turbion.profiles.models import Profile
 
 settings.DEBUG = True#FIXME
 
-CREDENTIALS = { 'username' : "daev", 'password' : "foobar" }
+CREDENTIALS = {'username': "daev", 'password': "foobar"}
 
-class BlogTest( TestCase ):
+class BlogViewsTest(TestCase):
     fixtures = [ 'blog', 'posts', 'profiles', 'tags' ]
 
     def assertOk( self, url ):

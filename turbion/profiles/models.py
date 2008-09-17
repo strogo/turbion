@@ -21,6 +21,9 @@ class ProfileManager(UserManager):
 
         return base + hash
 
+    def create_profile(self, *args, **kwargs):
+        return self.create_user(*args, **kwargs)
+
     def create_guest_profile(self, nickname, email=None, site=None):
         profile = self.create_user(username=self.generate_username([nickname,email,site]),
                                    email=email and email or "",
