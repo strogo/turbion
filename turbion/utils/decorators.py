@@ -31,6 +31,7 @@ class PageMeta(object):
         self.context = context
         self.template = template
         self.processors = []
+        self.status_code = 200
 
     def __getitem__(self, name):
         return self.context[name]
@@ -54,9 +55,11 @@ class PageMeta(object):
                                 )
         if not template:
             template = self.template
-        return render_to_response(template,
+        response = render_to_response(template,
                                   context_instance=context
                 )
+        response.status_code = self.status_code
+        return response
 
 def ensure_meta(request, response):
     if isinstance(response, (tuple, list)):
@@ -68,10 +71,23 @@ def ensure_meta(request, response):
                         context=response)
     return response
 
+def status(code=200):
+    def _wrapper(func):
+        def _decor(request, *args, **kwargs):
+            meta = ensure_meta(request, func(request, *args, **kwargs))
+            if isinstance(meta, PageMeta):
+                meta.status_code = code
+            return meta
+        _decor.__doc__  = func.__doc__
+        _decor.__dict__ = func.__dict__
+        _decor.__name__ = func.__name__
+        return _decor
+    return _wrapper
+
 def templated(template=None):
     def _wrapper(func):
         def _decor(request, *args, **kwargs):
-            meta = ensure_meta( request, func(request, *args, **kwargs))
+            meta = ensure_meta(request, func(request, *args, **kwargs))
             if isinstance(meta, PageMeta):
                 return meta.render_to_response(template)
             return meta

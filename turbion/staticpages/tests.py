@@ -31,7 +31,6 @@ class StaticPagesViews(BaseViewTest):
     
     def test_page(self):
         response = self.assertStatus(reverse("pages_dispatcher", args=[self.blog.slug, self.page.slug]))
-        print response
     
     def test_sitemap(self):
         self.assertStatus(reverse("pages_sitemap", args=[self.blog.slug,]))
