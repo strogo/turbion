@@ -14,12 +14,12 @@ class SessionStore(object):
         data = {key: (test, data)}
         """
         self.request = request
-        
+
         if not "turbion_captcha" in request.session:
             request.session["turbion_captcha"] = {}
-            
+
         self._data = request.session["turbion_captcha"]
-        
+
     def __getitem__(self, key):
         return self._data[key][0]
 
@@ -32,9 +32,15 @@ class SessionStore(object):
         except KeyError:
             pass
 
+    def keys(self):
+        return self._data.keys()
+
+    def values(self):
+        return [i[1][0] for i in self._data.items()]
+
     def get(self, key, default=None):
         try:
-            self[key]
+            return self[key]
         except KeyError:
             return default
 
@@ -55,7 +61,7 @@ class SessionFactory(Captcha.Factory):
     def clean(self):
         """Removed expired tests"""
         border = time.time() - self.lifetime
-        
+
         for key, value in self.storedInstances._data.items():
             if value[1] < border:
                 del self.storedInstances[key]
@@ -72,7 +78,7 @@ class CaptchaManager(object):
         return test
 
     def get_test(self, id):
-        test = self.factory.get( id )
+        test = self.factory.get(id)
         return test
 
     def render_test(self, response, id, type='JPEG'):

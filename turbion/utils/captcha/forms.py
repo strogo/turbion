@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 
 class ImageWidget(forms.Widget):
     def render(self, name, value, attrs=None):
-        return mark_safe(HiddenInput().render(name, value) + u'<img src=\"%s\" width="150" heigth="60"/> ' % value)
+        return mark_safe(forms.HiddenInput().render(name, value) + u'<img src=\"%s\" width="150" heigth="60"/> ' % value)
 
 class CaptchaWidget(forms.MultiWidget):
     def __init__(self, attrs=None):
@@ -38,7 +38,7 @@ class CaptchaField(forms.Field):
 
     def __init__(self, request, *args, **kwargs):
         from turbion.utils.captcha import CaptchaManager
-        
+
         self.request = request
         self.manager = CaptchaManager(self.request)
 
