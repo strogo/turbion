@@ -9,7 +9,7 @@ from django.template.context import get_standard_processors
 
 from turbion.utils.title import gen_title
 
-__all__ = ["paged", "templated", "titled", "special_titled"]
+__all__ = ["status", "paged", "templated", "titled", "special_titled"]
 
 class LocalRequestContext(Context):
     def __init__(self, request, dict=None, processors=None):

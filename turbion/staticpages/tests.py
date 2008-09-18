@@ -17,6 +17,7 @@ class StaticPagesViews(BaseViewTest):
             blog=blog,
             created_by=profile,
             title="Test page",
+            slug="testpage",
             text="Some text"            
         )
         self.blog = blog
@@ -26,11 +27,13 @@ class StaticPagesViews(BaseViewTest):
                 blog=blog,
                 created_by=profile,
                 title="Test page with num %s" % i,
+                slug="testpage%s" % i,
                 text="Some text"
             )
     
     def test_page(self):
-        response = self.assertStatus(reverse("pages_dispatcher", args=[self.blog.slug, self.page.slug]))
+        print self.page.get_absolute_url()
+        response = self.assertStatus(self.page.get_absolute_url())
     
     def test_sitemap(self):
         self.assertStatus(reverse("pages_sitemap", args=[self.blog.slug,]))

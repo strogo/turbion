@@ -11,6 +11,7 @@ from turbion.utils.models import GenericManager
 
 from turbion.profiles.models import Profile
 from turbion.blogs.models import Blog
+from turbion.blogs.utils import permalink
 
 class Page(models.Model):
     statuses = Enum(published=_("published"),
@@ -48,7 +49,7 @@ class Page(models.Model):
         self.text_html = self.postprocess.postprocess(self.text)
         super(Page, self).save()
 
-    @models.permalink
+    @permalink
     def get_absolute_url(self):
         return ("pages_dispatcher", (self.blog.slug, self.slug))
 
