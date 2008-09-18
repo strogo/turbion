@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.core.urlresolvers import reverse
+from django.core import urlresolvers
 from django.conf import settings
 from django.conf.urls.defaults import url
 
@@ -13,7 +13,7 @@ def blog_reverse(viewname, urlconf=None, args=None, kwargs=None):
         elif kwargs:
             kwargs.pop("blog", None)
 
-    url = reverse(viewname, urlconf, args, kwargs)
+    url = urlresolvers.reverse(viewname, urlconf, args, kwargs)
 
     return url.replace("?", "")
 

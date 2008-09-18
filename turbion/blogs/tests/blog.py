@@ -9,6 +9,8 @@ from django import http
 from django.conf import settings
 from django.core import mail
 
+from turbion.utils.testing import BaseViewTest
+
 from turbion.blogs.models import Blog, Post, Comment
 from turbion.comments.models import CommentAdd
 from turbion.blogs.models.blog import BlogRoles
@@ -17,75 +19,54 @@ from turbion.profiles.models import Profile
 
 CREDENTIALS = {'username': "daev", 'password': "foobar"}
 
-class BlogViewsTest(TestCase):
-    fixtures = [ 'blog', 'posts', 'profiles', 'tags' ]
+class BlogViewsTest(BaseViewTest):
+    fixtures = ['blog', 'posts', 'profiles', 'tags']
 
-    def assertOk( self, url ):
-        response = self.client.get( url )
+    def setUp(self):
+        self.blog = Blog.objects.get(slug="wna")
+        self.post = Post.objects.get(pk=1)
+        
+    def login(self):
+        self.client.login(**CREDENTIALS)
 
-        self.assertEqual( response.status_code, http.HttpResponse.status_code )
+    def test_index(self):
+        self.assertStatus(self.blog.get_absolute_url())
 
-        return response
+    def test_post(self):
+        self.login()
+        self.assertStatus(self.post.get_absolute_url())
 
-    def setUp( self ):
-        self.blog = Blog.objects.get(slug = "wna")
-        self.post = Post.objects.get(pk = 1)
+    def test_posts_feed(self):
+        self.assertStatus(blog_reverse("blog_atom", args=(self.blog.slug, "posts")))
 
-    def test_index( self ):
-        response = self.client.get( self.blog.get_absolute_url() )
+    def test_comments_feed(self):
+        self.assertStatus(blog_reverse("blog_atom", args=(self.blog.slug, "comments")) )
 
-        self.assertEqual( response.status_code, http.HttpResponse.status_code )
+    def test_post_comments_feed(self):
+        self.assertStatus(blog_reverse("blog_atom", args=(self.blog.slug, "comments/%s/" % self.post.id)))
 
-    def test_post( self ):
-        self.client.login( **CREDENTIALS )
-
-        response = self.client.get( self.post.get_absolute_url() )
-
-        self.assertEqual( response.status_code, http.HttpResponse.status_code )
-
-    def test_posts_feed( self ):
-        url = blog_reverse( "blog_atom", kwargs = { 'blog' : self.blog.slug,
-                                                    'url' : "posts" } )
-        self.assertOk( url )
-
-    def test_comments_feed( self ):
-        url = blog_reverse( "blog_atom", kwargs = { 'blog' : self.blog.slug,
-                                                    'url'  : "comments" } )
-        self.assertOk( url )
-
-    def test_post_comments_feed( self ):
-        url = blog_reverse( "blog_atom", kwargs = { 'blog' : self.blog.slug,
-                                                    'url'  : "comments/%s/" % self.post.id } )
-        self.assertOk( url )
-
-    def test_tag_feed( self ):
+    def test_tag_feed(self):
         pass
 
-    def test_sitemap( self ):
-        url = blog_reverse( "blog_sitemap", kwargs = { 'blog' : self.blog.slug } )
-
-        response = self.assertOk( url )
-        #TODO: check right data
+    def test_sitemap(self):
+        response = self.assertStatus(blog_reverse( "blog_sitemap", args=(self.blog.slug)))
 
     if settings.TURBION_BLOGS_MULTIPLE:
-        def test_global_sitemap( self ):
-            url = blog_reverse( "global_blog_sitemap" )
+        def test_global_sitemap(self):
+            response = self.assertStatus(blog_reverse("global_blog_sitemap"))
 
-            response = self.assertOk( url )
-            #TODO: check right data
-
-    def _create_comment( self ):
+    def _create_comment(self):
         return {}
 
-    def test_comment_add( self ):
-        url = blog_reverse( "blog_comment_add", kwargs = { "blog" : self.blog.slug, "post_id" : self.post.id } )
-        CommentAdd.instance.subscribe( self.post.created_by )
+    def test_comment_add(self):
+        url = blog_reverse("blog_comment_add", kwargs={"blog":self.blog.slug, "post_id":self.post.id})
+        CommentAdd.instance.subscribe(self.post.created_by)
 
-        self.client.login( **CREDENTIALS )
+        self.login()
 
-        comment = { "text" : "My comment" }
+        comment = {"text": "My comment"}
 
-        response = self.client.post( url, data = comment )
+        response = self.client.post(url, data=comment)
 
         self.assertEqual( response.status_code, http.HttpResponseRedirect.status_code )
         post = Post.published.for_blog( self.blog ).get( pk = self.post.pk )
@@ -139,45 +120,33 @@ class BlogViewsTest(TestCase):
         self.test_comment_add()
 
         comment = Comment.objects.all()[0]
+        response = self.assertStatus(reverse("comment_delete", args=(comment.id,)))
 
-        response = self.client.get( reverse( "comment_delete", args = ( comment.id, ) ) )
+        post = Post.published.for_blog(self.blog).get(pk=self.post.pk)
 
-        self.assertEqual( response.status_code, http.HttpResponseRedirect.status_code )
+        self.assertEqual(post.comment_count, 0)
 
-        post = Post.published.for_blog( self.blog ).get( pk = self.post.pk )
+    def test_archive_day(self):
+        self.assertStatus(blog_reverse("blog_archive_year", args=(self.blog.slug, '2007', '12', '17')))
 
-        self.assertEqual( post.comment_count, 0 )
+    def test_archive_month(self):
+        self.assertStatus(blog_reverse("blog_archive_year", args=(self.blog.slug, '2006', '11')))
 
-    def test_archive_day( self ):
-        response = self.client.get( blog_reverse( "blog_archive_year", args = ( self.blog.slug, '2007', '12', '17' ) ) )
+    def test_archive_year(self):
+        self.assertStatus(blog_reverse("blog_archive_year", args=(self.blog.slug, '2007')))
 
-        self.assertEqual( response.status_code, http.HttpResponse.status_code )
+    def test_tags(self):
+        self.assertStatus(blog_reverse("blog_tags", args=(self.blog.slug,)))
 
-    def test_archive_month( self ):
-        response = self.client.get( blog_reverse( "blog_archive_year", args = ( self.blog.slug, '2006', '11' ) ) )
-
-        self.assertEqual( response.status_code, http.HttpResponse.status_code )
-
-    def test_archive_year( self ):
-        response = self.client.get( blog_reverse( "blog_archive_year", args = ( self.blog.slug, '2007') ) )
-
-        self.assertEqual( response.status_code, http.HttpResponse.status_code )
-
-    def test_tags( self ):
-        response = self.client.get( blog_reverse( "blog_tags", args = ( self.blog.slug, ) ) )
-
-        self.assertEqual( response.status_code, http.HttpResponse.status_code )
-
-    def test_tag( self ):
-        response = self.client.get( blog_reverse( "blog_tag", args = ( self.blog.slug, "foo" ) ) )
-
-        self.assertEqual( response.status_code, http.HttpResponse.status_code )
-
-    def test_search( self ):
-        pass
-
-    def test_search_posts( self ):
-        pass
-
-    def test_search_comments( self ):
-        pass
+    def test_tag(self):
+        self.assertStatus(blog_reverse("blog_tag", args=(self.blog.slug, "foo")))
+    
+    if settings.TURBION_USE_DJAPIAN:
+        def test_search(self):
+            pass
+    
+        def test_search_posts(self):
+            pass
+    
+        def test_search_comments(self):
+            pass
