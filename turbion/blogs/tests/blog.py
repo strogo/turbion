@@ -9,12 +9,11 @@ from django import http
 from django.conf import settings
 from django.core import mail
 
-from turbion.blogs.models import Blog, Post, Comment, CommentAdd
+from turbion.blogs.models import Blog, Post, Comment
+from turbion.comments.models import CommentAdd
 from turbion.blogs.models.blog import BlogRoles
 from turbion.blogs.utils import blog_reverse
 from turbion.profiles.models import Profile
-
-settings.DEBUG = True#FIXME
 
 CREDENTIALS = {'username': "daev", 'password': "foobar"}
 

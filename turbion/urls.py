@@ -5,7 +5,7 @@ from django.conf import settings
 from turbion.blogs.utils import blog_url
 
 urlpatterns = patterns('',
-    url(r'^profile/',                      include('turbion.profiles.urls')),#FIXME: remove profile link
+    url(r'^profile/',                      include('turbion.profiles.urls')),
     url(r'^pingback/',                     include('turbion.pingback.urls')),
     url(r'^notifications/',                include('turbion.notifications.urls')),
     url(r'^roles/',                        include('turbion.roles.urls')),
@@ -21,4 +21,6 @@ urlpatterns = patterns('',
 )
 
 if settings.TURBION_BLOGS_MULTIPLE:
-    urlpatterns += patterns('', url(r'^sitemap.xml$', 'turbion.blogs.views.blog.index_sitemap', name="global_blog_sitemap"))
+    urlpatterns += patterns('',
+                        url(r'^sitemap.xml$', 'turbion.blogs.views.blog.index_sitemap', name="global_blog_sitemap")
+                )

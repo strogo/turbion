@@ -32,8 +32,8 @@ class StaticPagesViews(BaseViewTest):
             )
     
     def test_page(self):
-        print self.page.get_absolute_url()
         response = self.assertStatus(self.page.get_absolute_url())
     
     def test_sitemap(self):
-        self.assertStatus(reverse("pages_sitemap", args=[self.blog.slug,]))
+        response = self.assertStatus(reverse("pages_sitemap", args=[self.blog.slug,]))
+        print response

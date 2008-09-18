@@ -17,6 +17,8 @@ def blog_reverse(viewname, urlconf=None, args=None, kwargs=None):
 
     return url.replace("?", "")
 
+reverse = blog_reverse
+
 def permalink(func):
     def inner(*args, **kwargs):
         bits = func(*args, **kwargs)
