@@ -33,7 +33,6 @@ class BlogViewsTest(BaseViewTest):
         self.assertStatus(self.blog.get_absolute_url())
 
     def test_post(self):
-        self.login()
         self.assertStatus(self.post.get_absolute_url())
 
     def test_posts_feed(self):
@@ -59,68 +58,55 @@ class BlogViewsTest(BaseViewTest):
         return {}
 
     def test_comment_add(self):
+        self.login()
+        
         url = blog_reverse("blog_comment_add", kwargs={"blog":self.blog.slug, "post_id":self.post.id})
         CommentAdd.instance.subscribe(self.post.created_by)
-
-        self.login()
 
         comment = {"text": "My comment"}
 
         response = self.client.post(url, data=comment)
 
-        self.assertEqual( response.status_code, http.HttpResponseRedirect.status_code )
-        post = Post.published.for_blog( self.blog ).get( pk = self.post.pk )
+        self.assertEqual(response.status_code, http.HttpResponseRedirect.status_code)
+        post = Post.published.for_blog(self.blog).get(pk=self.post.pk)
 
         self.assertEqual(post.comment_count, 1)
         self.assertEqual(len( mail.outbox ), 1)# post author subscription
 
-    def test_comment_add_visitor( self ):
-        response = self.client.get( self.post.get_absolute_url() )
+    def test_comment_add_visitor(self):
+        response = self.assertStatus(self.post.get_absolute_url())
+        
+        comment = self.hack_captcha(response)
+        
 
-        HASH_RE = re.compile( "name=\"captcha_0\" value=\"(\w+)\"" )
+        url = blog_reverse("blog_comment_add", args=(self.blog.slug, self.post.id))
 
-        m = HASH_RE.search( response.content )
-        if m:
-            hash = m.groups()[0]
-
-            test = manager.factory.get( hash )
-            captcha = test.solutions[0]
-        else:
-            captcha = ""
-            hash = ""
-
-        url = blog_reverse("blog_comment_add", kwargs = {"blog": self.blog.slug, "post_id": self.post.id})
-
-        comment = { "text"  : "My comment",
+        comment.update({
+                    "text"  : "My comment",
                     "name"  : "Alex",
                     "email" : "foo@bar.com",
                     "site"  : "http://foobar.com",
                     'notify': True,
+                })
 
-                    "captcha_0" : hash,
-                    "captcha_2" : captcha
-                }
+        response = self.assertStatus(url, data=comment, status=http.HttpResponseRedirect.status_code)
+        post = Post.published.for_blog(self.blog).get(pk=self.post._get_pk_val())
 
-        response = self.client.post( url, data = comment )
-
-        self.assertEqual( response.status_code, http.HttpResponseRedirect.status_code )
-        post = Post.published.for_blog( self.blog ).get( pk = self.post.pk )
-
-        self.assertEqual( post.comment_count, 1 )
+        self.assertEqual(post.comment_count, 1)
 
         comment = Comment.objects.get()
 
-        self.assertEqual( comment.created_by.name, "Alex" )
-        self.assertEqual( len(CommentAdd._get_recipients(post)), 1 )
+        self.assertEqual(comment.created_by.name, "Alex")
+        self.assertEqual(len(CommentAdd._get_recipients(post)), 1)
 
-    def test_comment_edit( self ):
+    def test_comment_edit(self):
         pass
 
-    def test_comment_delete( self ):
+    def test_comment_delete(self):
         self.test_comment_add()
 
         comment = Comment.objects.all()[0]
-        response = self.assertStatus(reverse("comment_delete", args=(comment.id,)))
+        response = self.assertStatus(reverse("comment_delete", args=(comment._get_pk_val(),)), http.HttpResponseRedirect)
 
         post = Post.published.for_blog(self.blog).get(pk=self.post.pk)
 

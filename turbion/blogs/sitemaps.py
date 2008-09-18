@@ -16,9 +16,7 @@ class PostSitemap(BlogSitemap):
     priority = 0.9
 
     def items(self):
-        query_set = Post.published.for_blog(self.blog)
-        if not self.request.user.is_authenticated_confirmed():
-            query_set = query_set.filter(showing=Post.show_settings.everybody)
+        query_set = Post.published.for_blog(self.blog).filter(showing=Post.show_settings.everybody)
         return query_set
 
     def lastmod(self, post):
