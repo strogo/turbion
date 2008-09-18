@@ -1,0 +1,1 @@
+from turbion.utils.tests.captcha import *

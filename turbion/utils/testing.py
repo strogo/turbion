@@ -2,6 +2,10 @@
 from django.test import TestCase
 from django import http
 
+def create_request(**kwargs):
+    #apply middlewares
+    return http.HttpRequest()
+
 class BaseViewTest(TestCase):
     def assertStatus(self, url, status=http.HttpResponse.status_code, data={}):
         response = self.client.get(url, data=data)

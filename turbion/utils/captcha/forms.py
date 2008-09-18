@@ -37,6 +37,8 @@ class CaptchaField(forms.Field):
     widget = CaptchaWidget
 
     def __init__(self, request, *args, **kwargs):
+        from turbion.utils.captcha import CaptchaManager
+        
         self.request = request
         self.manager = CaptchaManager(self.request)
 
@@ -44,17 +46,15 @@ class CaptchaField(forms.Field):
         self.widget.manager = self.manager
 
     def clean(self, value):
-        from turbion.utils.captcha import CaptchaManager
-
         id = str(value[0])
         word = value[2]
 
         test = self.manager.get_test(id)
         if not test:
-            raise forms.ValidationError("Recognizing error")
+            raise forms.ValidationError("Recognition error")
         elif not test.valid:
-            raise forms.ValidationError("Recognizing error")
+            raise forms.ValidationError("Recognition error")
         elif not test.testSolutions([word]):
-            raise forms.ValidationError("Word recognized incorrect")
+            raise forms.ValidationError("Word was recognized incorrect")
 
         return value
