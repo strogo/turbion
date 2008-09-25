@@ -15,7 +15,7 @@ class Visit(models.Model):
 
 class Event(models.Model):
     visit_count=CompositionField(
-                    native=models.IntegerField(default=0),
+                    native=models.PositiveIntegerField(default=0),
                     trigger=[
                         D(
                             on=signals.post_save,
@@ -72,15 +72,13 @@ class Comment(models.Model):
 
 class Post(models.Model):
     comment_count=CompositionField(
-                    native=models.IntegerField(default=0),
+                    native=models.PositiveIntegerField(default=0),
                     trigger=D(
                             on=(signals.post_save, signals.post_delete),
-                            do=lambda post, comment, signal: post.comment_set.count()
-                        ),
-                    commons=D(
-                        sender_model=Comment,
-                        field_holder_getter=lambda comment: comment.post,
-                    )
+                            do=lambda post, comment, signal: post.comment_set.count(),
+                            sender_model=Comment,
+                            field_holder_getter=lambda comment: comment.post,
+                        )
                 )
 
     class Meta:

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.functional import curry
 from django.utils.itercompat import is_iterable
 
 class Trigger(object):
