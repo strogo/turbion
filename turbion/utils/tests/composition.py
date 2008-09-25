@@ -30,9 +30,9 @@ class Event(models.Model):
                         sender_model="utils.Visit",
                         field_holder_getter=lambda visit: visit.event,
                     ),
-                    commit=True, # save field holder after appling of doers
+                    commit=True,
                     update_method=D(
-                        trigger=0,
+                        do=0,
                         initial=0,
                         queryset=lambda event: event.visit_set.all(),
                         name="sync_visit_count"
@@ -64,42 +64,81 @@ class Movie(models.Model):
     class Meta:
         app_label="utils"
 
+class Comment(models.Model):
+    post = models.ForeignKey("Post")
+
+    class Meta:
+        app_label="utils"
+
+class Post(models.Model):
+    comment_count=CompositionField(
+                    native=models.IntegerField(default=0),
+                    trigger=D(
+                            on=(signals.post_save, signals.post_delete),
+                            do=lambda post, comment, signal: post.comment_set.count()
+                        ),
+                    commons=D(
+                        sender_model=Comment,
+                        field_holder_getter=lambda comment: comment.post,
+                    )
+                )
+
+    class Meta:
+        app_label="utils"
+
 class CompositionFieldTest(TestCase):
     def test_model_field_meta_exists(self):
         self.assert_(hasattr(Event._meta.get_field("visit_count"), "_composition_meta"), "Field`s composition meta does not exist")
 
     def test_model_update_method_exists(self):
         self.assert_(hasattr(Event, "sync_visit_count"), "Update method does not exist")
-        
+
     def test_event(self):
         event = Event.objects.create()
-        
+
         for i in range(5):
             Visit.objects.create(event=event)
-        
+
         event = Event.objects.get(pk=event._get_pk_val())
         self.assertEqual(event.visit_count, 5)
-        
+
         event.visit_count = 0
         event.save()
-        
+
         event.sync_visit_count()
-        
+
         event = Event.objects.get(pk=event._get_pk_val())
         self.assertEqual(event.visit_count, 5)
-        
+
     def test_movie(self):
         person = Person.objects.create(name="George Lucas")
-        
+
         movie = Movie(title="Star Wars Episode IV: A New Hope", director=person)
         movie.save()
         movie.update_headline()
-        
+
         movie = Movie.objects.get(pk=movie._get_pk_val())
         self.assertEqual(movie.headline, "Star Wars Episode IV: A New Hope, by George Lucas")
-        
+
         person.name = "George W. Lucas"
         person.save()
-        
+
         movie = Movie.objects.get(pk=movie._get_pk_val())
         self.assertEqual(movie.headline, "Star Wars Episode IV: A New Hope, by George W. Lucas")
+
+    def test_post(self):
+        post = Post.objects.create()
+
+        for i in range(5):
+            Comment.objects.create(post=post)
+
+        post = Post.objects.get(pk=post._get_pk_val())
+        self.assertEqual(post.comment_count, 5)
+
+        post.comment_count = 0
+        post.save()
+
+        post.update_comment_count()
+
+        post = Post.objects.get(pk=post._get_pk_val())
+        self.assertEqual(post.comment_count, 5)

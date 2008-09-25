@@ -8,33 +8,33 @@ class Trigger(object):
                  commit, field_holder_getter):
         self.field_name = field_name
         self.commit = commit
-        
+
         if sender_model and not sender:
             if isinstance(sender_model, basestring):
-                
+
                 sender_model = models.get_model(*sender_model.split(".", 1))
             self.sender = self.sender_model = sender_model
         else:
             self.sender = sender
             self.sender_model = sender_model
-        
+
         if not do:
             raise ValueError("`do` action not defined for trigger")
         self.do = do
-        
+
         if not is_iterable(on):
             on = [on]
         self.on = on
-        
+
         self.field_holder_getter = field_holder_getter
-        
+
     def connect(self):
         """
            Connects trigger's handler to all of its signals
         """
         for signal in self.on:
             signal.connect(self.handler, sender=self.sender)
-        
+
     def handler(self, signal, instance=None, **kwargs):
         """
             Signal handler
@@ -42,10 +42,10 @@ class Trigger(object):
         objects = self.field_holder_getter(instance)
         if not is_iterable(objects):
             objects = [objects]
-            
+
         for obj in objects:
             setattr(obj, self.field_name, self.do(obj, instance, signal))
-        
+
             if self.commit:
                 obj.save()
 
@@ -74,35 +74,35 @@ class CompositionMeta(object):
                 commit=commit
         )
         trigger_defaults.update(commons)
-        
+
         if not len(trigger):
             raise ValueError("At least one trigger must be specefied")
-        
+
         for t in trigger:
             trigger_meta = trigger_defaults.copy()
             trigger_meta.update(t)
 
             trigger_obj = Trigger(**trigger_meta)
             trigger_obj.connect()
-            
+
             self.trigger.append(trigger_obj)
-            
+
         update_method_defaults = dict(
             initial=None,
             name="update_%s" % name,
-            trigger=self.trigger[0],
+            do=self.trigger[0],
             queryset=None
         )
         update_method_defaults.update(update_method)
-        
-        if isinstance(update_method_defaults["trigger"], (int, long)):
-            n = update_method_defaults["trigger"]
+
+        if isinstance(update_method_defaults["do"], (int, long)):
+            n = update_method_defaults["do"]
             if n >= len(self.trigger):
                 raise ValueError("Update method trigger must be index of trigger list")
-            update_method_defaults["trigger"] = self.trigger[update_method_defaults["trigger"]]
-        
+            update_method_defaults["do"] = self.trigger[update_method_defaults["do"]]
+
         self.update_method = update_method_defaults
-        
+
         setattr(model, self.update_method["name"], lambda instance: self._update_method(instance))
 
     def _update_method(self, instance):
@@ -112,15 +112,15 @@ class CompositionMeta(object):
         qs_getter = self.update_method["queryset"]
         if qs_getter is None:
             qs_getter = [instance]
-        
-        trigger = self.update_method["trigger"]
-        
+
+        trigger = self.update_method["do"]
+
         setattr(instance, trigger.field_name, self.update_method["initial"])
         if callable(qs_getter):
             qs = qs_getter(instance)
         else:
             qs = qs_getter
-    
+
         for obj in qs:
             setattr(
                 instance,
@@ -135,7 +135,7 @@ def CompositionField(native, trigger=None, commons={},\
     """
         CompositionField funtiction that patches native field
         with custom `contribute_to_class` method and returns it
-        
+
         Params:
              * native - Django field instance for current compostion field
              * trigger - one or some numberr of triggers that handle composition.
