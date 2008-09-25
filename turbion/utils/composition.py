@@ -5,7 +5,7 @@ from django.utils.itercompat import is_iterable
 
 class Trigger(object):
     def __init__(self, do, on, field_name, sender, sender_model,\
-                 commit, field_holder_getter, on_update, on_update_initial):
+                 commit, field_holder_getter):
         self.field_name = field_name
         self.commit = commit
         
@@ -22,19 +22,23 @@ class Trigger(object):
             raise ValueError("`do` action not defined for trigger")
         self.do = do
         
-        if not isinstance(on, (tuple, list)):
+        if not is_iterable(on):
             on = [on]
         self.on = on
         
         self.field_holder_getter = field_holder_getter
-        self.on_update= on_update
-        self.on_update_initial = on_update_initial
         
     def connect(self):
+        """
+           Connects trigger's handler to all of its signals
+        """
         for signal in self.on:
             signal.connect(self.handler, sender=self.sender)
         
     def handler(self, signal, instance=None, **kwargs):
+        """
+            Signal handler
+        """
         objects = self.field_holder_getter(instance)
         if not is_iterable(objects):
             objects = [objects]
@@ -46,8 +50,8 @@ class Trigger(object):
                 obj.save()
 
 class CompositionMeta(object):
-    def __init__(self, model, field, name, trigger, commons,\
-                 commit, update_method_queryset, update_method_name):
+    def __init__(self, model, field, name, trigger,\
+                  commons, commit, update_method):
         self.model = model
         self.name = name
         self.trigger = []
@@ -57,17 +61,8 @@ class CompositionMeta(object):
         self.commons = commons
 
         self.commit = commit
-        self.update_method_queryset = update_method_queryset
 
-        if not update_method_name:
-            update_method_name = "update_%s" % name
-
-        if hasattr(model, update_method_name):
-            raise AttributeError("Method with name `%s` already exists in model" % update_method_name)
-
-        setattr(model, update_method_name, lambda instance: self._update_method(instance))
-
-        if not isinstance(trigger, (list, tuple)):
+        if not is_iterable(trigger) or isinstance(trigger, dict):
             trigger = [trigger]
 
         trigger_defaults = dict(
@@ -75,59 +70,103 @@ class CompositionMeta(object):
                 sender=None,
                 on=[models.signals.post_save],
                 field_holder_getter=lambda instance: instance,
-                on_update=False,
-                on_update_initial=None,
                 field_name=name,
                 commit=commit
         )
         trigger_defaults.update(commons)
         
-        on_update = False
-    
-        for count, t in enumerate(trigger):
+        if not len(trigger):
+            raise ValueError("At least one trigger must be specefied")
+        
+        for t in trigger:
             trigger_meta = trigger_defaults.copy()
             trigger_meta.update(t)
-            
-            if trigger_meta["on_update"]:
-                if not on_update:
-                    on_update = True
-                else:
-                    raise ValueError("Only one trigger may be marked as `on_update`")
-            else:
-                if count == len(trigger) - 1 and not on_update:#last trigger
-                    trigger_meta["on_update"] = True
 
             trigger_obj = Trigger(**trigger_meta)
             trigger_obj.connect()
             
             self.trigger.append(trigger_obj)
+            
+        update_method_defaults = dict(
+            initial=None,
+            name="update_%s" % name,
+            trigger=self.trigger[0],
+            queryset=None
+        )
+        update_method_defaults.update(update_method)
+        
+        if isinstance(update_method_defaults["trigger"], (int, long)):
+            n = update_method_defaults["trigger"]
+            if n >= len(self.trigger):
+                raise ValueError("Update method trigger must be index of trigger list")
+            update_method_defaults["trigger"] = self.trigger[update_method_defaults["trigger"]]
+        
+        self.update_method = update_method_defaults
+        
+        setattr(model, self.update_method["name"], lambda instance: self._update_method(instance))
 
     def _update_method(self, instance):
-        if self.update_method_queryset:
-            qs_getter = self.update_method_queryset
-        else:
+        """
+            Generic `update_FOO` method that is connected to model
+        """
+        qs_getter = self.update_method["queryset"]
+        if qs_getter is None:
             qs_getter = [instance]
-        for trigger in self.trigger:
-            if trigger.on_update:
-                setattr(instance, trigger.field_name, trigger.on_update_initial)
-                if callable(qs_getter):
-                    qs = qs_getter(instance)
-                else:
-                    qs = qs_getter
         
-                for obj in qs:
-                    setattr(instance, trigger.field_name, trigger.do(instance, obj, trigger.on))
-
+        trigger = self.update_method["trigger"]
+        
+        setattr(instance, trigger.field_name, self.update_method["initial"])
+        if callable(qs_getter):
+            qs = qs_getter(instance)
+        else:
+            qs = qs_getter
+    
+        for obj in qs:
+            setattr(
+                instance,
+                trigger.field_name,
+                trigger.do(instance, obj, trigger.on[0])
+            )
         if self.commit:
             instance.save()
 
-def CompositionField(native, trigger=None, commons={}, commit=True,\
-                     update_method_queryset=None, update_method_name=None):
-
+def CompositionField(native, trigger=None, commons={},\
+                     commit=True, update_method={}):
+    """
+        CompositionField funtiction that patches native field
+        with custom `contribute_to_class` method and returns it
+        
+        Params:
+             * native - Django field instance for current compostion field
+             * trigger - one or some numberr of triggers that handle composition.
+                Trigger is a dict with allowed keys:
+                  * on - signal or list of signals that this field handles
+                  * do - signals handler, with 3 params:
+                           * related instance
+                           * instance (that comes with signal send)
+                           * concrete signal (one from `on` value)
+                  * on_update - flag that indicates use or not
+                                this trigger for `update_FOO` method
+                  * on_update_initial - initial value to field before applince
+                                        of `update_FOO` method
+                  * field_holder_getter - function that gets instance(that comes with signal send)\
+                                          as parameter and returns field holder
+                                          object (related instance)
+                  * sender
+                  * sender_model
+             * commons - a trigger like field with common settings
+                         for all given triggers
+             * commit - flag that indicates save instance after trigger appliance or not
+             * update_method_queryset - query set or
+                        callable(with one param - `instance` of an holder model)
+                        that have to retun something iterable
+             * update_method_name - custom `update_FOO` method name
+    """
     native_contribute_to_class = native.contribute_to_class
     def contribute_to_class(cls, name):
-        native._composition_meta = CompositionMeta(cls, native, name, trigger, commons, \
-                                                   commit, update_method_queryset, update_method_name)
+        native._composition_meta = CompositionMeta(
+                                        cls, native, name, trigger,\
+                                        commons, commit,update_method)
         return native_contribute_to_class(cls, name)
 
     native.contribute_to_class = contribute_to_class

@@ -19,8 +19,6 @@ class Event(models.Model):
                     trigger=[
                         D(
                             on=signals.post_save,
-                            on_update=True,
-                            on_update_initial=0,
                             do=lambda event, visit, signal: event.visit_count + 1
                         ),
                         D(
@@ -33,8 +31,12 @@ class Event(models.Model):
                         field_holder_getter=lambda visit: visit.event,
                     ),
                     commit=True, # save field holder after appling of doers
-                    update_method_queryset=lambda event: event.visit_set.all(),
-                    update_method_name="sync_visit_count"
+                    update_method=D(
+                        trigger=0,
+                        initial=0,
+                        queryset=lambda event: event.visit_set.all(),
+                        name="sync_visit_count"
+                    )
                 )
 
     class Meta:
@@ -54,10 +56,9 @@ class Movie(models.Model):
                     native=models.CharField(max_length=250),
                     trigger=D(
                                 sender_model=Person,
-                                field_holder_getter=lambda visit: visit.movie_set.all(),
+                                field_holder_getter=lambda director: director.movie_set.all(),
                                 do=lambda movie, _, signal: "%s, by %s" % (movie.title, movie.director.name)
-                        ),
-                    commit=True
+                    )
             )
 
     class Meta:
