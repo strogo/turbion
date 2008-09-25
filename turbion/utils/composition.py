@@ -75,7 +75,7 @@ class CompositionMeta(object):
                 sender=None,
                 on=[models.signals.post_save],
                 field_holder_getter=lambda instance: instance,
-                on_update=False,#Fixme: make allow only one on_update method
+                on_update=False,
                 on_update_initial=None,
                 field_name=name,
                 commit=commit
