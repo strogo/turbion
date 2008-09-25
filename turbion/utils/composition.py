@@ -144,10 +144,6 @@ def CompositionField(native, trigger=None, commons={},\
                            * related instance
                            * instance (that comes with signal send)
                            * concrete signal (one from `on` value)
-                  * on_update - flag that indicates use or not
-                                this trigger for `update_FOO` method
-                  * on_update_initial - initial value to field before applince
-                                        of `update_FOO` method
                   * field_holder_getter - function that gets instance(that comes with signal send)\
                                           as parameter and returns field holder
                                           object (related instance)
@@ -156,10 +152,12 @@ def CompositionField(native, trigger=None, commons={},\
              * commons - a trigger like field with common settings
                          for all given triggers
              * commit - flag that indicates save instance after trigger appliance or not
-             * update_method_queryset - query set or
-                        callable(with one param - `instance` of an holder model)
-                        that have to retun something iterable
-             * update_method_name - custom `update_FOO` method name
+             * update_method - dict for customization of update_method. Allowed params:
+                    * initial - initial value to field before applince of method
+                    * do - index of update trigger or trigger itself
+                    * queryset - query set or callable(with one param - `instance` of an holder model)
+                            that have to retun something iterable
+                    * name - custom method name instead of `update_FOO`
     """
     native_contribute_to_class = native.contribute_to_class
     def contribute_to_class(cls, name):
