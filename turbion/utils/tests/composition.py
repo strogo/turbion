@@ -102,7 +102,3 @@ class CompositionFieldTest(TestCase):
         
         movie = Movie.objects.get(pk=movie._get_pk_val())
         self.assertEqual(movie.headline, "Star Wars Episode IV: A New Hope, by George W. Lucas")
-
-    def test_model_update_method(self):
-        e = Event()
-        e.sync_visit_count()
