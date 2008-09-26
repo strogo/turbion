@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from optparse import make_option
+
 from django.core.management.base import NoArgsCommand
 from django.db import connection
 
@@ -25,7 +27,7 @@ class Command(NoArgsCommand):
             if not exclude_email:
                 lookup.update({"email": clone_meta[1]})
 
-            clones = Porofile.objects.filter(**lookup).sort_by("-email")
+            clones = Profile.objects.filter(**lookup).order_by("-email")
 
             base_obj, others = clones[0], clones[:1]
 
@@ -36,11 +38,11 @@ class Command(NoArgsCommand):
                     if model is not None:
                         continue
 
-                    name = r.field.name
+                    name = rel.field.name
 
-                    related_model = r.model
+                    related_model = rel.model
 
-                    for related_object in related_name._default_manager.filter(**{name: obj}):
+                    for related_object in related_model._default_manager.filter(**{name: obj}):
                         setattr(related_object, name, base_obj)
 
                         print "\t\tSaving with reassigned profile %s" % related_object
