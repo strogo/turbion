@@ -101,7 +101,7 @@ class CompositionMeta(object):
             update_method_defaults["do"] = self.trigger[update_method_defaults["do"]]
 
         self.update_method = update_method_defaults
-
+        
         setattr(model, self.update_method["name"], lambda instance: self._update_method(instance))
 
     def _update_method(self, instance):
@@ -129,43 +129,55 @@ class CompositionMeta(object):
         if self.commit:
             instance.save()
 
-def CompositionField(native, trigger=None, commons={},\
+class CompositionField(object):
+    def __init__(self, native, trigger=None, commons={},\
                      commit=True, update_method={}):
-    """
-        CompositionField funtiction that patches native field
-        with custom `contribute_to_class` method and returns it
-
-        Params:
-             * native - Django field instance for current compostion field
-             * trigger - one or some numberr of triggers that handle composition.
-                Trigger is a dict with allowed keys:
-                  * on - signal or list of signals that this field handles
-                  * do - signals handler, with 3 params:
-                           * related instance
-                           * instance (that comes with signal send)
-                           * concrete signal (one from `on` value)
-                  * field_holder_getter - function that gets instance(that comes with signal send)\
-                                          as parameter and returns field holder
-                                          object (related instance)
-                  * sender
-                  * sender_model
-             * commons - a trigger like field with common settings
-                         for all given triggers
-             * commit - flag that indicates save instance after trigger appliance or not
-             * update_method - dict for customization of update_method. Allowed params:
-                    * initial - initial value to field before applince of method
-                    * do - index of update trigger or trigger itself
-                    * queryset - query set or callable(with one param - `instance` of an holder model)
-                            that have to retun something iterable
-                    * name - custom method name instead of `update_FOO`
-    """
-    native_contribute_to_class = native.contribute_to_class
-    def contribute_to_class(cls, name):
-        native._composition_meta = CompositionMeta(
-                                        cls, native, name, trigger,\
-                                        commons, commit,update_method)
-        return native_contribute_to_class(cls, name)
-
-    native.contribute_to_class = contribute_to_class
-
-    return native
+        """
+            CompositionField class that patches native field
+            with custom `contribute_to_class` method
+    
+            Params:
+                 * native - Django field instance for current compostion field
+                 * trigger - one or some numberr of triggers that handle composition.
+                    Trigger is a dict with allowed keys:
+                      * on - signal or list of signals that this field handles
+                      * do - signals handler, with 3 params:
+                               * related instance
+                               * instance (that comes with signal send)
+                               * concrete signal (one from `on` value)
+                      * field_holder_getter - function that gets instance(that comes with signal send)\
+                                              as parameter and returns field holder
+                                              object (related instance)
+                      * sender
+                      * sender_model
+                 * commons - a trigger like field with common settings
+                             for all given triggers
+                 * commit - flag that indicates save instance after trigger appliance or not
+                 * update_method - dict for customization of update_method. Allowed params:
+                        * initial - initial value to field before applince of method
+                        * do - index of update trigger or trigger itself
+                        * queryset - query set or callable(with one param - `instance` of an holder model)
+                                that have to retun something iterable
+                        * name - custom method name instead of `update_FOO`
+        """
+        import new
+        self.__class__ = new.classobj(
+                                    self.__class__.__name__,
+                                    tuple([self.__class__, native.__class__] + list(self.__class__.__mro__[1:])),
+                                    {}
+                                )
+        
+        self._native = native
+        self.__dict__.update(native.__dict__)
+        
+        self.trigger = trigger
+        self.commons = commons
+        self.commit = commit
+        self.update_method = update_method
+    
+    def contribute_to_class(self, cls, name):
+        self._composition_meta = CompositionMeta(
+                                    cls, self._native, name, self.trigger,\
+                                    self.commons, self.commit, self.update_method
+                                )
+        return self._native.__class__.contribute_to_class(self, cls, name)

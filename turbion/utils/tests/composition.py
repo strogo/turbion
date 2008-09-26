@@ -55,9 +55,9 @@ class Movie(models.Model):
     headline=CompositionField(
                     native=models.CharField(max_length=250),
                     trigger=D(
-                                sender_model=Person,
-                                field_holder_getter=lambda director: director.movie_set.all(),
-                                do=lambda movie, _, signal: "%s, by %s" % (movie.title, movie.director.name)
+                        sender_model=Person,
+                        field_holder_getter=lambda director: director.movie_set.all(),
+                        do=lambda movie, _, signal: "%s, by %s" % (movie.title, movie.director.name)
                     )
             )
 
@@ -87,7 +87,7 @@ class Post(models.Model):
 class CompositionFieldTest(TestCase):
     def test_model_field_meta_exists(self):
         self.assert_(hasattr(Event._meta.get_field("visit_count"), "_composition_meta"), "Field`s composition meta does not exist")
-
+        
     def test_model_update_method_exists(self):
         self.assert_(hasattr(Event, "sync_visit_count"), "Update method does not exist")
 
@@ -116,13 +116,19 @@ class CompositionFieldTest(TestCase):
         movie.update_headline()
 
         movie = Movie.objects.get(pk=movie._get_pk_val())
-        self.assertEqual(movie.headline, "Star Wars Episode IV: A New Hope, by George Lucas")
+        self.assertEqual(
+                        movie.headline,
+                        "Star Wars Episode IV: A New Hope, by George Lucas"
+                    )
 
         person.name = "George W. Lucas"
         person.save()
 
         movie = Movie.objects.get(pk=movie._get_pk_val())
-        self.assertEqual(movie.headline, "Star Wars Episode IV: A New Hope, by George W. Lucas")
+        self.assertEqual(
+                        movie.headline,
+                        "Star Wars Episode IV: A New Hope, by George W. Lucas"
+                    )
 
     def test_post(self):
         post = Post.objects.create()
