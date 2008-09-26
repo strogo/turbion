@@ -101,8 +101,9 @@ class CompositionMeta(object):
             update_method_defaults["do"] = self.trigger[update_method_defaults["do"]]
 
         self.update_method = update_method_defaults
-        
+
         setattr(model, self.update_method["name"], lambda instance: self._update_method(instance))
+        setattr(model, "freeze_%s" % name, lambda instance: self._freeze_method(instance))
 
     def _update_method(self, instance):
         """
@@ -129,13 +130,19 @@ class CompositionMeta(object):
         if self.commit:
             instance.save()
 
+    def _freeze_method(self, instance):
+        """
+            Generic `freeze_FOO` method that is connected to model
+        """
+        pass
+
 class CompositionField(object):
     def __init__(self, native, trigger=None, commons={},\
                      commit=True, update_method={}):
         """
             CompositionField class that patches native field
             with custom `contribute_to_class` method
-    
+
             Params:
                  * native - Django field instance for current compostion field
                  * trigger - one or some numberr of triggers that handle composition.
@@ -166,15 +173,15 @@ class CompositionField(object):
                                     tuple([self.__class__, native.__class__] + list(self.__class__.__mro__[1:])),
                                     {}
                                 )
-        
+
         self._native = native
         self.__dict__.update(native.__dict__)
-        
+
         self.trigger = trigger
         self.commons = commons
         self.commit = commit
         self.update_method = update_method
-    
+
     def contribute_to_class(self, cls, name):
         self._composition_meta = CompositionMeta(
                                     cls, self._native, name, self.trigger,\
