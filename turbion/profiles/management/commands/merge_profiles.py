@@ -19,10 +19,13 @@ class Command(NoArgsCommand):
         exclude_email = options["exclude_email"]
 
         for clone_meta in self.get_clone_profiles(exclude_email):
-            clones = Porofile.objects.filter(
-                                        nickname=clone_meta[0],
-                                        email=clone_meta[1]
-                                    ).sort_by("-email")
+            lookup = {
+                "nickname": clone_meta[0]
+            }
+            if not exclude_email:
+                lookup.update({"email": clone_meta[1]})
+
+            clones = Porofile.objects.filter(**lookup).sort_by("-email")
 
             base_obj, others = clones[0], clones[:1]
 
@@ -40,7 +43,7 @@ class Command(NoArgsCommand):
                     for related_object in related_name._default_manager.filter(**{name: obj}):
                         setattr(related_object, name, base_obj)
 
-                        print "\t\tSaving %s" % related_object
+                        print "\t\tSaving with reassigned profile %s" % related_object
                         if not dry:
                             related_object.save()
 
