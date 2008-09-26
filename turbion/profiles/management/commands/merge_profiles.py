@@ -10,15 +10,15 @@ class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
         make_option('--dry', action='store_true', default=False,
             help='Dry run. Make no changes'),
-        make_option('--except_email', action='store_true', default=False,
-            help='Dry run. Make no changes')
+        make_option('--exclude_email', action='store_true', default=False,
+            help='Exclude email from clone search')
     )
 
     def handle_noargs(self, **options):
         dry = options["dry"]
-        except_email = options["except_email"]
+        exclude_email = options["exclude_email"]
 
-        for clone_meta in self.get_clone_profiles(except_email):
+        for clone_meta in self.get_clone_profiles(exclude_email):
             clones = Porofile.objects.filter(
                                         nickname=clone_meta[0],
                                         email=clone_meta[1]
@@ -48,9 +48,9 @@ class Command(NoArgsCommand):
                 if not dry:
                     obj.delete()
 
-    def get_clone_profiles(self, except_email):
+    def get_clone_profiles(self, exclude_email):
         email_str = ", email"
-        if except_email:
+        if exclude_email:
             email_str = ""
 
         query = """SELECT DISTINCT
