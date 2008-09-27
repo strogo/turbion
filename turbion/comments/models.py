@@ -86,7 +86,7 @@ class Comment(models.Model):
         if self.edited_by:
             self.edited_on = datetime.now()
 
-        self.text_html = self.postprocess.postprocess(self.text)
+        self.text_html = self.postprocessor.postprocess(self.text)
 
         created = not self._get_pk_val()
 

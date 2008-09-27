@@ -87,8 +87,9 @@ class Post(models.Model, CommentedModel):
         return ("blog_atom", ( "%s/%s" % ( self.blog.slug, self.id ),))
 
     def inc_reviews(self):
-        self.review_count += 1
-        self.save()
+        self.__class__._default_manager.\
+                    filter(pk=self._get_pk_val()).\
+                    update(review_count=self.review_count + 1)
 
     def __unicode__(self):
         return self.title
@@ -100,7 +101,7 @@ class Post(models.Model, CommentedModel):
         if self.edited_by:
             self.edited_on = datetime.now()
 
-        self.text_html = self.postprocess.postprocess(self.text)
+        self.text_html = self.postprocessor.postprocess(self.text)
         super(Post, self).save()
 
     class Meta:
