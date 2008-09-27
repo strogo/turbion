@@ -16,7 +16,7 @@ class DatabaseStore(OpenIDStore):
             secret=association.secret,
             issued=association.issued,
             lifetime=association.lifetime,
-            assoc_type=unicode(association.assoc_type)
+            assoc_type=association.assoc_type
         )
 
     def getAssociation(self, server_url, handle=None):

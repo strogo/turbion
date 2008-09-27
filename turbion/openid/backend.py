@@ -24,8 +24,8 @@ class OpenidBackend(ModelBackend):
         try:
             connection = Identity.objects.get(openid=response.identity_url)
         except Identity.DoesNotExist:
-            username = sreg_response.has_key("nickname") and sreg_response["nickname"] or gen_username()
-            email = sreg_response.has_key("email") and sreg_response["email"] or gen_username
+            username = sreg_response.has_key("nickname") and sreg_response["nickname"] or gen_username(response.identity_url)
+            email = sreg_response.has_key("email") and sreg_response["email"] or gen_username(response.identity_url)
 
             user = User.objects.create_user(username,
                                             email,
