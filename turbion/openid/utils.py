@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.core import exceptions
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
 from turbion.profiles.models import Profile
-from turbion.openid import models
+from turbion.openid.models import Identity
 
 def get_consumer(session):
     from openid.consumer import consumer
@@ -41,10 +39,13 @@ def create_user(username, email, response):
     user = Profile.objects.create_user(
                                     username.lower(),
                                     email,
-                                    User.objects.make_random_password()
+                                    Profile.objects.make_random_password()
                                 )
     user.nickname = user.username
     user.save()
 
-    connection = models.Identity.objects.create(user=user, url=response.identity_url)
+    connection = Identity.objects.create(
+                        user=user,
+                        url=response.identity_url
+                    )
     return connection

@@ -40,13 +40,19 @@ class ProfileManager(UserManager):
         return self.filter(is_staff=True, is_superuser=True, is_active=True, is_confirmed=True).count() != 0
 
 class Profile(User):
-    names = Enum(nickname      =_("nick"),
-                 full_name     =_("full name"),
-                 full_name_nick=_("full name with nick"),
-                )
-    genders = Enum(male  =_('male'),
-                   female=_('female')
-                )
+    names = Enum(
+                nickname      =_("nick"),
+                full_name     =_("full name"),
+                full_name_nick=_("full name with nick"),
+            )
+    sites = Enum(
+                profile=_("profile"),
+                site   =_("site"),
+            )
+    genders = Enum(
+                male  =_('male'),
+                female=_('female')
+            )
 
     nickname = models.CharField(max_length=150, null=True)
     ip = models.IPAddressField(null=True, blank=True)
@@ -69,7 +75,8 @@ class Profile(User):
     jabber = models.CharField(max_length=50, null=True, blank=True, verbose_name=_('jabber id'))
     skype = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('skype'))
 
-    name_view = models.CharField(max_length=10, choices=names, null=True, blank=True)
+    name_view = models.CharField(max_length=20, choices=names, null=True, blank=True)
+    site_view = models.CharField(max_length=20, choices=sites, null=True, blank=True)
     last_visit = models.DateTimeField(null=True, blank=True)
 
     roles = models.ManyToManyField(Role, blank=True, related_name="profiles")

@@ -10,7 +10,7 @@ from turbion.openid import forms, utils, models
 from turbion.utils.decorators import templated, titled
 
 def post_redirect(request):
-    redirect = request.GET.get("redirect", None) or request.META.get("HTTP_REFERER", "/")
+    redirect = request.GET.get("redirect", request.META.get("HTTP_REFERER", "/"))
 
     return redirect
 
@@ -40,7 +40,7 @@ def authenticate(request):
         sreg_response = utils.complete_sreg(response)
 
         request.session["openid_data"] = {"response": response, "sreg_response": sreg_response }
-        return http.HttpResponseRedirect(reverse("turbion.openid.views.collect"))
+        return http.HttpResponseRedirect(reverse("openid_collect"))
 
     #user = auth.authenticate( request=request )
     #if not user:
@@ -58,8 +58,10 @@ def collect(request):
         if request.POST:
             user_info_form = forms.UserInfoForm(request.POST)
         else:
-            user_info_form = forms.UserInfoForm(data={"username": sreg_response.get("nickname",""),
-                                                    "email"  : sreg_response.get("email","")})
+            user_info_form = forms.UserInfoForm(data={
+                                                    "username": sreg_response.get("nickname", ""),
+                                                    "email"   : sreg_response.get("email", "")
+                                                })
 
         if user_info_form.is_valid():
             username = user_info_form.cleaned_data["nickname"]

@@ -27,7 +27,7 @@ class Identity(models.Model):
     class Meta:
         db_table = "turbion_openid_identity"
 
-# models needed to openid library store interface
+# models needed to openid library store
 
 class Association(models.Model):
     server_url = models.URLField()
