@@ -70,6 +70,7 @@ class Profile(User):
     skype = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('skype'))
 
     name_view = models.CharField(max_length=10, choices=names, null=True, blank=True)
+    last_visit = models.DateTimeField(null=True, blank=True)
 
     roles = models.ManyToManyField(Role, blank=True, related_name="profiles")
     capabilities = models.ManyToManyField(Capability, blank=True, related_name="profiles")
@@ -95,6 +96,10 @@ class Profile(User):
                     Profile.names.full_name     : self.full_name,
                     Profile.names.full_name_nick: self.full_name_with_nick}
         return type_map.get(self.name_view, self.username)
+
+    def update_visit(self, when):
+        self.__class__._default_manager.filter(pk=self._get_pk_val()).\
+                                        update(last_visit=when)
 
     def __unicode__(self):
         return self.name

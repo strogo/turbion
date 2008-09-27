@@ -26,7 +26,7 @@ class AnonymousProfile(AnonymousUser):
 
     def has_capability_for(self, *args, **kwargs):
         return False
-    
+
     def is_authenticated_confirmed(self):
         return False
 
@@ -56,7 +56,6 @@ class AuthenticationMiddleware(object):
         request.__class__.user = LazyUser()
 
         if request.user.is_authenticated():
-            request.user.last_visit = datetime.now()
-            request.user.save()
+            request.user.update_visit(datetime.now())
 
         return None
