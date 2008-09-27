@@ -33,7 +33,7 @@ class StoreManager(models.Manager):
     pass
 
 class Association(models.Model):
-    server_url = models.UrlField()
+    server_url = models.URLField()
 
     handle = models.CharField(max_length=250)
     secret = models.CharField(max_length=250)
@@ -45,10 +45,10 @@ class Association(models.Model):
 
     class Meta:
         db_table = "turbion_openid_association"
-        unique_together = [('url', 'handle')]
+        #unique_together = [('server_url', 'handle')]
 
 class Nonce(models.Model):
-    server_url = models.UrlField(db_index=True)
+    server_url = models.URLField()
     timestamp = models.PositiveIntegerField()
     salt = models.CharField(max_length=40)
 

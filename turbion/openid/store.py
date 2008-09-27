@@ -6,7 +6,7 @@ from django.db import connection
 
 from turbion.openid.models import Association, Nonce
 
-qn = connection.opts.quote_name
+qn = connection.ops.quote_name
 
 class DatabaseStore(OpenIDStore):
     def storeAssociation(self, server_url, association):
@@ -16,15 +16,23 @@ class DatabaseStore(OpenIDStore):
             secret=association.secret,
             issued=association.issued,
             lifetime=association.lifetime,
-            assoc_type=association.assoc_type
+            assoc_type=unicode(association.assoc_type)
         )
 
     def getAssociation(self, server_url, handle=None):
+        from openid import association
         try:
             if handle:
-                return Association.objects.get(server_url=server_url, handle=handle)
+                assoc = Association.objects.get(server_url=server_url, handle=handle)
             else:
-                return Association.objects.filter(server_url=server_url).order_by("-issued")[0]
+                assoc = Association.objects.filter(server_url=server_url).order_by("-issued")[0]
+            return association.Association(
+                     handle=assoc.handle,
+                     secret=assoc.secret,
+                     issued=assoc.issued,
+                     lifetime=assoc.lifetime,
+                     assoc_type=assoc.assoc_type
+            )
         except (Association.DoesNotExist, IndexError):
             return None
 
