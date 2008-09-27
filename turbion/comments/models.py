@@ -66,7 +66,7 @@ class Comment(models.Model):
                               default=statuses.published,
                               verbose_name=_("status"))
 
-    postprocess = PostprocessField(verbose_name=_("postprocessor"))
+    postprocessor = PostprocessField(verbose_name=_("postprocessor"))
 
     is_published = property(lambda self: self.status == Comment.statuses.published)
 

@@ -54,7 +54,7 @@ class Post(models.Model, CommentedModel):
 
     status        = models.CharField(max_length=10, choices=statuses, default=statuses.draft, verbose_name=_("status"))
 
-    postprocess   = PostprocessField(verbose_name=_("postprocessor"))
+    postprocessor = PostprocessField(verbose_name=_("postprocessor"))
 
     commenting    = models.CharField(max_length=10,
                                      choices = commenting_settings,

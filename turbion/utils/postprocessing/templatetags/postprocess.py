@@ -16,7 +16,7 @@ for name, func in ProcessorSpot.processors.iteritems():
     register.filter(name, wrap(func.postprocess))
 
 @register.filter
-def postprocess(instance, field, processor="postprocess"):
+def postprocess(instance, field, processor="postprocessor"):
     val = getattr(instance, field)
     return getattr(instance, processor).postprocess(val)
 
