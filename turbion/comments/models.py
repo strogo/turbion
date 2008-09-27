@@ -106,7 +106,7 @@ class Comment(models.Model):
         self.update_connection_comment_count()
 
     class Meta:
-        ordering            = ("created_on",)
+        ordering            = ("-created_on",)
         verbose_name        = _('comment')
         verbose_name_plural = _('comments')
         db_table            = "turbion_comment"

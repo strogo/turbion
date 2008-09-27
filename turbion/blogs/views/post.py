@@ -22,12 +22,12 @@ from turbion.utils.decorators import paged, templated
 @titled(page=u'Блог')
 def blog(request, blog):
     blog.inc_reviews()
-    
+
     posts = Post.published.for_blog(blog)
-    
+
     if not request.user.is_authenticated_confirmed():
         posts = posts.filter(showing=Post.show_settings.everybody)
-    
+
     post_paginator = paginate(posts,
                               request.page,
                               blog.post_per_page)
@@ -54,10 +54,10 @@ def tags(request, blog):
 def tag(request, blog, tag_slug):
     _tag = get_object_or_404(blog.tags, slug=tag_slug)
     posts = Post.published.for_tag(blog, _tag)
-    
+
     if not request.user.is_authenticated_confirmed():
         posts = posts.filter(showing=Post.show_settings.everybody)
-    
+
     post_paginator = paginate(posts,
                               request.page,
                               blog.post_per_page)
@@ -76,7 +76,7 @@ def post(request, blog, post):
     comment_form = comments_forms.CommentForm(request=request)
     form_action = blog_reverse("blog_comment_add", args=(post.blog.slug, post.id))
 
-    comments = Comment.published.for_object(post).select_related("created_by")
+    comments = Comment.published.for_object(post).select_related("created_by").order_by("created_on")
 
     return {"blog": blog,
             "post": post,
