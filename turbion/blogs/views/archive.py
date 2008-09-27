@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from turbion.utils.decorators import paged, templated
 from turbion.utils.pagination import paginate
 

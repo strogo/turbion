@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2007 Alexander Koshelev (daevaorn@gmail.com)
 from django.conf import settings
 from django import template
 from django.template.loader import get_template
@@ -30,7 +24,7 @@ def google_urchin(uacct):
     else:
         return ""
 
-@register.simple_tag   
+@register.simple_tag
 def google_webtools_meta( meta ):
     return """<meta name="verify-v1" content="%s" />""" % meta
 
@@ -50,7 +44,7 @@ def feedburner_count(feed):
     from xml.dom import minidom
     try:
         stats = urlopen( "http://api.feedburner.com/awareness/1.0/GetFeedData?uri=%s" % feed )
-        
+
         doc = minidom.parse( stats )
         entry = doc.getElementsByTagName( "entry" )[0]
         return entry.getAttribute( "circulation" )

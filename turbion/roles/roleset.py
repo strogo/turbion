@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date$
-#$Author$
-#$Revision$
-#--------------------------------
-#Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
 from django.contrib.contenttypes.models import ContentType
 
 from turbion.roles import models

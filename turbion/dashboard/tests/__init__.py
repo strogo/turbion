@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date: 2008-06-23 00:19:21 +0400 (Mon, 23 Jun 2008) $
-#$Author: daev $
-#$Revision: 2 $
-#--------------------------------
-#Copyright (C) 2007, 2008 Alexander Koshelev (daevaorn@gmail.com)
 import re
 
 from django.test import TestCase

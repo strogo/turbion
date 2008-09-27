@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#--------------------------------
-#$Date: 2008-07-20 23:05:21 +0400 (Sun, 20 Jul 2008) $
-#$Author: daev $
-#$Revision: 58 $
-#--------------------------------
-#Copyright (C) 2008 Alexander Koshelev (daevaorn@gmail.com)
 from turbion.dashboard.schemas import Schema
 
 from turbion.assets.models import Asset

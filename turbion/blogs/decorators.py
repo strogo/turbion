@@ -11,15 +11,15 @@ from turbion.blogs.models import Blog, Post, BlogRoles
 
 from turbion.utils.decorators import special_titled
 
-titled = special_titled( section = u"{{blog.name}}" )
+titled = special_titled(section=u"{{blog.name}}")
 
-def blog_view( view_func ):
+def blog_view(view_func):
     """
     Picks up blog slug and `converts` it into blog object
     """
-    def _decor( request, blog = None, *args, **kwargs ):
+    def _decor(request, blog=None, *args, **kwargs):
         if blog is not None:
-            blog = get_object_or_404( Blog.objects, slug = blog )
+            blog = get_object_or_404(Blog.objects, slug=blog)
         else:
             try:
                 blog = Blog.objects.get_oldest()
@@ -27,7 +27,7 @@ def blog_view( view_func ):
                 raise Http404
 
         request.blog = blog
-        return view_func( request, blog = blog, *args, **kwargs )
+        return view_func(request, blog=blog, *args, **kwargs)
     _decor.__doc__  = view_func.__doc__
     _decor.__dict__ = view_func.__dict__
     _decor.__name__ = view_func.__name__
@@ -43,12 +43,12 @@ def post_view(view_func):
             if not request.user.is_authenticated_confirmed():
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
 
-        post = get_object_or_404( query_set, created_on__year = kwargs.pop( 'year_id' ),
-                                        created_on__month     = kwargs.pop( 'month_id' ),
-                                        created_on__day       = kwargs.pop( 'day_id' ),
-                                        slug            = kwargs.pop( 'post_slug' ) )
+        post = get_object_or_404(query_set, created_on__year = kwargs.pop('year_id'),
+                                        created_on__month     = kwargs.pop('month_id'),
+                                        created_on__day       = kwargs.pop('day_id'),
+                                        slug            = kwargs.pop('post_slug'))
 
-        return view_func( request, blog = blog, post = post, *args, **kwargs )
+        return view_func(request, blog=blog, post=post, *args, **kwargs)
     _decor.__doc__  = view_func.__doc__
     _decor.__dict__ = view_func.__dict__
     _decor.__name__ = view_func.__name__
