@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.contrib.auth.models import User
 
 from turbion.profiles.models import Profile
 
@@ -11,3 +12,4 @@ class ProfileAdmin(admin.ModelAdmin):
     search_fields = ("username", "nickname", "email", "site")
 
 admin.site.register(Profile, ProfileAdmin)
+admin.site.unregister(User)
