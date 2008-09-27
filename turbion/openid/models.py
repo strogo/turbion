@@ -30,9 +30,9 @@ class Identity(models.Model):
 # models needed to openid library store
 
 class Association(models.Model):
-    server_url = models.URLField()
+    server_url = models.URLField(max_length=250)
 
-    handle = models.CharField(max_length=240)
+    handle = models.CharField(max_length=250)
     secret = models.CharField(max_length=128)
     issued = models.PositiveIntegerField()
     lifetime = models.PositiveIntegerField()
@@ -40,7 +40,7 @@ class Association(models.Model):
 
     class Meta:
         db_table = "turbion_openid_association"
-        unique_together = [('server_url', 'handle')]
+        #unique_together = [('server_url', 'handle')]
 
 class Nonce(models.Model):
     server_url = models.URLField()

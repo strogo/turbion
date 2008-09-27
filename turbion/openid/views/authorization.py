@@ -32,7 +32,7 @@ def authenticate(request):
     consumer, response = utils.complete(request)
 
     if response.status != openid_consumer.SUCCESS:
-        return http.HttpResponseForbidden('Ошибка авторизации')
+        return http.HttpResponseForbidden('Ошибка авторизации: %s' % response.message)
 
     try:
         connection = models.Identity.objects.get(url=response.identity_url)
