@@ -10,7 +10,7 @@ class _CommentForm(forms.ModelForm):
         model = Comment
         fields = ("text",)
 
-    notify = forms.BooleanField(initial=False)
+    notify = forms.BooleanField(initial=False, required=False)
 
 class CommentForm(forms.Form):
     def __init__(self, request, *args, **kwargs ):

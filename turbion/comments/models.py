@@ -55,8 +55,9 @@ class Comment(models.Model):
 
     created_by = models.ForeignKey(Profile, related_name="created_comments", verbose_name=_("created by"))
 
-    edited_on = models.DateTimeField(null=True, verbose_name=_("edited on"))
-    edited_by = models.ForeignKey(Profile, related_name="edited_comments", null=True, verbose_name=_("edited by"))
+    edited_on = models.DateTimeField(null=True, blank=True, verbose_name=_("edited on"))
+    edited_by = models.ForeignKey(Profile, related_name="edited_comments",\
+                                  null=True, blank=True, verbose_name=_("edited by"))
 
     text = models.TextField(verbose_name=_("text"))
     text_html   = models.TextField(verbose_name=_("text html"))
