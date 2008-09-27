@@ -31,15 +31,19 @@ def complete_sreg(response):
 
 def get_auth_urls(request):
     site_url =  "http://%s" % Site.objects.get_current().domain
-    trust_url = getattr(settings, "TURBION_OPENID_TRUST_URL", None) or (site_url + '/')
+    trust_url = getattr(settings, "TURBION_OPENID_TRUST_URL", (site_url + '/'))
     return_to = site_url + reverse('openid_authenticate')
 
     return trust_url, return_to
 
 def create_user(username, email, response):
-    user = Profile.objects.create_user( username,
+    user = Profile.objects.create_user(
+                                    username.lower(),
                                     email,
                                     User.objects.make_random_password()
                                 )
+    user.nickname = user.username
+    user.save()
+
     connection = models.Identity.objects.create(user=user, url=response.identity_url)
     return connection
