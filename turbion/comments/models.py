@@ -45,7 +45,7 @@ class CommentManager(GenericManager):
 
 class Comment(models.Model):
     connection_ct = models.ForeignKey(ContentType, editable=False)
-    connection_id = models.PositiveIntegerField(editable=False)
+    connection_id = models.PositiveIntegerField(editable=False, verbose_name=_("connection"))
     connection = generic.GenericForeignKey("connection_ct", "connection_id")
 
     statuses = Enum(published ="published",
