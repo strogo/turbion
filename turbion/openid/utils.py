@@ -15,13 +15,14 @@ def get_consumer(session):
     return consumer.Consumer(session, DatabaseStore())
 
 def complete(request):
-    data = request.GET.copy()
-    data.update(request.POST)
+    data = dict(request.GET.items())
+    if request.method=="POST":
+        data.update(dict(request.POST.items()))
 
     consumer = get_consumer(request.session)
 
     trust_url, return_to = get_auth_urls(request)
-    response = consumer.complete(dict(data.items()), return_to)
+    response = consumer.complete(data, return_to)
 
     return consumer, response
 

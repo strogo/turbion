@@ -33,7 +33,7 @@ class Association(models.Model):
     server_url = models.URLField()
 
     handle = models.CharField(max_length=240)
-    secret = models.TextField()
+    secret = models.CharField(max_length=128)
     issued = models.PositiveIntegerField()
     lifetime = models.PositiveIntegerField()
     assoc_type = models.CharField(max_length=64)
