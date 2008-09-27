@@ -2,7 +2,7 @@
 from optparse import make_option
 
 from django.core.management.base import NoArgsCommand
-from django.db import connection
+from django.db import connection, IntegrityError
 
 from turbion.profiles.models import Profile
 
@@ -29,7 +29,7 @@ class Command(NoArgsCommand):
 
             clones = Profile.objects.filter(**lookup).order_by("-email")
 
-            base_obj, others = clones[0], clones[:1]
+            base_obj, others = clones[0], clones[1:]
 
             print u"Base object %s" % base_obj
 
@@ -48,7 +48,10 @@ class Command(NoArgsCommand):
                         print u"\t\tSaving %s - %s with reassigned profile" % (related_model._meta.object_name, 
 related_object._get_pk_val(),)
                         if not dry:
-                            related_object.save()
+                            try:
+                            	related_object.save()
+                            except IntegrityError:
+                                pass
 
                 print u"\tDeleting %s" % obj
                 if not dry:
