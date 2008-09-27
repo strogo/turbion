@@ -13,18 +13,19 @@ from turbion.utils.cache.tags import cached_inclusion_tag
 
 register = template.Library()
 
-#@cached_inclusion_tag( register,
+#@cached_inclusion_tag(register,
 #                      trigger = { "sender" : Comment,
 #                                  "signal" : m2m_post_save_reverse,
 #                                  "suffix" : lambda instance, owner: [ owner.blog.id, owner.id ]},
 #                      suffix = lambda context, post: [ context[ "user" ].is_author, post.blog.id, post.id ],
 #                      file_name='blogs/include/comments.html',
 #                      takes_context=True)
-@register.inclusion_tag( 'turbion/blogs/include/comments.html', takes_context=True )
-def post_comments( context, post ):
-    return { "post"     : post,
-             "comments" : Comment.published.for_object( post ),
-             "user"     : context.get( "user" ) }
+@register.inclusion_tag('turbion/blogs/include/comments.html', takes_context=True)
+def post_comments(context, post):
+    return {"post"    : post,
+            "comments": Comment.published.for_object(post).select_related("created_by").order_by("created_on"),
+            "user"    : context.get("user")
+    }
 
 @register.simple_tag
 def tag_ratio( tag, blog, max = 30, min = 10 ):
