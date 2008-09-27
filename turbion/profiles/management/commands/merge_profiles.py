@@ -31,7 +31,7 @@ class Command(NoArgsCommand):
 
             base_obj, others = clones[0], clones[:1]
 
-            print "Base object %s" % base_obj
+            print u"Base object %s" % base_obj
 
             for obj in others:
                 for rel, model in Profile._meta.get_all_related_objects_with_model():
@@ -45,11 +45,12 @@ class Command(NoArgsCommand):
                     for related_object in related_model._default_manager.filter(**{name: obj}):
                         setattr(related_object, name, base_obj)
 
-                        print "\t\tSaving with reassigned profile %s" % related_object
+                        print u"\t\tSaving %s - %s with reassigned profile" % (related_model._meta.object_name, 
+related_object._get_pk_val(),)
                         if not dry:
                             related_object.save()
 
-                print "\tDeleting %s" % obj
+                print u"\tDeleting %s" % obj
                 if not dry:
                     obj.delete()
 
