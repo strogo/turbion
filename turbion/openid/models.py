@@ -44,6 +44,7 @@ class Association(models.Model):
     objects = StoreManager()
 
     class Meta:
+        db_table = "turbion_openid_association"
         unique_together = [('url', 'handle')]
 
 class Nonce(models.Model):
@@ -52,4 +53,5 @@ class Nonce(models.Model):
     salt = models.CharField(max_length=40)
 
     class Meta:
+        db_table = "turbion_openid_nonce"
         unique_together = [('server_url', 'timestamp', 'salt')]

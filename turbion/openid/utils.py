@@ -10,8 +10,6 @@ from turbion.openid import models
 
 def get_consumer(session):
     from openid.consumer import consumer
-    from openid.store.filestore import FileOpenIDStore
-
     from turbion.openid.store import DatabaseStore
 
     return consumer.Consumer(session, DatabaseStore())

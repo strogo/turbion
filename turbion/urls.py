@@ -6,6 +6,7 @@ from turbion.blogs.utils import blog_url
 
 urlpatterns = patterns('',
     url(r'^profile/',                      include('turbion.profiles.urls')),
+    url(r'^openid/',                       include('turbion.openid.urls')),
     url(r'^pingback/',                     include('turbion.pingback.urls')),
     url(r'^notifications/',                include('turbion.notifications.urls')),
     url(r'^roles/',                        include('turbion.roles.urls')),
