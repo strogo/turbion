@@ -38,7 +38,7 @@ def add_comment(request,
 
                 signal.send(sender=Comment,
                             comment=new_comment,
-                            instance=connectio
+                            instance=connection
                         )
 
                 if form.cleaned_data["notify"]:
