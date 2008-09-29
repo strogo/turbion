@@ -9,14 +9,14 @@ from turbion.feedback.models import Feedback
 from turbion.feedback import signals
 from turbion.blogs.decorators import blog_view
 
-@templated( "turbion/feedback/index.html" )
-@titled( page=_(u"Write"), section=_(u"Feedback") )
+@templated("turbion/feedback/index.html" )
+@titled(page=_(u"Write"), section=_(u"Feedback"))
 @blog_view
-def index( request, blog ):
+def index(request, blog):
     if request.method == 'POST':
         feedback_form = FeedbackForm(request=request, blog=blog, data=request.POST)
         if feedback_form.is_valid():
-            feedback = feedback_form.save( False )
+            feedback = feedback_form.save(False)
             feedback.blog = blog
             feedback.save()
 
@@ -25,7 +25,7 @@ def index( request, blog ):
                              instance=feedback
                     )
 
-            return status_redirect( request,
+            return status_redirect(request,
                               title=_(u"Thanks"),
                               section= _(u"Feedback"),
                               next = "/",
@@ -34,5 +34,5 @@ def index( request, blog ):
     else:
         feedback_form = FeedbackForm(request=request, blog=blog)
 
-    return { "feedback_form": feedback_form,
-             "blog" : blog }
+    return {"feedback_form": feedback_form,
+            "blog": blog }

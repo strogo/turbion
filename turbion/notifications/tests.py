@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import signals
 from django.core.management import call_command
 from django.core import mail
+from django import http
 
 from turbion.notifications import EventDescriptor
 from turbion.profiles.models import Profile
@@ -56,6 +57,6 @@ class NotifTestCase(TestCase):
 
         response = self.client.get(url, dict(d.split('=') for d in data.split('&')))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, http.HttpResponseRedirect.status_code)
 
         self.assert_(not AnimalAdd.instance.has_subscription(self.profile, self.owner))

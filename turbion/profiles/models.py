@@ -80,7 +80,9 @@ class Profile(User):
     skype = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('skype'))
 
     name_view = models.CharField(max_length=20, choices=names, null=True, blank=True, verbose_name=_('name view'))
-    site_view = models.CharField(max_length=20, choices=sites, null=True, blank=True, verbose_name=_('site view'))
+    site_view = models.CharField(max_length=20, choices=sites,
+                                 default=sites.profile, null=True, blank=True,
+                                verbose_name=_('site view'))
     last_visit = models.DateTimeField(null=True, blank=True, verbose_name=_('last visit'))
 
     roles = models.ManyToManyField(Role, blank=True, related_name="profiles")

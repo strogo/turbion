@@ -66,6 +66,7 @@ class EventDescriptor(object):
     __metaclass__ = EventSpot
 
     name = "Some event"
+    default_template = "notifications/default.html"
 
     def get_connection(self, instance):
         return instance
@@ -125,7 +126,7 @@ class EventDescriptor(object):
                 name = self.meta.descriptor.replace(".", "/") + ".html"
             template = loader.get_template(name)
         except TemplateDoesNotExist, e:
-            return "fail: %s" % e
+            template = loader.get_template(self.default_template)
 
         title = Template(event.subject_title)
 
