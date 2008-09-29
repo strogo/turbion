@@ -40,7 +40,7 @@ def extract_profile_data(request):
     return {"ip": request.META.get("REMOTE_ADDR")}
 
 def combine_profile_form_with(form_class, request, field="created_by", need_captcha=True, fields=None):
-    if not request.user.is_authenticated():
+    if not request.user.is_confirmed:
         class UserForm(form_class, forms.ModelForm):
             nickname  = forms.CharField(required=True, label=_ ("name"))
             email = forms.EmailField(required=False, label=_("email"))
