@@ -65,7 +65,11 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
                 if not profile.is_authenticated():
                     from django.contrib.auth import login
                     from turbion.registration.backend import OnlyActiveBackend
-                    profile = Profile.objects.create_guest_profile(**form_data)
+                    profile = Profile.objects.create_guest_profile(
+                                        ip=request.META["REMOTE_ADDR"],
+                                        host=request.META["REMOTE_HOST"],
+                                        **form_data
+                                    )
 
                     profile.backend = "%s.%s" % (OnlyActiveBackend.__module__, OnlyActiveBackend.__name__)
                     login(request, profile)

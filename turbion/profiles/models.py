@@ -24,7 +24,7 @@ class ProfileManager(UserManager):
     def create_profile(self, *args, **kwargs):
         return self.create_user(*args, **kwargs)
 
-    def create_guest_profile(self, nickname, email=None, site=None):
+    def create_guest_profile(self, nickname, email=None, site=None, ip=None, host=None):
         profile = self.create_user(username=self.generate_username([nickname,email,site]),
                                    email=email and email or "",
                                    password=None)
@@ -32,6 +32,9 @@ class ProfileManager(UserManager):
         profile.nickname = nickname
         profile.site = site
         profile.name_view = Profile.names.nickname
+        profile.is_confirmed = False
+        profile.ip = ip
+        profile.host = host
         profile.save()
 
         return profile
@@ -54,9 +57,10 @@ class Profile(User):
                 female=_('female')
             )
 
-    nickname = models.CharField(max_length=150, null=True)
-    ip = models.IPAddressField(null=True, blank=True)
-    is_confirmed = models.BooleanField(default=True)
+    nickname = models.CharField(max_length=150, null=True, verbose_name =_('nickname'))
+    ip = models.IPAddressField(null=True, blank=True, verbose_name =_('IP'))
+    host = models.CharField(max_length=150,null=True, blank=True, verbose_name =_('host'))
+    is_confirmed = models.BooleanField(default=True, verbose_name =_('confirmed'))
 
     birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
     gender = models.CharField(max_length=10, verbose_name =_('gender'), choices=genders, null=True, blank=True)
@@ -75,9 +79,9 @@ class Profile(User):
     jabber = models.CharField(max_length=50, null=True, blank=True, verbose_name=_('jabber id'))
     skype = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('skype'))
 
-    name_view = models.CharField(max_length=20, choices=names, null=True, blank=True)
-    site_view = models.CharField(max_length=20, choices=sites, null=True, blank=True)
-    last_visit = models.DateTimeField(null=True, blank=True)
+    name_view = models.CharField(max_length=20, choices=names, null=True, blank=True, verbose_name=_('name view'))
+    site_view = models.CharField(max_length=20, choices=sites, null=True, blank=True, verbose_name=_('site view'))
+    last_visit = models.DateTimeField(null=True, blank=True, verbose_name=_('last visit'))
 
     roles = models.ManyToManyField(Role, blank=True, related_name="profiles")
     capabilities = models.ManyToManyField(Capability, blank=True, related_name="profiles")
@@ -99,9 +103,11 @@ class Profile(User):
 
     @property
     def name(self):
-        type_map = {Profile.names.nickname      : self.nickname,
-                    Profile.names.full_name     : self.full_name,
-                    Profile.names.full_name_nick: self.full_name_with_nick}
+        type_map = {
+                Profile.names.nickname      : self.nickname,
+                Profile.names.full_name     : self.full_name,
+                Profile.names.full_name_nick: self.full_name_with_nick
+        }
         return type_map.get(self.name_view, self.username)
 
     def update_visit(self, when):
@@ -113,7 +119,17 @@ class Profile(User):
 
     def get_absolute_url(self):
         if self.is_confirmed:
-            return models.permalink(lambda:("turbion.profiles.views.profile", (), {"profile_user": self.username}))()
+            type_map = {
+                Profile.sites.profile: models.permalink(
+                                        lambda: (
+                                            "turbion.profiles.views.profile",
+                                            (),
+                                            {"profile_user": self.username}
+                                            )
+                                        )(),
+                Profile.sites.site: self.site
+            }
+            return type_map[self.site_view]
         return self.site
 
     class Meta:
@@ -124,7 +140,8 @@ class Profile(User):
     @property
     def caps(self):
         if not hasattr(self, "_caps_cache"):
-            self._caps_cache = set((cap.descriptor, cap.code, cap.connection) for cap in self.capabilities.all())
+            self._caps_cache = set((cap.descriptor, cap.code, cap.connection)\
+                                        for cap in self.capabilities.all())
         return self._caps_cache
 
     @property

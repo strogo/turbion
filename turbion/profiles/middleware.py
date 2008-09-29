@@ -23,6 +23,8 @@ class AnonymousProfile(AnonymousUser):
     jabber = None
     skype = None
     name_view = None
+    site_view = None
+    last_visit = None
 
     def has_capability_for(self, *args, **kwargs):
         return False
