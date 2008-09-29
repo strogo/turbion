@@ -59,7 +59,7 @@ class Profile(User):
 
     nickname = models.CharField(max_length=150, null=True, verbose_name =_('nickname'))
     ip = models.IPAddressField(null=True, blank=True, verbose_name =_('IP'))
-    host = models.CharField(max_length=150,null=True, blank=True, verbose_name =_('host'))
+    host = models.CharField(max_length=250,null=True, blank=True, verbose_name =_('host'))
     is_confirmed = models.BooleanField(default=True, verbose_name =_('confirmed'))
 
     birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
@@ -129,7 +129,7 @@ class Profile(User):
                                         )(),
                 Profile.sites.site: self.site
             }
-            return type_map[self.site_view]
+            return type_map.get(self.site_view, self.site)
         return self.site
 
     class Meta:
