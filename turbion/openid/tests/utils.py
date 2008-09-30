@@ -38,10 +38,10 @@ class FakeServer(object):
             })
         self.openid_request = CheckIDRequest.fromMessage(message, self.op_endpoint)
 
-        if self.openid_request:
-            self.request.session['openid_request'] = self.openid_request
-        else:
-            self.request.session['openid_request'] = None
+        #if self.openid_request:
+        #    self.request.session['openid_request'] = self.openid_request
+        #else:
+        #    self.request.session['openid_request'] = None
 
     def _get_server(self):
         from openid.server.server import Server
@@ -95,4 +95,4 @@ class FakeServer(object):
         return r["Location"]
 
     def get_disallow_auth_url(self):
-        openid_response = self._process_trust(True)
+        openid_response = self._process_trust(False)

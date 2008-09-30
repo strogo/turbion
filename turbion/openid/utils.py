@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 
+from turbion.utils.urls import uri_reverse
 from turbion.profiles.models import Profile
 from turbion.openid.models import Identity
 
@@ -11,6 +12,12 @@ def get_consumer(session):
     from turbion.openid.store import DatabaseStore
 
     return consumer.Consumer(session, DatabaseStore())
+
+def get_server():
+    from openid.server import server
+    from turbion.openid.store import DatabaseStore
+
+    return server.Server(DatabaseStore(), uri_reverse("openid_endpoint"))
 
 def complete(request):
     data = dict(request.GET.items())
@@ -49,3 +56,12 @@ def create_user(username, email, response):
                         url=response.identity_url
                     )
     return connection
+
+def _save_request(request, openid_request):
+    if openid_request:
+        request.session['openid_request'] = openid_request
+    else:
+        request.session['openid_request'] = None
+
+def _load_request(request):
+    return request.session.get('openid_request', None)

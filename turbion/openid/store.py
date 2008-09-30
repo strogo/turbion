@@ -33,7 +33,7 @@ class DatabaseStore(OpenIDStore):
                      lifetime=assoc.lifetime,
                      assoc_type=assoc.assoc_type
             )
-        except (Association.DoesNotExist, IndexError):
+        except (Association.DoesNotExist, IndexError), e:
             return None
 
     def removeAssociation(self, server_url, handle):

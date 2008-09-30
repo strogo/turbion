@@ -46,3 +46,12 @@ class OpenidLoginForm(forms.Form):
 class UserInfoForm(forms.Form, RegistrationFormBase):
     username = forms.CharField(required=True)
     email = forms.EmailField(required=True)
+
+class DecideForm(forms.Form):
+    decisions = (
+        ("allow","allow"),
+        ("disallow", "disallow")
+    )
+
+    always = forms.BooleanField(initial=False)
+    decision = forms.ChoiceField(choices=decisions)

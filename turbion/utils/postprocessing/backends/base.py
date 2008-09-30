@@ -22,7 +22,8 @@ class ProcessorSpot(type):
         return t
 
     @classmethod
-    def get_processor(cls, name):
+    def get_processor(cls, name=None):
+        name = str(name)#FIME: why convert to string. It must be string already!
         for proc_name, proc in cls.processors.iteritems():
             if proc_name.endswith(name):
                 return proc

@@ -37,11 +37,9 @@ class OpenidFormTest(BaseOpenidConsumerTest, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assert_(response["Location"].startswith("http://%s:%s/" % (utils.host, utils.port)))
 
-class OpenidAuthenticationTest(BaseOpenidConsumerTest, TestCase):
+class OpenidAuthenticationTest(TestCase):
     def setUp(self):
         self.server = utils.FakeServer(utils.identity_url)
-
-        super(OpenidAuthenticationTest, self).setUp()
 
     def _strip_host(self, url):
         from urlparse import urlsplit
@@ -51,13 +49,10 @@ class OpenidAuthenticationTest(BaseOpenidConsumerTest, TestCase):
         return path, parse_qs(query)
 
     def test_good_authentication(self):
-        data = {"openid": utils.identity_url}
-        response = self.client.post(reverse("openid_login"), data=data)
-
         url, data = self._strip_host(self.server.get_allow_auth_url())
-
+        print data
         response = self.client.get(url, data=data)
-        print response.content
+
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response["Location"], reverse("openid_collect"))
 

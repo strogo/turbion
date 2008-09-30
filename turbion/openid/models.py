@@ -5,12 +5,13 @@ from django.contrib.auth.models import User
 from datetime import datetime
 
 from turbion.profiles.models import Profile
+from turbion.utils.models import GenericManager
 
-class IdentityManager(models.Manager):
-    def add_identifier(self, username, openid_url):
+class IdentityManager(GenericManager):
+    def add_identifier(self, username, openid_url, **kwargs):
         user = User.objects.get(username=username)
 
-        identity, _ = self.get_or_create(user=user, url=openid_url)
+        identity, _ = self.get_or_create(user=user, url=openid_url, defaults=kwargs)
 
         return identity
 
@@ -20,9 +21,13 @@ class Identity(models.Model):
     date = models.DateTimeField(default=datetime.now)
 
     last_login = models.DateTimeField(null=True, blank=True)
-    url = models.URLField(max_length=250, unique=True )
+    url = models.URLField(max_length=250, unique=True)
+    default = models.BooleanField(default=False)
+    local = models.BooleanField(default=False)
 
     objects = IdentityManager()
+    locals = IdentityManager(local=True)
+    globals = IdentityManager(local=False)
 
     class Meta:
         db_table = "turbion_openid_identity"
@@ -50,3 +55,10 @@ class Nonce(models.Model):
     class Meta:
         db_table = "turbion_openid_nonce"
         unique_together = [('server_url', 'timestamp', 'salt')]
+
+class Trust(models.Model):
+    url = models.URLField(unique=True)
+    date = models.DateTimeField(default=datetime.now)
+
+    class Meta:
+        db_table = "turbion_openid_trust"
