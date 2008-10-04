@@ -146,3 +146,47 @@ class CompositionFieldTest(TestCase):
 
         post = Post.objects.get(pk=post._get_pk_val())
         self.assertEqual(post.comment_count, 5)
+
+# ***************************************
+
+D = dict
+
+class Comment(models.Model):
+   post = models.ForeignKey("Post", related_name="comments")
+
+class Post(models.Model):
+   comment_count=ChildsAgregation("commen_set", lambda post: post.comments.count())
+
+# ***************************************
+
+class Person(models.Model):
+    name = models.CharField(max_length=250)
+
+class Movie(models.Model):
+    title = models.CharField(max_length=250)
+    director = models.ForeignKey(Person)
+
+    headline=AttributesAgregation(
+                 native=models.CharField(max_length=250),
+                 field="director",
+                 do=lambda movie: "%s, by %s" % (movie.title, movie.director.name)
+              )
+
+    director_name=ForeignAttribute("director.name")
+
+# **************************************
+
+class Ingridient(models.Model):
+    name = models.CharField(max_length=100)
+
+class Food(models.Model):
+    ingridients = models.ManyToManyField(Ingridient)
+    
+    ingridients_str = ChildsAggregation(
+                        "ingridients",
+                        lambda food: ", ",join(food.ingridients.all()),
+                        signal=ingridient_added,
+                        instance_getter=lambda instance, to, *args, **kwargs: to 
+                    )
+
+# **************************************
