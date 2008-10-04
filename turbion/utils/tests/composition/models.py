@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.test import TestCase
 from django.db import models
 from django.db.models import signals
 
-from turbion.utils.composition import CompositionField
+from turbion.utils.composition import CompositionField, AttributesAggregation,\
+                                       ChildsAggregation, ForeignAttribute
+
 
 D = dict
 
@@ -65,7 +66,7 @@ class Movie(models.Model):
         app_label="utils"
 
 class Comment(models.Model):
-    post = models.ForeignKey("Post")
+    post = models.ForeignKey("Post", related_name="comments")
 
     class Meta:
         app_label="utils"
@@ -75,7 +76,7 @@ class Post(models.Model):
                     native=models.PositiveIntegerField(default=0),
                     trigger=D(
                             on=(signals.post_save, signals.post_delete),
-                            do=lambda post, comment, signal: post.comment_set.count(),
+                            do=lambda post, comment, signal: post.comments.count(),
                             sender_model=Comment,
                             field_holder_getter=lambda comment: comment.post,
                         )
@@ -84,89 +85,21 @@ class Post(models.Model):
     class Meta:
         app_label="utils"
 
-class CompositionFieldTest(TestCase):
-    def test_model_attribute_exist(self):
-        self.assert_(hasattr(Event._meta.get_field("visit_count"), "_composition_meta"), "Field`s composition meta does not exist")
-
-        self.assert_(hasattr(Event, "sync_visit_count"), "Update method does not exist")
-        self.assert_(hasattr(Event, "freeze_visit_count"), "Freeze method does not exist")
-
-    def test_event(self):
-        event = Event.objects.create()
-
-        for i in range(5):
-            Visit.objects.create(event=event)
-
-        event = Event.objects.get(pk=event._get_pk_val())
-        self.assertEqual(event.visit_count, 5)
-
-        event.visit_count = 0
-        event.save()
-
-        event.sync_visit_count()
-
-        event = Event.objects.get(pk=event._get_pk_val())
-        self.assertEqual(event.visit_count, 5)
-
-    def test_movie(self):
-        person = Person.objects.create(name="George Lucas")
-
-        movie = Movie(title="Star Wars Episode IV: A New Hope", director=person)
-        movie.save()
-        movie.update_headline()
-
-        movie = Movie.objects.get(pk=movie._get_pk_val())
-        self.assertEqual(
-                        movie.headline,
-                        "Star Wars Episode IV: A New Hope, by George Lucas"
-                    )
-
-        person.name = "George W. Lucas"
-        person.save()
-
-        movie = Movie.objects.get(pk=movie._get_pk_val())
-        self.assertEqual(
-                        movie.headline,
-                        "Star Wars Episode IV: A New Hope, by George W. Lucas"
-                    )
-
-    def test_post(self):
-        post = Post.objects.create()
-
-        for i in range(5):
-            Comment.objects.create(post=post)
-
-        post = Post.objects.get(pk=post._get_pk_val())
-        self.assertEqual(post.comment_count, 5)
-
-        post.comment_count = 0
-        post.save()
-
-        post.update_comment_count()
-
-        post = Post.objects.get(pk=post._get_pk_val())
-        self.assertEqual(post.comment_count, 5)
-
-# ***************************************
-
-D = dict
-
-class Comment(models.Model):
+class HLComment(models.Model):
    post = models.ForeignKey("Post", related_name="comments")
 
-class Post(models.Model):
-   comment_count=ChildsAgregation("commen_set", lambda post: post.comments.count())
+class HLPost(models.Model):
+   comment_count=ChildsAggregation("commen_set", lambda post: post.comments.count())
 
-# ***************************************
 
-class Person(models.Model):
+class HLPerson(models.Model):
     name = models.CharField(max_length=250)
 
-class Movie(models.Model):
+class HLMovie(models.Model):
     title = models.CharField(max_length=250)
     director = models.ForeignKey(Person)
 
-    headline=AttributesAgregation(
+    headline=AttributesAggregation(
                  native=models.CharField(max_length=250),
                  field="director",
                  do=lambda movie: "%s, by %s" % (movie.title, movie.director.name)
@@ -174,19 +107,16 @@ class Movie(models.Model):
 
     director_name=ForeignAttribute("director.name")
 
-# **************************************
 
-class Ingridient(models.Model):
+class HLIngridient(models.Model):
     name = models.CharField(max_length=100)
 
-class Food(models.Model):
+class HLFood(models.Model):
     ingridients = models.ManyToManyField(Ingridient)
-    
+
     ingridients_str = ChildsAggregation(
                         "ingridients",
                         lambda food: ", ",join(food.ingridients.all()),
                         signal=ingridient_added,
-                        instance_getter=lambda instance, to, *args, **kwargs: to 
+                        instance_getter=lambda instance, to, *args, **kwargs: to
                     )
-
-# **************************************

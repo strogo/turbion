@@ -217,13 +217,13 @@ class ForeignAttribute(CompositionField):
 
         )
 
-class AttributesAgregation(CompositionField):
+class AttributesAggregation(CompositionField):
     def __init__(self, field, do, native=None):
         self.field = field
         self.do = do
         self.native = native
 
-class ChildsAgregation(CompositionField):
+class ChildsAggregation(CompositionField):
     def __init__(self, field, do, native=None, signal=None, instance_getter=None):
         self.field = field
         self.do = do
