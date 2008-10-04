@@ -260,11 +260,16 @@ class ForeignAttribute(CompositionField):
 
         related_names_chain.reverse()
 
-        def get_root_instances(instance):
-            rel_name = related_names_chain[0]
-
-            for obj in getattr(instance, rel_name).all():
-                yield obj
+        def get_root_instances(instance, related_names_chain=related_names_chain):
+            if len(related_names_chain) > 1:
+                for rel_name in related_names_chain:
+                    yield get_root_instances(
+                                    getattr(instance, rel_name),
+                                    related_names_chain[1:]
+                                )
+            else:
+                for obj in getattr(instance, related_names_chain[0]).all():
+                    yield obj
 
         self.internal_init(
             native=native,
