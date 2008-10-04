@@ -258,18 +258,20 @@ class ForeignAttribute(CompositionField):
         if not native:
             native = foreign_field
 
-        related_names_chain.reverse()
-
-        def get_root_instances(instance, related_names_chain=related_names_chain):
-            if len(related_names_chain) > 1:
-                for rel_name in related_names_chain:
-                    yield get_root_instances(
-                                    getattr(instance, rel_name),
-                                    related_names_chain[1:]
-                                )
+        def get_root_instances(instance, related_names_chain=related_names_chain[:]):
+            attr = getattr(instance, related_names_chain.pop())
+            if not is_iterable(attr):
+                attr = attr.all()
+            
+            if related_names_chain:
+                for obj in attr:
+                    for inst in get_root_instances(
+                                        obj,
+                                        related_names_chain
+                                    ):
+                        yield inst
             else:
-                for obj in getattr(instance, related_names_chain[0]).all():
-                    yield obj
+                yield attr
 
         self.internal_init(
             native=native,
@@ -280,7 +282,7 @@ class ForeignAttribute(CompositionField):
                 field_holder_getter=lambda foreign: get_root_instances(foreign)
             ),
             update_method=dict(
-                queryset=lambda holder: getattr(holder, bits[0])
+                queryset=lambda holder: getattr(holder, bits[0])#FIXME: rename queryset
             ),
             commit=True,
         )
