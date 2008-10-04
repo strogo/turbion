@@ -86,37 +86,50 @@ class Post(models.Model):
         app_label="utils"
 
 class HLComment(models.Model):
-   post = models.ForeignKey("Post", related_name="comments")
+   post = models.ForeignKey("HLPost", related_name="comments")
+
+   class Meta:
+        app_label="utils"
 
 class HLPost(models.Model):
-   comment_count=ChildsAggregation("commen_set", lambda post: post.comments.count())
+   #comment_count=ChildsAggregation("commen_set", lambda post: post.comments.count())
 
+   class Meta:
+        app_label="utils"
 
 class HLPerson(models.Model):
     name = models.CharField(max_length=250)
 
+    class Meta:
+        app_label="utils"
+
 class HLMovie(models.Model):
     title = models.CharField(max_length=250)
-    director = models.ForeignKey(Person)
+    director = models.ForeignKey(HLPerson)
 
-    headline=AttributesAggregation(
-                 native=models.CharField(max_length=250),
-                 field="director",
-                 do=lambda movie: "%s, by %s" % (movie.title, movie.director.name)
-              )
+    #headline = AttributesAggregation(
+    #             native=models.CharField(max_length=250),
+    #             field="director",
+    #             do=lambda movie: "%s, by %s" % (movie.title, movie.director.name)
+    #          )
 
-    director_name=ForeignAttribute("director.name")
+    director_name = ForeignAttribute("director.name")
 
+    class Meta:
+        app_label="utils"
 
 class HLIngridient(models.Model):
     name = models.CharField(max_length=100)
 
 class HLFood(models.Model):
-    ingridients = models.ManyToManyField(Ingridient)
+    ingridients = models.ManyToManyField(HLIngridient)
 
-    ingridients_str = ChildsAggregation(
-                        "ingridients",
-                        lambda food: ", ",join(food.ingridients.all()),
-                        signal=ingridient_added,
-                        instance_getter=lambda instance, to, *args, **kwargs: to
-                    )
+    #ingridients_str = ChildsAggregation(
+    #                    "ingridients",
+    #                    lambda food: ", ",join(food.ingridients.all()),
+    #                    signal=ingridient_added,
+    #                    instance_getter=lambda instance, to, *args, **kwargs: to
+    #                )
+
+    class Meta:
+        app_label="utils"

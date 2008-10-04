@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-class GenericEventTest(object):
+class BaseTest(object):
+    def renew_object(self, obj):
+        return obj.__class__.objects.get(pk=obj._get_pk_val())
+
+class GenericEventTest(BaseTest):
     def test_event(self):
         event = self.event_model.objects.create()
 
@@ -18,7 +22,7 @@ class GenericEventTest(object):
         event = self.event_model.objects.get(pk=event._get_pk_val())
         self.assertEqual(event.visit_count, 5)
 
-class GenericMovieTest(object):
+class GenericMovieTest(BaseTest):
     def test_movie(self):
         person = self.person_model.objects.create(name="George Lucas")
 
@@ -41,7 +45,7 @@ class GenericMovieTest(object):
                         "Star Wars Episode IV: A New Hope, by George W. Lucas"
                     )
 
-class GenericPostTest(object):
+class GenericPostTest(BaseTest):
     def test_post(self):
         post = self.post_model.objects.create()
 

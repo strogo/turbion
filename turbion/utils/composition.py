@@ -2,6 +2,9 @@
 from django.db import models
 from django.utils.itercompat import is_iterable
 
+
+# TODO: add pre_save signal handler for initial value
+
 class Trigger(object):
     def __init__(self, do, on, field_name, sender, sender_model,\
                  commit, field_holder_getter):
@@ -10,7 +13,6 @@ class Trigger(object):
 
         if sender_model and not sender:
             if isinstance(sender_model, basestring):
-
                 sender_model = models.get_model(*sender_model.split(".", 1))
             self.sender = self.sender_model = sender_model
         else:
@@ -121,6 +123,9 @@ class CompositionMeta(object):
         else:
             qs = qs_getter
 
+        if not is_iterable(qs):
+            qs = [qs]
+
         for obj in qs:
             setattr(
                 instance,
@@ -213,8 +218,66 @@ class ForeignAttribute(CompositionField):
         - повесить сигналы на сохранение и добавлени к модели
         - сгенерировать функцию сеттер для атрибута
         """
-        self.internal_init(
+        bits = self.field.split(".")
 
+        if len(bits) != 2:
+            raise ValueError
+
+        foreign_field = None
+        foreign_model = cls
+        prev_model = None# for related_name generation
+        leaf_field_name = None
+
+        related_names_chain = []
+
+        for bit in bits:
+            meta = foreign_model._meta
+
+            try:
+                foreign_field = meta.get_field(bit)
+            except models.FieldDoesNotExist:
+                raise ValueError("Field '%s' does not exist" % bit)
+
+            if isinstance(foreign_field, models.ForeignKey):
+                foreign_rel = foreign_field.rel
+                prev_model = foreign_model
+                foreign_model = foreign_rel.to
+
+                related_name = foreign_rel.related_name
+                if not related_name and prev_model:
+                    related_name = "%s_set" % prev_model.__name__.lower()#FIXME
+                    #for rel_object in foreign_field.rel.to._meta.get_all_related_objects():
+                    #    if rel_object.field == foreign_field:
+                    #        related_name = rel_object.get_accessor_name()
+
+                related_names_chain.append(related_name)
+            else:
+                leaf_field_name = bit
+
+        native = self.native
+        if not native:
+            native = foreign_field
+
+        related_names_chain.reverse()
+
+        def get_root_instances(instance):
+            rel_name = related_names_chain[0]
+
+            for obj in getattr(instance, rel_name).all():
+                yield obj
+
+        self.internal_init(
+            native=native,
+            trigger=dict(
+                on=(models.signals.post_save, models.signals.post_delete),
+                sender_model=foreign_model,
+                do=lambda holder, foreign, signal: getattr(foreign, leaf_field_name),
+                field_holder_getter=lambda foreign: get_root_instances(foreign)
+            ),
+            update_method=dict(
+                queryset=lambda holder: getattr(holder, bits[0])
+            ),
+            commit=True,
         )
 
 class AttributesAggregation(CompositionField):
