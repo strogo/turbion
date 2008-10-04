@@ -140,7 +140,7 @@ class CompositionField(object):
     def __init__(self, native, trigger=None, commons={},\
                      commit=True, update_method={}):
         self.internal_init(native, trigger, commons, commit, update_method)
-    
+
     def internal_init(self, native=None, trigger=None, commons={},\
                      commit=True, update_method={}):
         """
@@ -190,22 +190,22 @@ class CompositionField(object):
     def contribute_to_class(self, cls, name):
         self.introspect_class(cls, name)
         self._composition_meta = self.create_meta(cls, name)
-        return self._native.__class__.contribute_to_class(self, cls, name)
-    
+        return self._c_native.__class__.contribute_to_class(self, cls, name)
+
     def create_meta(self, cls, name):
         return CompositionMeta(
                     cls, self._c_native, name, self._c_trigger,\
                     self._c_commons, self._c_commit, self._c_update_method
                 )
-    
-    def introspect_class(cls, name):
+
+    def introspect_class(self, cls, name):
         pass
 
 class ForeignAttribute(CompositionField):
     def __init__(self, field, native=None):
         self.field = field
         self.native = native
-        
+
     def introspect_class(self, cls, name):
         """
         - По полю определить модель к которой относится атрибут
@@ -214,7 +214,7 @@ class ForeignAttribute(CompositionField):
         - сгенерировать функцию сеттер для атрибута
         """
         self.internal_init(
-        
+
         )
 
 class AttributesAgregation(CompositionField):
