@@ -139,6 +139,10 @@ class CompositionMeta(object):
 class CompositionField(object):
     def __init__(self, native, trigger=None, commons={},\
                      commit=True, update_method={}):
+        self.internal_init(native, trigger, commons, commit, update_method)
+    
+    def internal_init(self, native=None, trigger=None, commons={},\
+                     commit=True, update_method={}):
         """
             CompositionField class that patches native field
             with custom `contribute_to_class` method
@@ -167,24 +171,62 @@ class CompositionField(object):
                                 that have to retun something iterable
                         * name - custom method name instead of `update_FOO`
         """
-        import new
-        self.__class__ = new.classobj(
+        if native:
+            import new
+            self.__class__ = new.classobj(
                                     self.__class__.__name__,
                                     tuple([self.__class__, native.__class__] + list(self.__class__.__mro__[1:])),
                                     {}
                                 )
 
-        self._native = native
+        self._c_native = native
         self.__dict__.update(native.__dict__)
 
-        self.trigger = trigger
-        self.commons = commons
-        self.commit = commit
-        self.update_method = update_method
+        self._c_trigger = trigger
+        self._c_commons = commons
+        self._c_commit = commit
+        self._c_update_method = update_method
 
     def contribute_to_class(self, cls, name):
-        self._composition_meta = CompositionMeta(
-                                    cls, self._native, name, self.trigger,\
-                                    self.commons, self.commit, self.update_method
-                                )
+        self.introspect_class(cls, name)
+        self._composition_meta = self.create_meta(cls, name)
         return self._native.__class__.contribute_to_class(self, cls, name)
+    
+    def create_meta(self, cls, name):
+        return CompositionMeta(
+                    cls, self._c_native, name, self._c_trigger,\
+                    self._c_commons, self._c_commit, self._c_update_method
+                )
+    
+    def introspect_class(cls, name):
+        pass
+
+class ForeignAttribute(CompositionField):
+    def __init__(self, field, native=None):
+        self.field = field
+        self.native = native
+        
+    def introspect_class(self, cls, name):
+        """
+        - По полю определить модель к которой относится атрибут
+        - определить как из объекта этой модели найти объект холдер
+        - повесить сигналы на сохранение и добавлени к модели
+        - сгенерировать функцию сеттер для атрибута
+        """
+        self.internal_init(
+        
+        )
+
+class AttributesAgregation(CompositionField):
+    def __init__(self, field, do, native=None):
+        self.field = field
+        self.do = do
+        self.native = native
+
+class ChildsAgregation(CompositionField):
+    def __init__(self, field, do, native=None, signal=None, instance_getter=None):
+        self.field = field
+        self.do = do
+        self.native = native
+        self.signal = signal
+        self.instance_getter = instance_getter
