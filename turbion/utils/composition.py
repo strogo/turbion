@@ -226,7 +226,6 @@ class ForeignAttribute(CompositionField):
         foreign_field = None
         foreign_model = cls
         prev_model = None# for related_name generation
-        leaf_field_name = None
 
         related_names_chain = []
 
@@ -243,6 +242,9 @@ class ForeignAttribute(CompositionField):
                 prev_model = foreign_model
                 foreign_model = foreign_rel.to
 
+                if isinstance(foreign_rel.to, basestring):
+                    raise ValueError("Model with name '%s' must be class instance not string" % foreign_rel.to)
+
                 related_name = foreign_rel.related_name
                 if not related_name and prev_model:
                     related_name = "%s_set" % prev_model.__name__.lower()#FIXME
@@ -251,38 +253,44 @@ class ForeignAttribute(CompositionField):
                     #        related_name = rel_object.get_accessor_name()
 
                 related_names_chain.append(related_name)
-            else:
-                leaf_field_name = bit
+
 
         native = self.native
         if not native:
             native = foreign_field
 
-        def get_root_instances(instance, related_names_chain=related_names_chain[:]):
-            attr = getattr(instance, related_names_chain.pop())
+        def get_root_instances(instance, chain):
+            attr = getattr(instance, chain.pop())
             if not is_iterable(attr):
                 attr = attr.all()
-            
-            if related_names_chain:
+
+            if chain:
                 for obj in attr:
                     for inst in get_root_instances(
                                         obj,
-                                        related_names_chain
+                                        rchain
                                     ):
                         yield inst
             else:
-                yield attr
+                for obj in attr:
+                    yield obj
+
+        def get_leaf_instances(instance, chain):
+            for bit in chain:
+                instance = getattr(instance, bit)
+
+            return instance
 
         self.internal_init(
             native=native,
             trigger=dict(
                 on=(models.signals.post_save, models.signals.post_delete),
                 sender_model=foreign_model,
-                do=lambda holder, foreign, signal: getattr(foreign, leaf_field_name),
-                field_holder_getter=lambda foreign: get_root_instances(foreign)
+                do=lambda holder, foreign, signal: getattr(foreign, bits[-1]),
+                field_holder_getter=lambda foreign: get_root_instances(foreign, related_names_chain[:])
             ),
             update_method=dict(
-                queryset=lambda holder: getattr(holder, bits[0])#FIXME: rename queryset
+                queryset=lambda holder: get_leaf_instances(holder, bits[:-1])#FIXME: rename queryset
             ),
             commit=True,
         )
