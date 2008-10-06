@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models.related import RelatedObject
 from django.utils.itercompat import is_iterable
-
 
 # TODO: add pre_save signal handler for initial value
 
@@ -224,13 +224,12 @@ class ForeignAttribute(CompositionField):
             raise ValueError("Illegal path to foreign field")
 
         foreign_field = None
-        foreign_model = cls
-        prev_model = None# for related_name generation
-
+        
+        related_models_chain = [cls]
         related_names_chain = []
 
-        for bit in bits:
-            meta = foreign_model._meta
+        for bit in bits[:-1]:
+            meta = related_models_chain[-1]._meta
 
             try:
                 foreign_field = meta.get_field(bit)
@@ -238,26 +237,32 @@ class ForeignAttribute(CompositionField):
                 raise ValueError("Field '%s' does not exist" % bit)
 
             if isinstance(foreign_field, models.ForeignKey):
-                foreign_rel = foreign_field.rel
-                prev_model = foreign_model
-                foreign_model = foreign_rel.to
-
-                if isinstance(foreign_rel.to, basestring):
+                if isinstance(foreign_field.rel.to, basestring):
                     raise ValueError("Model with name '%s' must be class instance not string" % foreign_rel.to)
 
-                related_name = foreign_rel.related_name
-                if not related_name and prev_model:
-                    related_name = "%s_set" % prev_model.__name__.lower()#FIXME
-                    #for rel_object in foreign_field.rel.to._meta.get_all_related_objects():
-                    #    if rel_object.field == foreign_field:
-                    #        related_name = rel_object.get_accessor_name()
-
+                related_name = foreign_field.rel.related_name
+                if not related_name and related_models_chain:
+                    related_name = RelatedObject(
+                                    foreign_field.rel.to,
+                                    related_models_chain[-1],
+                                    foreign_field
+                                ).get_accessor_name()
+                else:
+                    ValueError
+                
+                related_models_chain.append(foreign_field.rel.to)
                 related_names_chain.append(related_name)
+            else:
+                raise ValueError
 
 
         native = self.native
         if not native:
-            native = foreign_field
+            field_name = bits[-1]
+            try:
+                native = related_models_chain[-1]._meta.get_field(field_name)
+            except models.FieldDoesNotExist:
+                raise ValueError("Leaf field '%s' does not exist" % field_name)
 
         def get_root_instances(instance, chain):
             attr = getattr(instance, chain.pop()).all()
@@ -283,7 +288,7 @@ class ForeignAttribute(CompositionField):
             native=native,
             trigger=dict(
                 on=(models.signals.post_save, models.signals.post_delete),
-                sender_model=foreign_model,
+                sender_model=related_models_chain[-1],
                 do=lambda holder, foreign, signal: getattr(foreign, bits[-1]),
                 field_holder_getter=lambda foreign: get_root_instances(foreign, related_names_chain[:])
             ),

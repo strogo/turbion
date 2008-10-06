@@ -12,7 +12,7 @@ class HighMovieTest(GenericMovieTest, TestCase):
 
     def test_movie_director_name(self):
         person = self.person_model.objects.create(name="George Lucas")
-
+        
         movie = self.movie_model(title="Star Wars Episode IV: A New Hope", director=person)
         movie.save()
         #person.save()
