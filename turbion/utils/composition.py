@@ -178,16 +178,17 @@ class CompositionField(object):
                                 that have to retun something iterable
                         * name - custom method name instead of `update_FOO`
         """
-        if native:
+        if native is not None:
             import new
             self.__class__ = new.classobj(
                                     self.__class__.__name__,
                                     tuple([self.__class__, native.__class__] + list(self.__class__.__mro__[1:])),
                                     {}
                                 )
+            
+            self.__dict__.update(native.__dict__)
 
         self._c_native = native
-        self.__dict__.update(native.__dict__)
 
         self._c_trigger = trigger
         self._c_commons = commons
@@ -195,25 +196,42 @@ class CompositionField(object):
         self._c_update_method = update_method
 
     def contribute_to_class(self, cls, name):
-        self.introspect_class(cls, name)
-        self._composition_meta = self.create_meta(cls, name)
-        return self._c_native.__class__.contribute_to_class(self, cls, name)
+        self._c_name = name
+        self._c_host_cls = cls
+        
+        if not self._c_native:
+            models.signals.class_prepared.connect(self.deferred_contribute_to_class)
+        else:
+            self._composition_meta = self.create_meta(cls)
+            return self._c_native.__class__.contribute_to_class(self, cls, name)
 
-    def create_meta(self, cls, name):
+    def create_meta(self, cls):
         return CompositionMeta(
-                    cls, self._c_native, name, self._c_trigger,\
+                    cls, self._c_native, self._c_name, self._c_trigger,\
                     self._c_commons, self._c_commit, self._c_update_method
                 )
-
-    def introspect_class(self, cls, name):
+    
+    def deferred_contribute_to_class(self, sender, **kwargs):
+        if sender != self._c_host_cls:
+            return
+        
+        cls = sender
+        
+        self.introspect_class(cls)
+        self._composition_meta = self.create_meta(cls)
+        return self._c_native.__class__.contribute_to_class(self, cls, self._c_name)
+    
+    def introspect_class(self, cls):
         pass
 
 class ForeignAttribute(CompositionField):
     def __init__(self, field, native=None):
         self.field = field
         self.native = native
+        
+        self.internal_init()
 
-    def introspect_class(self, cls, name):
+    def introspect_class(self, cls):
         """
         - По полю определить модель к которой относится атрибут
         - определить как из объекта этой модели найти объект холдер
@@ -229,7 +247,7 @@ class ForeignAttribute(CompositionField):
         
         related_models_chain = [cls]
         related_names_chain = []
-
+        
         for bit in bits[:-1]:
             meta = related_models_chain[-1]._meta
 
@@ -255,8 +273,7 @@ class ForeignAttribute(CompositionField):
             else:
                 raise ValueError("Foreign fields in path must be ForeignField"
                                  "instances except last. Got %s" % foreign_field.__name__)
-
-
+        
         native = self.native
         if not native:
             field_name = bits[-1]
@@ -274,7 +291,7 @@ class ForeignAttribute(CompositionField):
                 for obj in attr:
                     for inst in get_root_instances(
                                         obj,
-                                        rchain
+                                        chain
                                     ):
                         yield inst
             else:

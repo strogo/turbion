@@ -12,7 +12,6 @@ class LowEventTest(GenericEventTest, TestCase):
 
 class LowMovieTest(GenericMovieTest, TestCase):
     movie_model = Movie
-    person_model = Person
 
 class LowPostTest(GenericPostTest, TestCase):
     post_model = Post

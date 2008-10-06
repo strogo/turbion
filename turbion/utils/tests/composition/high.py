@@ -3,36 +3,41 @@ from django.test import TestCase
 
 from turbion.utils.tests.composition.generic import *
 
-from turbion.utils.tests.composition.models import HLMovie, HLPerson,\
-                                                   HLPost, HLComment
+from turbion.utils.tests.composition.models import HLMovie, HLPost, HLComment
 
 class HighMovieTest(GenericMovieTest, TestCase):
     movie_model = HLMovie
-    person_model = HLPerson
 
     def test_movie_director_name(self):
-        person = self.person_model.objects.create(name="George Lucas")
-        
-        movie = self.movie_model(title="Star Wars Episode IV: A New Hope", director=person)
-        movie.save()
-        #person.save()
-        movie.update_director_name()
+        self.movie.update_director_name()
+        self.movie.update_director_country()
 
-        movie = self.renew_object(movie)
+        self.renew_object("movie")
         self.assertEqual(
-                        movie.director_name,
+                        self.movie.director_name,
                         "George Lucas"
                     )
-
-        person.name = "George W. Lucas"
-        person.save()
-
-        movie = self.renew_object(movie)
+        
         self.assertEqual(
-                        movie.director_name,
-                        "George W. Lucas"
+                        self.movie.director_country,
+                        "USA"
                     )
 
+        self.person.name = "George W. Lucas"
+        self.person.save()
+        
+        self.person.country.name = "United States"
+        self.person.country.save()
+
+        self.renew_object("movie")
+        self.assertEqual(
+                        self.movie.director_name,
+                        "George W. Lucas"
+                    )
+        self.assertEqual(
+                        self.movie.director_country,
+                        "United States"
+                    )
 
 class HighPostTest(GenericPostTest, TestCase):
     post_model = HLPost

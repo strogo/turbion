@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
+from turbion.utils.tests.composition import models
 
 class BaseTest(object):
     def renew_object(self, obj):
-        return obj.__class__.objects.get(pk=obj._get_pk_val())
+        if isinstance(obj, basestring):
+            instance = getattr(self, obj)
+            setattr(self, obj, instance.__class__.objects.get(pk=instance._get_pk_val()))
+        else:
+            return obj.__class__.objects.get(pk=obj._get_pk_val())
 
 class GenericEventTest(BaseTest):
     def test_event(self):
@@ -23,11 +28,23 @@ class GenericEventTest(BaseTest):
         self.assertEqual(event.visit_count, 5)
 
 class GenericMovieTest(BaseTest):
-    def test_movie(self):
-        person = self.person_model.objects.create(name="George Lucas")
+    def setUp(self):
+        self.country = models.Country.objects.create(name="USA")
+        self.person = models.Person.objects.create(
+                                name="George Lucas",
+                                country=self.country
+                        )
 
-        movie = self.movie_model(title="Star Wars Episode IV: A New Hope", director=person)
-        movie.save()
+        self.movie = self.movie_model(
+                            title="Star Wars Episode IV: A New Hope",
+                            director=self.person
+                        )
+        self.movie.save()
+        
+    def test_movie(self):
+        person = self.person
+        movie = self.movie
+        
         movie.update_headline()
 
         movie = self.movie_model.objects.get(pk=movie._get_pk_val())

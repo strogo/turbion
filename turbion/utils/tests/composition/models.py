@@ -43,8 +43,15 @@ class Event(models.Model):
     class Meta:
         app_label="utils"
 
+class Country(models.Model):
+    name = models.CharField(max_length=250)
+    
+    class Meta:
+        app_label="utils"
+
 class Person(models.Model):
     name = models.CharField(max_length=250)
+    country = models.ForeignKey(Country)
 
     class Meta:
         app_label="utils"
@@ -97,15 +104,9 @@ class HLPost(models.Model):
    class Meta:
         app_label="utils"
 
-class HLPerson(models.Model):
-    name = models.CharField(max_length=250)
-
-    class Meta:
-        app_label="utils"
-
 class HLMovie(models.Model):
     title = models.CharField(max_length=250)
-    director = models.ForeignKey(HLPerson)
+    director = models.ForeignKey(Person)
 
     #headline = AttributesAggregation(
     #             native=models.CharField(max_length=250),
@@ -114,6 +115,7 @@ class HLMovie(models.Model):
     #          )
 
     director_name = ForeignAttribute("director.name")
+    director_country = ForeignAttribute("director.country.name")
 
     class Meta:
         app_label="utils"
