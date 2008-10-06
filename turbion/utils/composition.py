@@ -164,8 +164,8 @@ class CompositionField(object):
                       * field_holder_getter - function that gets instance(that comes with signal send)\
                                               as parameter and returns field holder
                                               object (related instance)
-                      * sender
-                      * sender_model
+                      * sender - signal sender
+                      * sender_model - model instance or model name that send signal
                  * commons - a trigger like field with common settings
                              for all given triggers
                  * commit - flag that indicates save instance after trigger appliance or not
@@ -220,8 +220,8 @@ class ForeignAttribute(CompositionField):
         """
         bits = self.field.split(".")
 
-        if len(bits) != 2:
-            raise ValueError
+        if len(bits) < 2:
+            raise ValueError("Illegal path to foreign field")
 
         foreign_field = None
         foreign_model = cls
@@ -260,9 +260,7 @@ class ForeignAttribute(CompositionField):
             native = foreign_field
 
         def get_root_instances(instance, chain):
-            attr = getattr(instance, chain.pop())
-            if not is_iterable(attr):
-                attr = attr.all()
+            attr = getattr(instance, chain.pop()).all()
 
             if chain:
                 for obj in attr:
@@ -275,7 +273,7 @@ class ForeignAttribute(CompositionField):
                 for obj in attr:
                     yield obj
 
-        def get_leaf_instances(instance, chain):
+        def get_leaf_instance(instance, chain):
             for bit in chain:
                 instance = getattr(instance, bit)
 
@@ -290,16 +288,20 @@ class ForeignAttribute(CompositionField):
                 field_holder_getter=lambda foreign: get_root_instances(foreign, related_names_chain[:])
             ),
             update_method=dict(
-                queryset=lambda holder: get_leaf_instances(holder, bits[:-1])#FIXME: rename queryset
+                queryset=lambda holder: get_leaf_instance(holder, bits[:-1])#FIXME: rename queryset
             ),
             commit=True,
         )
+        
+ForeignAttributeField = ForeignAttribute
 
 class AttributesAggregation(CompositionField):
     def __init__(self, field, do, native=None):
         self.field = field
         self.do = do
         self.native = native
+        
+AttributesAggregationField = AttributesAggregation
 
 class ChildsAggregation(CompositionField):
     def __init__(self, field, do, native=None, signal=None, instance_getter=None):
@@ -308,3 +310,5 @@ class ChildsAggregation(CompositionField):
         self.native = native
         self.signal = signal
         self.instance_getter = instance_getter
+        
+ChildsAggregationField = ChildsAggregation
