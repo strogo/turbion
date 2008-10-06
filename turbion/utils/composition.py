@@ -54,7 +54,7 @@ class Trigger(object):
 
 class CompositionMeta(object):
     def __init__(self, model, field, name, trigger,\
-                  commons, commit, update_method):
+                  commons, commit, update_method):#TODO: remove commit param
         self.model = model
         self.name = name
         self.trigger = []
@@ -62,8 +62,6 @@ class CompositionMeta(object):
         if not commons:
             commons = {}
         self.commons = commons
-
-        self.commit = commit
 
         if not is_iterable(trigger) or isinstance(trigger, dict):
             trigger = [trigger]
@@ -74,7 +72,7 @@ class CompositionMeta(object):
                 on=[models.signals.post_save],
                 field_holder_getter=lambda instance: instance,
                 field_name=name,
-                commit=commit
+                commit=True
         )
         trigger_defaults.update(commons)
 
@@ -134,8 +132,8 @@ class CompositionMeta(object):
                 trigger.field_name,
                 trigger.do(instance, obj, trigger.on[0])
             )
-        if self.commit:
-            instance.save()
+
+        instance.save()
 
     def _freeze_method(self, instance):
         """
@@ -303,19 +301,25 @@ class ForeignAttribute(CompositionField):
                 instance = getattr(instance, bit)
 
             return instance
-
+        
         self.internal_init(
             native=native,
-            trigger=dict(
-                on=(models.signals.post_save, models.signals.post_delete),
-                sender_model=related_models_chain[-1],
-                do=lambda holder, foreign, signal: getattr(foreign, bits[-1]),
-                field_holder_getter=lambda foreign: get_root_instances(foreign, related_names_chain[:])
-            ),
+            trigger=[dict(
+                    on=(models.signals.post_save, models.signals.post_delete),
+                    sender_model=related_models_chain[-1],
+                    do=lambda holder, foreign, signal: getattr(foreign, bits[-1]),
+                    field_holder_getter=lambda foreign: get_root_instances(foreign, related_names_chain[:])
+                ),
+                dict(
+                    on=models.signals.pre_save,
+                    sender_model=related_models_chain[0],
+                    do=lambda holder, _, signal: get_leaf_instance(holder, bits[:]),
+                    commit=False, # to prevent recusion `save` method call
+                )
+            ],
             update_method=dict(
                 queryset=lambda holder: get_leaf_instance(holder, bits[:-1])#FIXME: rename queryset
-            ),
-            commit=True,
+            )
         )
         
 ForeignAttributeField = ForeignAttribute

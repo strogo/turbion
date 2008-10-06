@@ -9,9 +9,6 @@ class HighMovieTest(GenericMovieTest, TestCase):
     movie_model = HLMovie
 
     def test_movie_director_name(self):
-        self.movie.update_director_name()
-        self.movie.update_director_country()
-
         self.renew_object("movie")
         self.assertEqual(
                         self.movie.director_name,

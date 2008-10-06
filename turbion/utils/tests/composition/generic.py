@@ -10,22 +10,23 @@ class BaseTest(object):
             return obj.__class__.objects.get(pk=obj._get_pk_val())
 
 class GenericEventTest(BaseTest):
-    def test_event(self):
-        event = self.event_model.objects.create()
+    def setUp(self):
+        self.event = self.event_model.objects.create()
 
         for i in range(5):
-            self.visit_model.objects.create(event=event)
+            self.visit_model.objects.create(event=self.event)
+        
+    def test_event(self):
+        self.renew_object("event")
+        self.assertEqual(self.event.visit_count, 5)
 
-        event = self.event_model.objects.get(pk=event._get_pk_val())
-        self.assertEqual(event.visit_count, 5)
+        self.event.visit_count = 0
+        self.event.save()
 
-        event.visit_count = 0
-        event.save()
+        self.event.sync_visit_count()
 
-        event.sync_visit_count()
-
-        event = self.event_model.objects.get(pk=event._get_pk_val())
-        self.assertEqual(event.visit_count, 5)
+        self.renew_object("event")
+        self.assertEqual(self.event.visit_count, 5)
 
 class GenericMovieTest(BaseTest):
     def setUp(self):
@@ -41,24 +42,21 @@ class GenericMovieTest(BaseTest):
                         )
         self.movie.save()
         
-    def test_movie(self):
-        person = self.person
-        movie = self.movie
-        
-        movie.update_headline()
+    def test_movie(self):       
+        self.movie.update_headline()
 
-        movie = self.movie_model.objects.get(pk=movie._get_pk_val())
+        self.renew_object("movie")
         self.assertEqual(
-                        movie.headline,
+                        self.movie.headline,
                         "Star Wars Episode IV: A New Hope, by George Lucas"
                     )
 
-        person.name = "George W. Lucas"
-        person.save()
+        self.person.name = "George W. Lucas"
+        self.person.save()
 
-        movie = self.movie_model.objects.get(pk=movie._get_pk_val())
+        self.renew_object("movie")
         self.assertEqual(
-                        movie.headline,
+                        self.movie.headline,
                         "Star Wars Episode IV: A New Hope, by George W. Lucas"
                     )
 
