@@ -3,11 +3,8 @@ from turbion.utils.tests.composition import models
 
 class BaseTest(object):
     def renew_object(self, obj):
-        if isinstance(obj, basestring):
-            instance = getattr(self, obj)
-            setattr(self, obj, instance.__class__.objects.get(pk=instance._get_pk_val()))
-        else:
-            return obj.__class__.objects.get(pk=obj._get_pk_val())
+        instance = getattr(self, obj)
+        setattr(self, obj, instance.__class__.objects.get(pk=instance._get_pk_val()))
 
 class GenericEventTest(BaseTest):
     def setUp(self):

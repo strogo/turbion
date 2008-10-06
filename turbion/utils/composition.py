@@ -172,9 +172,9 @@ class CompositionField(object):
                                               object (related instance)
                       * sender - signal sender
                       * sender_model - model instance or model name that send signal
+                      * commit - flag that indicates save instance after trigger appliance or not
                  * commons - a trigger like field with common settings
                              for all given triggers
-                 * commit - flag that indicates save instance after trigger appliance or not
                  * update_method - dict for customization of update_method. Allowed params:
                         * initial - initial value to field before applince of method
                         * do - index of update trigger or trigger itself
@@ -229,7 +229,14 @@ class CompositionField(object):
         pass
 
 class ForeignAttribute(CompositionField):
+    """
+        Composition field that can track changes of related objects attributes. 
+    """
     def __init__(self, field, native=None):
+        """
+            field - path to related field, e.g. 'director.country.name'
+            native - field instance for store value
+        """
         self.field = field
         self.native = native
         
@@ -304,7 +311,8 @@ class ForeignAttribute(CompositionField):
         
         self.internal_init(
             native=native,
-            trigger=[dict(
+            trigger=[
+                dict(
                     on=(models.signals.post_save, models.signals.post_delete),
                     sender_model=related_models_chain[-1],
                     do=lambda holder, foreign, signal: getattr(foreign, bits[-1]),
