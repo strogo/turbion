@@ -61,19 +61,20 @@ class GenericMovieTest(BaseTest):
                     )
 
 class GenericPostTest(BaseTest):
-    def test_post(self):
-        post = self.post_model.objects.create()
+    def setUp(self):
+        self.post = self.post_model.objects.create()
 
         for i in range(5):
-            self.comment_model.objects.create(post=post)
+            self.comment_model.objects.create(post=self.post)
+            
+    def test_post(self):
+        self.renew_object("post")
+        self.assertEqual(self.post.comment_count, 5)
 
-        post = self.post_model.objects.get(pk=post._get_pk_val())
-        self.assertEqual(post.comment_count, 5)
+        self.post.comment_count = 0
+        self.post.save()
 
-        post.comment_count = 0
-        post.save()
+        self.post.update_comment_count()
 
-        post.update_comment_count()
-
-        post = self.post_model.objects.get(pk=post._get_pk_val())
-        self.assertEqual(post.comment_count, 5)
+        self.renew_object("post")
+        self.assertEqual(self.post.comment_count, 5)
