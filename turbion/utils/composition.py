@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
+
 from django.db import models
 from django.db.models.related import RelatedObject
 from django.utils.itercompat import is_iterable
@@ -241,26 +243,27 @@ class ForeignAttribute(CompositionField):
                     raise ValueError("Model with name '%s' must be class instance not string" % foreign_rel.to)
 
                 related_name = foreign_field.rel.related_name
-                if not related_name and related_models_chain:
+                if not related_name:
                     related_name = RelatedObject(
                                     foreign_field.rel.to,
                                     related_models_chain[-1],
                                     foreign_field
                                 ).get_accessor_name()
-                else:
-                    ValueError
                 
                 related_models_chain.append(foreign_field.rel.to)
                 related_names_chain.append(related_name)
             else:
-                raise ValueError
+                raise ValueError("Foreign fields in path must be ForeignField"
+                                 "instances except last. Got %s" % foreign_field.__name__)
 
 
         native = self.native
         if not native:
             field_name = bits[-1]
             try:
-                native = related_models_chain[-1]._meta.get_field(field_name)
+                native = deepcopy(related_models_chain[-1]._meta.get_field(field_name))
+                native.creation_counter = models.Field.creation_counter
+                models.Field.creation_counter += 1
             except models.FieldDoesNotExist:
                 raise ValueError("Leaf field '%s' does not exist" % field_name)
 
