@@ -5,11 +5,10 @@ from django.db import models
 from django.db.models.related import RelatedObject
 from django.utils.itercompat import is_iterable
 
-# TODO: add pre_save signal handler for initial value
-
 class Trigger(object):
-    def __init__(self, do, on, field_name, sender, sender_model,\
-                 commit, field_holder_getter):
+    def __init__(self, do, on, field_name, sender, sender_model, commit,\
+                 field_holder_getter):
+        self.freeze = False
         self.field_name = field_name
         self.commit = commit
 
@@ -42,6 +41,9 @@ class Trigger(object):
         """
             Signal handler
         """
+        if self.freeze:
+            return
+        
         objects = self.field_holder_getter(instance)
         if not is_iterable(objects):
             objects = [objects]
@@ -107,6 +109,10 @@ class CompositionMeta(object):
         setattr(model, self.update_method["name"], lambda instance: self._update_method(instance))
         setattr(model, "freeze_%s" % name, lambda instance: self._freeze_method(instance))
 
+    def togle_freeze(self):
+        for t in self.trigger:
+            t.freeze = not t.freeze
+
     def _update_method(self, instance):
         """
             Generic `update_FOO` method that is connected to model
@@ -139,7 +145,7 @@ class CompositionMeta(object):
         """
             Generic `freeze_FOO` method that is connected to model
         """
-        pass
+        self.toggle_freeze()
 
 class CompositionField(object):
     def __init__(self, native, trigger=None, commons={},\
@@ -230,12 +236,6 @@ class ForeignAttribute(CompositionField):
         self.internal_init()
 
     def introspect_class(self, cls):
-        """
-        - По полю определить модель к которой относится атрибут
-        - определить как из объекта этой модели найти объект холдер
-        - повесить сигналы на сохранение и добавлени к модели
-        - сгенерировать функцию сеттер для атрибута
-        """
         bits = self.field.split(".")
 
         if len(bits) < 2:
@@ -314,13 +314,14 @@ class ForeignAttribute(CompositionField):
                     on=models.signals.pre_save,
                     sender_model=related_models_chain[0],
                     do=lambda holder, _, signal: get_leaf_instance(holder, bits[:]),
-                    commit=False, # to prevent recusion `save` method call
+                    commit=False, # to prevent recursion `save` method call
                 )
             ],
             update_method=dict(
                 queryset=lambda holder: get_leaf_instance(holder, bits[:-1])#FIXME: rename queryset
             )
         )
+        # TODO: add support for selective object handling to prevent pre_save unneeded work
         
 ForeignAttributeField = ForeignAttribute
 
