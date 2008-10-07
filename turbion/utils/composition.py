@@ -43,7 +43,7 @@ class Trigger(object):
         """
         if self.freeze:
             return
-        
+
         objects = self.field_holder_getter(instance)
         if not is_iterable(objects):
             objects = [objects]
@@ -189,7 +189,7 @@ class CompositionField(object):
                                     tuple([self.__class__, native.__class__] + list(self.__class__.__mro__[1:])),
                                     {}
                                 )
-            
+
             self.__dict__.update(native.__dict__)
 
         self._c_native = native
@@ -202,7 +202,7 @@ class CompositionField(object):
     def contribute_to_class(self, cls, name):
         self._c_name = name
         self._c_host_cls = cls
-        
+
         if not self._c_native:
             models.signals.class_prepared.connect(self.deferred_contribute_to_class)
         else:
@@ -214,32 +214,32 @@ class CompositionField(object):
                     cls, self._c_native, self._c_name, self._c_trigger,\
                     self._c_commons, self._c_commit, self._c_update_method
                 )
-    
+
     def deferred_contribute_to_class(self, sender, **kwargs):
         if sender != self._c_host_cls:
             return
-        
+
         cls = sender
-        
+
         self.introspect_class(cls)
         self._composition_meta = self.create_meta(cls)
         return self._c_native.__class__.contribute_to_class(self, cls, self._c_name)
-    
+
     def introspect_class(self, cls):
         pass
 
 class ForeignAttribute(CompositionField):
     """
-        Composition field that can track changes of related objects attributes. 
+        Composition field that can track changes of related objects attributes.
     """
     def __init__(self, field, native=None):
         """
             field - path to related field, e.g. 'director.country.name'
-            native - field instance for store value
+            native - field instance to store value
         """
         self.field = field
         self.native = native
-        
+
         self.internal_init()
 
     def introspect_class(self, cls):
@@ -249,10 +249,10 @@ class ForeignAttribute(CompositionField):
             raise ValueError("Illegal path to foreign field")
 
         foreign_field = None
-        
+
         related_models_chain = [cls]
         related_names_chain = []
-        
+
         for bit in bits[:-1]:
             meta = related_models_chain[-1]._meta
 
@@ -263,7 +263,7 @@ class ForeignAttribute(CompositionField):
 
             if isinstance(foreign_field, models.ForeignKey):
                 if isinstance(foreign_field.rel.to, basestring):
-                    raise ValueError("Model with name '%s' must be class instance not string" % foreign_rel.to)
+                    raise ValueError("Model with name '%s' must be class instance not string" % foreign_field.rel.to)
 
                 related_name = foreign_field.rel.related_name
                 if not related_name:
@@ -272,13 +272,13 @@ class ForeignAttribute(CompositionField):
                                     related_models_chain[-1],
                                     foreign_field
                                 ).get_accessor_name()
-                
+
                 related_models_chain.append(foreign_field.rel.to)
                 related_names_chain.append(related_name)
             else:
                 raise ValueError("Foreign fields in path must be ForeignField"
                                  "instances except last. Got %s" % foreign_field.__name__)
-        
+
         native = self.native
         if not native:
             field_name = bits[-1]
@@ -308,7 +308,7 @@ class ForeignAttribute(CompositionField):
                 instance = getattr(instance, bit)
 
             return instance
-        
+
         self.internal_init(
             native=native,
             trigger=[
@@ -330,7 +330,7 @@ class ForeignAttribute(CompositionField):
             )
         )
         # TODO: add support for selective object handling to prevent pre_save unneeded work
-        
+
 ForeignAttributeField = ForeignAttribute
 
 class AttributesAggregation(CompositionField):
@@ -338,7 +338,7 @@ class AttributesAggregation(CompositionField):
         self.field = field
         self.do = do
         self.native = native
-        
+
 AttributesAggregationField = AttributesAggregation
 
 class ChildsAggregation(CompositionField):
@@ -348,5 +348,5 @@ class ChildsAggregation(CompositionField):
         self.native = native
         self.signal = signal
         self.instance_getter = instance_getter
-        
+
 ChildsAggregationField = ChildsAggregation

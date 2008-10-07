@@ -9,12 +9,18 @@ class HighMovieTest(GenericMovieTest, TestCase):
     movie_model = HLMovie
 
     def test_movie_director_name(self):
+        import IPython
+            # Explicitly pass an empty list as arguments, because otherwise IPython
+            # would use sys.argv from this script.
+        shell = IPython.Shell.IPShell(argv=[])
+        shell.mainloop()
+
         self.renew_object("movie")
         self.assertEqual(
                         self.movie.director_name,
                         "George Lucas"
                     )
-        
+
         self.assertEqual(
                         self.movie.director_country,
                         "USA"
@@ -22,7 +28,7 @@ class HighMovieTest(GenericMovieTest, TestCase):
 
         self.person.name = "George W. Lucas"
         self.person.save()
-        
+
         self.person.country.name = "United States"
         self.person.country.save()
 
