@@ -201,10 +201,12 @@ class CompositionField(object):
 
     def contribute_to_class(self, cls, name):
         self._c_name = name
-        self._c_host_cls = cls
 
         if not self._c_native:
-            models.signals.class_prepared.connect(self.deferred_contribute_to_class)
+            models.signals.class_prepared.connect(
+                            self.deferred_contribute_to_class,
+                            sender=cls
+                        )
         else:
             self._composition_meta = self.create_meta(cls)
             return self._c_native.__class__.contribute_to_class(self, cls, name)
@@ -216,9 +218,6 @@ class CompositionField(object):
                 )
 
     def deferred_contribute_to_class(self, sender, **kwargs):
-        if sender != self._c_host_cls:
-            return
-
         cls = sender
 
         self.introspect_class(cls)
