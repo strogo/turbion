@@ -21,14 +21,14 @@ class Page(models.Model):
     created_on    = models.DateTimeField(default=datetime.now, verbose_name=_('creation date'))
     created_by    = models.ForeignKey(Profile, related_name = "created_pages")
 
-    edited_on     = models.DateTimeField(verbose_name=_('update date'), null=True)
-    edited_by     = models.ForeignKey(Profile, related_name="edited_pages", null=True)
+    edited_on     = models.DateTimeField(verbose_name=_('update date'), null=True, blank=True)
+    edited_by     = models.ForeignKey(Profile, related_name="edited_pages", null=True, blank=True)
 
-    slug          = models.SlugField()
     title         = models.CharField(max_length=100, verbose_name=_("title"))
+    slug          = models.SlugField()
 
     text          = models.TextField(verbose_name=_("text"))
-    text_html     = models.TextField(verbose_name=_("text html"))
+    text_html     = models.TextField(verbose_name=_("text html"), blank=True)
 
     status        = models.CharField(max_length=10, choices=statuses, default=statuses.published)
 
@@ -43,6 +43,10 @@ class Page(models.Model):
         return self.title
 
     def save(self):
+        if not self.slug:
+            from turbion.utils.text import slugify
+            self.slug = slugify(self.title)
+            
         if self.edited_by:
             self.edited_on = datetime.now()
 
