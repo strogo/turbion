@@ -34,8 +34,10 @@ class Post(models.Model, CommentedModel):
     blog          = models.ForeignKey(Blog, verbose_name=_("blog"), related_name="posts")
     comment_count = models.PositiveIntegerField(default=0, editable=False, verbose_name=_("comment count"))
 
-    created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_( "created on"))
-    created_by    = models.ForeignKey(Profile, related_name="created_posts", verbose_name=_( "created by"))
+    created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
+    created_by    = models.ForeignKey(Profile, related_name="created_posts", verbose_name=_("created by"))
+
+    published_on  = models.DateTimeField(editable=False, verbose_name=_("published on"), blank=True, null=True)
 
     edited_on     = models.DateTimeField(null=True, editable=False, verbose_name=_("edited on"))
     edited_by     = models.ForeignKey(Profile, null=True, blank=True, related_name="edited_blogs", verbose_name=_("edited by"))
