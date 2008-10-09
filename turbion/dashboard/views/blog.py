@@ -75,8 +75,8 @@ def post_new(request, blog, post=None):
                 else:
                     new_post.edited_by = request.user
 
-                if was_draft and new_post.is_published:#reset date of creation
-                    new_post.created_on = datetime.now()
+                if was_draft and new_post.is_published:
+                    new_post.published_on = datetime.now()
 
                 new_post.save()
                 form.save_tags()
@@ -96,9 +96,11 @@ def post_new(request, blog, post=None):
     else:
         form = forms.PostForm(request=request, blog=blog, instance=post)
 
-    return {"blog": blog,
-            "post": post,
-            "form": form }
+    return {
+        "blog": blog,
+        "post": post,
+        "form": form
+    }
 
 def post_edit(request, post_id, *args, **kwargs):
     post = Post.objects.get(pk = post_id)
