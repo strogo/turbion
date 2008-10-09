@@ -109,7 +109,7 @@ class Post(models.Model, CommentedModel):
     class Meta:
         verbose_name        = 'post'
         verbose_name_plural = 'posts'
-        ordering            = ('-published_by', '-created_on',)
+        ordering            = ('-published_on', '-created_on',)
         unique_together     = (("blog", "published_on", "title", "slug"),)
         app_label           = "blogs"
         db_table            = "turbion_post"
