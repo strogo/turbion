@@ -41,7 +41,7 @@ def trackback(request, model, id):
             incoming.paragraph = excerpt + "\n\n" + blog_name
 
             model = server.resolve_model(model)
-            object = model.objects.get( pk = id )
+            object = model.objects.get(pk=id)
             incoming.object = object
 
             incoming.save()

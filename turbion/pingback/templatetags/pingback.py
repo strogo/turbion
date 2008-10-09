@@ -9,11 +9,11 @@ from urlparse import urljoin
 register = template.Library()
 
 @register.simple_tag
-def pingback_gateway( obj ):
-    ct = ContentType.objects.get_for_model( obj.__class__ )
-    url = reverse( "turbion.pingback.views.gateway", args = ( ct.id, obj._get_pk_val() ) )
+def pingback_gateway(obj):
+    ct = ContentType.objects.get_for_model(obj.__class__)
+    url = reverse("pingback_gateway", args=(ct.id, obj._get_pk_val()))
 
-    return '<link rel="pingback" href="%s" />' % urljoin( "http://" + Site.objects.get_current().domain, url )
+    return '<link rel="pingback" href="%s" />' % urljoin("http://" + Site.objects.get_current().domain, url)
 
 def trackback_rdf( url, title, obj ):
     ct = ContentType.objects.get_for_model( obj.__class__ )

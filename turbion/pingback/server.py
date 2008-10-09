@@ -13,22 +13,22 @@ from turbion.pingback import client
 from turbion.pingback.models import Incoming
 from turbion.pingback import utils
 
-def resolve_model( model_id ):
+def resolve_model(model_id):
     try:
-        ct = ContentType.objects.get( pk = model_id )
+        ct = ContentType.objects.get(pk=model_id)
     except ContentType.DoesNotExist:
-        raise utils.PingError( 0x0021 )
+        raise utils.PingError(0x0021)
 
     return ct.model_class()
 
-def resolve_object( model, id ):
+def resolve_object(model, id):
     try:
         obj = model._default_manager.get( pk = id )
     except ( model.DoesNotExist, ):
         raise utils.PingError( 0x0021 )
     return obj
 
-def ping( source_uri, target_uri, model_id, id ):
+def ping(source_uri, target_uri, model_id, id):
     incoming, created = Incoming.objects.get_or_create( source_url = source_uri,
                                                target_url = target_uri )
     if not created:

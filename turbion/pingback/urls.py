@@ -2,6 +2,6 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns( 'turbion.pingback.views',
-        ( r'^xmlrpc/([-\._\w]+)/$',                              'gateway' ),
-        ( r'^trackback/(?P<model_id>\d+)/(?P<id>\d+)/$',         'trackback' ),
-    )
+    url(r'^xmlrpc/(?P<model>\d+)/(?P<id>\d+)/$',         'gateway', name="pingback_gateway"),
+    url(r'^trackback/(?P<model_id>\d+)/(?P<id>\d+)/$',   'trackback'),
+)
