@@ -37,7 +37,7 @@ class Post(models.Model, CommentedModel):
     created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
     created_by    = models.ForeignKey(Profile, related_name="created_posts", verbose_name=_("created by"))
 
-    published_on  = models.DateTimeField(editable=False, verbose_name=_("published on"), blank=True, null=True, index=True)
+    published_on  = models.DateTimeField(editable=False, verbose_name=_("published on"), blank=True, null=True, db_index=True)
 
     edited_on     = models.DateTimeField(null=True, editable=False, verbose_name=_("edited on"))
     edited_by     = models.ForeignKey(Profile, null=True, blank=True, related_name="edited_blogs", verbose_name=_("edited by"))
@@ -45,7 +45,7 @@ class Post(models.Model, CommentedModel):
     review_count  = models.IntegerField(default=0, editable=False, verbose_name=_("review count"))
 
     title         = models.CharField(max_length=130, verbose_name=_("title"))
-    slug          = models.CharField(max_length=130, editable=False, verbose_name=_("slug"), index=True)
+    slug          = models.CharField(max_length=130, editable=False, verbose_name=_("slug"), db_index=True)
 
     mood          = models.CharField(max_length=50, null=True, blank=True, verbose_name=_("mood"))
     location      = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("location"))
