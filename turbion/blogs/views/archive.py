@@ -8,44 +8,57 @@ from turbion.blogs.models import Post
 from datetime import date
 
 @blog_view
-@paged
-@templated( 'turbion/blogs/list.html' )
-@titled( page = u'Архив блог от {{blog.calendar.current.year}}' )
-def year( request, blog, year_id ):
-    blog.calendar.current = date( year = int( year_id ), month = 1, day = 1 )
-    post_paginator = paginate( Post.published.for_blog( blog ).filter( created_on__year = year_id ),
-                               request.page,
-                               blog.post_per_page )
-
-    return { "post_paginator" : post_paginator, "blog" : blog }
+@templated('turbion/blogs/list.html')
+@titled(page=u'Архив блога')
+def index(request, blog):
+    return {
+        "blog": blog
+    }
 
 @blog_view
 @paged
-@templated( 'turbion/blogs/list.html' )
-@titled( page = u'Архив от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}' )
-def month( request, blog, year_id, month_id ):
-    blog.calendar.current = date( year = int( year_id ), month = int( month_id ), day = 1 )
-    post_paginator = paginate( Post.published.for_blog( blog ).filter( created_on__year = int(year_id),
-                                                                       created_on__month = int(month_id)  ),
-                               request.page,
-                               blog.post_per_page )
-
-    return { "post_paginator" : post_paginator,
-            "blog" : blog,
-             }
-
-@blog_view
-@paged
-@templated( 'turbion/blogs/list.html' )
-@titled( page = u'Архив от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}/{{blog.calendar.current.day}}' )
-def day( request, blog, year_id, month_id, day_id ):
-    blog.calendar.current = date( year = int( year_id ), month = int( month_id ), day = int( day_id ) )
-    post_paginator = paginate( Post.published.for_blog( blog ).filter( created_on__year = year_id,
-                                                                       created_on__month = month_id,
-                                                                       created_on__day = day_id ),
+@templated('turbion/blogs/list.html')
+@titled(page=u'Архив блога от {{blog.calendar.current.year}}')
+def year(request, blog, year_id):
+    blog.calendar.current = date(year=int(year_id), month=1, day=1)
+    post_paginator = paginate(Post.published.for_blog(blog).filter(created_on__year=year_id),
                               request.page,
-                              blog.post_per_page )
+                              blog.post_per_page)
 
-    return { "post_paginator" : post_paginator,
-            "blog" : blog,
-            }
+    return {
+        "post_paginator": post_paginator,
+        "blog": blog
+    }
+
+@blog_view
+@paged
+@templated('turbion/blogs/list.html')
+@titled(page=u'Архив блога от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}')
+def month(request, blog, year_id, month_id):
+    blog.calendar.current = date(year=int(year_id), month=int(month_id), day=1)
+    post_paginator = paginate(Post.published.for_blog(blog).filter(created_on__year=int(year_id),
+                                                                   created_on__month=int(month_id)),
+                               request.page,
+                               blog.post_per_page)
+
+    return {
+        "post_paginator" : post_paginator,
+        "blog" : blog,
+    }
+
+@blog_view
+@paged
+@templated('turbion/blogs/list.html')
+@titled(page=u'Архив блога от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}/{{blog.calendar.current.day}}' )
+def day(request, blog, year_id, month_id, day_id):
+    blog.calendar.current = date(year=int(year_id), month=int(month_id), day=int(day_id))
+    post_paginator = paginate(Post.published.for_blog(blog).filter(created_on__year=year_id,
+                                                                   created_on__month=month_id,
+                                                                   created_on__day=day_id),
+                              request.page,
+                              blog.post_per_page)
+
+    return {
+        "post_paginator": post_paginator,
+        "blog": blog,
+    }
