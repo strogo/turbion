@@ -88,19 +88,14 @@ class Blog(models.Model):
 class BlogCalendar(Calendar):
     date_field = "created_on"
 
-    @models.permalink
+    @utils.permalink
     def get_month_url(self, date):
-        return ("turbion.blogs.views.archive.month", (), {'year_id': date.year,
-                                                     'month_id' : date.month,
-                                                     'blog' :self.instance.slug})
+        return "blog_archive_month", (self.instance.slug, date.year, date.month), {}
 
     def get_per_day_urls(self, dates):
         from django.core.urlresolvers import reverse
-        return dict([(date.date(), reverse("turbion.blogs.views.archive.day",
-                                            kwargs = {'year_id': date.year,
-                                                      'month_id': date.month,
-                                                      'day_id': date.day,
-                                                      'blog':self.instance.slug})) for date in dates])
+        return dict([(date.date(), utils.reverse("blog_archive_day",
+                                    args=(self.instance.slug, date.year, date.month, date.day))) for date in dates])
 
 
 class BlogRoles(roles.RoleSet):
