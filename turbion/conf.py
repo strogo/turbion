@@ -1,90 +1,94 @@
 # -*- coding: utf-8 -*-
 from django.utils.functional import curry
 
-def to_list(func):
-    def _decorator(value, *args, **kwargs):
-        if isinstance(value, tuple):
-            value = list(value)
-        elif isinstance(value, list):
-            pass
-        else:
-            raise ValueError
+def to_list(value):
+    if isinstance(value, tuple):
+        value = list(value)
+    elif isinstance(value, list):
+        pass
+    else:
+        raise ValueError("Cannot convert %s to list" % value)
 
-        return func(value, *args, **kwargs)
-    return _decorator
-
-def _append(source, value, functor):
-    return value + [s for s in source if functor(s)]
-
-def _insert(source, value, functor):
-    for pos, klass in source:
-        if not functor(klass):
-            continue
-        if pos is not None:
-            if isinstance(pos, basestring):
-                try:
-                    i = value.index(pos)
-                    value[i] = klass
-                except ValueError:
-                    value.append(klass)
-            else:
-                value.insert(pos, klass)
-        else:
-            value.append(klass)
     return value
 
-def merge(source):
-    @to_list
-    def _func(value, functor=lambda x: True):
-        if len(source):
-            elem = source[0]
-            if isinstance(elem, (list, tuple)):
-                return _insert(source, value, functor)
+def module_to_dict(module):
+    return dict([(name, getattr(module, name))\
+                   for name in dir(module) if name.upper() == name])
+
+class Merge(object):
+    def __init__(self, settings, name):
+        self.settings = to_list(settings)
+        self.name = name
+
+    def __call__(self, project_settings, global_settings, functor=lambda x: True):
+        value = to_list(project_settings.get(self.name, global_settings.get(self.name, [])))
+
+        if isinstance(self.settings[0], (list, tuple)):
+            return self._insert(value, functor)
+
+        return self._append(value, functor)
+
+    def _append(self, value, functor):
+        return {self.name: value + [s for s in self.settings if functor(s)]}
+
+    def _insert(self, value, functor):
+        for pos, klass in self.settings:
+            if not functor(klass):
+                continue
+            if pos is not None:
+                if isinstance(pos, basestring):
+                    try:
+                        i = value.index(pos)
+                        value[i] = klass
+                    except ValueError:
+                        value.append(klass)
+                else:
+                    value.insert(pos, klass)
             else:
-                return _append(source, value, functor)
-        else:
-            return value
-    return _func
+                value.append(klass)
+        return {self.name: value}
 
 class GenericConfigurator(object):
     def __init__(self, settings, prefix):
-        self.local_settings = settings
+        if not isinstance(settings, dict):
+            self.application_settings = module_to_dict(settings)
+        else:
+            self.application_settings = settings
+
         self.prefix = prefix
 
-    def prepare_settings(self, outer_settings, options):
+    def prepare_settings(self, project_settings, options):
         from django.conf import global_settings
         from django.core.exceptions import ImproperlyConfigured
 
         result = {}
 
-        options = dict([(key.upper(), value) for key, value in options.items()])
+        global_settings = module_to_dict(global_settings)
 
-        for name in dir(self.local_settings):
-            if name.upper() == name:
-                if name.startswith(self.prefix):
-                    raw_name = name[len(self.prefix):]
+        options = dict([(key.upper(), value) for key, value in options.iteritems()])
+        work_options = options.copy()
 
-                    result[name] = options.pop(raw_name, getattr(self.local_settings, name))
-                else:
-                    base_value = outer_settings.get(name, getattr(global_settings, name, None))
+        for name, value in self.application_settings.iteritems():
+            global_value = project_settings.get(name, global_settings.get(name, None))
 
-                    value = getattr(self.local_settings, name)
+            if name.startswith(self.prefix):
+                raw_name = name[len(self.prefix):]
+            else:
+                raw_name = name
 
-                    if callable(value):
-                        handler_name = "handle_%s" % name.lower()
-                        handler = curry(getattr(self, handler_name, lambda x, options: True), options=options)
+            option_value = work_options.pop(raw_name, None)
 
-                        if base_value:
-                            value = value(base_value, handler)
-                        else:
-                            value = value(handler)
-                    elif base_value:
-                        raise ImproperlyConfigured("Settings value conflict for %s" % name)
+            handler_name = "handle_%s" % raw_name.lower()
+            handler = curry(getattr(self, handler_name, lambda x, options: True), options=options)
 
-                    result[name] = value
+            if isinstance(value, Merge):
+                result.update(value(project_settings, global_settings, handler))
+            else:
+                result[name] = value
 
-        if options:
-            result.update([("%s%s" % (self.prefix, key), value) for key, value in options.items()])
+        if work_options:
+            result.update([("%s%s" % (self.prefix, key), value)
+                            for key, value in work_options.iteritems()])
 
         return result
 
@@ -92,5 +96,7 @@ class GenericConfigurator(object):
         import inspect
 
         outer_scope = inspect.stack()[1][0].f_locals
+        outer_scope.update(self.merge_settings(outer_scope, **options))
 
-        outer_scope.update(self.prepare_settings(outer_scope, options))
+    def merge_settings(self, project_settings, **options):
+        return self.prepare_settings(project_settings, options)
