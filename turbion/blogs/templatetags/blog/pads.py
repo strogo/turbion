@@ -44,15 +44,26 @@ def archive_pad( context, blog ):
 def top_commenters_pad(context, blog, count=5):
     ct = ContentType.objects.get_for_model(Post)
 
-    extra_select="""SELECT COUNT(*) FROM %s as cc
-            WHERE cc.connection_ct_id=%s
-                    AND cc.connection_id=%s
-                    AND cc.created_by_id=%s.%s
-    """ % (comments_table_name, ct._get_pk_val(), blog._get_pk_val(), profiles_table_name, Profile._meta.pk.attname)
+    extra_select="""
+            SELECT COUNT(*)
+            FROM %(comment_table)s AS cc, %(post_table)s AS pp
+            WHERE cc.connection_ct_id=%(ct_id)s
+                    AND cc.connection_id=pp.%(post_pk_name)s
+                    AND cc.created_by_id=%(profile_table)s.%(profile_pk_name)s
+                    AND pp.blog_id=%(blog_id)s
+                    AND pp.created_by_id!=cc.created_by_id
+    """ % {
+        "comment_table": comments_table_name,
+        "ct_id": ct._get_pk_val(),
+        "blog_id": blog._get_pk_val(),
+        "profile_table": profiles_table_name,
+        "profile_pk_name": Profile._meta.pk.attname,
+        "post_table": posts_table_name,
+        "post_pk_name": Post._meta.pk.attname
+    }
 
     return  {"commenters": Profile.objects.select_related()\
              .extra(select={"comment_count": extra_select} )\
-             .extra(where=["comment_count != 0"])\
              .order_by('-comment_count').distinct()[:count]}
 
 @cached_inclusion_tag(register,
