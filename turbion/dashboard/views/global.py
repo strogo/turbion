@@ -52,7 +52,7 @@ def create_superuser( request ):
 
 @login_required
 @decorators.superuser_required
-@templated( "turbion/dashboard/global/create_blog.html" )
+@templated("turbion/dashboard/global/create_blog.html")
 @titled()
 def create_blog(request):
     if request.POST:
@@ -62,15 +62,15 @@ def create_blog(request):
             blog.created_by = request.user
             blog.save()
 
-            owner = form.cleaned_data[ "owner" ]
+            owner = form.cleaned_data["owner"]
 
-            BlogRoles.roles.blog_owner.grant( owner, blog )
+            BlogRoles.roles.blog_owner.grant(owner, blog)
 
-            return http.HttpResponseRedirect( blog.get_dashboard_url() )
+            return http.HttpResponseRedirect(blog.get_dashboard_url())
     else:
         form = forms.CreateBlogForm()
 
-    return { "form" : form }
+    return {"form": form}
 
 @templated( 'turbion/dashboard/global/login.html' )
 @titled()

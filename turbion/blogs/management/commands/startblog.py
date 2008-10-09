@@ -9,6 +9,7 @@ from turbion.roles.models import Role, Capability
 
 class Command(LabelCommand):
     help = 'Create a new blog instance'
+    args = "blogname"
 
     requires_model_validation = True
 
