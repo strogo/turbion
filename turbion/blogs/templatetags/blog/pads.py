@@ -19,14 +19,18 @@ posts_table_name    = quote_name(Post._meta.db_table)
 comments_table_name = quote_name(Comment._meta.db_table)
 profiles_table_name = quote_name(Profile._meta.db_table)
 
+D = dict
+
 @cached_inclusion_tag(register,
-                      trigger = { "sender" : Post,
-                                  "signal" : signals.post_save,
-                                  "suffix" : lambda instance, created, *args, **kwargs: instance.blog.id },
-                      suffix = lambda context, blog: blog.id,
+                      trigger=D(
+                            sender=Post,
+                            signal=signals.post_save,
+                            suffix=lambda instance, created, *args, **kwargs: instance.blog.id
+                        ),
+                      suffix=lambda context, blog: blog.id,
                       file_name='turbion/blogs/pads/archive_pad.html',
                       takes_context=True)
-def archive_pad( context, blog ):
+def archive_pad(context, blog):
     months = Post.published.for_blog(blog).dates("created_on", "month", order='DESC').distinct()
 
     return {
@@ -62,9 +66,11 @@ def top_commenters_pad(context, blog, count=5):
         "post_pk_name": Post._meta.pk.attname
     }
 
-    return  {"commenters": Profile.objects.select_related()\
+    return  {
+        "commenters": Profile.objects.select_related()\
              .extra(select={"comment_count": extra_select} )\
-             .order_by('-comment_count').distinct()[:count]}
+             .order_by('-comment_count').distinct()[:count]
+    }
 
 @cached_inclusion_tag(register,
                       trigger = { "sender" : Comment,
@@ -76,7 +82,7 @@ def top_commenters_pad(context, blog, count=5):
 def last_comments_pad(context, blog, count=5):
     comments = Comment.published.for_model_with_rel(Post, blog).order_by("-created_on").distinct()[:count]
 
-    return  { "comments" : comments }
+    return  {"comments": comments}
 
 @cached_inclusion_tag(register,
                       trigger={"sender": Post,
@@ -96,9 +102,10 @@ def top_posts_pad(context, blog, count=5):
                       file_name='turbion/blogs/pads/tags_pad.html',
                       takes_context=True)
 def tags_pad(context, blog):
-    return {"blog": blog,
-            "tags" : blog.tags
-        }
+    return {
+        "blog": blog,
+        "tags" : blog.tags
+    }
 
 @cached_inclusion_tag(register,
                       trigger={"sender": Post,
@@ -129,5 +136,7 @@ def prevnext_pad(context, post):
     except Post.DoesNotExist:
         next_post = None
 
-    return {"prev_post": prev_post,
-            "next_post": next_post}
+    return {
+        "prev_post": prev_post,
+        "next_post": next_post
+    }
