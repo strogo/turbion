@@ -20,6 +20,15 @@ class BlogManager(models.Manager):
         except IndexError:
             raise self.model.DoesNotExist
 
+    def create_blog(self, name, slug, owner):
+        from turbion.blogs.models.blog import BlogRoles
+
+        blog = self.create(name=name, slug=slug, created_by=owner)
+
+        BlogRoles.roles.blog_owner.grant(owner, blog)
+
+        return blog
+
 class PostManager(GenericManager):
     @property
     def content_type(self):
