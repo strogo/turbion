@@ -9,8 +9,8 @@ from django.conf import settings
 
 from turbion.utils.cache.utils import CacheWrapper
 
-def cached_inclusion_tag( register, trigger, suffix, file_name, context_class=Context, takes_context = False ):
-    def _wrapper( func ):
+def cached_inclusion_tag(register, trigger, suffix, file_name, context_class=Context, takes_context=False):
+    def _wrapper(func):
         decorated_function = getattr(func, "_decorated_function", func)
         func_name = decorated_function.__name__
         func_module = decorated_function.__module__
@@ -36,7 +36,7 @@ def cached_inclusion_tag( register, trigger, suffix, file_name, context_class=Co
                 else:
                     args = resolved_vars
 
-                def real_render( *args ):
+                def real_render(*args):
                     dict = func(*args)
 
                     if not getattr(self, 'nodelist', False):
@@ -52,15 +52,17 @@ def cached_inclusion_tag( register, trigger, suffix, file_name, context_class=Co
 
                     return result
 
-                w = CacheWrapper( real_render,
-                                  trigger,
-                                  suffix,
-                                  base_name )
+                w = CacheWrapper(
+                        real_render,
+                        trigger,
+                        suffix,
+                        base_name
+                    )
 
-                return w( *args )
+                return w(*args)
 
         compile_func = curry(generic_tag_compiler, params, defaults, func_name, CachedInclusionNode)
         compile_func.__doc__ = func.__doc__
-        register.tag( func_name, compile_func)
+        register.tag(func_name, compile_func)
         return func
     return _wrapper
