@@ -31,14 +31,14 @@ class PostsFeed(BasePostFeed, BlogFieldBase):
 
     def title(self):
         return gen_title({"page":u"%s" % self.blog,
-                          "section":u"Последние записи",
+                          "section":u"Latest entries",
                           "site":""})
 
     def link(self):
         return self.blog.get_absolute_url()
 
     def description(self):
-        return u'Последние записи блога "%s"' % self.blog
+        return u"Latest entries of blog '%s'" % self.blog
 
     def items(self):
         posts = Post.published.for_blog(self.blog)
@@ -64,7 +64,7 @@ class CommentsFeed(BlogFieldBase):
 
     def title(self, post):
         return gen_title({"page":u"%s" % self.blog,
-                          "section":u"Последнии комментарии" + (post and u' к "%s"' % post.title or ""),
+                          "section":u"Latest comments" + (post and u' on "%s"' % post.title or ""),
                           "site":""})
 
     def link(self, post):
@@ -72,9 +72,9 @@ class CommentsFeed(BlogFieldBase):
 
     def description(self, post):
         if post:
-            return u'Комментарии на "%s"' % post.title
+            return u'Comments on "%s"' % post.title
         else:
-            return u"Все комментарии"
+            return u"All comments"
 
     def item_pubdate(self, comment):
         return comment.created_on
@@ -104,7 +104,7 @@ class TagFeed( BasePostFeed, BlogFieldBase):
 
     def title(self, tag):
         return gen_title({"page":u"%s" % self.blog,
-                          "section":u"Последнии записи с тегом %s" % tag.name,
+                          "section":u"Latest entries with tag '%s'" % tag.name,
                           "site":""})
 
     def link(self, tag):
@@ -112,7 +112,7 @@ class TagFeed( BasePostFeed, BlogFieldBase):
                                                       "tag_slug": tag.slug})
 
     def description(self, tag):
-        return u"Посты с тегом %s" % tag.name
+        return u"Entries with tag '%s'" % tag.name
 
     def items(self, tag):
         return Post.published.for_tag(self.blog, tag)
