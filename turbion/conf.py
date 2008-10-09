@@ -2,6 +2,9 @@
 from django.utils.functional import curry
 
 def to_list(value):
+    """
+        Converts sequence to list
+    """
     if isinstance(value, tuple):
         value = list(value)
     elif isinstance(value, list):
@@ -12,10 +15,16 @@ def to_list(value):
     return value
 
 def module_to_dict(module):
+    """
+        Return dict of module uppercase attributes
+    """
     return dict([(name, getattr(module, name))\
                    for name in dir(module) if name.upper() == name])
 
 class Merge(object):
+    """
+        Helper class for merge settings sequence items
+    """
     def __init__(self, settings, name):
         self.settings = to_list(settings)
         self.name = name
