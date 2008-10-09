@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase, Client
 from django import http
-
+from django.conf import settings
 from django.core.handlers import wsgi, base
 
 class RequestFactory(Client):
@@ -41,29 +41,33 @@ class RequestFactory(Client):
         return request
 
 class BaseViewTest(TestCase):
-    def assertStatus(self, url, status=http.HttpResponse.status_code, data={}):
-        response = self.client.get(url, data=data)
+    def assertStatus(self, url, status=http.HttpResponse.status_code, data={}, method="get"):
+        response = getattr(self.client, method)(url, data=data)
 
         self.assertEqual(response.status_code, status)
 
         return response
 
-    def hack_captcha(self, response, field_name="captcha"):
-        HASH_RE = re.compile("name=\"%s_0\" value=\"(\w+)\"" % field_name)
+    def hack_captcha(self, response):
+        request = response.request
 
-        manager = CaptchaManager(response.request)
-
-        m = HASH_RE.search(response.content)
-        if m:
-            hash = m.groups()[0]
-
-            test = manager.factory.get(hash)
-            captcha = test.solutions[0]
+        if isinstance(request, dict):
+            session = self._get_session(response.cookies)
         else:
-            captcha = ""
-            hash = ""
+            session = request.session
 
-        return {
-            "%s_0" % field_name: hash,
-            "%s_2" % field_name: captcha
-        }
+        if "turbion_captcha" in session:
+            solution = session["turbion_captcha"].values()[0][0].solutions[0]
+
+            return {
+                "captcha_0": session["turbion_captcha"].keys()[0],
+                "captcha_2": solution
+            }
+
+        return {}
+
+    def _get_session(self, cookies):
+        engine = __import__(settings.SESSION_ENGINE, {}, {}, [''])
+        session_key = cookies.get(settings.SESSION_COOKIE_NAME, None).value
+
+        return engine.SessionStore(session_key)
