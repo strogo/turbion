@@ -44,7 +44,7 @@ class PostsFeed(BasePostFeed, BlogFieldBase):
         posts = Post.published.for_blog(self.blog)
         if not self.request.user.is_authenticated_confirmed():
             posts = posts.filter(showing=Post.show_settings.everybody)
-        return posts
+        return posts.order_by("-published_on")
 
 class PostsFeedAtom(PostsFeed):
     feed_type = Atom1Feed
