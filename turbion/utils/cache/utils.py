@@ -47,7 +47,7 @@ class CacheWrapper(object):
             "signal": []
         }
     
-        for t in to_list(triggers):
+        for t in to_list(self.trigger):
             trigger = defaults.copy()
             trigger.update(t)
     
@@ -62,7 +62,7 @@ class CacheWrapper(object):
                     def cache_invalidator(signal, sender, *args, **kwargs):
                         if checker is not None:
                             if checker(*args, **kwargs):
-                                cache.delete(cache_key)
+                                pass#cache.delete(cache_key) # TODO
                             else:
                                 return
                         else:
