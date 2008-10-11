@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
+import base64
 from openid.store.filestore import OpenIDStore
 
 from django.db import connection
@@ -13,7 +14,7 @@ class DatabaseStore(OpenIDStore):
         assoc = Association.objects.create(
             server_url=server_url,
             handle=association.handle,
-            secret=association.secret,
+            secret=base64.encodestring(association.secret),
             issued=association.issued,
             lifetime=association.lifetime,
             assoc_type=association.assoc_type
@@ -28,7 +29,7 @@ class DatabaseStore(OpenIDStore):
                 assoc = Association.objects.filter(server_url=server_url).order_by("-issued")[0]
             return association.Association(
                      handle=assoc.handle,
-                     secret=assoc.secret,
+                     secret=base64.decodestring(assoc.secret),
                      issued=assoc.issued,
                      lifetime=assoc.lifetime,
                      assoc_type=assoc.assoc_type

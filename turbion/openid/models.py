@@ -35,10 +35,10 @@ class Identity(models.Model):
 # models needed to openid library store
 
 class Association(models.Model):
-    server_url = models.URLField(max_length=250)
+    server_url = models.TextField(max_length=2047)
 
-    handle = models.CharField(max_length=250)
-    secret = models.CharField(max_length=128)
+    handle = models.CharField(max_length=255)
+    secret = models.CharField(max_length=255)
     issued = models.PositiveIntegerField()
     lifetime = models.PositiveIntegerField()
     assoc_type = models.CharField(max_length=64)
