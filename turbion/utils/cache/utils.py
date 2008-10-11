@@ -43,7 +43,6 @@ class CacheWrapper(object):
         """Connects invalidator to all needed signals"""
         defaults = {
             "suffix" : lambda *args, **kwargs: [],
-            "checker": None,
             "signal": []
         }
     
@@ -52,7 +51,6 @@ class CacheWrapper(object):
             trigger.update(t)
     
             suffix_getter = trigger["suffix"]
-            checker       = trigger["checker"]
             sender        = trigger["sender"]
     
             signals       = trigger["signal"]
@@ -60,18 +58,12 @@ class CacheWrapper(object):
             for signal in to_list(signals):
                 def make_cache_invalidator(suffix_getter):
                     def cache_invalidator(signal, sender, *args, **kwargs):
-                        if checker is not None:
-                            if checker(*args, **kwargs):
-                                pass#cache.delete(cache_key) # TODO
-                            else:
-                                return
-                        else:
-                            cache.delete(
-                                    make_cache_key(
-                                        self.base_name,
-                                        to_list(suffix_getter(*args, **kwargs))
-                                    )
-                            )
+                        cache.delete(
+                                make_cache_key(
+                                    self.base_name,
+                                    to_list(suffix_getter(*args, **kwargs))
+                                )
+                        )
                     return cache_invalidator
     
                 signal.connect(
