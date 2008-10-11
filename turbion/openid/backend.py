@@ -24,7 +24,7 @@ class OpenidBackend(OnlyActiveBackend):
         try:
             connection = Identity.objects.get(url=response.identity_url)
         except Identity.DoesNotExist:
-            sreg_response = utils.complete_sreg(response)
+            sreg_response = utils.complete_sreg(response) or {}
 
             profile = Profile.objects.create_profile(
                                 sreg_response.get(
