@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.contrib import admin
-
+from turbion import admin
 from turbion.pingback.models import Incoming, Outgoing
 
 class IncomingAdmin(admin.ModelAdmin):

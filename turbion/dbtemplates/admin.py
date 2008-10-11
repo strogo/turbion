@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.contrib import admin
-
+from turbion import admin
 from turbion.dbtemplates.models import Template
 
 class TemplateAdmin(admin.ModelAdmin):

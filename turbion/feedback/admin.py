@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.contrib import admin
-
+from turbion import admin
 from turbion.feedback.models import Feedback
 
 class FeedbackAdmin(admin.ModelAdmin):

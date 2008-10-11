@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.contrib import admin
-
+from turbion import admin
 from turbion.comments.models import Comment
 
 class CommentAdmin(admin.ModelAdmin):
