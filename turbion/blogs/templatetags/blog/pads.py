@@ -73,10 +73,12 @@ def top_commenters_pad(context, blog, count=5):
     }
 
 @cached_inclusion_tag(register,
-                      trigger = { "sender" : Comment,
-                                  "signal" : signals.post_save,
-                                  "suffix" : lambda instance, *args, **kwargs: instance.connection.blog.id },
-                      suffix = lambda context, blog: blog.id,
+                      trigger=D(
+                        sender=Comment,
+                        signal=signals.post_save,
+                        suffix=lambda instance, *args, **kwargs: instance.connection.blog.id
+                      ),
+                      suffix=lambda context, blog: blog.id,
                       file_name='turbion/blogs/pads/last_comments_pad.html',
                       takes_context=True)
 def last_comments_pad(context, blog, count=5):
@@ -98,7 +100,7 @@ def top_posts_pad(context, blog, count=5):
                       trigger={"sender": Post,
                                 "signal": signals.post_save,
                                 "suffix": lambda instance, created, *args, **kwargs: instance.blog.id},
-                      suffix = lambda context, blog: blog.id,
+                      suffix=lambda context, blog: blog.id,
                       file_name='turbion/blogs/pads/tags_pad.html',
                       takes_context=True)
 def tags_pad(context, blog):
@@ -108,19 +110,23 @@ def tags_pad(context, blog):
     }
 
 @cached_inclusion_tag(register,
-                      trigger={"sender": Post,
-                               "signal": signals.post_save,
-                               "checker":  lambda *args,**kwargs: True },
-                      suffix=lambda context, blog: ( blog.id, blog.calendar.current ),
+                      trigger=D(
+                        sender=Post,
+                        signal=(signals.post_save, signals.post_delete),
+                        suffix=lambda instance, *args, **kwargs: (instance.blog.id, instance.published_on.year, instance.published_on.month)
+                      ),
+                      suffix=lambda context, blog: (blog.id, blog.calendar.current.year, blog.calendar.current.month),
                       file_name='turbion/blogs/pads/calendar_pad.html',
                       takes_context=True)
 def calendar_pad(context, blog):
     return {"blog": blog}
 
 @cached_inclusion_tag(register,
-                      trigger={"sender" : Post,
-                                "signal" : signals.post_save,
-                                "checker" :  lambda  *args,**kwargs: True },
+                      trigger=D(
+                        sender=Post,
+                        signal=signals.post_save,
+                        checker=lambda *args,**kwargs: True
+                      ),
                       suffix=lambda context, post: [post.blog.id, post.id],
                       file_name='turbion/blogs/pads/prevnext_pad.html',
                       takes_context=True)
