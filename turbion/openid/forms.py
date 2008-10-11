@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.core.urlresolvers import reverse
-
 from django.conf import settings
+
+from turbion.profiles.models import Profile
 from turbion.openid import utils
 from turbion.registration.forms import RegistrationFormBase
 
@@ -43,9 +44,10 @@ class OpenidLoginForm(forms.Form):
 
         return url
 
-class UserInfoForm(forms.Form, RegistrationFormBase):
-    username = forms.CharField(required=True)
-    email = forms.EmailField(required=True)
+class UserInfoForm(forms.ModelForm, RegistrationFormBase):
+    class Meta:
+        model = Profile
+        fields = ("username", "email")
 
 class DecideForm(forms.Form):
     decisions = (
