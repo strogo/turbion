@@ -5,19 +5,19 @@ from django.contrib.sites.models import Site
 
 from turbion.utils.urls import uri_reverse
 from turbion.profiles.models import Profile
-from turbion.openid.models import Identity
+from turbion.openid.models import Identity, Association
 
 def get_consumer(session):
     from openid.consumer import consumer
     from turbion.openid.store import DatabaseStore
 
-    return consumer.Consumer(session, DatabaseStore())
+    return consumer.Consumer(session, DatabaseStore(Association.origins.consumer))
 
 def get_server():
     from openid.server import server
     from turbion.openid.store import DatabaseStore
 
-    return server.Server(DatabaseStore(), uri_reverse("openid_endpoint"))
+    return server.Server(DatabaseStore(Association.origins.server), uri_reverse("openid_endpoint"))
 
 def complete(request):
     data = dict(request.GET.items())

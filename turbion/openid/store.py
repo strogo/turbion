@@ -10,6 +10,12 @@ from turbion.openid.models import Association, Nonce
 qn = connection.ops.quote_name
 
 class DatabaseStore(OpenIDStore):
+    def __init__(self, origin=Association.origins.consumer):
+        self.origin = origin
+
+    def get_assocs(self):
+        return Association.objects.filter(origin=self.origin)
+
     def storeAssociation(self, server_url, association):
         assoc = Association.objects.create(
             server_url=server_url,
@@ -17,16 +23,17 @@ class DatabaseStore(OpenIDStore):
             secret=base64.encodestring(association.secret),
             issued=association.issued,
             lifetime=association.lifetime,
-            assoc_type=association.assoc_type
+            assoc_type=association.assoc_type,
+            origin=self.origin
         )
 
     def getAssociation(self, server_url, handle=None):
         from openid import association
         try:
             if handle:
-                assoc = Association.objects.get(server_url=server_url, handle=handle)
+                assoc = self.get_assocs().get(server_url=server_url, handle=handle)
             else:
-                assoc = Association.objects.filter(server_url=server_url).order_by("-issued")[0]
+                assoc = self.get_assocs().filter(server_url=server_url).order_by("-issued")[0]
             return association.Association(
                      handle=assoc.handle,
                      secret=base64.decodestring(assoc.secret),
@@ -39,7 +46,7 @@ class DatabaseStore(OpenIDStore):
 
     def removeAssociation(self, server_url, handle):
         try:
-            assoc = Association.objects.get(server_url=server_url, handle=handle)
+            assoc = self.get_assocs().get(server_url=server_url, handle=handle)
             assoc.delete()
             return True
         except Association.DoesNotExist:
@@ -50,6 +57,7 @@ class DatabaseStore(OpenIDStore):
             server_url=server_url,
             timestamp=timestamp,
             salt=salt,
+            origin=self.origin,
         )
 
         return created

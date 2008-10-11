@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 
 from datetime import datetime
 
 from turbion.profiles.models import Profile
 from turbion.utils.models import GenericManager
+from turbion.utils.enum import Enum
 
 class IdentityManager(GenericManager):
     def add_identifier(self, username, openid_url, **kwargs):
@@ -35,6 +37,10 @@ class Identity(models.Model):
 # models needed to openid library store
 
 class Association(models.Model):
+    origins = Enum(
+        server=_("server"),
+        consumer=_("consumer"),
+    )
     server_url = models.TextField(max_length=2047)
 
     handle = models.CharField(max_length=255)
@@ -43,14 +49,24 @@ class Association(models.Model):
     lifetime = models.PositiveIntegerField()
     assoc_type = models.CharField(max_length=64)
 
+    origin = models.CharField(max_length=10, choices=origins, default=origins.consumer)
+
+    def __unicode__(self):
+        return self.handle
+
     class Meta:
         db_table = "turbion_openid_association"
         #unique_together = [('server_url', 'handle')]
 
 class Nonce(models.Model):
-    server_url = models.URLField()
+    server_url = models.TextField(max_length=2047)
     timestamp = models.PositiveIntegerField()
     salt = models.CharField(max_length=40)
+
+    origin = models.CharField(max_length=10, choices=Association.origins, default=Association.origins.consumer)
+
+    def __unicode__(self):
+        return "%s at %s" % (self.server_url, self.timestamp)
 
     class Meta:
         db_table = "turbion_openid_nonce"

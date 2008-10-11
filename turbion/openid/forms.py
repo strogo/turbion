@@ -11,7 +11,7 @@ class OpenidLoginForm(forms.Form):
     openid = forms.CharField(label="openid url", required=True)
 
     def __init__(self, request, **kwargs):
-        super( OpenidLoginForm, self ).__init__(**kwargs)
+        super(OpenidLoginForm, self).__init__(**kwargs)
 
         self.request = request
 

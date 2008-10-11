@@ -58,7 +58,7 @@ def collect(request):
 
         return {
             "user_info_form": user_info_form,
-            "user_info_form_action" : "./",
-            "redirect" : request.GET.get('redirect', '/')
+            "user_info_form_action": "./",
+            "redirect": request.GET.get('redirect', '/')
         }
     raise http.Http404
