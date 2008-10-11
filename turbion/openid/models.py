@@ -70,7 +70,7 @@ class Nonce(models.Model):
 
     class Meta:
         db_table = "turbion_openid_nonce"
-        unique_together = [('server_url', 'timestamp', 'salt')]
+        #unique_together = [('server_url', 'timestamp', 'salt')]
 
 class Trust(models.Model):
     url = models.URLField(unique=True)
