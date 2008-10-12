@@ -9,12 +9,6 @@ class HighMovieTest(GenericMovieTest, TestCase):
     movie_model = HLMovie
 
     def test_movie_director_name(self):
-        import IPython
-            # Explicitly pass an empty list as arguments, because otherwise IPython
-            # would use sys.argv from this script.
-        shell = IPython.Shell.IPShell(argv=[])
-        shell.mainloop()
-
         self.renew_object("movie")
         self.assertEqual(
                         self.movie.director_name,
