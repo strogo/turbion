@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from turbion.utils import merging
 
 class MyProfile(models.Model):
-    user_ptr = models.ForeignKey(User)
+    user_ptr = models.ForeignKey(User, unique=True)
     nickname = models.CharField(max_length=100)
     www = models.URLField()
     birth = models.DateField()
@@ -17,7 +17,7 @@ class MyProfile(models.Model):
         app_label="utils"
 
 class OtherProfile(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, unique=True)
     nickname = models.CharField(max_length=100)
     website = models.URLField()
     dob = models.DateField()

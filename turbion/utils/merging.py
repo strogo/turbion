@@ -57,7 +57,10 @@ class ModelLayer(object):
             return
 
         self.lock_track()
-        self._update_instance(key, data)
+        try:
+            self._update_instance(key, data)
+        except Exception:
+            pass
         self.unlock_track()
 
     def _update_instance(self, key, data):
