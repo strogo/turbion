@@ -33,10 +33,10 @@ class Offer(models.Model):
         import md5
         return md5.new(self.user.username + self.user.email).hexdigest()
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.code:
             self.code = self.gen_code()
-        super(Offer, self).save()
+        super(Offer, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.user.username

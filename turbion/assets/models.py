@@ -57,10 +57,10 @@ class Asset(models.Model):
 
         Connection.objects.get_or_create(object_ct=ct, object_id=id, asset=self)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.edited_by:
             self.edited_on = datetime.now()
-        super(Asset, self).save()
+        super(Asset, self).save(*args, **kwargs)
 
     def delete(self):
         super(Asset,self).delete()

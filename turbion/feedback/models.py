@@ -39,10 +39,10 @@ class Feedback(models.Model):
     def __unicode__(self):
         return "%s" % self.created_on
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.edited_by:
             self.edited_on = datetime.now()
-        super(Feedback, self).save()
+        super(Feedback, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name        = _('feedback')

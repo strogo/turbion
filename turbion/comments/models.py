@@ -83,7 +83,7 @@ class Comment(models.Model):
     def get_absolute_url( self ):
         return self.connection.get_absolute_url() +"#comment_%s" % self.id
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.edited_by:
             self.edited_on = datetime.now()
 
@@ -91,7 +91,7 @@ class Comment(models.Model):
 
         created = not self._get_pk_val()
 
-        super(Comment, self).save()
+        super(Comment, self).save(*args, **kwargs)
 
         if created:
             self.update_connection_comment_count()

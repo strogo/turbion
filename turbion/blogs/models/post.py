@@ -96,7 +96,7 @@ class Post(models.Model, CommentedModel):
     def __unicode__(self):
         return self.title
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.slug:
             from turbion.utils.text import slugify
             self.slug = slugify(self.title)
@@ -104,7 +104,7 @@ class Post(models.Model, CommentedModel):
             self.edited_on = datetime.now()
 
         self.text_html = self.postprocessor.postprocess(self.text)
-        super(Post, self).save()
+        super(Post, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name        = 'post'

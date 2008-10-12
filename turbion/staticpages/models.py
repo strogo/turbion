@@ -42,16 +42,16 @@ class Page(models.Model):
     def __unicode__(self):
         return self.title
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.slug:
             from turbion.utils.text import slugify
             self.slug = slugify(self.title)
-            
+
         if self.edited_by:
             self.edited_on = datetime.now()
 
         self.text_html = self.postprocessor.postprocess(self.text)
-        super(Page, self).save()
+        super(Page, self).save(*args, **kwargs)
 
     @permalink
     def get_absolute_url(self):
