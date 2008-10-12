@@ -7,22 +7,22 @@ from turbion.tags.models import Tag
 from turbion.tags.fields import TagsField
 from turbion.tags import forms as tags_forms
 
-class Article( models.Model ):
-    title = models.CharField( max_length = 50 )
+class Article(models.Model):
+    title = models.CharField(max_length=50)
 
     tags = TagsField()
 
-class ArticleForm( forms.ModelForm ):
+class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
 
-    def __init__( self, *args, **kwargs ):
-        super( ArticleForm, self ).__init__( *args, **kwargs )
+    def __init__(self, *args, **kwargs):
+        super(ArticleForm, self).__init__(*args, **kwargs)
 
-        self.fields[ "tags" ] = tags_forms.TagsField( form = self )
+        self.fields["tags"] = tags_forms.TagsField(form=self)
 
-class TagsTest( TestCase ):
-    tags = [ "foo", "bar", "foo bar" ]
+class Tags(TestCase):
+    tags = ["foo", "bar", "foo bar"]
 
     def setUp( self ):
         self.article = Article.objects.create( title = "great header" )
@@ -60,6 +60,12 @@ class TagsTest( TestCase ):
         self.assertEqual( set( self.article.tags.all_name()),
                           set( self.tags[1:] )
                         )
+
+class TagsForm(TestCase):
+    tags = ["foo", "bar", "foo bar"]
+
+    def setUp( self ):
+        self.article = Article.objects.create( title = "great header" )
 
     def test_add_form( self ):
         self.article.tags.add( *self.tags )#adding tags to model

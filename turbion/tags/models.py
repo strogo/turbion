@@ -20,12 +20,15 @@ class Tag(models.Model):
     def __unicode__(self):
         return self.name
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.slug:
             from turbion.utils.text import slugify
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.name)
 
-        super(Tag, self).save()
+        super(Tag, self).save(*args, **kwargs)
+
+    def connect(self, instance):
+        item, _ = TaggedItem.objects.get_or_create_item(self, instance)
 
     class Meta:
         ordering            = ("name", "slug")

@@ -138,9 +138,6 @@ class ViewsTest(BaseViewTest):
     def test_tags(self):
         self.assertStatus(blog_reverse("blog_tags", args=(self.blog.slug,)))
 
-    def test_tag(self):
-        self.assertStatus(blog_reverse("blog_tag", args=(self.blog.slug, "foo")))
-
     if settings.TURBION_USE_DJAPIAN:
         def test_search(self):
             pass
@@ -150,3 +147,20 @@ class ViewsTest(BaseViewTest):
 
         def test_search_comments(self):
             pass
+
+class TagView(BaseViewTest):
+    fixtures = ['blog', 'posts', 'profiles']
+
+    def setUp(self):
+        from turbion.comments.models import CommentAdd
+        from turbion.tags.models import Tag
+
+        self.blog = Blog.objects.get(slug="wna")
+        self.post = Post.objects.get(pk=1)
+
+        CommentAdd.instance.subscribe(self.post.created_by, self.post)
+
+        Tag.objects.connect("foo", self.post)
+
+    def test_tag(self):
+        self.assertStatus(blog_reverse("blog_tag", args=(self.blog.slug, "foo")))

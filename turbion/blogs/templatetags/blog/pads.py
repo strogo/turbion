@@ -113,6 +113,7 @@ def tags_pad(context, blog):
                       trigger=D(
                         sender=Post,
                         signal=(signals.post_save, signals.post_delete),
+                        filter=lambda post: post.is_published,
                         suffix=lambda instance, *args, **kwargs: (instance.blog.id, instance.published_on.year, instance.published_on.month)
                       ),
                       suffix=lambda context, blog: (blog.id, blog.calendar.current.year, blog.calendar.current.month),

@@ -13,7 +13,3 @@ class ProfileAdmin(admin.ModelAdmin):
     search_fields = ("username", "nickname", "email", "site")
 
 admin.site.register(Profile, ProfileAdmin)
-
-if settings.TURBION_HIDE_AUTH_APP:
-    admin.site.unregister(User)
-    admin.site.unregister(Group)

@@ -3,6 +3,7 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 
 from turbion.blogs.utils import blog_url
+from turbion import admin
 
 urlpatterns = patterns('',
     url(r'^profile/',                      include('turbion.profiles.urls')),
@@ -14,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^gears/',                        include('turbion.gears.urls')),
     url(r'^registration/',                 include('turbion.registration.urls')),
     url(r'^dashboard/',                    include('turbion.dashboard.urls')),
+    url(r'^dashboard/raw/(.*)',            admin.site.root, name="admin_root"),
     url(r'^utils/',                        include('turbion.utils.urls')),
 
     blog_url(r'',                          include('turbion.blogs.urls')),
@@ -23,5 +25,8 @@ urlpatterns = patterns('',
 
 if settings.TURBION_BLOGS_MULTIPLE:
     urlpatterns += patterns('',
-                        url(r'^sitemap.xml$', 'turbion.blogs.views.blog.index_sitemap', name="global_blog_sitemap")
+                    url(r'^sitemap.xml$',
+                        'turbion.blogs.views.blog.index_sitemap',
+                        name="global_blog_sitemap"
+                        )
                 )

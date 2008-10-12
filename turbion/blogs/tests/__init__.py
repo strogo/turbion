@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from turbion.blogs.tests.blog import *
+from turbion.blogs.tests.views import *

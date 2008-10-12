@@ -17,6 +17,23 @@ class TagManager(models.Manager):
 
         return Tag.objects.filter(pk__in=pks.query)
 
+    def create_tag(self, tag):
+        if isinstance(tag, (long, int)):
+            tag = self.get(pk=tag)
+        elif isinstance(tag, basestring):
+            tag = tag.strip()
+            if tag != "":
+                tag, created = self.get_or_create(name=tag)
+        elif isinstance(tag, self.model):
+            pass
+        else:
+            raise ValueError("Cannot create tag %s" % tag)
+        return tag
+
+    def connect(self, tag, instance):
+        tag = self.create_tag(tag)
+        tag.connect(instance)
+
 class TaggedItemManager(models.Manager):
     def filter_for_object(self, obj):
         query_set = self.filter_for_model(obj.__class__).filter(item_id=obj._get_pk_val())
@@ -47,3 +64,16 @@ class TaggedItemManager(models.Manager):
 
         return query_set.extra(where=["%s.%s = %s" % (table_name_quoted, field, value) for field, value in params],
                                             tables=[table_name])
+
+    def get_or_create_item(self, tag, instance):
+        item, created = self.get_or_create(
+                            tag=tag,
+                            **self.get_item_connection(instance)
+                        )
+        return item, created
+
+    def get_item_connection(self, instance):
+        return {
+            "item_id" : instance._get_pk_val(),
+            "item_ct" : ContentType.objects.get_for_model(instance.__class__)
+        }

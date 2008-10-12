@@ -65,8 +65,6 @@ TURBION_POST_PERMALINK_PREFIX = ""
 
 TURBION_USE_DJAPIAN = False
 
-TURBION_HIDE_AUTH_APP = False
-
 from turbion.pingback.settings import *
 from turbion.openid.settings import *
 
