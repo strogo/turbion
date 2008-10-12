@@ -60,7 +60,7 @@ class OptionSetDescriptor(object):
         raise RuntimeError
 
 def create_handler(option_set):
-    def model_post_save_handler(sender, created, instance):
+    def model_post_save_handler(sender, created, instance, **kwargs):
         if created:
             option_set.create(instance=instance)
     return model_post_save_handler
