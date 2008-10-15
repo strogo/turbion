@@ -17,16 +17,19 @@ from turbion.blogs.models.blog import BlogRoles
 from turbion.blogs.utils import blog_reverse
 from turbion.profiles.models import Profile
 
-CREDENTIALS = {'username': "daev", 'password': "foobar"}
+CREDENTIALS = {'username': "test", 'password': "test"}
 
 class ViewsTest(BaseViewTest):
-    fixtures = ['blog', 'posts', 'profiles', 'tags']
+    fixtures = [
+        'turbion/test/profiles',
+        'turbion/test/blogs'
+    ]
 
     def setUp(self):
         from turbion.comments.models import CommentAdd
 
-        self.blog = Blog.objects.get(slug="wna")
-        self.post = Post.objects.get(pk=1)
+        self.blog = Blog.objects.get(slug="test")
+        self.post = Post.objects.filter(blog=self.blog)[0]
 
         CommentAdd.instance.subscribe(self.post.created_by, self.post)
 
@@ -64,7 +67,7 @@ class ViewsTest(BaseViewTest):
     def test_comment_add(self):
         self.login()
 
-        url = blog_reverse("blog_comment_add", kwargs={"blog":self.blog.slug, "post_id":self.post.id})
+        url = blog_reverse("blog_comment_add", kwargs={"blog": self.blog.slug, "post_id": self.post.id})
         CommentAdd.instance.subscribe(self.post.created_by)
 
         comment = {"text": "My comment"}
@@ -79,7 +82,7 @@ class ViewsTest(BaseViewTest):
         post = Post.published.for_blog(self.blog).get(pk=self.post.pk)
 
         self.assertEqual(post.comment_count, 1)
-        self.assertEqual(len( mail.outbox ), 1)# post author subscription
+        self.assertEqual(len(mail.outbox), 1)# post author subscription
         self.assertEqual(len(CommentAdd()._get_recipients(post)), 1)
 
     def test_comment_add_visitor(self):
@@ -149,14 +152,17 @@ class ViewsTest(BaseViewTest):
             pass
 
 class TagView(BaseViewTest):
-    fixtures = ['blog', 'posts', 'profiles']
+    fixtures = [
+        'turbion/test/profiles',
+        'turbion/test/blogs'
+    ]
 
     def setUp(self):
         from turbion.comments.models import CommentAdd
         from turbion.tags.models import Tag
 
-        self.blog = Blog.objects.get(slug="wna")
-        self.post = Post.objects.get(pk=1)
+        self.blog = Blog.objects.get(slug="test")
+        self.post = Post.objects.filter(blog=self.blog)[0]
 
         CommentAdd.instance.subscribe(self.post.created_by, self.post)
 

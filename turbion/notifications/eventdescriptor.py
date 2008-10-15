@@ -3,10 +3,10 @@ from django.template import loader
 from django.template import Context, Template, TemplateDoesNotExist
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.functional import curry
 
+from turbion.utils.descriptor import to_descriptor
 from turbion.notifications.models import Event, Connection
 from turbion.profiles.models import Profile
 
@@ -73,11 +73,15 @@ class EventDescriptor(object):
 
     def _create_connection(self, obj=None):
         if obj:
-            return {"connection_ct": ContentType.objects.get_for_model(obj.__class__),
-                    "connection_id": obj._get_pk_val() }
+            return {
+                "connection_dscr": to_descriptor(obj.__class__),
+                "connection_id": obj._get_pk_val()
+            }
         else:
-            return {"connection_ct": None,
-                    "connection_id": None }
+            return {
+                "connection_dscr": None,
+                "connection_id": None
+            }
 
     def subscribe(self, user, obj=None):
         try:
@@ -91,9 +95,11 @@ class EventDescriptor(object):
 
     def unsubscribe(self, user, obj=None):
         try:
-            con = Connection.objects.get( user=user,
-                                          event=self._get_event(),
-                                          **self._create_connection(obj))
+            con = Connection.objects.get(
+                                user=user,
+                                event=self._get_event(),
+                                **self._create_connection(obj)
+                            )
             con.delete()
         except Connection.DoesNotExist:
             pass
@@ -189,8 +195,7 @@ class EventDescriptor(object):
         url = reverse("notifications_unsubscribe", args=(user._get_pk_val(), self._get_event()._get_pk_val()))
 
         if obj:
-            url += "?connection_ct_id=%s&connection_id=%s" % (ContentType.objects.get_for_model(obj.__class__)._get_pk_val(),
-                                                               obj._get_pk_val())
+            url += "?connection_dscr=%s&connection_id=%s" % (to_descriptor(obj.__class__), obj._get_pk_val())
         else:
             url += "?"
 

@@ -7,5 +7,5 @@ feeds = {
 }
 
 urlpatterns = patterns('',
-        (r'^revolving/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, "gears_feed"),
-    )
+    url(r'^revolving/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name="turbion_gears_feed"),
+)

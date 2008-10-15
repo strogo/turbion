@@ -53,5 +53,5 @@ class Feedback(models.Model):
 class FeedbackAdd(EventDescriptor):
     class Meta:
         name = _("New feedback added")
-
+        to_object = True
         trigger = (Feedback, signals.feedback_added)

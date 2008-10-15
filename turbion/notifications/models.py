@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.template import Template, Context
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.profiles.models import Profile
+from turbion.utils.descriptor import DescriptorField, GenericForeignKey
 
 class EventManager(models.Manager):
     pass
 
 class Event(models.Model):
-    descriptor = models.CharField(max_length=250, unique=True)
+    descriptor = DescriptorField(max_length=250, unique=True)
 
     template = models.CharField(max_length=250, null=True, blank=True)
     subject_title = models.CharField(max_length=250)
@@ -28,16 +27,16 @@ class Connection(models.Model):
     event = models.ForeignKey(Event)
     user = models.ForeignKey(Profile, related_name="notification_recipient")
 
-    connection_ct = models.ForeignKey(ContentType, null=True)
+    connection_dscr = DescriptorField(null=True)
     connection_id = models.PositiveIntegerField(null=True)
 
-    connection = GenericForeignKey("connection_ct", "connection_id")
+    connection = GenericForeignKey("connection_dscr", "connection_id")
 
     def __unicode__(self):
-        return "%s: %s-%s" % (self.event, self.connection_ct, self.connection_id)
+        return "%s: %s-%s" % (self.event, self.connection_dscr, self.connection_id)
 
     class Meta:
         verbose_name        = _("event connection")
         verbose_name_plural = _("event connections")
-        unique_together     = [("event", "user", "connection_ct", "connection_id")]
+        unique_together     = [("event", "user", "connection_dscr", "connection_id")]
         db_table            = "turbion_event_connection"

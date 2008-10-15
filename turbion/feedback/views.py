@@ -9,7 +9,7 @@ from turbion.feedback.models import Feedback
 from turbion.feedback import signals
 from turbion.blogs.decorators import blog_view
 
-@templated("turbion/feedback/index.html" )
+@templated("turbion/feedback/index.html")
 @titled(page=_(u"Write"), section=_(u"Feedback"))
 @blog_view
 def index(request, blog):
@@ -21,18 +21,21 @@ def index(request, blog):
             feedback.save()
 
             signals.feedback_added.send(
-                             sender=Feedback,
-                             instance=feedback
+                            sender=Feedback,
+                            instance=feedback
                     )
 
-            return status_redirect(request,
-                              title=_(u"Thanks"),
-                              section= _(u"Feedback"),
-                              next = "/",
-                              message= _( u"Thanks. Your request will be handled by the administrator." )
+            return status_redirect(
+                            request,
+                            title=_(u"Thanks"),
+                            section= _(u"Feedback"),
+                            next="/",
+                            message=_(u"Thanks. Your request will be handled by the administrator.")
                         )
     else:
         feedback_form = FeedbackForm(request=request, blog=blog)
 
-    return {"feedback_form": feedback_form,
-            "blog": blog }
+    return {
+        "feedback_form": feedback_form,
+        "blog": blog
+    }
