@@ -21,7 +21,7 @@ titled = special_titled(section=SECTION)
 @templated('turbion/registration/restore_password_request.html')
 @titled(page=_("Password restore request"))
 def restore_password_request(request):
-    if request.POST:
+    if request.method == "POST":
         form = forms.RestorePasswordForm(data=request.POST)
         if form.is_valid():
             user = form.cleaned_data['user']
@@ -37,9 +37,9 @@ def restore_password_request(request):
                 )
     else:
         form = forms.RestorePasswordForm()
-    action = "./"
-    return { "form": form,
-            "action":action }
+    return {
+        "form": form
+    }
 
 def restore_password(request):
     code = request.GET.get("code", None)
@@ -74,21 +74,26 @@ def change_email(request):
     if request.method == 'POST':
         form = forms.ChangeEmailForm(data=request.POST)
         if form.is_valid():
-            code = Offer.objects.create(user=request.user,
-                                       type="email_change",
-                                       data=form.cleaned_data["email"])
+            code = Offer.objects.create(
+                            user=request.user,
+                            type="email_change",
+                            data=form.cleaned_data["email"]
+                    )
 
             mail.ChangeEmailMessage(code.user.email, {"code": code}).send()
-            return status_redirect(request,
-                              title= _( "E-mail change notification" ),
-                              section=SECTION,
-                              message= _( "Check your e-mail inbox for instructions" ),
-                              next= "/"
+            return status_redirect(
+                            request,
+                            title=_("E-mail change notification"),
+                            section=SECTION,
+                            message=_("Check your e-mail inbox for instructions"),
+                            next="/"
                         )
     else:
         form = forms.ChangeEmailForm()
 
-    return {"form": form}
+    return {
+        "form": form
+    }
 
 
 @templated('turbion/registration/change_email.html')
@@ -102,11 +107,12 @@ def change_email_confirm(request):
         code.user.save()
 
         code.delete()
-        return status_redirect(request,
-                          title= _( "Notification" ),
-                          section= SECTION,
-                          message= _( "Your new e-mail has been confirmed" ),
-                          next= "/"
+        return status_redirect(
+                        request,
+                        title=_("Notification"),
+                        section=SECTION,
+                        message=_("Your new e-mail has been confirmed"),
+                        next="/"
                     )
     raise http.Http404
 
@@ -129,10 +135,12 @@ def change_password(request):
     else:
         form = forms.ChangePasswordForm()
 
-    return {"change_password_form": form}
+    return {
+        "change_password_form": form
+    }
 
 @templated('turbion/registration/registration.html')
-@titled(page=_( "Information collection"))
+@titled(page=_("Information collection"))
 def registration(request):
     if request.method == 'POST':
         form = forms.RegistrationForm(data=request.POST)
@@ -144,31 +152,42 @@ def registration(request):
             user.save()
 
             code = Offer.objects.create(user=user)
-            mail.RegistrationConfirmMessage(user.email, {"user": user, "code": code}).send()
+            mail.RegistrationConfirmMessage(
+                        user.email,
+                        {
+                            "user": user,
+                            "code": code
+                        }
+                    ).send()
 
-            return status_redirect(request,
-                              title= _( "Registration notification" ),
-                              section=SECTION,
-                              message= _( "Check your e-mail inbox for instructions" ),
-                              next= "/"
-                            )
+            return status_redirect(
+                            request,
+                            title=_("Registration notification"),
+                            section=SECTION,
+                            message=_("Check your e-mail inbox for instructions"),
+                            next="/"
+                        )
     else:
         form = forms.RegistrationForm()
 
-    return {"registration_form": form }
+    return {
+        "registration_form": form
+    }
 
 def registration_confirm(request):
-    code = request.GET.get('code', None)
-    if code:
-        code = get_object_or_404(Offer, code=code)
-        code.user.is_active = True
-        code.user.save()
-        code.delete()
+    form = forms.RegistrationConfirmForm(request.GET)
 
-        return status_redirect(request,
+    if form.is_valid():
+        offer = form.cleaned_data["code"]
+        offer.user.is_active = True
+        offer.user.save()
+        offer.delete()
+
+        return status_redirect(
+                        request,
                         title=_("Registration finished"),
                         section=SECTION,
-                        message= _("Now you can sing-in with your account"),
+                        message=_("Now you can sing-in with your account"),
                         next=settings.LOGIN_URL
                     )
 

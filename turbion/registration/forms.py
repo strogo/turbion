@@ -74,7 +74,7 @@ class RegistrationFormBase( object ):
         utils.check_username(username)
         return username
 
-class RegistrationForm( RegistrationFormBase, forms.Form ):
+class RegistrationForm(RegistrationFormBase, forms.Form):
     username = forms.CharField( label = _( 'username' ), required = True )
     email = forms.EmailField( label = 'e-mail', required = True )
     password = forms.CharField( widget = forms.PasswordInput(), label = _( 'password' ), required = True )
@@ -93,3 +93,17 @@ class RegistrationForm( RegistrationFormBase, forms.Form ):
         if password == password_confirm:
             return password_confirm
         raise forms.ValidationError( _( "Password and confirmation don't match" ) )
+
+class RegistrationConfirmForm(forms.Form):
+    code = forms.CharField(required=True)
+
+    def clean_code(self):
+        from turbion.registration.models import Offer
+        code = self.cleaned_data["code"]
+
+        try:
+            code = Offer.objects.get(code=code)
+        except OfferDoesNotExist:
+            raise forms.ValidationError(_("Registration offer does not exist"))
+
+        return code
