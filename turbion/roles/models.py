@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey
-
+#from django.contrib.contenttypes.models import ContentType
+#from django.contrib.contenttypes.generic import GenericForeignKey
+from turbion.utils.descriptor import DescriptorField, GenericForeignKey
 from turbion.roles.managers import CapabilityManager, RoleManager
 
 class Capability(models.Model):
-    connection_ct = models.ForeignKey(ContentType, related_name="capabilities", null=True)
+    connection_dscr = DescriptorField(null=True)
     connection_id = models.PositiveIntegerField(null=True)
 
-    connection = GenericForeignKey("connection_ct", "connection_id")
+    connection = GenericForeignKey("connection_dscr", "connection_id")
 
     descriptor = models.CharField(max_length=250)
 
@@ -22,7 +22,7 @@ class Capability(models.Model):
         return self.code
 
     class Meta:
-        unique_together = [("connection_id", "connection_ct", "descriptor", "code")]
+        unique_together = [("connection_id", "connection_dscr", "descriptor", "code")]
         db_table        = "turbion_capability"
 
 class Role(models.Model):
