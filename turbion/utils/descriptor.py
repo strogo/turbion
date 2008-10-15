@@ -1,9 +1,21 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-def to_descriptor(model):
-    meta = model._meta
-    return "%s.%s" % (meta.app_label, meta.object_name.lower())
+def is_model(value):
+    return isinstance(value, type)\
+            and issubclass(value, models.Model)
+
+is_descriptable = is_model
+
+def to_descriptor(value):
+    if value is None:
+        raise ValueError("None value cannot be converted to descriptor")
+
+    if is_model(value):
+        meta = value._meta
+        return "%s.%s" % (meta.app_label, meta.object_name.lower())
+
+    return "%s.%s" % (value.__path__.lower(), value.__name__.lower())
 
 def to_model(dscr):
     app_name, model = dscr.split(".", 1)
@@ -16,20 +28,15 @@ class DescriptorField(models.CharField):
     def __init__(self, max_length=100, *args, **kwargs):
         super(DescriptorField, self).__init__(max_length=max_length, *args, **kwargs)
 
-    def _check_descriptable(self, value):
-        return isinstance(value, type)\
-                and issubclass(value, models.Model)\
-                and value is not None
-
     def to_python(self, value):
-        if self._check_descriptable(value):
+        if is_descriptable(value):
             return value
 
         if value is not None:
             return to_model(value)
 
     def get_db_prep_value(self, value):
-        if self._check_descriptable(value):
+        if is_descriptable(value):
             return to_descriptor(value)
 
         return value

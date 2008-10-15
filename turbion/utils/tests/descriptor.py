@@ -7,10 +7,6 @@ from turbion.utils.descriptor import DescriptorField, GenericForeignKey, to_desc
 class Host(models.Model):
     name = models.CharField(max_length=50)
 
-    def __init__(self, *args, **kwargs):
-        print "__init__", args, kwargs
-        super(Host, self).__init__(*args, **kwargs)
-
     def __unicode__(self):
         return self.name
 
