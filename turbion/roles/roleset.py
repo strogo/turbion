@@ -4,18 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 from turbion.utils.descriptor import to_descriptor
 from turbion.roles import models
 
-class RoleSetCache(object):
-    def __init__(self):
-        self._sets = {}
-
-    def add(self, name, set):
-        self._sets[name] = set
-
-    def iteritems(self):
-        return self._sets.iteritems()
-
-#cache = RoleSetCache()
-
 class RoleSetMeta(object):
     def __init__(self, capabilities, roles, model):
         self.capabilities = capabilities
@@ -65,10 +53,6 @@ class RoleSetMetaclass(type):
         t = super(RoleSetMetaclass, cls).__new__(cls, name, bases, attrs)
 
         meta.descriptor = to_descriptor(t)
-
-        #nstance = t()
-
-        #cache.add(descriptor, instance)
 
         return t
 
