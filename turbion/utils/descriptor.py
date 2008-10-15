@@ -8,19 +8,31 @@ def is_model(value):
 is_descriptable = is_model
 
 def to_descriptor(value):
+    if isinstance(value, basestring):
+        return value
+
     if value is None:
         raise ValueError("None value cannot be converted to descriptor")
 
     if is_model(value):
         meta = value._meta
-        return "%s.%s" % (meta.app_label, meta.object_name.lower())
+        return "model:%s.%s" % (meta.app_label, meta.object_name.lower())
 
-    return "%s.%s" % (value.__path__.lower(), value.__name__.lower())
+    return "%s.%s" % (value.__module__, value.__name__)
 
 def to_model(dscr):
     app_name, model = dscr.split(".", 1)
 
     return models.get_model(app_name, model)
+
+def to_object(dscr):
+    if dscr and isinstance(dscr, basestring):
+        if dscr.startswith("model:"):
+            return to_model(dscr[len("model:"):])
+
+        mod, name = dscr.rsplit('.', 1)
+        return getattr(__import__(mod, {}, {}, [""]), name)
+    return dscr
 
 class DescriptorField(models.CharField):
     __metaclass__ = models.SubfieldBase
@@ -29,16 +41,13 @@ class DescriptorField(models.CharField):
         super(DescriptorField, self).__init__(max_length=max_length, *args, **kwargs)
 
     def to_python(self, value):
-        if is_descriptable(value):
-            return value
-
         if value is not None:
-            return to_model(value)
+            return to_object(value)
+        return value
 
     def get_db_prep_value(self, value):
-        if is_descriptable(value):
+        if value is not None:
             return to_descriptor(value)
-
         return value
 
 class GenericForeignKey(object):

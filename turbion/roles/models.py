@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-#from django.contrib.contenttypes.models import ContentType
-#from django.contrib.contenttypes.generic import GenericForeignKey
 from turbion.utils.descriptor import DescriptorField, GenericForeignKey
 from turbion.roles.managers import CapabilityManager, RoleManager
 
@@ -27,15 +25,11 @@ class Capability(models.Model):
 
 class Role(models.Model):
     code = models.CharField(max_length=150, db_index=True)
-    descriptor = models.CharField(max_length=250)
+    roleset = DescriptorField(max_length=250)
 
     capabilities = models.ManyToManyField(Capability, related_name="roles")
 
     objects = RoleManager()
-
-    def get_roleset(self):
-        mod, name = self.descriptor.rsplit('.', 1)
-        return getattr(__import__(mod, {}, {}, [""]), name)
 
     def __unicode__(self):
         return self.code

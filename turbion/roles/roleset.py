@@ -14,7 +14,7 @@ class RoleSetCache(object):
     def iteritems(self):
         return self._sets.iteritems()
 
-cache = RoleSetCache()
+#cache = RoleSetCache()
 
 class RoleSetMeta(object):
     def __init__(self, capabilities, roles, model):
@@ -64,12 +64,11 @@ class RoleSetMetaclass(type):
 
         t = super(RoleSetMetaclass, cls).__new__(cls, name, bases, attrs)
 
-        descriptor = "%s.%s" % (t.__module__, name)
-        meta.descriptor = descriptor
+        meta.descriptor = to_descriptor(t)
 
-        instance = t()
+        #nstance = t()
 
-        cache.add(descriptor, instance)
+        #cache.add(descriptor, instance)
 
         return t
 
@@ -82,7 +81,7 @@ class RoleManager(object):
             role = self.meta.roles[name]
             role.meta = self.meta
         except KeyError:
-            raise AttributeError
+            raise AttributeError("No role with name %s" % name)
 
         return role
 
@@ -95,7 +94,7 @@ class CapabilityManager(object):
             cap = self.meta.capabilities[name]
             cap.meta = self.meta
         except KeyError:
-            raise AttributeError, "No capability with name %s" % name
+            raise AttributeError("No capability with name %s" % name)
 
         return cap
 
@@ -118,7 +117,7 @@ class Role(object):
                     if cap in self.meta.capabilities:
                         obj = self.meta.capabilities[cap]
                         obj.meta = self.meta
-                        objs.append( obj )
+                        objs.append(obj)
                     else:
                         raise ValueError
                 else:
@@ -139,7 +138,7 @@ class Role(object):
 
         role = models.Role.objects.create(
                             code=self.code,
-                            descriptor=meta.descriptor
+                            roleset=meta.descriptor
                         )
         caps = []
 
@@ -156,7 +155,7 @@ class Role(object):
 
     def grant(self, profile, object=None):
         if self.meta.model and not object:
-            raise ValueError, "For `to_object=True` roles must be object persent"
+            raise ValueError("For `to_object=True` roles must be object persent")
 
         self._create(profile, object)
 
@@ -164,7 +163,7 @@ class Role(object):
         try:
             role = models.Role.objects.get_or_create(
                                             code=self.code,
-                                            descriptor=meta.descriptor)
+                                            roleset=meta.descriptor)
         except models.Role.DoesNotExist:
             return
         profile.roles.remove(role)
@@ -199,7 +198,7 @@ class Capability(object):
 
     def grant(self, profile, object=None):
         if self.meta.model and not object:
-            raise ValueError, "For model-connected roles must be object present"
+            raise ValueError("For model-connected roles must be object present")
 
         self._create(profile, object)
 
