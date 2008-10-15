@@ -1,33 +1,38 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
+def to_descriptor(model):
+    meta = model._meta
+    return "%s.%s" % (meta.app_label, meta.object_name.lower())
+
+def to_model(dscr):
+    app_name, model = dscr.split(".", 1)
+
+    return models.get_model(app_name, model)
+
 class DescriptorField(models.CharField):
     __metaclass__ = models.SubfieldBase
 
     def __init__(self, max_length=100, *args, **kwargs):
         super(DescriptorField, self).__init__(max_length=max_length, *args, **kwargs)
 
-    @staticmethod
-    def _get_model_descriptor(model):
-        meta = model._meta
-        return "%s.%s" % (meta.app_label, meta.object_name.lower())
-
-    @staticmethod
-    def _get_model_by_descriptor(dscr):
-        app_name, model = dscr.split(".", 1)
-
-        return models.get_model(app_name, model)
+    def _check_descriptable(self, value):
+        return isinstance(value, type)\
+                and issubclass(value, models.Model)\
+                and value is not None
 
     def to_python(self, value):
-        if isinstance(value, type) and issubclass(value, models.Model):
+        if self._check_descriptable(value):
             return value
-        return DescriptorField._get_model_by_descriptor(value)
+
+        if value is not None:
+            return to_model(value)
 
     def get_db_prep_value(self, value):
-        if isinstance(value, type) and issubclass(value, models.Model):
-            return DescriptorField._get_model_descriptor(value)
-        return value
+        if self._check_descriptable(value):
+            return to_descriptor(value)
 
+        return value
 
 class GenericForeignKey(object):
     def __init__(self, dscr_field="descriptor", pk_field="object_id"):

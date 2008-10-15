@@ -2,10 +2,17 @@
 from django.test import TestCase
 from django.db import models
 
-from turbion.utils.descriptor import DescriptorField, GenericForeignKey
+from turbion.utils.descriptor import DescriptorField, GenericForeignKey, to_descriptor
 
 class Host(models.Model):
     name = models.CharField(max_length=50)
+
+    def __init__(self, *args, **kwargs):
+        print "__init__", args, kwargs
+        super(Host, self).__init__(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         app_label = "utils"
@@ -53,3 +60,7 @@ class Descriptor(TestCase):
         attr = Attribute.objects.get()
 
         self.assertEqual(attr.connection, new_host)
+
+    def test_descr_lookup(self):
+        attrs = Attribute.objects.filter(descriptor=to_descriptor(Host))
+        self.assertEqual(len(attrs), 1)
