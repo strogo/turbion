@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 
+from turbion.utils.descriptor import DescriptorField, GenericForeignKey
 from turbion.tags import managers
 
 class Tag(models.Model):
@@ -13,9 +12,9 @@ class Tag(models.Model):
     objects = managers.TagManager()
 
     def get_ratio(self, related_name, owner, all_count, object):
-        manager = getattr( self, related_name )
-        count = manager.filter( **{ owner : object } ).count()
-        return count / ( all_count + 1 )
+        manager = getattr(self, related_name)
+        count = manager.filter(**{owner: object}).count()
+        return count / (all_count + 1)
 
     def __unicode__(self):
         return self.name
@@ -39,13 +38,13 @@ class Tag(models.Model):
 class TaggedItem(models.Model):
     tag = models.ForeignKey(Tag, related_name="items")
 
-    item_ct = models.ForeignKey(ContentType)
+    item_dscr = DescriptorField()
     item_id = models.PositiveIntegerField()
 
-    item = generic.GenericForeignKey("item_ct", "item_id")
+    item = GenericForeignKey("item_dscr", "item_id")
 
     objects = managers.TaggedItemManager()
 
     class Meta:
-        unique_together = [("tag", "item_ct", "item_id"),]
+        unique_together = [("tag", "item_dscr", "item_id"),]
         db_table        = "turbion_taggeditem"

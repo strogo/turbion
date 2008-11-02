@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models, connection
-from django.contrib.contenttypes.models import ContentType
+
+from turbion.utils.descriptor import to_descriptor
 
 quote_name = connection.ops.quote_name
 
@@ -41,10 +42,10 @@ class TaggedItemManager(models.Manager):
         return query_set
 
     def filter_for_model(self, model, **kwargs):
-        ct = ContentType.objects.get_for_model(model)
+        dscr = to_descriptor(model)
         table_name_quoted = quote_name(model._meta.db_table)
 
-        query_set = self.filter(item_ct=ct)#\
+        query_set = self.filter(item_dscr=dscr)#\
             #.extra( select = { "%s_count" % model.__name__.lower(): "SELECT COUNT(*) FROM %(table)s WHERE %(table)s.id = item_id" % { "table" : table_name_quoted } } )
 
         if kwargs:
@@ -74,6 +75,6 @@ class TaggedItemManager(models.Manager):
 
     def get_item_connection(self, instance):
         return {
-            "item_id" : instance._get_pk_val(),
-            "item_ct" : ContentType.objects.get_for_model(instance.__class__)
+            "item_id": instance._get_pk_val(),
+            "item_dscr": to_descriptor(instance.__class__)
         }

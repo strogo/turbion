@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from turbion.tags.models import Tag, TaggedItem
-from django.contrib.contenttypes.models import ContentType
 
 class ModelTagManager(object):
     def __init__(self, instance):
