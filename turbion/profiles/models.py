@@ -141,19 +141,21 @@ class Profile(User):
 
     @property
     def caps(self):
+        from turbion.utils.descriptor import to_descriptor
         if not hasattr(self, "_caps_cache"):
-            self._caps_cache = set((cap.descriptor, cap.code, cap.connection)\
+            self._caps_cache = set((to_descriptor(cap.roleset), cap.code, cap.connection)\
                                         for cap in self.capabilities.all())
         return self._caps_cache
 
     @property
     def roles_caps(self):
+        from turbion.utils.descriptor import to_descriptor
         if not hasattr(self, "_roles_caps_cache"):
             caps = []
             for role in self.roles.all():
                 caps.extend(role.capabilities.all())
-
-            self._roles_caps_cache = set((cap.descriptor, cap.code, cap.connection) for cap in caps)
+            self._roles_caps_cache = set((to_descriptor(cap.roleset), cap.code, cap.connection)\
+                                            for cap in caps)
         return self._roles_caps_cache
 
     @property

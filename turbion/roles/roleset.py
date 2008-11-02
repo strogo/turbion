@@ -129,7 +129,7 @@ class Role(object):
         for cap in self._cap_objects:
             capa, _ = models.Capability.objects.get_or_create(
                                                     code=cap.code,
-                                                    descriptor=cap.meta.descriptor,
+                                                    roleset=cap.meta.descriptor,
                                                     **connection
                                             )
             caps.append(capa)
@@ -174,7 +174,7 @@ class Capability(object):
 
         cap, created = models.Capability.objects.get_or_create(
                                                     code=self.code,
-                                                    descriptor=self.meta.descriptor,
+                                                    roleset=self.meta.descriptor,
                                                     **connection
                                             )
 
@@ -192,7 +192,7 @@ class Capability(object):
         try:
             cap = models.Capability.objects.get(
                                         code=self.code,
-                                        descriptor=self.meta.descriptor,
+                                        roleset=self.meta.descriptor,
                                         **connection
                                 )
         except models.Capability.DoesNotExist:

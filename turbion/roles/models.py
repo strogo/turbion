@@ -10,7 +10,7 @@ class Capability(models.Model):
 
     connection = GenericForeignKey("connection_dscr", "connection_id")
 
-    descriptor = models.CharField(max_length=250)
+    roleset = DescriptorField(max_length=250)#models.CharField(max_length=250)
 
     code = models.CharField(max_length=50, db_index=True)
 
@@ -20,7 +20,7 @@ class Capability(models.Model):
         return self.code
 
     class Meta:
-        unique_together = [("connection_id", "connection_dscr", "descriptor", "code")]
+        unique_together = [("connection_id", "connection_dscr", "roleset", "code")]
         db_table        = "turbion_capability"
 
 class Role(models.Model):
