@@ -5,17 +5,19 @@ import os
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 
+from turbion.utils.descriptor import DescriptorField, GenericForeignKey, to_descriptor
 from turbion.profiles.models import Profile
 from turbion.utils.enum import Enum
 
 class AssetManager(models.Manager):
     def for_object(self, obj):
-        ct = ContentType.objects.get_for_model(obj.__class__)
+        dscr = to_descriptor(obj.__class__)
 
-        return self.filter(connections__object_ct=ct, connections__object_id=obj._get_pk_val())
+        return self.filter(
+                        connections__object_dscr=dscr,
+                        connections__object_id=obj._get_pk_val()
+                )
 
 class Asset(models.Model):
     types = Enum(image = _("image"),
@@ -52,10 +54,14 @@ class Asset(models.Model):
         return os.path.join(dirname, bits[0] + "_thumb" + bits[1])
 
     def connect_to(self, obj):
-        ct = ContentType.objects.get_for_model(obj.__class__)
+        dscr = to_descriptor(obj.__class__)
         id = obj._get_pk_val()
 
-        Connection.objects.get_or_create(object_ct=ct, object_id=id, asset=self)
+        Connection.objects.get_or_create(
+                    object_dscr=dscr,
+                    object_id=id,
+                    asset=self
+                )
 
     def save(self, *args, **kwargs):
         if self.edited_by:
@@ -76,12 +82,12 @@ class Asset(models.Model):
         db_table            = "turbion_asset"
 
 class Connection(models.Model):
-    object_ct = models.ForeignKey(ContentType, related_name="assets_connections")
+    object_dscr = DescriptorField()
     object_id = models.PositiveIntegerField()
-    object    = generic.GenericForeignKey("object_ct","object_id")
+    object    = GenericForeignKey("object_dscr","object_id")
 
     asset = models.ForeignKey(Asset, related_name="connections")
 
     class Meta:
-        unique_together = ["object_ct", "object_id", "asset"]
+        unique_together = ["object_dscr", "object_id", "asset"]
         db_table = "turbion_asset_connection"
