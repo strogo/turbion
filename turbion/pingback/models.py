@@ -22,9 +22,9 @@ class Incoming(models.Model):
     title        = models.CharField( max_length=255, null = True )
     paragraph    = models.TextField( null = True )
 
-    descriptor = DescriptorField(null=True, blank=True)
+    descriptor   = DescriptorField(null=True, blank=True)
     object_id    = models.PositiveIntegerField(null=True, blank=True)
-    object       = generic.GenericForeignKey()
+    object       = GenericForeignKey()
 
     class Meta:
         verbose_name        = "входящий"
@@ -39,9 +39,9 @@ class Outgoing(models.Model):
     date         = models.DateTimeField(default=datetime.now)
     status       = models.CharField( max_length = 255 )
 
-    descriptor = DescriptorField(null=True, blank=True)
+    descriptor   = DescriptorField(null=True, blank=True)
     object_id    = models.PositiveIntegerField(null=True, blank=True)
-    object       = generic.GenericForeignKey()
+    object       = GenericForeignKey()
 
     class Meta:
         verbose_name        = "исходящий"
