@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey
 
+from turbion.utils.descriptor import DescriptorField, GenericForeignKey
 from turbion.utils.models import GenericManager
 
 class OptionManager(GenericManager):
     def _make_lookup(self, object, cls, id=None):
+        from turbion.utils.descriptor import to_descriptor
+
         if cls and not issubclass(cls, (models.Model,)):
             cls = None
-        return {"connection_ct": cls and ContentType.objects.get_for_model(cls) or None,
-                "connection_id": id and id or (object and object._get_pk_val() or None)}
+        return {
+            "connection_dscr": cls and to_descriptor(cls) or None,
+            "connection_id": id and id or (object and object._get_pk_val() or None)
+        }
 
     def add_option(self, name, value, descriptor, object=None, cls=None, id=None):
         connection_lookup = self._make_lookup(object, cls, id)
@@ -43,12 +46,12 @@ class OptionManager(GenericManager):
         option.save()
 
 class Option(models.Model):
-    connection_ct = models.ForeignKey(ContentType, null=True)
+    connection_dscr = DescriptorField(null=True)
     connection_id = models.PositiveIntegerField(null=True)
 
-    connection = GenericForeignKey("connection_ct", "connection_id")
+    connection = GenericForeignKey("connection_dscr", "connection_id")
 
-    descriptor = models.CharField(max_length=200)
+    descriptor = DescriptorField()
     name = models.CharField(max_length=100, db_index=True)
     value = models.TextField(null=True)
 
@@ -58,5 +61,5 @@ class Option(models.Model):
     active = OptionManager(is_active=True)
 
     class Meta:
-        unique_together = [("connection_id", "connection_ct", "descriptor", "name")]
+        unique_together = [("connection_id", "connection_dscr", "descriptor", "name")]
         db_table        = "turbion_option"

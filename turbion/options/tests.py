@@ -42,9 +42,13 @@ class FreeOptionsTestCase(TestCase):
         call_command("syncoptions")
 
     def test_option_count(self):
-        self.assertEqual(Option.objects.filter(connection_ct = None,
-                                                connection_id = None,
-                                                descriptor__contains = "options.tests" ).count(), 5 )
+        self.assertEqual(Option.objects.filter(
+                                            connection_dscr=None,
+                                            connection_id=None,
+                                            descriptor__contains="options.tests"
+                                        ).count(),
+                         5
+                    )
 
     def test_defaults(self):
         self.assertEqual(TestOptions.instance.str_option,    "foobar")
