@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.core import urlresolvers
-from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.contrib.sites.models import Site
 
@@ -12,25 +11,28 @@ from turbion.pingback import signals
 from turbion.pingback import client
 from turbion.pingback.models import Incoming
 from turbion.pingback import utils
+from turbion.utils.descriptor import to_object
 
 def resolve_model(model_id):
     try:
-        ct = ContentType.objects.get(pk=model_id)
-    except ContentType.DoesNotExist:
+        dscr = to_object(model_id)
+    except ValueError:
         raise utils.PingError(0x0021)
 
-    return ct.model_class()
+    return dscr
 
 def resolve_object(model, id):
     try:
-        obj = model._default_manager.get( pk = id )
+        obj = model._default_manager.get(pk=id)
     except ( model.DoesNotExist, ):
         raise utils.PingError( 0x0021 )
     return obj
 
 def ping(source_uri, target_uri, model_id, id):
-    incoming, created = Incoming.objects.get_or_create( source_url = source_uri,
-                                               target_url = target_uri )
+    incoming, created = Incoming.objects.get_or_create(
+                                    source_url=source_uri,
+                                    target_url=target_uri
+                            )
     if not created:
         raise utils.PingError( 0x0030 )
 

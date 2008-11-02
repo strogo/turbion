@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.contrib.sites.models import Site
 
 from turbion.pingback.server import ping
 from turbion.pingback.models import Incoming
 from turbion.pingback.tests.utils import TestEntry, BASE_ENTRY_TEXT, test_fetcher,PARAGRAPH
+from turbion.utils.descriptor import to_descriptor
 
 class ServerTest( TestCase ):
     def setUp( self ):
@@ -24,15 +24,15 @@ class ServerTest( TestCase ):
 
         self.needed_status = 'Pingback from %s to %s%s registered. Keep the web talking! :-)' % ( self.source_uri, self.target_uri, self.entry.get_absolute_url(),  )
 
-        ct = ContentType.objects.get_for_model( self.entry.__class__ )
+        dscr = to_descriptor(self.entry.__class__)
 
         ping( self.source_uri,
               self.target_uri + self.entry.get_absolute_url(),
-              ct.id,
+              dscr,
               self.entry.id )
 
-    def test_ping( self ):
-        self.assertEqual( Incoming.objects.count(), 1 )
+    def test_ping(self):
+        self.assertEqual(Incoming.objects.count(), 1)
 
         inc = Incoming.objects.get()
 

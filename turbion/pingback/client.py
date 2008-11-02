@@ -4,7 +4,7 @@ import re
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.contrib.contenttypes.models import ContentType
+from turbion.utils.descriptor import to_descriptor
 
 from turbion.utils.urlfetch import fetch
 
@@ -40,23 +40,25 @@ def process_for_pingback(sender, instance, url, text, **kwargs):
 
     domain = Site.objects.get_current().domain
 
-    ct = ContentType.objects.get_for_model(sender)
+    dscr = Cto_descriptor(sender)
 
     local_uri = 'http://%s%s' % (domain, url)
 
     for target_url in utils.parse_html_links(text, domain):
         try:
-            Outgoing.objects.get(target_uri=target_url,
-                                content_type=ct,
-                                object_id=instance.id,
-                                status=True)
+            Outgoing.objects.get(
+                        target_uri=target_url,
+                        descriptor=dscr,
+                        object_id=instance.id,
+                        status=True
+                )
             continue# do nothing if we just have pinged this url from this instance of model
         except Outgoing.DoesNotExist:
             pass
 
         try:
             #make ping client
-            gateway = get_rpc_gateway( target_url )
+            gateway = get_rpc_gateway(target_url)
 
             if not gateway:
                 continue
@@ -66,9 +68,10 @@ def process_for_pingback(sender, instance, url, text, **kwargs):
             status = str( e )
             gateway = None
 
-        out = Outgoing.objects.create(content_type=ct,
-                                      object_id=instance.id,
-                                      target_uri=target_url,
-                                      rpcserver=gateway,
-                                      status=status
-                                    )
+        out = Outgoing.objects.create(
+                            descriptor=dscr,
+                            object_id=instance.id,
+                            target_uri=target_url,
+                            rpcserver=gateway,
+                            status=status
+                    )

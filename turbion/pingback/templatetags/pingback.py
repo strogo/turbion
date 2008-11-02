@@ -2,21 +2,22 @@
 from django import template
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
-from django.contrib.contenttypes.models import ContentType
 
 from urlparse import urljoin
+
+from turbion.utils.descriptor import to_descriptor
 
 register = template.Library()
 
 @register.simple_tag
 def pingback_gateway(obj):
-    ct = ContentType.objects.get_for_model(obj.__class__)
-    url = reverse("pingback_gateway", args=(ct.id, obj._get_pk_val()))
+    dscr = to_descriptor(obj.__class__)
+    url = reverse("pingback_gateway", args=(dscr, obj._get_pk_val()))
 
     return '<link rel="pingback" href="%s" />' % urljoin("http://" + Site.objects.get_current().domain, url)
 
-def trackback_rdf( url, title, obj ):
-    ct = ContentType.objects.get_for_model( obj.__class__ )
+def trackback_rdf(url, title, obj):
+    dscr = to_descriptor(obj.__class__)
 
     return """<!--
     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -30,5 +31,5 @@ def trackback_rdf( url, title, obj ):
     </rdf:RDF>
     -->""" % { "title" : title,
                "url" : url,
-               "trackback_url" : reverse( "turbion.pingback.views.trackback", kargs = { "model_id": ct.id,
+               "trackback_url" : reverse( "turbion.pingback.views.trackback", kargs = { "model_id": dscr,
                                                                                         "id" : obj._get_pk_val() } ) }

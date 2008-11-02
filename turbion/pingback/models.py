@@ -2,11 +2,10 @@
 from datetime import datetime
 
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 from turbion.pingback import client, signals
 
 from turbion.utils.enum import Enum
+from turbion.utils.descriptor import DescriptorField, GenericForeignKey
 
 class Incoming(models.Model):
     types = Enum( pingback  = "pingback",
@@ -23,14 +22,14 @@ class Incoming(models.Model):
     title        = models.CharField( max_length=255, null = True )
     paragraph    = models.TextField( null = True )
 
-    content_type = models.ForeignKey( ContentType, null = True, blank = True )
-    object_id    = models.PositiveIntegerField( null = True, blank = True )
+    descriptor = DescriptorField(null=True, blank=True)
+    object_id    = models.PositiveIntegerField(null=True, blank=True)
     object       = generic.GenericForeignKey()
 
     class Meta:
         verbose_name        = "входящий"
         verbose_name_plural = "входящие"
-        unique_together     = ( ( "source_url", "content_type", "object_id" ), )
+        unique_together     = (("source_url", "descriptor", "object_id"),)
         db_table            = "turbion_pingback_incoming"
 
 class Outgoing(models.Model):
@@ -40,8 +39,8 @@ class Outgoing(models.Model):
     date         = models.DateTimeField(default=datetime.now)
     status       = models.CharField( max_length = 255 )
 
-    content_type = models.ForeignKey( ContentType, null = True, blank = True )
-    object_id    = models.PositiveIntegerField( null = True, blank = True )
+    descriptor = DescriptorField(null=True, blank=True)
+    object_id    = models.PositiveIntegerField(null=True, blank=True)
     object       = generic.GenericForeignKey()
 
     class Meta:
