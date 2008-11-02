@@ -69,5 +69,39 @@
    "published_on": "2006-11-17 16:54:47",
    "slug": "third"
   }
+ },
+ {
+  "pk": 1,
+  "model": "tags.taggeditem",
+  "fields": {
+   "item_id": 3,
+   "item_dscr": "model:blogs.post",
+   "tag": 1
+  }
+ },
+ {
+  "pk": 2,
+  "model": "tags.taggeditem",
+  "fields": {
+   "item_id": 3,
+   "item_dscr": "model:blogs.post",
+   "tag": 2
+  }
+ },
+ {
+  "pk": 2,
+  "model": "tags.tag",
+  "fields": {
+   "name": "bar",
+   "slug": "bar"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "tags.tag",
+  "fields": {
+   "name": "foo",
+   "slug": "foo"
+  }
  }
 ]

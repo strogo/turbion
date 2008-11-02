@@ -138,6 +138,9 @@ class ViewsTest(BaseViewTest):
     def test_archive_year(self):
         self.assertStatus(blog_reverse("blog_archive_year", args=(self.blog.slug, '2007')))
 
+    def test_tag(self):
+        self.assertStatus(blog_reverse("blog_tag", args=(self.blog.slug, "foo")))
+
     def test_tags(self):
         self.assertStatus(blog_reverse("blog_tags", args=(self.blog.slug,)))
 
@@ -150,23 +153,3 @@ class ViewsTest(BaseViewTest):
 
         def test_search_comments(self):
             pass
-
-class TagView(BaseViewTest):
-    fixtures = [
-        'turbion/test/profiles',
-        'turbion/test/blogs'
-    ]
-
-    def setUp(self):
-        from turbion.comments.models import CommentAdd
-        from turbion.tags.models import Tag
-
-        self.blog = Blog.objects.get(slug="test")
-        self.post = Post.objects.filter(blog=self.blog)[0]
-
-        CommentAdd.instance.subscribe(self.post.created_by, self.post)
-
-        Tag.objects.connect("foo", self.post)
-
-    def test_tag(self):
-        self.assertStatus(blog_reverse("blog_tag", args=(self.blog.slug, "foo")))
