@@ -5,7 +5,7 @@ from django.utils.encoding import smart_str
 from django.conf import settings
 from django.db.models import signals
 from django.db import connection
-from django.contrib.contenttypes.models import ContentType
+from turbion.utils.descriptor import to_descriptor
 
 from turbion.blogs.models import Post, Comment
 from turbion.profiles.models import Profile
@@ -46,19 +46,19 @@ def archive_pad(context, blog):
                       file_name='turbion/blogs/pads/top_commenters_pad.html',
                       takes_context=True)
 def top_commenters_pad(context, blog, count=5):
-    ct = ContentType.objects.get_for_model(Post)
+    dscr = to_descriptor(Post)
 
     extra_select="""
-            SELECT COUNT(*)
-            FROM %(comment_table)s AS cc, %(post_table)s AS pp
-            WHERE cc.connection_ct_id=%(ct_id)s
-                    AND cc.connection_id=pp.%(post_pk_name)s
-                    AND cc.created_by_id=%(profile_table)s.%(profile_pk_name)s
-                    AND pp.blog_id=%(blog_id)s
-                    AND pp.created_by_id!=cc.created_by_id
+        SELECT COUNT(*)
+        FROM %(comment_table)s AS cc, %(post_table)s AS pp
+        WHERE cc.connection_dscr="%(dscr)s"
+            AND cc.connection_id=pp.%(post_pk_name)s
+            AND cc.created_by_id=%(profile_table)s.%(profile_pk_name)s
+            AND pp.blog_id=%(blog_id)s
+            AND pp.created_by_id!=cc.created_by_id
     """ % {
         "comment_table": comments_table_name,
-        "ct_id": ct._get_pk_val(),
+        "dscr": dscr,
         "blog_id": blog._get_pk_val(),
         "profile_table": profiles_table_name,
         "profile_pk_name": Profile._meta.pk.attname,
@@ -68,7 +68,7 @@ def top_commenters_pad(context, blog, count=5):
 
     return  {
         "commenters": Profile.objects.select_related()\
-             .extra(select={"comment_count": extra_select} )\
+             .extra(select={"comment_count": extra_select})\
              .order_by('-comment_count').distinct()[:count]
     }
 
@@ -94,7 +94,9 @@ def last_comments_pad(context, blog, count=5):
                       file_name='turbion/blogs/pads/top_posts_pad.html',
                       takes_context=True)
 def top_posts_pad(context, blog, count=5):
-    return  {"posts": Post.published.for_blog(blog).order_by('-comment_count')[:count]}
+    return  {
+        "posts": Post.published.for_blog(blog).order_by('-comment_count')[:count]
+    }
 
 @cached_inclusion_tag(register,
                       trigger={"sender": Post,

@@ -2,8 +2,6 @@
 from django.db import models, connection
 from django.conf import settings
 from django.db.models import signals
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 
 from datetime import datetime
@@ -14,6 +12,7 @@ from turbion.utils.postprocessing.fields import PostprocessField
 from turbion.utils.models import GenericManager
 from turbion.utils.enum import Enum
 from turbion.comments import signals as comment_signals
+from turbion.utils.descriptor import DescriptorField, GenericForeignKey, to_descriptor
 
 quote_name = connection.ops.quote_name
 
@@ -27,26 +26,31 @@ class CommentManager(GenericManager):
         return super(CommentManager, self).get_query_set().select_related("created_by")
 
     def for_model_with_rel(self, model, obj):
-        ct = ContentType.objects.get_for_model(model)
+        dscr = to_descriptor(model)
 
         for field in  model._meta.fields:
             if isinstance(field, models.ForeignKey):
                 if field.rel.to == obj.__class__:
-                    return self.filter(connection_ct=ct).extra(where=["%s.%s= %s" % (quote_name(model._meta.db_table), quote_name(field.column), getattr(obj, field.rel.field_name))],
-                                                               tables=[model._meta.db_table])
+                    return self.filter(connection_dscr=dscr).\
+                                extra(
+                                    where=["%s.%s= %s" % (quote_name(model._meta.db_table), quote_name(field.column), getattr(obj, field.rel.field_name))],
+                                    tables=[model._meta.db_table]
+                                )
 
-        raise ValueError, "Model %s has no relations to %s" % (model, obj.__class__)
+        raise ValueError("Model %s has no relations to %s" % (model, obj.__class__))
 
     def for_object(self, obj):
-        ct = ContentType.objects.get_for_model(obj.__class__)
+        dscr = to_descriptor(obj.__class__)
 
-        return self.filter(connection_ct=ct,
-                           connection_id=obj._get_pk_val())
+        return self.filter(
+                        connection_dscr=dscr,
+                        connection_id=obj._get_pk_val()
+                    )
 
 class Comment(models.Model):
-    connection_ct = models.ForeignKey(ContentType, editable=False)
+    connection_dscr = DescriptorField(editable=False)
     connection_id = models.PositiveIntegerField(editable=False, verbose_name=_("connection"))
-    connection = generic.GenericForeignKey("connection_ct", "connection_id")
+    connection = GenericForeignKey("connection_dscr", "connection_id")
 
     statuses = Enum(published ="published",
                     moderation="on moderation")
