@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import NoArgsCommand
-from django.contrib.contenttypes.models import ContentType
 
 from turbion.options.models import Option
 from turbion.options.optionset import OptionSetSpot

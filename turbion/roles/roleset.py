@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.contrib.contenttypes.models import ContentType
-
 from turbion.utils.descriptor import to_descriptor
 from turbion.roles import models
 
