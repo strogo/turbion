@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from django import http, forms
 
@@ -49,7 +48,7 @@ def unsubscribe(request, user_id, event_id):
     event = get_object_or_404(Event, pk=event_id)
 
     desc = event.descriptor.instance
-    
+
     form = UnsubscribeForm(data=request.GET, user=user, event_descriptor=desc)
 
     if form.is_valid():

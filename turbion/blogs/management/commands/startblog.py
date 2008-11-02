@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import LabelCommand
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
 
 from optparse import make_option
 

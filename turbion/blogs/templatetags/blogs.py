@@ -5,7 +5,6 @@ from django.utils.encoding import smart_str
 from django.conf import settings
 from django.db.models import signals
 from django.db import connection
-from django.contrib.contenttypes.models import ContentType
 
 from turbion.blogs.models import Post, Comment
 from turbion.blogs.utils import blog_reverse
