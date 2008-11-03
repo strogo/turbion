@@ -4,7 +4,7 @@ from turbion.comments.models import Comment
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
-        'created_on', "created_by", "status", "connection_dscr",
+        'created_on', "created_by", "status",
         "connection_id", "postprocessor"
     )
     list_per_page = 25
