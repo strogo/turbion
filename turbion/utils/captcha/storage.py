@@ -15,15 +15,13 @@ class SessionStore(object):
         """
         self.request = request
 
-        if not "turbion_captcha" in request.session:
-            request.session["turbion_captcha"] = {}
-
-        self._data = request.session["turbion_captcha"]
+        self._data = request.session.setdefault("turbion_captcha", {})
 
     def __getitem__(self, key):
         return self._data[key][0]
 
     def __setitem__(self, key, value):
+        print "storage set:", key, value
         self._data[key] = (value, time.time())
 
     def __delitem__(self, key):
