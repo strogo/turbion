@@ -38,6 +38,7 @@ class DescriptorField(models.CharField):
     __metaclass__ = models.SubfieldBase
 
     def __init__(self, max_length=100, *args, **kwargs):
+        kwargs["editable"] = False
         super(DescriptorField, self).__init__(max_length=max_length, *args, **kwargs)
 
     def to_python(self, value):
