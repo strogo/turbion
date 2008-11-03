@@ -20,7 +20,7 @@ class IdentityManager(GenericManager):
 class Identity(models.Model):
     user = models.ForeignKey(Profile, null=True, related_name="openid_identifiers")
 
-    date = models.DateTimeField(default=datetime.now)
+    added_on = models.DateTimeField(default=datetime.now)
 
     last_login = models.DateTimeField(null=True, blank=True)
     url = models.URLField(max_length=250, unique=True)
@@ -30,6 +30,9 @@ class Identity(models.Model):
     objects = IdentityManager()
     locals = IdentityManager(local=True)
     globals = IdentityManager(local=False)
+
+    def __unicode__(self):
+        return self.url
 
     class Meta:
         db_table = "turbion_openid_identity"
@@ -56,7 +59,7 @@ class Association(models.Model):
 
     class Meta:
         db_table = "turbion_openid_association"
-        #unique_together = [('server_url', 'handle')]
+        unique_together = [('server_url', 'handle')]
 
 class Nonce(models.Model):
     server_url = models.TextField(max_length=2047)
@@ -70,7 +73,7 @@ class Nonce(models.Model):
 
     class Meta:
         db_table = "turbion_openid_nonce"
-        #unique_together = [('server_url', 'timestamp', 'salt')]
+        unique_together = [('server_url', 'timestamp', 'salt')]
 
 class Trust(models.Model):
     url = models.URLField(unique=True)
