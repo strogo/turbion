@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect
-from django.shortcuts import *
+from django.shortcuts import get_object_or_404
 
 from turbion.comments.models import Comment, CommentAdd
 from turbion.comments import signals
@@ -13,13 +13,15 @@ def add_comment(request, defaults={}, redirect=None, connection=None,
         return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
 
     if request.method == 'POST':
-        form = forms.CommentForm(data=request.POST,
-                                request=request,
-                                instance=comment)
+        form = forms.CommentForm(
+                        data=request.POST,
+                        request=request,
+                        instance=comment
+                )
 
         if form.is_valid():
             new_comment = form.save(False)
-
+            
             if 'view' in request.POST:
                 comment = new_comment
             else:
@@ -27,8 +29,9 @@ def add_comment(request, defaults={}, redirect=None, connection=None,
                     new_comment.connection = connection
                 new_comment.__dict__.update(defaults)
 
-                if not comment.created_on.trusted:
+                if not new_comment.created_by.trusted:
                     new_comment.status = untrusted_status
+
                 new_comment.save()
 
                 if comment:
@@ -36,18 +39,21 @@ def add_comment(request, defaults={}, redirect=None, connection=None,
                 else:
                     signal = signals.comment_added
 
-                signal.send(sender=Comment,
-                            comment=new_comment,
-                            instance=connection
-                        )
+                signal.send(
+                        sender=Comment,
+                        comment=new_comment,
+                        instance=connection
+                )
 
                 if form.cleaned_data["notify"]:
                     CommentAdd.instance.subscribe(new_comment.created_by, new_comment.connection)
 
                 return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
     else:
-        form = forms.CommentForm(request=request,
-                                instance=comment)
+        form = forms.CommentForm(
+                        request=request,
+                        instance=comment
+                )
 
     return {
         "comment_form": form,

@@ -21,7 +21,6 @@ class SessionStore(object):
         return self._data[key][0]
 
     def __setitem__(self, key, value):
-        print "storage set:", key, value
         self._data[key] = (value, time.time())
 
     def __delitem__(self, key):

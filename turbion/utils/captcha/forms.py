@@ -21,6 +21,13 @@ class CaptchaWidget(forms.MultiWidget):
         self._test_id = None
         super(CaptchaWidget, self).__init__(widgets, attrs)
 
+    @property
+    def initial(self):
+        test = self.manager.make_test()
+        self._test_id = test.id
+
+        return (test.id, reverse('captcha_image', kwargs={"id": test.id}))
+
     def value_from_datadict(self, data, files, name):
         value = super(CaptchaWidget, self).value_from_datadict(data, files, name)
         del value[1] # empty faky image widget data
@@ -50,11 +57,12 @@ class CaptchaField(forms.Field):
         id, word = value
 
         test = self.manager.get_test(id)
+
         if not test:
             raise forms.ValidationError("Recognition error")
         elif not test.valid:
             raise forms.ValidationError("Recognition error")
         elif not test.testSolutions([word]):
             raise forms.ValidationError("Word was recognized incorrect")
-
+        
         return (id, word)

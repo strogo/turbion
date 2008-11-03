@@ -17,8 +17,6 @@ from turbion.blogs.models.blog import BlogRoles
 from turbion.blogs.utils import blog_reverse
 from turbion.profiles.models import Profile
 
-CREDENTIALS = {'username': "test", 'password': "test"}
-
 class ViewsTest(BaseViewTest):
     fixtures = [
         'turbion/test/profiles',
@@ -32,9 +30,6 @@ class ViewsTest(BaseViewTest):
         self.post = Post.objects.filter(blog=self.blog)[0]
 
         CommentAdd.instance.subscribe(self.post.created_by, self.post)
-
-    def login(self):
-        self.client.login(**CREDENTIALS)
 
     def test_index(self):
         self.assertStatus(self.blog.get_absolute_url())

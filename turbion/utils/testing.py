@@ -10,6 +10,7 @@ class RequestFactory(Client):
 
         self._handler = base.BaseHandler()
         self._handler.load_middleware()
+        self._session = {}
 
     def apply_middleware(self, request):
         for middleware_method in self._handler._request_middleware:
@@ -41,15 +42,23 @@ class RequestFactory(Client):
         return request
 
 class BaseViewTest(TestCase):
+    credentials = {'username': "test", 'password': "test"}
+
+    def assertResponseStatus(self, response, status=http.HttpResponse.status_code):
+        self.assertEqual(response.status_code, status)
+
     def assertStatus(self, url, status=http.HttpResponse.status_code, data={}, method="get"):
         response = getattr(self.client, method)(url, data=data)
 
-        self.assertEqual(response.status_code, status)
+        self.assertResponseStatus(response, status)
 
         return response
 
     def hack_captcha(self, response):
-        request = response.request
+        if isinstance(response, http.HttpRequest):
+            request = response
+        else:
+            request = response.request
 
         if isinstance(request, dict):
             session = self._get_session(response.cookies)
@@ -57,7 +66,9 @@ class BaseViewTest(TestCase):
             session = request.session
 
         if "turbion_captcha" in session:
-            solution = session["turbion_captcha"].values()[0][0].solutions[0]
+            values = session["turbion_captcha"].values()
+            values.sort(lambda a, b: a[1] > b[1])
+            solution = values[0][0].solutions[0]
 
             return {
                 "captcha_0": session["turbion_captcha"].keys()[0],
@@ -71,3 +82,11 @@ class BaseViewTest(TestCase):
         session_key = cookies.get(settings.SESSION_COOKIE_NAME, None).value
 
         return engine.SessionStore(session_key)
+
+    def login(self):
+        self.client.login(**self.credentials)
+
+    @property
+    def user(self):
+        from turbion.profiles.models import Profile
+        return Profile.objects.get(username=self.credentials["username"])
