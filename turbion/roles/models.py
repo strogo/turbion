@@ -10,7 +10,7 @@ class Capability(models.Model):
 
     connection = GenericForeignKey("connection_dscr", "connection_id")
 
-    roleset = DescriptorField(max_length=250)#models.CharField(max_length=250)
+    roleset = DescriptorField(max_length=250)
 
     code = models.CharField(max_length=50, db_index=True)
 
