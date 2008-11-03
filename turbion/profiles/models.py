@@ -83,6 +83,7 @@ class Profile(User):
                                  default=sites.profile, null=True, blank=True,
                                 verbose_name=_('site view'))
     last_visit = models.DateTimeField(null=True, blank=True, verbose_name=_('last visit'))
+    trusted = models.BooleanField(default=False, verbose_name=_("trusted"))
 
     roles = models.ManyToManyField(Role, blank=True, related_name="profiles")
     capabilities = models.ManyToManyField(Capability, blank=True, related_name="profiles")

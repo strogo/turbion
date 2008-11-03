@@ -6,12 +6,9 @@ from turbion.comments.models import Comment, CommentAdd
 from turbion.comments import signals
 from turbion.comments import forms
 
-def add_comment(request,
-                defaults={},
-                redirect=None,
-                connection=None,
-                comment=None,
-                checker=lambda comment: True):
+def add_comment(request, defaults={}, redirect=None, connection=None,
+                comment=None, checker=lambda comment: True,
+                untrusted_status=Comment.statuses.moderation):
     if comment and not checker(comment):
         return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
 
@@ -29,6 +26,9 @@ def add_comment(request,
                 if connection:
                     new_comment.connection = connection
                 new_comment.__dict__.update(defaults)
+
+                if not comment.created_on.trusted:
+                    new_comment.status = untrusted_status
                 new_comment.save()
 
                 if comment:
@@ -49,9 +49,10 @@ def add_comment(request,
         form = forms.CommentForm(request=request,
                                 instance=comment)
 
-    return { "comment_form": form,
-             "comment"     : comment
-            }
+    return {
+        "comment_form": form,
+        "comment": comment
+    }
 
 edit_comment = add_comment
 
