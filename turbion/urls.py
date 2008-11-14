@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     url(r'^comments/',                     include('turbion.comments.urls')),
     url(r'^gears/',                        include('turbion.gears.urls')),
     url(r'^registration/',                 include('turbion.registration.urls')),
-    url(r'^dashboard/raw/(.*)',            admin.site.root, name="admin_root"),
+    url(r'^dashboard/raw/(.*)',            admin.site.root, name="turbion_admin_root"),
     url(r'^dashboard/',                    include('turbion.dashboard.urls')),
     url(r'^utils/',                        include('turbion.utils.urls')),
 
@@ -27,6 +27,6 @@ if settings.TURBION_BLOGS_MULTIPLE:
     urlpatterns += patterns('',
                     url(r'^sitemap.xml$',
                         'turbion.blogs.views.blog.index_sitemap',
-                        name="global_blog_sitemap"
+                        name="turbion_global_blog_sitemap"
                         )
                 )

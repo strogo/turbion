@@ -26,30 +26,30 @@ sitemaps = {
 post_url_pattern = r"^%s(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/(?P<post_slug>[\w_-]+)/" % settings.TURBION_POST_PERMALINK_PREFIX.lstrip('/')
 
 urlpatterns = patterns('turbion.blogs.views',
- url(r'^$',                                                'post.blog', name="blog_index"),
+ url(r'^$',                                                'post.blog', name="turbion_blog_index"),
 
- url(post_url_pattern + "$",                               'post.post', name="blog_post"),
+ url(post_url_pattern + "$",                               'post.post', name="turbion_blog_post"),
 
- url(r'^post/(?P<post_id>\d+)/comment/add/$',              'comment.add', name="blog_comment_add"),
- url(r'^comment/(?P<comment_id>\d+)/edit/$',               'comment.edit', name="blog_comment_edit"),
+ url(r'^post/(?P<post_id>\d+)/comment/add/$',              'comment.add', name="turbion_blog_comment_add"),
+ url(r'^comment/(?P<comment_id>\d+)/edit/$',               'comment.edit', name="turbion_blog_comment_edit"),
 
- url(r'^tags/$',                                           'post.tags', name="blog_tags"),
- url(r'^tag/(?P<tag_slug>[\w_-]+)/$',                      'post.tag' , name="blog_tag"),
+ url(r'^tags/$',                                           'post.tags', name="turbion_blog_tags"),
+ url(r'^tag/(?P<tag_slug>[\w_-]+)/$',                      'post.tag' , name="turbion_blog_tag"),
 
- url(r'^archive/(?P<year_id>\d{4})/$',                                           'archive.year',  name="blog_archive_year"),
- url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/$',                     'archive.month', name="blog_archive_month"),
- url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/$', 'archive.day',   name="blog_archive_day"),
+ url(r'^archive/(?P<year_id>\d{4})/$',                                           'archive.year',  name="turbion_blog_archive_year"),
+ url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/$',                     'archive.month', name="turbion_blog_archive_month"),
+ url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/$', 'archive.day',   name="turbion_blog_archive_day"),
 )
 
 if settings.TURBION_USE_DJAPIAN:
     urlpatterns += patterns('turbion.blogs.views',
-     url(r'^search/$',                                     'search.search', name="blog_search"),
-     url(r'^search/posts/$',                               'search.posts',  name="blog_search_posts"),
-     url(r'^search/comments/$',                            'search.comments', name="blog_search_comments"),
+     url(r'^search/$',                                     'search.search', name="turbion_blog_search"),
+     url(r'^search/posts/$',                               'search.posts',  name="turbion_blog_search_posts"),
+     url(r'^search/comments/$',                            'search.comments', name="turbion_blog_search_comments"),
     )
 
 urlpatterns += patterns('turbion.blogs.views',
- url(r'^feeds/rss/(?P<url>.*)/$',   'blog.feed',    {"feed_dict": rss_feeds }, "blog_rss"),
- url(r'^feeds/atom/(?P<url>.*)/$',  'blog.feed',    {"feed_dict": atom_feeds },"blog_atom"),
- url(r'^sitemap.xml$',              'blog.sitemap', {'sitemaps': sitemaps },   "blog_sitemap"),
+ url(r'^feeds/rss/(?P<url>.*)/$',   'blog.feed',    {"feed_dict": rss_feeds }, "turbion_blog_rss"),
+ url(r'^feeds/atom/(?P<url>.*)/$',  'blog.feed',    {"feed_dict": atom_feeds },"turbion_blog_atom"),
+ url(r'^sitemap.xml$',              'blog.sitemap', {'sitemaps': sitemaps },   "turbion_blog_sitemap"),
 )

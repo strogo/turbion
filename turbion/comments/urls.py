@@ -2,5 +2,5 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('turbion.comments.views',
-    url(r'^(?P<comment_id>\d+)/delete/$',       'delete', name="comment_delete"),
+    url(r'^(?P<comment_id>\d+)/delete/$',       'delete', name="turbion_comment_delete"),
 )
