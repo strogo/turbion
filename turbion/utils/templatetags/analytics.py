@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django import template
-from django.template.loader import get_template
 from django.contrib.sites.models import Site
 
 register = template.Library()
