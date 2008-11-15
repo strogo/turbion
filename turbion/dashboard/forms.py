@@ -42,7 +42,7 @@ class CreateSuperuserForm(forms.Form):
         return user
 
 class CreateBlogForm(forms.ModelForm):
-    owner = forms.ModelChoiceField(queryset=Profile.objects.all(), verbose_name=_("owner"))
+    owner = forms.ModelChoiceField(queryset=Profile.objects.all(), label=_("owner"))
 
     class Meta:
         model = Blog

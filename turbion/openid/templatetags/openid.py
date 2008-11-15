@@ -13,4 +13,5 @@ rel_map = {
 @register.simple_tag
 def openid_server(version="2"):
     return '<link rel="%s" href="%s">' % (rel_map.get(str(version), "2"),
-                                          uri_reverse("openid_endpoint"))
+                                          uri_reverse("turbion_openid_endpoint"))
+

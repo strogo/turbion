@@ -16,7 +16,7 @@ class Incoming(models.Model):
                                   verbose_name=_("type"))
 
     source_url = models.URLField(verbose_name=_("source url"))
-    target_url = models.CharField(max_length=255, verbose_nam=_("target url"))
+    target_url = models.CharField(max_length=255, verbose_name=_("target url"))
 
     date       = models.DateTimeField(default=datetime.now, verbose_name=_("date"))
     status     = models.CharField(max_length=255, verbose_name=_("status"))

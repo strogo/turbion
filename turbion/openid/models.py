@@ -59,7 +59,6 @@ class Association(models.Model):
 
     class Meta:
         db_table = "turbion_openid_association"
-        unique_together = [('server_url', 'handle')]
 
 class Nonce(models.Model):
     server_url = models.TextField(max_length=2047)
@@ -73,7 +72,6 @@ class Nonce(models.Model):
 
     class Meta:
         db_table = "turbion_openid_nonce"
-        unique_together = [('server_url', 'timestamp', 'salt')]
 
 class Trust(models.Model):
     url = models.URLField(unique=True)

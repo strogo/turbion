@@ -51,6 +51,9 @@ class DescriptorField(models.CharField):
             return to_descriptor(value)
         return value
 
+    def value_to_string(self, obj):
+        return to_descriptor(self._get_val_from_obj(obj))
+
 class GenericForeignKey(object):
     def __init__(self, dscr_field="descriptor", pk_field="object_id"):
         self.dscr_field = dscr_field
