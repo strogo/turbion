@@ -7,7 +7,7 @@
    "created_on": "2008-05-17 02:00:23",
    "created_by": 1,
    "name": "Test Blog",
-   "socialbookmarks_group": null,
+   "socialbookmarks": "",
    "post_per_page": 5,
    "review_count": 0,
    "slug": "test"

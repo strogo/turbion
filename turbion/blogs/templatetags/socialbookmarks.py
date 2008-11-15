@@ -40,7 +40,7 @@ def socialbookmarks_group(context, group, title, url):
 
     return {
         "group" : [(name, fill_pattern(installed[name]["url"], title, url, domain), installed[name]["image"])
-                        for name in [name.strip() for name in group.split(";")]],
+                        for name in [name.strip() for name in group.split(";") if name]],
         "title": title,
         "url": url,
         "domain": domain
