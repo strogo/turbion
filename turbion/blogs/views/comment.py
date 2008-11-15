@@ -2,6 +2,7 @@
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.blogs.decorators import blog_view, post_view, titled
 from turbion.comments import views, models
@@ -11,7 +12,7 @@ from turbion.utils.decorators import templated, paged
 
 @blog_view
 @templated('turbion/blogs/edit_comment.html')
-@titled(page=u'Добавление комментария к "{{post.title}}"')
+@titled(page=_('Add comment to "{{post.title}}"'))
 def add(request, blog, post_id):
     post = get_object_or_404(Post.published.for_blog(blog), pk=post_id)
 
@@ -32,7 +33,7 @@ def add(request, blog, post_id):
 
 @blog_view
 @templated('turbion/blogs/edit_comment.html')
-@titled(page=u'Редактирование комментария к "{{post.title}}"')
+@titled(page=_('Edit comment to "{{post.title}}"'))
 def edit(request, blog, comment_id):
     comment = get_object_or_404(models.Comment.published,  pk=comment_id)
     post = comment.connection

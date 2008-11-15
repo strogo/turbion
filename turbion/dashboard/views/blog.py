@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django import http
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.utils.decorators import titled, templated
 
@@ -16,7 +17,7 @@ from turbion.pingback import signals
 from turbion.roles.decorators import has_capability_for
 
 @templated("turbion/dashboard/blogs/dashboard.html")
-@titled(page="Dashboard", section="Administration")
+@titled(page=_("Dashboard"), section=_("Administration"))
 @blog_view
 @has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
 def dashbaord(request, blog):
@@ -30,17 +31,19 @@ def dashbaord(request, blog):
             "latest_feedback": latest_feedbacks }
 
 @templated("turbion/dashboard/blogs/posts.html")
-@titled(page="Dashboard", section="Administration")
+@titled(page=_("Dashboard"), section=_("Administration"))
 @blog_view
 @has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
 def index(request, blog):
     posts = Post.objects.for_blog(blog).order_by("-created_on")
 
-    return {"blog": blog,
-            "object_list": posts}
+    return {
+        "blog": blog,
+        "object_list": posts
+    }
 
 @templated("turbion/dashboard/table.html")
-@titled(page="Dashboard", section="Administration")
+@titled(page=_("Dashboard"), section=_("Administration"))
 @blog_view
 @has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
 def comments(request, blog):
@@ -48,14 +51,14 @@ def comments(request, blog):
     return {"blog" : blog}
 
 @templated("turbion/dashboard/table.html")
-@titled(page="Dashboard", section="Administration")
+@titled(page=_("Dashboard"), section=_("Administration"))
 @blog_view
 def preferences(request, blog):
 
     return {"blog": blog}
 
 @templated('turbion/dashboard/form.html')
-@titled(page=u'Редактирование поста "{{post.title}}"')
+@titled(page=_('Edit post "{{post.title}}"'))
 @blog_view
 @has_capability_for(BlogRoles.capabilities.add_post, "blog")
 def post_new(request, blog, post=None):
@@ -92,7 +95,11 @@ def post_new(request, blog, post=None):
                                      text = new_post.text_html,
                                 )
 
-                return http.HttpResponseRedirect(reverse("dashboard_blog_posts", args = (blog.slug,)))
+                return http.HttpResponseRedirect(
+                                reverse("turbion_dashboard_blog_posts",
+                                    args=(blog.slug,)
+                                )
+                        )
     else:
         form = forms.PostForm(request=request, blog=blog, instance=post)
 

@@ -30,7 +30,8 @@ class Feedback(models.Model):
 
     text       = models.TextField(verbose_name=_('text'))
 
-    status     = models.CharField(max_length=10, choices=statuses, default=statuses.new, verbose_name=_("status"))
+    status     = models.CharField(max_length=10, choices=statuses,
+                                  default=statuses.new, verbose_name=_("status"))
 
     objects  = models.Manager()
     new      = GenericManager(status=statuses.new)

@@ -4,6 +4,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.openid import forms, utils, models
 
@@ -15,7 +16,7 @@ def post_redirect(request):
     return redirect
 
 @templated('turbion/openid/login.html')
-@titled(page=u"Вход", section=u"Авторизация OpenID")
+@titled(page=_("Login"), section=_("OpenID Authorization"))#TODO: add custom_templated with defined `section`
 def login(request):
     if request.method == 'POST':
         form = forms.OpenidLoginForm(request, data=request.POST)
@@ -33,17 +34,17 @@ def authenticate(request):
     user = auth.authenticate(request=request)
 
     if not user:
-        return http.HttpResponseForbidden('Ошибка авторизации')
+        return http.HttpResponseForbidden(_('Authorization error'))
 
     auth.login(request, user)
 
     if user.username.startswith("toi_"):
-        return http.HttpResponseRedirect(reverse("openid_collect"))
+        return http.HttpResponseRedirect(reverse("turbion_openid_collect"))
 
     return http.HttpResponseRedirect(request.GET.get('redirect', '/'))
 
 @templated('turbion/openid/collect.html')
-@titled(page=u"Сбор сведений", section=u"Авторизация OpenID")
+@titled(page=_("Information collection"), section=_("OpenID Authorization"))
 def collect(request):
     if request.user.is_authenticated() and request.user.username.startswith("toi_"):
         if request.POST:

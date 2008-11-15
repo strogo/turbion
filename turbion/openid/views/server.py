@@ -6,13 +6,14 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.openid import forms, utils, models
 from turbion.utils.urls import uri_reverse
 from turbion.utils.decorators import templated, titled
 
 @templated('turbion/openid/server/endpoint.html')
-@titled(page=u"Вход", section=u"Авторизация OpenID")
+@titled(page=_("Login"), section=_("OpenID Authorization"))
 def endpoint(request):
     from openid.server.server import ProtocolError
     server = utils.get_server()
@@ -158,7 +159,7 @@ def xrds(request):
                     'turbion/openid/server/xrds.xml',
                     {
                         'type_uri': OPENID_IDP_2_0_TYPE,
-                        'endpoint_url': uri_reverse("openid_endpoint"),
+                        'endpoint_url': uri_reverse("turbion_openid_endpoint"),
                     }
             )
     response['Content-Type'] = YADIS_CONTENT_TYPE

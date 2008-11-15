@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404
 from django import http, forms
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.profiles.models import Profile
 from turbion.notifications.models import Event
@@ -29,7 +30,7 @@ class UnsubscribeForm(forms.Form):
         hash = self.event_descriptor.get_user_hash(self.user)
 
         if hash != code:
-            raise forms.ValidationError("Wrong code")
+            raise forms.ValidationError(_("Wrong code"))
 
         return code
 
@@ -58,9 +59,9 @@ def unsubscribe(request, user_id, event_id):
 
         return status_redirect(
                     request,
-                    title=u"Отписка",
-                    section=u"Оповещения",
-                    message=u'Вы отписаны от уведомлений в теме "%s"' % desc.name,
+                    title=_("Unsubscribe"),
+                    section=_("Notifications"),
+                    message=_("You've been unsubscribed from \"%s\"") % desc.name,
                     next="/"
             )
     raise http.Http404

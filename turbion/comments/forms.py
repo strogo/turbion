@@ -10,14 +10,14 @@ class _CommentForm(forms.ModelForm):
         model = Comment
         fields = ("text",)
 
-    notify = forms.BooleanField(initial=False, required=False)
+    notify = forms.BooleanField(initial=False, required=False, verbose_name=_("notify"))
 
 class CommentForm(forms.Form):
-    def __init__(self, request, *args, **kwargs ):
+    def __init__(self, request, *args, **kwargs):
         self.__class__ = combine_profile_form_with(_CommentForm,
-                                                 request      = request,
-                                                 field        = "created_by",
-                                                 need_captcha = True
+                                                 request     =request,
+                                                 field       ="created_by",
+                                                 need_captcha=True
                                                )
 
         self.__class__.__init__(self, *args, **kwargs)
@@ -28,5 +28,6 @@ class CommentForm(forms.Form):
             email = self.cleaned_data["email"]
 
             if notify and not email:
-                raise forms.ValidationError("Для получения уведомлений должен буть указан адрес почты")#FIXME: translate
+                raise forms.ValidationError(_("You have to provide email address"
+                                              " to recieve notifications"))
         return notify

@@ -6,23 +6,6 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.profiles.models import Profile
 from turbion.registration import utils
 
-class LoginForm(forms.Form):
-    username = forms.CharField(label=_('username'))
-    password = forms.CharField(label=_('password'), widget=forms.PasswordInput())
-
-    def clean(self):
-        username = self.cleaned_data["username"]
-        password = self.cleaned_data["password"]
-
-        user = authenticate(username=username, password=password)
-        if user:pass
-            #if not user.is_active:
-            #    raise forms.ValidationError( "Ваша учетная запись заблокирована. Обратитесь к администрации")
-        else:
-            raise forms.ValidationError(_("Illegal username or password"))
-        self.cleaned_data["user"] = user
-        return self.cleaned_data
-
 class ChangePasswordForm(forms.Form):
     old_password = forms.CharField(label=_('old password'), widget=forms.PasswordInput())
     password = forms.CharField(label=_('new password' ), widget=forms.PasswordInput())
@@ -41,7 +24,7 @@ class ChangePasswordForm(forms.Form):
         return old_password
 
     def clean_password_confirm(self):
-        password = self.cleaned_data['password']
+        password = self.cleaned_data['password']#FIXME: password may not exist
         password_confirm = self.cleaned_data['password_confirm']
 
         if password == password_confirm:

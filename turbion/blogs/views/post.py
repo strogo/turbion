@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-
+from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
@@ -19,7 +19,7 @@ from turbion.utils.decorators import paged, templated
 @blog_view
 @paged
 @templated('turbion/blogs/list.html')
-@titled(page=u'Блог')
+@titled(page=_('Blog'))
 def blog(request, blog):
     blog.inc_reviews()
 
@@ -42,7 +42,7 @@ def blog(request, blog):
 @blog_view
 @paged
 @templated('turbion/blogs/tags.html')
-@titled(page=u'Теги')
+@titled(page=_('Tags'))
 def tags(request, blog):
     _tags = blog.tags
 
@@ -54,7 +54,7 @@ def tags(request, blog):
 @blog_view
 @paged
 @templated('turbion/blogs/list.html')
-@titled(page=u'Тег "{{tag}}"')
+@titled(page=_('Tag "{{tag}}"'))
 def tag(request, blog, tag_slug):
     _tag = get_object_or_404(blog.tags, slug=tag_slug)
     posts = Post.published.for_tag(blog, _tag)

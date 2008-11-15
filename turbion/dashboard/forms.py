@@ -42,7 +42,7 @@ class CreateSuperuserForm(forms.Form):
         return user
 
 class CreateBlogForm(forms.ModelForm):
-    owner = forms.ModelChoiceField(queryset = Profile.objects.all())
+    owner = forms.ModelChoiceField(queryset=Profile.objects.all(), verbose_name=_("owner"))
 
     class Meta:
         model = Blog
@@ -78,8 +78,8 @@ class BlogPrefForm(forms.ModelForm):
         exclude = ("id", "review_count",)
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label = _('username'))
-    password = forms.CharField(label = _('password'), widget=forms.PasswordInput())
+    username = forms.CharField(label=_('username'))
+    password = forms.CharField(label=_('password'), widget=forms.PasswordInput())
 
     def clean(self):
         from django.contrib import auth
@@ -88,9 +88,9 @@ class LoginForm(forms.Form):
         password = self.cleaned_data["password"]
 
         user = auth.authenticate(username=username, password=password)
-        if user:pass
-            #if not user.is_active:
-            #    raise forms.ValidationError( "Ваша учетная запись заблокирована. Обратитесь к администрации")
+        if user:
+            if not user.is_active:
+                raise forms.ValidationError(_("Account is blocked"))
         else:
             raise forms.ValidationError(_("Illegal username or password"))
         self.cleaned_data["user"] = user

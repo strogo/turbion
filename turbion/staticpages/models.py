@@ -16,6 +16,7 @@ from turbion.blogs.utils import permalink
 class Page(models.Model):
     statuses = Enum(published=_("published"),
                     hide     =_("hide"))
+
     blog          = models.ForeignKey(Blog, related_name="pages")
 
     created_on    = models.DateTimeField(default=datetime.now, verbose_name=_('creation date'))
@@ -30,7 +31,8 @@ class Page(models.Model):
     text          = models.TextField(verbose_name=_("text"))
     text_html     = models.TextField(verbose_name=_("text html"), blank=True)
 
-    status        = models.CharField(max_length=10, choices=statuses, default=statuses.published)
+    status        = models.CharField(max_length=10, choices=statuses,
+                                     default=statuses.published, verbose_name=_("status"))
 
     postprocessor = PostprocessField()
 
@@ -55,7 +57,7 @@ class Page(models.Model):
 
     @permalink
     def get_absolute_url(self):
-        return ("pages_dispatcher", (self.blog.slug, self.slug))
+        return ("turbion_pages_dispatcher", (self.blog.slug, self.slug))
 
     class Meta:
         verbose_name        = _("page")

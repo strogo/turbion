@@ -19,7 +19,7 @@ class OpenidBackend(OnlyActiveBackend):
         consumer, response = utils.complete(request)
 
         if response.status != openid_consumer.SUCCESS:
-            return #http.HttpResponseForbidden('Ошибка авторизации: %s' % response.message)
+            return
 
         try:
             connection = Identity.objects.get(url=response.identity_url)

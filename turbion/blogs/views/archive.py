@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import ugettext_lazy as _
+
 from turbion.utils.decorators import paged, templated
 from turbion.utils.pagination import paginate
 
@@ -9,7 +11,7 @@ from datetime import date
 
 @blog_view
 @templated('turbion/blogs/list.html')
-@titled(page=u'Архив блога')
+@titled(page=_('Blog archive'))
 def index(request, blog):
     return {
         "blog": blog
@@ -18,7 +20,7 @@ def index(request, blog):
 @blog_view
 @paged
 @templated('turbion/blogs/list.html')
-@titled(page=u'Архив блога от {{blog.calendar.current.year}}')
+@titled(page=_('Blog archive on {{blog.calendar.current.year}}'))
 def year(request, blog, year_id):
     blog.calendar.current = date(year=int(year_id), month=1, day=1)
     post_paginator = paginate(Post.published.for_blog(blog).filter(created_on__year=year_id),
@@ -33,7 +35,7 @@ def year(request, blog, year_id):
 @blog_view
 @paged
 @templated('turbion/blogs/list.html')
-@titled(page=u'Архив блога от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}')
+@titled(page=_('Blog archive on {{blog.calendar.current.year}}/{{blog.calendar.current.month}}'))
 def month(request, blog, year_id, month_id):
     blog.calendar.current = date(year=int(year_id), month=int(month_id), day=1)
     post_paginator = paginate(Post.published.for_blog(blog).filter(created_on__year=int(year_id),
@@ -49,7 +51,7 @@ def month(request, blog, year_id, month_id):
 @blog_view
 @paged
 @templated('turbion/blogs/list.html')
-@titled(page=u'Архив блога от {{blog.calendar.current.year}}/{{blog.calendar.current.month}}/{{blog.calendar.current.day}}' )
+@titled(page=_('Blog archive on {{blog.calendar.current.year}}/{{blog.calendar.current.month}}/{{blog.calendar.current.day}}'))
 def day(request, blog, year_id, month_id, day_id):
     blog.calendar.current = date(year=int(year_id), month=int(month_id), day=int(day_id))
     post_paginator = paginate(Post.published.for_blog(blog).filter(created_on__year=year_id,

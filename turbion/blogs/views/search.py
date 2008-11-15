@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Post
@@ -9,7 +10,7 @@ from turbion.blogs.utils import reverse
 from turbion.utils.decorators import templated, paged
 
 class SearchForm(forms.Form):
-    query = forms.CharField(required=True, label='Поиск')
+    query = forms.CharField(required=True, label=_('search'))
 
 def generic_search(request, models, filters={}, form_name="form"):
     context = {}
@@ -47,7 +48,7 @@ def get_ids(queryset):
 @paged
 @blog_view
 @templated('turbion/blogs/search/results.html')
-@titled(page=u'Поиск')
+@titled(page=_('Search'))
 def search(request, blog):
     blog_search_action = reverse("turbion_blog_search", args=(blog.slug,))
 
@@ -71,7 +72,7 @@ def search(request, blog):
 @paged
 @blog_view
 @templated('turbion/blogs/search/posts.html')
-@titled(page=u'Поиск в постах')
+@titled(page=_('Search in posts'))
 def posts(request, blog):
     blog_search_action = reverse("turbion_blog_search_posts", args=(blog.slug,))
 
@@ -90,7 +91,7 @@ def posts(request, blog):
 @paged
 @blog_view
 @templated('turbion/blogs/search/comments.html')
-@titled(page=u'Поиск в комментариях')
+@titled(page=_('Search in comments'))
 def comments(request, blog):
     blog_search_action = reverse("turbion_blog_search_comments", args=(blog.slug,))
 
