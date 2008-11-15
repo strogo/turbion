@@ -26,12 +26,12 @@ class TestEntry(models.Model):
 
 
 TITLE = ""
-PARAGRAPH = "Вот параграф со ссылкой на пост с длинной строчкой"
-BASE_ENTRY_TEXT = """<p>Вот первый параграф</p><p>Вот параграф со ссылкой <a href="%s">на пост</a> с длинной строчкой</p>
-<p>Третий параграф</p>
-"""
+PARAGRAPH = "This is paragraph with link to large post"
+BASE_ENTRY_TEXT = """<p>This is first pragraph</p>
+                  <p>This is paragraph with link <a href="%s">to large post</a></p>
+                  <p>Third paragraph</p>"""
 
-REMOTE_HTML = """<html><link rel="pingback" href="http://foobar.com/pingback/xmlrpc/pingback.testentry/" /></head></html>"""
+REMOTE_HTML = "<html><link rel=\"pingback\" href=\"http://foobar.com/pingback/xmlrpc/pingback.testentry/\" /></head></html>"
 
 class TestFetcher(UrlFetcher):
     mapping = {"http://target.host.com": (200, {}, REMOTE_HTML)}

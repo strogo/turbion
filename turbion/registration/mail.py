@@ -21,7 +21,7 @@ class Mail(EmailMessage):
         super(Mail, self).__init__(
                                 to=[to],
                                 subject=self.subject % {"site": self.site},
-                                from_email="%s <%s>" % (site, settings.EMAIL_HOST_USER),
+                                from_email="%s <%s>" % (self.site, settings.EMAIL_HOST_USER),
                                 body=body
                         )
 
