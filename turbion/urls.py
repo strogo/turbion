@@ -28,5 +28,5 @@ if settings.TURBION_BLOGS_MULTIPLE:
                     url(r'^sitemap.xml$',
                         'turbion.blogs.views.blog.index_sitemap',
                         name="turbion_global_blog_sitemap"
-                        )
+                    )
                 )

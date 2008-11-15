@@ -32,8 +32,7 @@ class PostsFeed(BasePostFeed, BlogFieldBase):
     def title(self):
         return gen_title({
             "page":u"%s" % self.blog,
-            "section":u"Latest entries",
-            "site":""#FIXME: add site
+            "section":u"Latest entries"
         })
 
     def link(self):
@@ -67,8 +66,7 @@ class CommentsFeed(BlogFieldBase):
     def title(self, post):
         return gen_title({
             "page":u"%s" % self.blog,
-            "section":u"Latest comments" + (post and u' on "%s"' % post.title or ""),
-            "site":""#FIXME: add site
+            "section":u"Latest comments" + (post and u' on "%s"' % post.title or "")
         })
 
     def link(self, post):
@@ -109,8 +107,7 @@ class TagFeed( BasePostFeed, BlogFieldBase):
     def title(self, tag):
         return gen_title({
             "page":u"%s" % self.blog,
-            "section":u"Latest entries with tag '%s'" % tag.name,
-            "site":""#FIXME: add site
+            "section":u"Latest entries with tag '%s'" % tag.name
         })
 
     def link(self, tag):

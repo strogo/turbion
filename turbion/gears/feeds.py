@@ -1,34 +1,34 @@
 # -*- coding: utf-8 -*-
 from django.contrib.syndication.feeds import Feed
 from django.utils.feedgenerator import Atom1Feed
+from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.utils.title import gen_title
-from django.shortcuts import *
-from django.core.urlresolvers import reverse
+from turbion.gears.gear import GearSpot
 
 class LatestGearsAtom(Feed):
     feed_type = Atom1Feed
 
-    def get_object(self, bits):
-        if len(bits) == 1:
-            return get_object_or_404(Tag, slug=bits[0])
-        raise Http404
+    def item_pubdate(self, info):
+        return info.get_last_time()
 
-    def item_link(self, link):
-        return link.get_absolute_url()
+    def title(self):
+        return gen_title({
+            "page": _("Latest revolving gears"),
+            "section": _("Gears")
+        })
 
-    def item_pubdate(self, link):
-        return link.date
+    def description(self):
+        return _("Latest revolving gears")
 
-    def title(self, obj):
-        return gen_title({"page":u"Новые" + ( obj and u" c тегом '%s'" % obj or "" ), "section":u"Ссылки" } )
+    def link(self, obj=None):
+        return "/"
+    item_link = link
 
-    def link(self, obj):
-        return obj and reverse( "turbion.links.views.tag", kwargs={ "slug" : obj.slug } ) or reverse( "turbion.links.views.index" )
+    def item_guid(self, info):
+        return "<gear: %s>" % info._get_pk_val()
 
-    def description(self, obj):
-        return "Новые ссылки" + ( obj and " c тегом '%s'" % obj or "" )
-
-    def items(self, obj):
-        man = obj and Link.active.for_tag( obj ) or Link.active.all()
-        return man.order_by( "-date" )
+    def items(self):
+        return GearSpot.revolve_all()

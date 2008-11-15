@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
-from turbion.gears.feeds import *
+from turbion.gears.feeds import LatestGearsAtom
 
 feeds = {
     'latest': LatestGearsAtom,
 }
 
-urlpatterns = patterns('',
-    url(r'^revolving/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name="turbion_gears_feed"),
+urlpatterns = patterns('django.contrib.syndication.views',
+    url(r'^revolving/(?P<url>.*)/$', 'feed', {'feed_dict': feeds}, "turbion_gears_feed"),
 )
