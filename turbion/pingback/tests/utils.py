@@ -13,10 +13,10 @@ class TestEntry(models.Model):
     class Meta:
         app_label = "pingback"
 
-    def get_absolute_url( self ):
+    def get_absolute_url(self):
         return "/entry/%s/" % self.id
 
-    def process( self ):
+    def process(self):
         signals.send_pingback.send(
                         sender   = self.__class__,
                         instance = self,
@@ -33,19 +33,19 @@ BASE_ENTRY_TEXT = """<p>Вот первый параграф</p><p>Вот пар
 
 REMOTE_HTML = """<html><link rel="pingback" href="http://foobar.com/pingback/xmlrpc/pingback.testentry/" /></head></html>"""
 
-class TestFetcher( UrlFetcher ):
-    mapping = { "http://target.host.com" : ( 200, {}, REMOTE_HTML ) }
+class TestFetcher(UrlFetcher):
+    mapping = {"http://target.host.com": (200, {}, REMOTE_HTML)}
 
     fetched = []
 
-    def fetch( self, url, data ):
-        self.fetched.append( url )
+    def fetch(self, url, data):
+        self.fetched.append(url)
 
         for mapped_url, data in self.mapping.iteritems():
-            if url.startswith( mapped_url ):
-                return ResponseObject( data[ 0 ], data[ 2 ], data[ 1 ] )
+            if url.startswith(mapped_url):
+                return ResponseObject(data[0], data[2], data[1])
 
-        return super( MyFetcher, self ).fetch( url, data )
+        return super(MyFetcher, self).fetch(url, data)
 
 test_fetcher = TestFetcher()
 

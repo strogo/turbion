@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 from django.contrib.sites.models import Site
+from django.utils.encoding import force_unicode
 
 from turbion.pingback.server import ping
 from turbion.pingback.models import Incoming
-from turbion.pingback.tests.utils import TestEntry, BASE_ENTRY_TEXT, test_fetcher,PARAGRAPH
+from turbion.pingback.tests.utils import TestEntry, BASE_ENTRY_TEXT,\
+                                         test_fetcher,PARAGRAPH
 from turbion.utils.descriptor import to_descriptor
 
 class ServerTest( TestCase ):
@@ -36,5 +38,5 @@ class ServerTest( TestCase ):
 
         inc = Incoming.objects.get()
 
-        self.assertEqual( inc.status,    self.needed_status )
-        self.assertEqual( inc.paragraph, "[...]%s[...]" % PARAGRAPH )
+        self.assertEqual(inc.status,    self.needed_status)
+        self.assertEqual(inc.paragraph, force_unicode("[...]%s[...]" % PARAGRAPH))

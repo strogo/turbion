@@ -8,6 +8,9 @@ from turbion.utils.descriptor import to_descriptor
 
 from turbion.utils.urlfetch import fetch
 
+class ServerProxy(xmlrpclib.ServerProxy):
+    pass
+
 def search_link(content):
     match = re.search(r'<link rel="pingback" href="([^"]+)" ?/?>', content)
     return match and match.group(1)
@@ -28,7 +31,7 @@ def get_rpc_gateway(target_uri):
 
 def call_ping(gateway, source_uri, target_uri):
     try:
-        server = xmlrpclib.ServerProxy(gateway)
+        server = ServerProxy(gateway)
         q = server.pingback.ping(source_uri, target_uri)
         return q
     except xmlrpclib.Fault, e:
@@ -40,7 +43,7 @@ def process_for_pingback(sender, instance, url, text, **kwargs):
 
     domain = Site.objects.get_current().domain
 
-    dscr = Cto_descriptor(sender)
+    dscr = to_descriptor(sender)
 
     local_uri = 'http://%s%s' % (domain, url)
 
