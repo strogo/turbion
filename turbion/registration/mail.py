@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-
+from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.sites.models import Site
 
@@ -26,17 +26,17 @@ class Mail(EmailMessage):
                         )
 
 class RegistrationConfirmMessage(Mail):
-    subject = u'Регистрация на сайте %(site)s' % site
+    subject = _('Registration on %(site)s')
     template = 'turbion/registration/messages/confirm_mail.html'
 
 class RestorePasswordRequestMessage(Mail):
-    subject = u'Запрос востановления пароля на сайте %(site)s'
+    subject = _('Password restore request on %(site)s')
     template = "turbion/registration/messages/restore_password_request.html"
 
 class RestorePasswordMessage(Mail):
-    subject = u'Новый пароля на сайте %(site)s'
+    subject = _('New password on %(site)s')
     template = "turbion/registration/messages/restore_password.html"
 
 class ChangeEmailMessage(Mail):
-    subject = u'Подтверждение почтового адреса %(site)s'
+    subject = _('Email confirm on %(site)s')
     template = "turbion/registration/messages/change_email.html"
