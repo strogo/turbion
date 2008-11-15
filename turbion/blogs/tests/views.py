@@ -38,23 +38,23 @@ class ViewsTest(BaseViewTest):
         self.assertStatus(self.post.get_absolute_url())
 
     def test_posts_feed(self):
-        self.assertStatus(blog_reverse("blog_atom", args=(self.blog.slug, "posts")))
+        self.assertStatus(blog_reverse("turbion_blog_atom", args=(self.blog.slug, "posts")))
 
     def test_comments_feed(self):
-        self.assertStatus(blog_reverse("blog_atom", args=(self.blog.slug, "comments")) )
+        self.assertStatus(blog_reverse("turbion_blog_atom", args=(self.blog.slug, "comments")) )
 
     def test_post_comments_feed(self):
-        self.assertStatus(blog_reverse("blog_atom", args=(self.blog.slug, "comments/%s/" % self.post.id)))
+        self.assertStatus(blog_reverse("turbion_blog_atom", args=(self.blog.slug, "comments/%s/" % self.post.id)))
 
     def test_tag_feed(self):
         pass
 
     def test_sitemap(self):
-        response = self.assertStatus(blog_reverse("blog_sitemap", args=(self.blog.slug,)))
+        response = self.assertStatus(blog_reverse("turbion_blog_sitemap", args=(self.blog.slug,)))
 
     if settings.TURBION_BLOGS_MULTIPLE:
         def test_global_sitemap(self):
-            response = self.assertStatus(blog_reverse("global_blog_sitemap"))
+            response = self.assertStatus(blog_reverse("turbion_global_blog_sitemap"))
 
     def _create_comment(self):
         return {}
@@ -62,7 +62,7 @@ class ViewsTest(BaseViewTest):
     def test_comment_add(self):
         self.login()
 
-        url = blog_reverse("blog_comment_add", kwargs={"blog": self.blog.slug, "post_id": self.post.id})
+        url = blog_reverse("turbion_blog_comment_add", args=(self.blog.slug, self.post.id))
         CommentAdd.instance.subscribe(self.post.created_by)
 
         comment = {"text": "My comment"}
@@ -85,7 +85,7 @@ class ViewsTest(BaseViewTest):
 
         comment = self.hack_captcha(response)
 
-        url = blog_reverse("blog_comment_add", args=(self.blog.slug, self.post.id))
+        url = blog_reverse("turbion_blog_comment_add", args=(self.blog.slug, self.post.id))
 
         comment.update({
                     "text"    : "My comment",
@@ -116,7 +116,7 @@ class ViewsTest(BaseViewTest):
 
         comment = Comment.objects.all()[0]
         response = self.assertStatus(
-                    reverse("comment_delete", args=(comment._get_pk_val(),)),
+                    reverse("turbion_comment_delete", args=(comment._get_pk_val(),)),
                     http.HttpResponseRedirect.status_code
                 )
 
@@ -125,19 +125,19 @@ class ViewsTest(BaseViewTest):
         self.assertEqual(post.comment_count, 0)
 
     def test_archive_day(self):
-        self.assertStatus(blog_reverse("blog_archive_day", args=(self.blog.slug, '2007', '12', '17')))
+        self.assertStatus(blog_reverse("turbion_blog_archive_day", args=(self.blog.slug, '2007', '12', '17')))
 
     def test_archive_month(self):
-        self.assertStatus(blog_reverse("blog_archive_month", args=(self.blog.slug, '2006', '11')))
+        self.assertStatus(blog_reverse("turbion_blog_archive_month", args=(self.blog.slug, '2006', '11')))
 
     def test_archive_year(self):
-        self.assertStatus(blog_reverse("blog_archive_year", args=(self.blog.slug, '2007')))
+        self.assertStatus(blog_reverse("turbion_blog_archive_year", args=(self.blog.slug, '2007')))
 
     def test_tag(self):
-        self.assertStatus(blog_reverse("blog_tag", args=(self.blog.slug, "foo")))
+        self.assertStatus(blog_reverse("turbion_blog_tag", args=(self.blog.slug, "foo")))
 
     def test_tags(self):
-        self.assertStatus(blog_reverse("blog_tags", args=(self.blog.slug,)))
+        self.assertStatus(blog_reverse("turbion_blog_tags", args=(self.blog.slug,)))
 
     if settings.TURBION_USE_DJAPIAN:
         def test_search(self):

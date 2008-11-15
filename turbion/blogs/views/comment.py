@@ -23,10 +23,11 @@ def add(request, blog, post_id):
                                 defaults={})
 
     if isinstance(context, dict):
-        context.update({"blog": blog,
-                        "post": post,
-                        "form_action": "./"
-                      })
+        context.update({
+            "blog": blog,
+            "post": post,
+            "form_action": "./"
+        })
     return context
 
 @blog_view
@@ -41,5 +42,8 @@ def edit(request, blog, comment_id):
                                  checker=lambda comment: request.user in (comment.author, post.created_by))
 
     if isinstance(context, dict):
-        context.update({"blog": blog, "post": post})
+        context.update({
+            "blog": blog,
+            "post": post
+        })
     return context

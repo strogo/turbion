@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.core.urlresolvers import reverse
 from django import forms
 
 from turbion.blogs.decorators import blog_view, titled
 from turbion.blogs.models import Post
 from turbion.blogs.models import Comment
 from turbion.tags.models import Tag
-
+from turbion.blogs.utils import reverse
 from turbion.utils.decorators import templated, paged
 
 class SearchForm(forms.Form):
@@ -50,12 +49,12 @@ def get_ids(queryset):
 @templated('turbion/blogs/search/results.html')
 @titled(page=u'Поиск')
 def search(request, blog):
-    blog_search_action = reverse("turbion.blogs.views.search.search",
-                                kwargs={"blog": blog.slug})
+    blog_search_action = reverse("turbion_blog_search", args=(blog.slug,))
 
-    context = {"blog": blog,
-            "blog_search_action": blog_search_action,
-            }
+    context = {
+        "blog": blog,
+        "blog_search_action": blog_search_action,
+    }
 
     context.update(generic_search(request,
                                    models=[Post, Comment],
@@ -74,9 +73,12 @@ def search(request, blog):
 @templated('turbion/blogs/search/posts.html')
 @titled(page=u'Поиск в постах')
 def posts(request, blog):
-    blog_search_action = reverse("turbion.blogs.views.search.posts",
-                                kwargs={"blog": blog.slug})
-    context = {"blog": blog, "blog_search_action": blog_search_action}
+    blog_search_action = reverse("turbion_blog_search_posts", args=(blog.slug,))
+
+    context = {
+        "blog": blog,
+        "blog_search_action": blog_search_action
+    }
 
     context.update(generic_search(request,
                                   models=(Post,),
@@ -90,9 +92,12 @@ def posts(request, blog):
 @templated('turbion/blogs/search/comments.html')
 @titled(page=u'Поиск в комментариях')
 def comments(request, blog):
-    blog_search_action = reverse("turbion.blogs.views.search.comments",
-                                 kwargs = {"blog": blog.author.username})
-    context = {"blog": blog, "blog_search_action": blog_search_action}
+    blog_search_action = reverse("turbion_blog_search_comments", args=(blog.slug,))
+
+    context = {
+        "blog": blog,
+        "blog_search_action": blog_search_action
+    }
 
     context.update(generic_search(request,
                                    models = (Comment,),

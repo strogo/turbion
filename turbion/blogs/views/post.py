@@ -32,8 +32,10 @@ def blog(request, blog):
                               request.page,
                               blog.post_per_page)
 
-    context = {"blog": blog,
-            "post_paginator": post_paginator}
+    context = {
+        "blog": blog,
+        "post_paginator": post_paginator
+    }
 
     return context
 
@@ -44,9 +46,11 @@ def blog(request, blog):
 def tags(request, blog):
     _tags = blog.tags
 
-    return {"blog": blog,
-            "tags": _tags,
-            }
+    return {
+        "blog": blog,
+        "tags": _tags,
+    }
+
 @blog_view
 @paged
 @templated('turbion/blogs/list.html')
@@ -62,10 +66,11 @@ def tag(request, blog, tag_slug):
                               request.page,
                               blog.post_per_page)
 
-    return {"blog": blog,
-            "tag": _tag,
-            "post_paginator": post_paginator
-            }
+    return {
+        "blog": blog,
+        "tag": _tag,
+        "post_paginator": post_paginator
+    }
 
 @blog_view
 @post_view
@@ -74,12 +79,17 @@ def tag(request, blog, tag_slug):
 def post(request, blog, post):
     post.inc_reviews()
     comment_form = comments_forms.CommentForm(request=request)
-    form_action = blog_reverse("blog_comment_add", args=(post.blog.slug, post.id))
+    form_action = blog_reverse(
+                    "turbion_blog_comment_add",
+                    args=(post.blog.slug, post.id)
+            )
 
     comments = Comment.published.for_object(post).select_related("created_by").order_by("created_on")
 
-    return {"blog": blog,
-            "post": post,
-            "comments": comments,
-            "comment_form": comment_form,
-            "form_action": form_action }
+    return {
+        "blog": blog,
+        "post": post,
+        "comments": comments,
+        "comment_form": comment_form,
+        "form_action": form_action
+    }

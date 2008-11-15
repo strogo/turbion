@@ -192,7 +192,7 @@ class EventDescriptor(object):
     def get_unsubscribe_url(self, user, obj=None):
         from django.core.urlresolvers import reverse
 
-        url = reverse("notifications_unsubscribe", args=(user._get_pk_val(), self._get_event()._get_pk_val()))
+        url = reverse("turbion_notifications_unsubscribe", args=(user._get_pk_val(), self._get_event()._get_pk_val()))
 
         if obj:
             url += "?connection_dscr=%s&connection_id=%s" % (to_descriptor(obj.__class__), obj._get_pk_val())

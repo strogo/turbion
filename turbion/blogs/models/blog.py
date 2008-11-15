@@ -20,13 +20,15 @@ from turbion.comments.models import Comment
 from turbion import roles
 
 class Blog(models.Model):
-    review_count = models.IntegerField( default = 0, editable = False, verbose_name = _( "review count" ) )
+    review_count = models.IntegerField(default=0, editable=False, verbose_name=_("review count"))
 
-    slug = models.CharField(max_length = 50,
-                            unique = True,
-                            verbose_name=_("slug"))
+    slug = models.CharField(
+                    max_length=50,
+                    unique=True,
+                    verbose_name=_("slug")
+            )
 
-    name = models.CharField(max_length=50,default ='Turbion Blog', verbose_name=_("name"))
+    name = models.CharField(max_length=50, default='Turbion Blog', verbose_name=_("name"))
 
     created_on = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
     created_by = models.ForeignKey(Profile, related_name="created_blogs", verbose_name=_("created on"))
@@ -58,15 +60,15 @@ class Blog(models.Model):
 
     @utils.permalink
     def get_absolute_url(self):
-        return ("blog_index", (self.slug,))
+        return ("turbion_blog_index", (self.slug,))
 
     @models.permalink
     def get_dashboard_url(self):
-        return ("dashboard_blog_index", (self.slug,))
+        return ("turbion_dashboard_blog_index", (self.slug,))
 
     @utils.permalink
     def get_atom_feed_url(self):
-        return ("blog_atom", (self.slug, 'posts',))
+        return ("turbion_blog_atom", (self.slug, 'posts',))
 
     def per_page(self):
         return self.post_per_page
@@ -90,12 +92,18 @@ class BlogCalendar(Calendar):
 
     @utils.permalink
     def get_month_url(self, date):
-        return "blog_archive_month", (self.instance.slug, date.year, date.month), {}
+        return "turbion_blog_archive_month", (self.instance.slug, date.year, date.month), {}
 
     def get_per_day_urls(self, dates):
         from django.core.urlresolvers import reverse
-        return dict([(date.date(), utils.reverse("blog_archive_day",
-                                    args=(self.instance.slug, date.year, date.month, date.day))) for date in dates])
+        return dict([(date.date(), utils.reverse("turbion_blog_archive_day",
+                                            args=(
+                                                self.instance.slug,
+                                                date.year,
+                                                date.month,
+                                                date.day
+                                            )
+                                        )) for date in dates])
 
 
 class BlogRoles(roles.RoleSet):

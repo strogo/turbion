@@ -75,18 +75,18 @@ class Post(models.Model, CommentedModel):
 
     @utils.permalink
     def get_absolute_url(self):
-        return ("turbion.blogs.views.post.post", (), { "year_id"   : self.created_on.year,
-                                                        "month_id"  : self.created_on.month,
-                                                        "day_id"    : self.created_on.day,
-                                                        "post_slug" : self.slug,
-                                                        "blog"      : self.blog.slug})
+        args = (
+            self.blog.slug, self.created_on.year, self.created_on.month,
+            self.created_on.day, self.slug,
+        )
+        return ("turbion_blog_post", args)
 
     is_published = property(lambda self: self.status == Post.statuses.published)
     allow_comments = property(lambda self: self.commenting == Post.commenting_settings.allow)
 
     @models.permalink
     def get_atom_feed_url(self):
-        return ("blog_atom", ("%s/%s" % (self.blog.slug, self.id),))
+        return ("turbion_blog_atom", ("%s/%s" % (self.blog.slug, self.id),))
 
     def inc_reviews(self):
         self.__class__._default_manager.\

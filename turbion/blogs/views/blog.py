@@ -26,10 +26,10 @@ def index_sitemap( request, sitemaps ):
     protocol = request.is_secure() and 'https' or 'http'
 
     for slug in Blog.objects.all().values_list( "slug", flat = True ):
-        sitemap_url = reverse('blog_sitemap', kwargs={'blog': slug})
+        sitemap_url = reverse('turbion_blog_sitemap', kwargs={'blog': slug})
         sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
 
-        sitemap_url = reverse('pages_sitemap', kwargs={'blog': slug})
+        sitemap_url = reverse('turbion_pages_sitemap', kwargs={'blog': slug})
         sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
 
     xml = loader.render_to_string('sitemap_index.xml', {'sitemaps': sites})

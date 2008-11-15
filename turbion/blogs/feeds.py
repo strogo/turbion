@@ -30,9 +30,11 @@ class PostsFeed(BasePostFeed, BlogFieldBase):
     description_template = "turbion/blogs/feeds/post_description.html"
 
     def title(self):
-        return gen_title({"page":u"%s" % self.blog,
-                          "section":u"Latest entries",
-                          "site":""})
+        return gen_title({
+            "page":u"%s" % self.blog,
+            "section":u"Latest entries",
+            "site":""#FIXME: add site
+        })
 
     def link(self):
         return self.blog.get_absolute_url()
@@ -60,12 +62,14 @@ class CommentsFeed(BlogFieldBase):
             if not self.request.user.is_authenticated_confirmed():
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
             return get_object_or_404(query_set,
-                                     pk=bits[ 0 ])
+                                     pk=bits[0])
 
     def title(self, post):
-        return gen_title({"page":u"%s" % self.blog,
-                          "section":u"Latest comments" + (post and u' on "%s"' % post.title or ""),
-                          "site":""})
+        return gen_title({
+            "page":u"%s" % self.blog,
+            "section":u"Latest comments" + (post and u' on "%s"' % post.title or ""),
+            "site":""#FIXME: add site
+        })
 
     def link(self, post):
         return post and post.get_absolute_url() or self.blog.get_absolute_url()
@@ -103,13 +107,17 @@ class TagFeed( BasePostFeed, BlogFieldBase):
         raise Http404
 
     def title(self, tag):
-        return gen_title({"page":u"%s" % self.blog,
-                          "section":u"Latest entries with tag '%s'" % tag.name,
-                          "site":""})
+        return gen_title({
+            "page":u"%s" % self.blog,
+            "section":u"Latest entries with tag '%s'" % tag.name,
+            "site":""#FIXME: add site
+        })
 
     def link(self, tag):
-        return utils.blog_reverse("blog_tag", kwargs={"blog": self.blog.slug,
-                                                      "tag_slug": tag.slug})
+        return utils.reverse(
+                        "turbion_blog_tag",
+                        args=(self.blog.slug, tag.slug)
+        )
 
     def description(self, tag):
         return u"Entries with tag '%s'" % tag.name

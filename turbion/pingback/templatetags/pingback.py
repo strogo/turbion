@@ -12,7 +12,7 @@ register = template.Library()
 @register.simple_tag
 def pingback_gateway(obj):
     dscr = to_descriptor(obj.__class__)
-    url = reverse("pingback_gateway", args=(dscr, obj._get_pk_val()))
+    url = reverse("turbion_pingback_gateway", args=(dscr, obj._get_pk_val()))
 
     return '<link rel="pingback" href="%s" />' % urljoin("http://" + Site.objects.get_current().domain, url)
 
@@ -31,5 +31,4 @@ def trackback_rdf(url, title, obj):
     </rdf:RDF>
     -->""" % { "title" : title,
                "url" : url,
-               "trackback_url" : reverse( "turbion.pingback.views.trackback", kargs = { "model_id": dscr,
-                                                                                        "id" : obj._get_pk_val() } ) }
+               "trackback_url" : reverse("turbion_trackback", args=(dscr, obj._get_pk_val()))}

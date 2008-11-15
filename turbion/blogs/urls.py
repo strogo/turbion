@@ -43,9 +43,9 @@ urlpatterns = patterns('turbion.blogs.views',
 
 if settings.TURBION_USE_DJAPIAN:
     urlpatterns += patterns('turbion.blogs.views',
-     url(r'^search/$',                                     'search.search', name="turbion_blog_search"),
-     url(r'^search/posts/$',                               'search.posts',  name="turbion_blog_search_posts"),
-     url(r'^search/comments/$',                            'search.comments', name="turbion_blog_search_comments"),
+     url(r'^search/$',            'search.search',   name="turbion_blog_search"),
+     url(r'^search/posts/$',      'search.posts',    name="turbion_blog_search_posts"),
+     url(r'^search/comments/$',   'search.comments', name="turbion_blog_search_comments"),
     )
 
 urlpatterns += patterns('turbion.blogs.views',
