@@ -15,7 +15,6 @@ from turbion.tags.models import Tag
 from turbion.profiles.models import Profile
 from turbion.blogs import utils
 
-from turbion.socialbookmarks.models import Group
 from turbion.comments.models import Comment
 from turbion import roles
 
@@ -35,7 +34,7 @@ class Blog(models.Model):
 
     post_per_page = models.SmallIntegerField(default=5, verbose_name=_("posts per page"))
     additional_post_fields = models.BooleanField(default=False)
-    socialbookmarks_group = models.ForeignKey(Group, verbose_name=_("social bookmarks group"), null=True, blank=True)
+    socialbookmarks = models.CharField(max_length=255, verbose_name=_("social bookmarks"), blank=True)
 
     objects = managers.BlogManager()
 

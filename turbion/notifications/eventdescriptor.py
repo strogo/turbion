@@ -194,6 +194,7 @@ class EventDescriptor(object):
 
         url = reverse("turbion_notifications_unsubscribe", args=(user._get_pk_val(), self._get_event()._get_pk_val()))
 
+        #FIXME: use urlencode
         if obj:
             url += "?connection_dscr=%s&connection_id=%s" % (to_descriptor(obj.__class__), obj._get_pk_val())
         else:
