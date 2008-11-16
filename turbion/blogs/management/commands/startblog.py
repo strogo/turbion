@@ -12,16 +12,25 @@ class Command(LabelCommand):
 
     requires_model_validation = True
 
-    def handle_label(self, blog_name, **options):
+    option_list = LabelCommand.option_list + (
+        make_option('--slug', dest='slug', default=None,
+            help='Specifies the slug for the blog.'),
+        make_option('--owner', dest='owner', default=None,
+            help='Specifies the blog\'s owner username.')
+    )
+
+    def handle_label(self, blog_name, slug=None, owner=None, **options):
         print "Creating new blog..."
         print "Blog name: %s" % blog_name
 
-        slug = self._get_slug(blog_name)
-        owner = self._get_owner()
+        if not slug:
+            slug = self._get_slug(blog_name)
+
+        owner = self._get_owner(owner)
 
         blog = self._create_blog(blog_name, slug, owner)
 
-        print "Blog '%s' was created successful" % blog
+        print "Blog '%s' created successful." % blog
 
     def _get_slug(self, name):
         from turbion.utils.text import slugify
@@ -37,17 +46,19 @@ class Command(LabelCommand):
 
         return slug
 
-    def _get_owner(self):
+    def _get_owner(self, name=None):
         from turbion.profiles.models import Profile
 
         while True:
-            name = raw_input("Please enter blog owner username: ")
+            if not name:
+                name = raw_input("Please enter blog owner username: ")
 
             try:
                 profile = Profile.objects.get(username=name)
                 break
             except Profile.DoesNotExist:
-                print "User with name '%s' does not exist. Try again"
+                print "User with name '%s' does not exist. Try again" % name
+                name = None
 
         print "Selected owner: %s" % profile
 
