@@ -48,8 +48,9 @@ def post_view(view_func):
             published_on__month=kwargs.pop('month_id'),
             published_on__day=kwargs.pop('day_id'),
         )
+        query_set = query_set.filter(slug=kwargs.pop('post_slug'), **published_on)
 
-        post = get_object_or_404(query_set, slug=kwargs.pop('post_slug'), **published_on)
+        post = get_object_or_404(query_set)
 
         return view_func(request, blog=blog, post=post, *args, **kwargs)
     _decor.__doc__  = view_func.__doc__

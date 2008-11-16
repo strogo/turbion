@@ -29,7 +29,8 @@
    "music": "",
    "location": "",
    "created_on": "2006-11-17 16:54:47",
-   "slug": "first"
+   "slug": "first",
+   "showing": "everybody"
   }
  },
  {
@@ -48,7 +49,8 @@
    "location": "",
    "created_on": "2007-12-17 16:54:47",
    "published_on": "2006-11-17 16:54:47",
-   "slug": "second"
+   "slug": "second",
+   "showing": "everybody"
   }
  },
  {
@@ -67,7 +69,8 @@
    "location": "",
    "created_on": "2008-12-17 16:54:47",
    "published_on": "2006-11-17 16:54:47",
-   "slug": "third"
+   "slug": "third",
+   "showing": "everybody"
   }
  },
  {

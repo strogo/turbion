@@ -14,7 +14,7 @@ from turbion.tags.fields import TagsField
 from turbion.profiles.models import Profile
 from turbion.blogs import utils
 
-from turbion.utils.postprocessing.fields import PostprocessField
+from turbion.utils.postprocessing.fields import PostprocessedTextField
 from turbion.utils.enum import Enum
 
 class Post(models.Model, CommentedModel):
@@ -51,12 +51,9 @@ class Post(models.Model, CommentedModel):
     location      = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("location"))
     music         = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("music"))
 
-    text          = models.TextField(verbose_name=_("text"))
-    text_html     = models.TextField(verbose_name=_("text html"))
+    text          = PostprocessedTextField(verbose_name=_("text"))
 
     status        = models.CharField(max_length=10, choices=statuses, default=statuses.draft, verbose_name=_("status"))
-
-    postprocessor = PostprocessField(verbose_name=_("postprocessor"))
 
     commenting    = models.CharField(max_length=10,
                                      choices = commenting_settings,
@@ -76,8 +73,8 @@ class Post(models.Model, CommentedModel):
     @utils.permalink
     def get_absolute_url(self):
         args = (
-            self.blog.slug, self.created_on.year, self.created_on.month,
-            self.created_on.day, self.slug,
+            self.blog.slug, self.published_on.year, self.published_on.month,
+            self.published_on.day, self.slug,
         )
         return ("turbion_blog_post", args)
 
@@ -103,7 +100,6 @@ class Post(models.Model, CommentedModel):
         if self.edited_by:
             self.edited_on = datetime.now()
 
-        self.text_html = self.postprocessor.postprocess(self.text)
         super(Post, self).save(*args, **kwargs)
 
     class Meta:

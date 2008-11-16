@@ -30,7 +30,7 @@ urlpatterns = patterns('turbion.blogs.views',
 
  url(post_url_pattern + "$",                               'post.post', name="turbion_blog_post"),
 
- url(r'^post/(?P<post_id>\d+)/comment/add/$',              'comment.add', name="turbion_blog_comment_add"),
+ url(r'^p/(?P<post_id>\d+)/comment/add/$',                 'comment.add', name="turbion_blog_comment_add"),
  url(r'^comment/(?P<comment_id>\d+)/edit/$',               'comment.edit', name="turbion_blog_comment_edit"),
 
  url(r'^tags/$',                                           'post.tags', name="turbion_blog_tags"),
