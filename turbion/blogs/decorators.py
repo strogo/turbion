@@ -43,10 +43,13 @@ def post_view(view_func):
             if not request.user.is_authenticated_confirmed():
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
 
-        post = get_object_or_404(query_set, created_on__year = kwargs.pop('year_id'),
-                                        created_on__month     = kwargs.pop('month_id'),
-                                        created_on__day       = kwargs.pop('day_id'),
-                                        slug            = kwargs.pop('post_slug'))
+        published_on = dict(
+            published_on__year=kwargs.pop('year_id'),
+            published_on__month=kwargs.pop('month_id'),
+            published_on__day=kwargs.pop('day_id'),
+        )
+
+        post = get_object_or_404(query_set, slug=kwargs.pop('post_slug'), **published_on)
 
         return view_func(request, blog=blog, post=post, *args, **kwargs)
     _decor.__doc__  = view_func.__doc__
