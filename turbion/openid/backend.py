@@ -8,10 +8,12 @@ from turbion.registration.backend import OnlyActiveBackend
 from turbion.openid import utils
 from turbion.openid.models import Identity
 
+USERNAME_PREFIX = "toi_"
+
 def gen_username(identity_url):
     import md5
-    unique = md5.new(identity_url).hexdigest()[:30 - len('toi_')]
-    return 'toi_%s' % unique
+    unique = md5.new(identity_url).hexdigest()[:30 - len(USERNAME_PREFIX)]
+    return '%s%s' % (USERNAME_PREFIX, unique)
 
 class OpenidBackend(OnlyActiveBackend):
     def authenticate(self, request):

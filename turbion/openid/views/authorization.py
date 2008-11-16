@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.openid import forms, utils, models
+from turbion.openid import forms, utils, models, backend
 
 from turbion.utils.decorators import templated, titled
 
@@ -38,7 +38,7 @@ def authenticate(request):
 
     auth.login(request, user)
 
-    if user.username.startswith("toi_"):
+    if user.username.startswith(backend.USERNAME_PREFIX):
         return http.HttpResponseRedirect(reverse("turbion_openid_collect"))
 
     return http.HttpResponseRedirect(request.GET.get('redirect', '/'))
