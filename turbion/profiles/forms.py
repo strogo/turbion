@@ -9,21 +9,22 @@ from turbion.utils.captcha.forms import CaptchaField
 
 from turbion.profiles.models import Profile
 
-class ProfileForm( forms.ModelForm ):
+class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ( 'username',
-                   'email',
-                   'first_name',
-                   'last_name',
-                   'birth_date',
-                   'gender',
-                   'city',
-                   'country',
-                   'biography',
-                   'education',
-                   'work',
-                )
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'birth_date',
+            'gender',
+            'city',
+            'country',
+            'biography',
+            'education',
+            'work',
+        )
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -37,9 +38,14 @@ class ProfileForm( forms.ModelForm ):
         return username
 
 def extract_profile_data(request):
-    return {"ip": request.META.get("REMOTE_ADDR")}
+    return {
+        "ip": request.META.get("REMOTE_ADDR"),
+        "host": request.META.get("REMOTE_HOST")
+    }
 
-def combine_profile_form_with(form_class, request, field="created_by", need_captcha=True, fields=None):
+def combine_profile_form_with(form_class, request, field="created_by",\
+                              need_captcha=True, fields=None,\
+                              postprocessor_field=None):
     if not request.user.is_confirmed:
         class UserForm(form_class, forms.ModelForm):
             nickname  = forms.CharField(required=True, label=_ ("name"))
@@ -65,11 +71,12 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
                 if not profile.is_authenticated():
                     from django.contrib.auth import login
                     from turbion.registration.backend import OnlyActiveBackend
-                    profile = Profile.objects.create_guest_profile(
-                                        ip=request.META.get("REMOTE_ADDR"),
-                                        host=request.META.get("REMOTE_HOST"),
-                                        **form_data
-                                    )
+
+                    form_data.update(
+                        extract_profile_data(request)
+                    )
+
+                    profile = Profile.objects.create_guest_profile(**form_data)
 
                     profile.backend = "%s.%s" % (OnlyActiveBackend.__module__, OnlyActiveBackend.__name__)
                     login(request, profile)
@@ -92,17 +99,26 @@ def combine_profile_form_with(form_class, request, field="created_by", need_capt
                 return obj
 
         return UserForm
+    else:
+        class UserForm(form_class):
+            def __init__(self, *args, **kwargs):
+                if postprocessor_field:
+                    initial = {
+                        postprocessor_field: request.user.postprocessor
+                    }
+                else:
+                    initial = {}
 
-    form_save = form_class.save
+                initial.update(kwargs.pop("initial", {}))
 
-    def save(self, commit=True):
-        obj = form_save(self, commit=False)
-        setattr(obj, field, request.user)
-        if commit:
-            obj.save()
+                super(UserForm, self).__init__(initial=initial, *args, **kwargs)
 
-        return obj
+            def save(self, commit=True):
+                obj = super(UserForm, self).save(commit=False)
+                setattr(obj, field, request.user)
+                if commit:
+                    obj.save()
 
-    form_class.save = save
+                return obj
 
-    return form_class
+    return UserForm

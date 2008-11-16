@@ -14,20 +14,19 @@ class _CommentForm(forms.ModelForm):
 
 class CommentForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
-        self.__class__ = combine_profile_form_with(_CommentForm,
-                                                 request     =request,
-                                                 field       ="created_by",
-                                                 need_captcha=True
-                                               )
+        self.__class__ = combine_profile_form_with(
+                                    _CommentForm,
+                                    request=request,
+                                    field="created_by",
+                                    need_captcha=True,
+                                    postprocessor_field="text_postprocessor"
+                            )
 
         self.__class__.__init__(self, *args, **kwargs)
 
     def clean_notify(self):
         notify = self.cleaned_data["notify"]
-        if "email" in self.cleaned_data:
-            email = self.cleaned_data["email"]
-
-            if notify and not email:
-                raise forms.ValidationError(_("You have to provide email address"
-                                              " to recieve notifications"))
+        if notify and not self.cleaned_data.get("email"):
+            raise forms.ValidationError(_("You have to provide email address"
+                                            " to recieve notifications"))
         return notify
