@@ -8,7 +8,7 @@ from datetime import datetime
 
 from turbion.profiles.models import Profile
 from turbion.notifications import EventDescriptor
-from turbion.utils.postprocessing.fields import PostprocessField
+from turbion.utils.postprocessing.fields import PostprocessedTextField
 from turbion.utils.models import GenericManager
 from turbion.utils.enum import Enum
 from turbion.comments import signals as comment_signals
@@ -63,15 +63,14 @@ class Comment(models.Model):
     edited_by = models.ForeignKey(Profile, related_name="edited_comments",\
                                   null=True, blank=True, verbose_name=_("edited by"))
 
-    text = models.TextField(verbose_name=_("text"))
-    text_html   = models.TextField(verbose_name=_("text html"))
-
+    text = PostprocessedTextField(verbose_name=_("text"))
+    
     status = models.CharField(max_length=20,
                               choices=statuses,
                               default=statuses.published,
                               verbose_name=_("status"))
 
-    postprocessor = PostprocessField(verbose_name=_("postprocessor"))
+
 
     is_published = property(lambda self: self.status == Comment.statuses.published)
 
@@ -90,8 +89,6 @@ class Comment(models.Model):
     def save(self, *args, **kwargs):
         if self.edited_by:
             self.edited_on = datetime.now()
-
-        self.text_html = self.postprocessor.postprocess(self.text)
 
         created = not self._get_pk_val()
 

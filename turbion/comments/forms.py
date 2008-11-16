@@ -22,7 +22,7 @@ class CommentForm(forms.Form):
 
         self.__class__.__init__(self, *args, **kwargs)
 
-    def _clean_notify(self):
+    def clean_notify(self):
         notify = self.cleaned_data["notify"]
         if "email" in self.cleaned_data:
             email = self.cleaned_data["email"]
