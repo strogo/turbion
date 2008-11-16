@@ -16,7 +16,7 @@ from turbion.profiles.models import Profile
 
 settings.DEBUG = True#FIXME: must accepts as `test` command param
 
-CREDENTIALS = {'username': "daev", 'password': "dkflbvbhgenby"}
+CREDENTIALS = {'username': "daev", 'password': "test"}
 
 class CreateBlogTest(TestCase):
     fixtures = ['profiles']
@@ -25,15 +25,15 @@ class CreateBlogTest(TestCase):
         self.client.login(**CREDENTIALS)
 
     def test_index(self):
-        response = self.client.get(reverse("dashboard_index"))
-        self.assertRedirects(response, reverse("dashboard_create_blog"))
+        response = self.client.get(reverse("turbon_dashboard_index"))
+        self.assertRedirects(response, reverse("turbon_dashboard_create_blog"))
 
     def test_create_blog(self):
-        response = self.client.get(reverse( "dashboard_create_blog" ))
+        response = self.client.get(reverse( "turbon_dashboard_create_blog" ))
 
         self.assertEqual(response.status_code, http.HttpResponse.status_code)
 
-        response = self.client.post(reverse("dashboard_create_blog"), data = { "name"  : "webnewage",
+        response = self.client.post(reverse("turbon_dashboard_create_blog"), data = { "name"  : "webnewage",
                                                                                 "slug"  : "wna",
                                                                                 "owner" : "1" } )
 
@@ -65,7 +65,7 @@ class CreateSuperuser(TestCase):
 
 
 class DashboardTest(TestCase):
-    fixtures = ['blog', 'posts', 'profiles']
+    fixtures = ['turbion/test/blog', 'posts', 'profiles']
 
     def setUp(self):
         self.user = Profile.objects.get(username = "daev")
@@ -87,7 +87,7 @@ class DashboardTest(TestCase):
         self.assertEqual(response.status_code, http.HttpResponse.status_code)
 
     def test_new_post(self):
-        response = self.client.get( reverse( "dashboard_blog_post_new", kwargs = { "blog" : "wna" } ) )
+        response = self.client.get( reverse( "turbon_dashboard_blog_post_new", kwargs = { "blog" : "wna" } ) )
         self.assertEqual(response.status_code, http.HttpResponse.status_code)
 
     def test_edit_post(self):

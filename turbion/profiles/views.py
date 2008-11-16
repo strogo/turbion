@@ -14,7 +14,7 @@ from turbion.utils.decorators import titled, templated
 
 @profile_view
 @templated('turbion/profiles/profile.html')
-@titled(page=_("Profile"), section="{{profile.user}}")
+@titled(page=_("Profile"), section="{{profile}}")
 def profile(request, profile):
     return {
         "profile": profile
@@ -23,7 +23,7 @@ def profile(request, profile):
 @profile_view
 @owner_required
 @templated('turbion/profiles/edit_profile.html')
-@titled(page=_("Edit"), section=_("Profile {{profile.user}}"))
+@titled(page=_("Edit"), section=_("Profile {{profile}}"))
 def edit_profile(request, profile):
     if request.POST:
         profile_form = forms.ProfileForm(
