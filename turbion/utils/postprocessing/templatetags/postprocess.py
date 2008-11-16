@@ -16,13 +16,8 @@ for name, func in ProcessorSpot.processors.iteritems():
     register.filter(name, wrap(func.postprocess))
 
 @register.filter
-def postprocess(instance, field, processor="postprocessor"):
-    val = getattr(instance, field)
-    return getattr(instance, processor).postprocess(val)
-
-@register.filter
 def sanitize(value):
-    from BeautifulSoup import BeautifulSoup, Comment
+    from BeautifulSoup import BeautifulSoup, Comment#TODO: design decision needed
     valid_tags = 'p i strong b u a h1 h2 h3 pre br img'.split()
     valid_attrs = 'href src'.split()
     soup = BeautifulSoup(value)

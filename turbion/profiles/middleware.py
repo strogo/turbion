@@ -53,7 +53,7 @@ class LazyUser(object):
         return request._cached_user
 
 class AuthenticationMiddleware(object):
-    def process_request( self, request ):
+    def process_request(self, request):
         assert hasattr(request, 'session'), "The Turbion profile authentication middleware requires session middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'."
         request.__class__.user = LazyUser()
 

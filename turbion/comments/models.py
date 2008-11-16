@@ -64,7 +64,7 @@ class Comment(models.Model):
                                   null=True, blank=True, verbose_name=_("edited by"))
 
     text = PostprocessedTextField(verbose_name=_("text"))
-    
+
     status = models.CharField(max_length=20,
                               choices=statuses,
                               default=statuses.published,
@@ -83,7 +83,7 @@ class Comment(models.Model):
     def __unicode__(self):
         return "%s - %s" % (self.created_by.name, self.created_on)
 
-    def get_absolute_url( self ):
+    def get_absolute_url(self):
         return self.connection.get_absolute_url() +"#comment_%s" % self.id
 
     def save(self, *args, **kwargs):
