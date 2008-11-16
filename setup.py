@@ -8,6 +8,8 @@ setup(
     version = "0.6",
     packages = find_packages(),
 
+    scripts = ['turbion/bin/turbion-admin.py'],
+
     install_requires = [
         'Imaging>=1.1.6',
         'Pytils',
@@ -15,7 +17,7 @@ setup(
 
     author = "Alex Koshelev",
     author_email = "daevaorn@gmail.com",
-    description = "Flexible django-base blog application",
+    description = "Flexible django-based blog application",
     license = "New BSD",
     url = "http://turbion.org/",
 )
