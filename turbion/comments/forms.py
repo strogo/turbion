@@ -8,7 +8,7 @@ from turbion.profiles.forms import combine_profile_form_with
 class _CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ("text",)
+        fields = ("text", "text_postprocessor")
 
     notify = forms.BooleanField(initial=False, required=False, label=_("notify"))
 
