@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 from turbion.profiles.models import Profile
+from turbion.profiles.forms import extract_profile_data
 from turbion.registration.backend import OnlyActiveBackend
 from turbion.openid import utils
 from turbion.openid.models import Identity
@@ -37,6 +38,10 @@ class OpenidBackend(OnlyActiveBackend):
                                 )
                             )
             profile.is_active = True
+
+            profile.__dict__.update(
+                extract_profile_data(request)
+            )
             profile.save()
 
             connection = Identity.objects.create(

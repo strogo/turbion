@@ -17,7 +17,10 @@ def get_server():
     from openid.server import server
     from turbion.openid.store import DatabaseStore
 
-    return server.Server(DatabaseStore(Association.origins.server), uri_reverse("openid_endpoint"))
+    return server.Server(
+                DatabaseStore(Association.origins.server),
+                uri_reverse("turbion_openid_endpoint")
+        )
 
 def complete(request):
     data = dict(request.GET.items())
@@ -38,7 +41,7 @@ def complete_sreg(response):
 def get_auth_urls(request):
     site_url =  "http://%s" % Site.objects.get_current().domain
     trust_url = getattr(settings, "TURBION_OPENID_TRUST_URL", (site_url + '/'))
-    return_to = site_url + reverse('openid_authenticate')
+    return_to = site_url + reverse('turbion_openid_authenticate')
 
     return trust_url, return_to
 
