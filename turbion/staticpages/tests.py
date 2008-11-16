@@ -6,7 +6,7 @@ from turbion.blogs.models import Blog
 from turbion.profiles.models import Profile
 
 class StaticPagesViews(BaseViewTest):
-    fixtures = ["profiles", "blog"]
+    fixtures = ["turbion/test/profiles", "turbion/test/blogs"]
 
     def setUp(self):
         blog = Blog.objects.all()[0]
@@ -34,4 +34,4 @@ class StaticPagesViews(BaseViewTest):
         response = self.assertStatus(self.page.get_absolute_url())
 
     def test_sitemap(self):
-        response = self.assertStatus(reverse("pages_sitemap", args=[self.blog.slug,]))
+        response = self.assertStatus(reverse("turbion_pages_sitemap", args=[self.blog.slug,]))

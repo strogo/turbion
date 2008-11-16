@@ -5,7 +5,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.utils.postprocessing.fields import PostprocessField
+from turbion.utils.postprocessing.fields import PostprocessedTextField
 from turbion.utils.enum import Enum
 from turbion.utils.models import GenericManager
 
@@ -28,13 +28,10 @@ class Page(models.Model):
     title         = models.CharField(max_length=100, verbose_name=_("title"))
     slug          = models.SlugField()
 
-    text          = models.TextField(verbose_name=_("text"))
-    text_html     = models.TextField(verbose_name=_("text html"), blank=True)
+    text          = PostprocessedTextField(verbose_name=_("text"))
 
     status        = models.CharField(max_length=10, choices=statuses,
                                      default=statuses.published, verbose_name=_("status"))
-
-    postprocessor = PostprocessField()
 
     template      = models.CharField(max_length=150, verbose_name=_("template"), null=True, blank=True)
 
@@ -52,7 +49,6 @@ class Page(models.Model):
         if self.edited_by:
             self.edited_on = datetime.now()
 
-        self.text_html = self.postprocessor.postprocess(self.text)
         super(Page, self).save(*args, **kwargs)
 
     @permalink
