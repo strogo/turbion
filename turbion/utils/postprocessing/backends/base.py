@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+def postprocess(value, processor):
+    return ProcessorSpot.get_processor(processor).postprocess(value)
+
 class ProcessorSpot(type):
     def __new__(cls, name, bases, attrs):
         try:
@@ -23,7 +26,7 @@ class ProcessorSpot(type):
 
     @classmethod
     def get_processor(cls, name=None):
-        name = str(name)#FIME: why convert to string. It must be string already!
+        name = str(name)
         for proc_name, proc in cls.processors.iteritems():
             if proc_name.endswith(name):
                 return proc
