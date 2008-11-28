@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import template
 from django.utils import http
+from django.conf import settings
 from django.contrib.sites.models import Site
 
 register = template.Library()
@@ -43,5 +44,6 @@ def socialbookmarks_group(context, group, title, url):
                         for name in [name.strip() for name in group.split(";") if name]],
         "title": title,
         "url": url,
-        "domain": domain
+        "domain": domain,
+        "MEDIA_URL": settings.MEDIA_URL
     }
