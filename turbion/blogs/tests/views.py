@@ -44,7 +44,15 @@ class ViewsTest(BaseViewTest):
         self.assertStatus(blog_reverse("turbion_blog_atom", args=(self.blog.slug, "comments")) )
 
     def test_post_comments_feed(self):
-        self.assertStatus(blog_reverse("turbion_blog_atom", args=(self.blog.slug, "comments/%s/" % self.post.id)))
+        self.assertStatus(
+            blog_reverse(
+                "turbion_blog_atom",
+                args=(
+                    self.blog.slug,
+                    "comments/%s/" % self.post.id
+                )
+            )
+        )
 
     def test_tag_feed(self):
         pass
@@ -52,9 +60,8 @@ class ViewsTest(BaseViewTest):
     def test_sitemap(self):
         response = self.assertStatus(blog_reverse("turbion_blog_sitemap", args=(self.blog.slug,)))
 
-    if settings.TURBION_BLOGS_MULTIPLE:
-        def test_global_sitemap(self):
-            response = self.assertStatus(blog_reverse("turbion_global_blog_sitemap"))
+    def test_global_sitemap(self):
+        response = self.assertStatus(blog_reverse("turbion_global_blog_sitemap"))
 
     def _create_comment(self):
         return {}
@@ -65,7 +72,10 @@ class ViewsTest(BaseViewTest):
         url = blog_reverse("turbion_blog_comment_add", args=(self.blog.slug, self.post.id))
         CommentAdd.instance.subscribe(self.post.created_by)
 
-        comment = {"text": "My comment"}
+        comment = {
+            "text": "My comment",
+            "text_postprocessor": "markdown"
+        }
 
         response = self.assertStatus(
                         url,
@@ -77,7 +87,6 @@ class ViewsTest(BaseViewTest):
         post = Post.published.for_blog(self.blog).get(pk=self.post.pk)
 
         self.assertEqual(post.comment_count, 1)
-        self.assertEqual(len(mail.outbox), 1)# post author subscription
         self.assertEqual(len(CommentAdd()._get_recipients(post)), 1)
 
     def test_comment_add_visitor(self):
@@ -88,11 +97,12 @@ class ViewsTest(BaseViewTest):
         url = blog_reverse("turbion_blog_comment_add", args=(self.blog.slug, self.post.id))
 
         comment.update({
-                    "text"    : "My comment",
+                    "text": "My comment",
+                    "text_postprocessor": "markdown",
                     "nickname": "Alex",
-                    "email"   : "foo@bar.com",
-                    "site"    : "http://foobar.com",
-                    'notify'  : True,
+                    "email": "foo@bar.com",
+                    "site": "http://foobar.com",
+                    'notify': True,
         })
 
         response = self.assertStatus(

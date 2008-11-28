@@ -39,7 +39,8 @@ class ProfileManager(UserManager):
         return profile
 
     def has_superuser(self):
-        return self.filter(is_staff=True, is_superuser=True, is_active=True, is_confirmed=True).count() != 0
+        return self.filter(is_staff=True, is_superuser=True, is_active=True,
+                           is_confirmed=True).count() != 0
 
 class Profile(User):
     names = Enum(
@@ -59,7 +60,13 @@ class Profile(User):
     nickname = models.CharField(max_length=150, null=True, verbose_name =_('nickname'))
     ip = models.IPAddressField(null=True, blank=True, verbose_name =_('IP'))
     host = models.CharField(max_length=250,null=True, blank=True, verbose_name =_('host'))
+
+    # False when user is guest and not confirmed his profie
     is_confirmed = models.BooleanField(default=True, verbose_name =_('confirmed'))
+
+    # True when user is quest but trusted and have
+    # right as registered user when posting comment
+    trusted = models.BooleanField(default=False, verbose_name=_("trusted"))
 
     birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
     gender = models.CharField(max_length=10, verbose_name =_('gender'), choices=genders, null=True, blank=True)
@@ -74,8 +81,10 @@ class Profile(User):
     education = models.TextField(null=True, blank=True, verbose_name=_("education"))
     work = models.TextField(null=True, blank=True, verbose_name=_("work"))
 
+    gtalk = models.EmailField(blank=True, null=True, verbose_name=_('google talk'))
+    msn = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('msn id'))
     icq = models.CharField(max_length=10, blank=True, null=True, verbose_name=_('icq uin'))
-    jabber = models.CharField(max_length=50, null=True, blank=True, verbose_name=_('jabber id'))
+    jabber = models.CharField(max_length=75, null=True, blank=True, verbose_name=_('jabber id'))
     skype = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('skype'))
 
     name_view = models.CharField(max_length=20, choices=names, null=True, blank=True, verbose_name=_('name view'))
@@ -83,7 +92,6 @@ class Profile(User):
                                  default=sites.profile, null=True, blank=True,
                                 verbose_name=_('site view'))
     last_visit = models.DateTimeField(null=True, blank=True, verbose_name=_('last visit'))
-    trusted = models.BooleanField(default=False, verbose_name=_("trusted"))
 
     roles = models.ManyToManyField(Role, blank=True, related_name="profiles")
     capabilities = models.ManyToManyField(Capability, blank=True, related_name="profiles")

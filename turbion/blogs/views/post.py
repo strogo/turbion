@@ -21,8 +21,6 @@ from turbion.utils.decorators import paged, templated
 @templated('turbion/blogs/list.html')
 @titled(page=_('Blog'))
 def blog(request, blog):
-    blog.inc_reviews()
-
     posts = Post.published.for_blog(blog)
 
     if not request.user.is_authenticated_confirmed():
@@ -77,7 +75,6 @@ def tag(request, blog, tag_slug):
 @templated('turbion/blogs/post.html')
 @titled(page='{{post.title}}')
 def post(request, blog, post):
-    post.inc_reviews()
     comment_form = comments_forms.CommentForm(request=request)
     form_action = blog_reverse(
                     "turbion_blog_comment_add",

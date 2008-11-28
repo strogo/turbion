@@ -121,19 +121,18 @@ def change_email_confirm(request):
 @login_required
 def change_password(request):
     if request.method == 'POST':
-        form = forms.ChangePasswordForm(request=request, data=request.POST)
+        form = forms.PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
-            request.user.set_password(form.cleaned_data["password"])
-            request.user.save()
+            form.save()
 
             return status_redirect(request,
-                              title= _( "Password has changed" ),
-                              section = SECTION,
-                              message= _( "Now you can sing-in with your new password" ),
-                              next = request.GET.get( 'redirect', '/' )
+                              title= _("Password has changed"),
+                              section= SECTION,
+                              message=_("Now you can sing-in with your new password"),
+                              next=request.GET.get('redirect', '/')
                 )
     else:
-        form = forms.ChangePasswordForm()
+        form = forms.PasswordChangeForm(request.user)
 
     return {
         "change_password_form": form
@@ -145,9 +144,8 @@ def registration(request):
     if request.method == 'POST':
         form = forms.RegistrationForm(data=request.POST)
         if form.is_valid():
-            data = form.cleaned_data
+            user = form.save()
 
-            user = Profile.objects.create_user(**data)
             user.is_active = False
             user.save()
 

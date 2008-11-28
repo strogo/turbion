@@ -1,33 +1,44 @@
 # -*- coding: utf-8 -*
-from django.test import TestCase
-from django.test.client import Client
-from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.core import mail
+from django import http
 
+from turbion.blogs.utils import reverse
+from turbion.blogs.models import Blog
 from turbion.profiles.models import Profile
 from turbion.feedback.models import FeedbackAdd
+from turbion.utils.testing import BaseViewTest
 
-CREDENTIALS = {'username': "daev", 'password': "dkflbvbhgenby"}
-
-class FeedbackPageTest(TestCase):
-    fixtures = ["profiles", "blog"]
+class FeedbackPageTest(BaseViewTest):
+    fixtures = [
+        "turbion/test/profiles", "turbion/test/blogs"
+    ]
 
     def setUp(self):
         self.profile = Profile.objects.all()[0]
+        self.blog = Blog.objects.all()[0]
+
+        self.login()
+
+        FeedbackAdd.instance.subscribe(self.profile, self.blog)
 
     def test_submit_feedback(self):
-        self.client.login(**CREDENTIALS)
-        FeedbackAdd.instance.subscribe(self.profile)
+        url = reverse("turbion_feedback", args=(self.blog.slug,))
 
-        response = self.client.get(reverse("feedback"))
-        self.assertEqual(response.status_code, 200)
+        self.assertStatus(
+            url,
+            http.HttpResponse.status_code
+        )
 
-        data = {}
-        data["subject"] = "Test subject"
-        data["text"]   = "some feedback"
+        data = {
+           "subject": "Test subject",
+           "text": "some feedback"
+        }
 
-        response = self.client.post(reverse("feedback"), data=data)
-        self.assertEqual(response.status_code, 200)
+        self.assertStatus(
+            url,
+            http.HttpResponseRedirect.status_code,
+            data=data,
+            method="post"
+        )
 
         self.assertEqual(len(mail.outbox), 1)

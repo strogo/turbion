@@ -36,7 +36,8 @@ class CommentAddTest(BaseViewTest):
 
         data = {
             "text": "Foo bar text",
-            "notify": True
+            "notify": True,
+            'text_postprocessor': "dummy"
         }
 
         request = self.client.post("/foobar/", data=data)
@@ -50,11 +51,12 @@ class CommentAddTest(BaseViewTest):
 
         comment = Comment.objects.get()
 
-        self.assertEqual(comment.status, Comment.statuses.moderation)
+        self.assertEqual(comment.status, Comment.statuses.published)
 
     def test_add_guest(self):
         data = {
             "text": "Foo bar text",
+            'text_postprocessor': "dummy",
             "notify": True,
             "nickname": "Test User",
             "email": "testuser@domain.com",
@@ -79,13 +81,18 @@ class CommentAddTest(BaseViewTest):
         self.assert_(isinstance(response, http.HttpResponse))
         self.assertResponseStatus(response, http.HttpResponseRedirect.status_code)
 
+        comment = Comment.objects.get()
+
+        self.assertEqual(comment.status, Comment.statuses.published)
+        
     def test_edit(self):
         comment = self._create_comment()
 
         self.login()
 
         data = {
-            "text": "New comment text"
+            "text": "New comment text",
+            'text_postprocessor': "dummy",
         }
 
         request = self.client.post("/foobar/", data=data)

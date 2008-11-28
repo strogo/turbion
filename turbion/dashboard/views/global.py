@@ -13,12 +13,11 @@ from turbion.blogs.models.blog import Blog, BlogRoles
 from turbion.dashboard import forms, decorators
 from turbion.profiles.models import Profile
 
-
 @templated("turbion/dashboard/global/install.html")
 @titled(page=_("Instalation"))
 def install(request):
     if not Profile.objects.has_superuser():
-        return http.HttpResponseRedirect(reverse("dashboard_create_superuser"))
+        return http.HttpResponseRedirect(reverse("turbion_dashboard_create_superuser"))
 
     return {}
 
@@ -30,27 +29,30 @@ def index(request):
     blogs = Blog.objects.all()
 
     if not len(blogs):
-        return http.HttpResponseRedirect(reverse("dashboard_create_blog"))
+        return http.HttpResponseRedirect(reverse("turbion_dashboard_create_blog"))
 
-    return {"blogs": blogs}
-
+    return {
+        "blogs": blogs
+    }
 
 @templated( "turbion/dashboard/global/create_superuser.html" )
 @titled(page=_("Superuser creation"))
 def create_superuser( request ):
     if Profile.objects.has_superuser():
-        return http.HttpResponseRedirect( reverse( "dashboard_index" ) )
+        return http.HttpResponseRedirect(reverse("turbion_dashboard_index"))
 
     if request.POST:
-        form = forms.CreateSuperuserForm( request.POST )
+        form = forms.CreateSuperuserForm(request.POST)
         if form.is_valid():
             user = form.save()
 
-            return http.HttpResponseRedirect( reverse( "dashboard_create_blog" ) )
+            return http.HttpResponseRedirect(reverse("turbion_dashboard_create_blog"))
     else:
         form = forms.CreateSuperuserForm()
 
-    return { "form" : form }
+    return {
+        "form": form
+    }
 
 @login_required
 @decorators.superuser_required
@@ -78,14 +80,13 @@ def create_blog(request):
 @titled(page=_("Login"))
 def login(request):
     if request.POST:
-        form = forms.LoginForm(request.POST)
+        form = forms.AuthenticationForm(request.POST)
         if form.is_valid():
-            user = form.cleaned_data["user"]
-            auth.login(request, user)
+            auth.login(request, form.get_user())
 
             return http.HttpResponseRedirect(request.GET.get('next', user.get_absolute_url()))
     else:
-        form = forms.LoginForm()
+        form = forms.AuthenticationForm()
 
     return {
         "form": form

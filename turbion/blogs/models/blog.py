@@ -14,12 +14,17 @@ from turbion.blogs import managers
 from turbion.tags.models import Tag
 from turbion.profiles.models import Profile
 from turbion.blogs import utils
+from turbion.utils.enum import Enum
 
-from turbion.comments.models import Comment
 from turbion import roles
 
 class Blog(models.Model):
-    review_count = models.IntegerField(default=0, editable=False, verbose_name=_("review count"))
+    moderations = Enum(
+        none=_("none"),
+        all=_("all"),
+        guests=_("guests"),
+        untrusted=_("untrusted")
+    )
 
     slug = models.CharField(
                     max_length=50,
@@ -35,6 +40,7 @@ class Blog(models.Model):
     post_per_page = models.SmallIntegerField(default=5, verbose_name=_("posts per page"))
     additional_post_fields = models.BooleanField(default=False)
     socialbookmarks = models.CharField(max_length=255, verbose_name=_("social bookmarks"), blank=True)
+    comments_moderation = models.CharField(max_length=20, choices=moderations, default=moderations.none)
 
     objects = managers.BlogManager()
 
@@ -53,10 +59,6 @@ class Blog(models.Model):
                                           Post.published.for_blog(Blog.objects.get(pk=self._get_pk_val())))
         return self._calendar
 
-    def inc_reviews(self):
-        self.review_count += 1
-        self.save()
-
     @utils.permalink
     def get_absolute_url(self):
         return ("turbion_blog_index", (self.slug,))
@@ -71,6 +73,27 @@ class Blog(models.Model):
 
     def per_page(self):
         return self.post_per_page
+
+    def get_comment_status(self, comment):
+        from turbion.comments.models import Comment
+
+        author = comment.created_by
+
+        if self.comments_moderation == Blog.moderations.all:
+            return Comment.statuses.moderation
+
+        elif self.comments_moderation == Blog.moderations.none:
+            return Comment.statuses.published
+
+        elif self.comments_moderation == Blog.moderations.guests:
+            if not author.is_confirmed:
+                return Comment.statuses.moderation
+
+        elif self.comments_moderation == Blog.moderations.untrusted:
+            if not author.is_confirmed or not author.trusted:
+                return Comment.statuses.moderation
+
+        return Comment.statuses.published
 
     @property
     def tags(self):
@@ -87,14 +110,13 @@ class Blog(models.Model):
         db_table            = "turbion_blog"
 
 class BlogCalendar(Calendar):
-    date_field = "created_on"
+    date_field = "published_on"
 
     @utils.permalink
     def get_month_url(self, date):
         return "turbion_blog_archive_month", (self.instance.slug, date.year, date.month), {}
 
     def get_per_day_urls(self, dates):
-        from django.core.urlresolvers import reverse
         return dict([(date.date(), utils.reverse("turbion_blog_archive_day",
                                             args=(
                                                 self.instance.slug,
@@ -110,19 +132,19 @@ class BlogRoles(roles.RoleSet):
         model = Blog
 
     class Capabilities:
-        enter_dashboard    = roles.Capability("Can enter blog dashboard")
-        change_preferences = roles.Capability("Can change blog preferences")
-        add_post           = roles.Capability("Can add new blog post")
-        edit_post          = roles.Capability("Can edit blog post")
-        delete_post        = roles.Capability("Can delete blog post")
-        review_feedback    = roles.Capability("Can review blog feedback entries")
-        edit_feedback      = roles.Capability("Can edit blog feedback entries")
-        edit_comment       = roles.Capability("Can edit blog comments")
-        upload_asset       = roles.Capability("Can upload blog asset")
-        edit_asset         = roles.Capability("Can edit blog asset")
-        add_page           = roles.Capability("Can add blog page")
-        edit_page          = roles.Capability("Can edit blog page")
-        delete_page        = roles.Capability("Can delete blog page")
+        enter_dashboard    = roles.Capability(_("Can enter blog dashboard"))
+        change_preferences = roles.Capability(_("Can change blog preferences"))
+        add_post           = roles.Capability(_("Can add new blog post"))
+        edit_post          = roles.Capability(_("Can edit blog post"))
+        delete_post        = roles.Capability(_("Can delete blog post"))
+        review_feedback    = roles.Capability(_("Can review blog feedback entries"))
+        edit_feedback      = roles.Capability(_("Can edit blog feedback entries"))
+        edit_comment       = roles.Capability(_("Can edit blog comments"))
+        upload_asset       = roles.Capability(_("Can upload blog asset"))
+        edit_asset         = roles.Capability(_("Can edit blog asset"))
+        add_page           = roles.Capability(_("Can add blog page"))
+        edit_page          = roles.Capability(_("Can edit blog page"))
+        delete_page        = roles.Capability(_("Can delete blog page"))
 
     class Roles:
         blog_owner = roles.Role("Blog owner", ("enter_dashboard",

@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from turbion.notifications.eventdescriptor import EventDescriptor
+from turbion.notifications.event import EventDescriptor

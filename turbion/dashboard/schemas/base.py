@@ -51,7 +51,10 @@ class Schema(object):
                 line[field] = smart_unicode(get_attribute(obj,field))
             res.append(line)
 
-        return {"source": res, "total": len(query_set)}
+        return {
+            "source": res,
+            "total": len(query_set)
+        }
 
     def get_schema(self):
         pass

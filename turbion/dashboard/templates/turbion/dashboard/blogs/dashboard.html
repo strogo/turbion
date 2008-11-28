@@ -9,10 +9,10 @@
 <h3>Posts</h3>
 <ul>
     {% for post in latest_posts %}
-    <li><a href="{% url dashboard_blog_post_edit blog.slug,post.id %}">{{post}}</a> - {{post.status}}</li>
+    <li><a href="{% url turbion_dashboard_blog_post_edit blog.slug,post.id %}">{{post}}</a> - {{post.status}}</li>
     {% endfor %}
 </ul>
-<a href="{% url dashboard_blog_posts blog.slug%}">all</a>
+<a href="{% url turbion_dashboard_blog_posts blog.slug%}">all</a>
 </div>
 <div>
 <h3>Comments</h3>

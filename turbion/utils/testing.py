@@ -84,7 +84,8 @@ class BaseViewTest(TestCase):
         return engine.SessionStore(session_key)
 
     def login(self):
-        self.client.login(**self.credentials)
+        result = self.client.login(**self.credentials)
+        self.assert_(result, "Cannot login")
 
     @property
     def user(self):

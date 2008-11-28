@@ -19,15 +19,17 @@ def add(request, blog, post_id):
     if not post.allow_comments:
         return HttpResponseRedirect(post.get_absolute_url())#FIXME: add message showing
 
-    context = views.add_comment(request,
-                                connection=post,
-                                defaults={})
+    context = views.add_comment(
+                        request,
+                        connection=post,
+                        status_getter=blog.get_comment_status,
+                        defaults={}
+                )
 
     if isinstance(context, dict):
         context.update({
             "blog": blog,
             "post": post,
-            "form_action": "./"
         })
     return context
 

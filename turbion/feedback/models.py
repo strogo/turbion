@@ -13,11 +13,13 @@ from turbion.utils.enum import Enum
 from turbion.utils.models import GenericManager
 
 class Feedback(models.Model):
-    statuses = Enum(accepted=_("accepted"),
-                    rejected=_("rejected"),
-                    done    =_("done"),
-                    new     =_("new"),
-                )
+    statuses = Enum(
+        accepted=_("accepted"),
+        rejected=_("rejected"),
+        done=_("done"),
+        new=_("new"),
+    )
+
     blog       = models.ForeignKey(Blog, related_name="feedbacks")
 
     created_on = models.DateTimeField(default=datetime.now, verbose_name=_('creation date'))
@@ -56,3 +58,6 @@ class FeedbackAdd(EventDescriptor):
         name = _("New feedback added")
         to_object = True
         trigger = (Feedback, signals.feedback_added)
+
+    def get_connection(self, instance):
+        return instance.blog

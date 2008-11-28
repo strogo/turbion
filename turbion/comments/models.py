@@ -33,7 +33,11 @@ class CommentManager(GenericManager):
                 if field.rel.to == obj.__class__:
                     return self.filter(connection_dscr=dscr).\
                                 extra(
-                                    where=["%s.%s= %s" % (quote_name(model._meta.db_table), quote_name(field.column), getattr(obj, field.rel.field_name))],
+                                    where=["%s.%s= %s" % (
+                                            quote_name(model._meta.db_table),
+                                            quote_name(field.column),
+                                            getattr(obj, field.rel.field_name))
+                                        ],
                                     tables=[model._meta.db_table]
                                 )
 
@@ -52,15 +56,19 @@ class Comment(models.Model):
     connection_id = models.PositiveIntegerField(editable=False, verbose_name=_("connection"))
     connection = GenericForeignKey("connection_dscr", "connection_id")
 
-    statuses = Enum(published ="published",
-                    moderation="on moderation")
+    statuses = Enum(
+                published="published",
+                moderation="on moderation",
+                hided="hided",
+        )
 
     created_on = models.DateTimeField(default=datetime.now, verbose_name=_("created on"))
 
-    created_by = models.ForeignKey(Profile, related_name="created_comments", verbose_name=_("created by"))
+    created_by = models.ForeignKey(Profile, related_name="created_comments",
+                                   verbose_name=_("created by"))
 
     edited_on = models.DateTimeField(null=True, blank=True, verbose_name=_("edited on"))
-    edited_by = models.ForeignKey(Profile, related_name="edited_comments",\
+    edited_by = models.ForeignKey(Profile, related_name="edited_comments",
                                   null=True, blank=True, verbose_name=_("edited by"))
 
     text = PostprocessedTextField(verbose_name=_("text"))
@@ -69,8 +77,6 @@ class Comment(models.Model):
                               choices=statuses,
                               default=statuses.published,
                               verbose_name=_("status"))
-
-
 
     is_published = property(lambda self: self.status == Comment.statuses.published)
 
@@ -119,6 +125,7 @@ class CommentAdd(EventDescriptor):
         name = _("new comment added")
         to_object = True
         trigger = (Comment, comment_signals.comment_added)
+        content_type = "text/html"
 
     def allow_recipient(self, recipient, comment, *args, **kwargs):
         if recipient == comment.created_by:

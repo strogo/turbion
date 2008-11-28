@@ -11,10 +11,11 @@ class _FeedbackForm(forms.ModelForm):
 
 class FeedbackForm(forms.Form):
     def __init__(self, request, blog, *args, **kwargs):
-        self.__class__ = combine_profile_form_with(_FeedbackForm,
-                                                 request     =request,
-                                                 field       ="created_by",
-                                                 need_captcha=False
-                                               )
+        self.__class__ = combine_profile_form_with(
+                                _FeedbackForm,
+                                request=request,
+                                field="created_by",
+                                need_captcha=False
+                        )
 
         self.__class__.__init__(self, *args, **kwargs)

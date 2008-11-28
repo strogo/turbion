@@ -4,35 +4,44 @@ from datetime import datetime
 from django import http
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.cache import never_cache
 
 from turbion.utils.decorators import titled, templated
 
 from turbion.blogs.decorators import blog_view, post_view
+from turbion.blogs import signals
 from turbion.blogs.models import Blog, BlogRoles, Post, Comment
 from turbion.comments.models import CommentAdd
 from turbion.feedback.models import Feedback
 from turbion.dashboard import forms
 from turbion.profiles.models import Profile
-from turbion.pingback import signals
+from turbion import pingback
 from turbion.roles.decorators import has_capability_for
+from turbion.dashboard.decorators import access_required
 
 @templated("turbion/dashboard/blogs/dashboard.html")
 @titled(page=_("Dashboard"), section=_("Administration"))
 @blog_view
+@never_cache
+@access_required
 @has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
 def dashbaord(request, blog):
     latest_posts = Post.objects.for_blog(blog).order_by("-created_on")[:5]
     latest_comments = Comment.published.for_model_with_rel(Post, blog).order_by("-created_on").distinct()[:5]
     latest_feedbacks = Feedback.new.all()
 
-    return {"blog"           : blog,
-            "latest_posts"   : latest_posts,
-            "latest_comments": latest_comments,
-            "latest_feedback": latest_feedbacks }
+    return {
+        "blog": blog,
+        "latest_posts": latest_posts,
+        "latest_comments": latest_comments,
+        "latest_feedback": latest_feedbacks
+    }
 
 @templated("turbion/dashboard/blogs/posts.html")
 @titled(page=_("Dashboard"), section=_("Administration"))
 @blog_view
+@never_cache
+@access_required
 @has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
 def index(request, blog):
     posts = Post.objects.for_blog(blog).order_by("-created_on")
@@ -45,24 +54,35 @@ def index(request, blog):
 @templated("turbion/dashboard/table.html")
 @titled(page=_("Dashboard"), section=_("Administration"))
 @blog_view
+@never_cache
+@access_required
 @has_capability_for(BlogRoles.capabilities.enter_dashboard, "blog")
 def comments(request, blog):
 
-    return {"blog" : blog}
+    return {
+        "blog": blog
+    }
 
 @templated("turbion/dashboard/table.html")
 @titled(page=_("Dashboard"), section=_("Administration"))
 @blog_view
+@never_cache
+@access_required
 def preferences(request, blog):
 
-    return {"blog": blog}
+    return {
+        "blog": blog
+    }
 
 @templated('turbion/dashboard/form.html')
-@titled(page=_('Edit post "{{post.title}}"'))
+@titled(page=_('{% if post %}Edit{% else %}Add{% endif %} post "{{post.title}}"'))
 @blog_view
+@never_cache
+@access_required
 @has_capability_for(BlogRoles.capabilities.add_post, "blog")
 def post_new(request, blog, post=None):
-    was_draft = post and not post.is_published
+    was_draft = post and not post.is_published or True
+    just_published = False
 
     if request.POST:
         form = forms.PostForm(data=request.POST, instance=post, request=request, blog=blog)
@@ -80,20 +100,26 @@ def post_new(request, blog, post=None):
 
                 if was_draft and new_post.is_published:
                     new_post.published_on = datetime.now()
+                    just_published = True
 
                 new_post.save()
                 form.save_tags()
 
-                if new_post.is_published:
+                if just_published:
                     if form.cleaned_data["notify"]:
                         CommentAdd.instance.subscribe(post.created_by, new_post)
 
-                    signals.send_pingback.send(
-                                     sender = Post,
-                                     instance = new_post,
-                                     url = new_post.get_absolute_url(),
-                                     text = new_post.text_html,
-                                )
+                    pingback.signals.send_pingback.send(
+                        sender=Post,
+                        instance=new_post,
+                        url=new_post.get_absolute_url(),
+                        text=new_post.text_html,
+                    )
+
+                    signals.post_published.send(
+                        blog=blog,
+                        post=new_post
+                    )
 
                 return http.HttpResponseRedirect(
                                 reverse("turbion_dashboard_blog_posts",

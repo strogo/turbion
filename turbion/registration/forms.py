@@ -1,35 +1,12 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.contrib.auth import authenticate
+from django.contrib.auth import forms as auth_forms
+from django.contrib.auth.forms import PasswordChangeForm
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.profiles.models import Profile
 from turbion.registration import utils
-
-class ChangePasswordForm(forms.Form):
-    old_password = forms.CharField(label=_('old password'), widget=forms.PasswordInput())
-    password = forms.CharField(label=_('new password' ), widget=forms.PasswordInput())
-    password_confirm = forms.CharField(label=_('new password confirm'), widget=forms.PasswordInput())
-
-    def __init__(self, request=None, *args, **kwargs):
-        super(ChangePasswordForm, self).__init__(*args, **kwargs)
-        self.request = request
-
-    def clean_old_password(self):
-        old_password = self.cleaned_data["old_password"]
-        user = self.request.user
-        if not user.check_password(old_password):
-            raise forms.ValidationError(_("Wrong old password"))
-
-        return old_password
-
-    def clean_password_confirm(self):
-        password = self.cleaned_data['password']#FIXME: password may not exist
-        password_confirm = self.cleaned_data['password_confirm']
-
-        if password == password_confirm:
-            return password_confirm
-        raise forms.ValidationError(_("New password and confirmation don't match"))
 
 class ChangeEmailForm(forms.Form):
     email = forms.EmailField(label='e-mail')
@@ -57,25 +34,43 @@ class RegistrationFormBase(object):
         utils.check_username(username)
         return username
 
-class RegistrationForm(RegistrationFormBase, forms.Form):
+class CreateProfileForm(RegistrationFormBase, forms.Form):
     username = forms.CharField(label=_('username'), required=True)
     email = forms.EmailField(label='e-mail', required=True)
-    password = forms.CharField(widget=forms.PasswordInput(), label=_('password'), required=True)
-    password_confirm = forms.CharField(widget=forms.PasswordInput(), label=_('password confirm'), required=True)
+    new_password1 = forms.CharField(widget=forms.PasswordInput(), label=_('password'), required=True)
+    new_password2 = forms.CharField(widget=forms.PasswordInput(), label=_('password confirm'), required=True)
 
-    #captcha = CaptchaField( label = _( 'Check' ), required = True )
+    #captcha = CaptchaField(label=_('Check'), required=True)
     def clean(self):
-        self.cleaned_data.pop("captcha", None)
-        del self.cleaned_data["password_confirm"]
+        if "captcha" in self.cleaned_data:
+            del self.cleaned_data["captcha"]
+
+        if "new_password2" in self.cleaned_data:
+            del self.cleaned_data["new_password2"]
+            
         return self.cleaned_data
 
-    def clean_password_confirm(self):
-        password = self.cleaned_data['password']
-        password_confirm = self.cleaned_data['password_confirm']
+    def clean_new_password2(self):
+        new_password1 = self.cleaned_data['new_password1']
+        new_password2 = self.cleaned_data['new_password2']
 
-        if password == password_confirm:
-            return password_confirm
+        if new_password1 == new_password2:
+            return new_password2
         raise forms.ValidationError(_("Password and confirmation don't match"))
+
+    def save(self):
+        return self.create_profile(
+            self.cleaned_data["username"],
+            self.cleaned_data["email"],
+            self.cleaned_data["new_password1"]
+        )
+
+    def create_profile(self, username, email, password):
+        profile = Profile.objects.create_user(username, email, password)
+
+        return profile
+
+RegistrationForm = CreateProfileForm
 
 class RegistrationConfirmForm(forms.Form):
     code = forms.CharField(required=True)

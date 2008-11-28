@@ -2,17 +2,17 @@
 create_table = function() {
     YAHOO.example.Basic = new function() {
         var myColumnDefs = [
-            {%for field in schema.fields%}
+            {% for field in schema.fields %}
                 {key:"{{field}}", sortable:true, resizeable:true},
-            {%endfor%}
+            {% endfor %}
         ];
 
-        this.myDataSource = new YAHOO.util.DataSource("{%url dashboard_sources blog=blog.slug,name=name%}");
+        this.myDataSource = new YAHOO.util.DataSource("{% url turbion_dashboard_sources blog.slug,name %}");
         this.myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.myDataSource.connXhrMode = "queueRequests";
         this.myDataSource.responseSchema = {
             resultsList: "source",
-            fields: [{%for field in schema.fields%}"{{field}}",{%endfor%}],
+            fields: [{% for field in schema.fields %}"{{field}}",{% endfor %}],
             metaFields: {
                totalRecords: 'total',
             }

@@ -8,7 +8,7 @@ from turbion.comments import forms
 
 def add_comment(request, defaults={}, redirect=None, connection=None,
                 comment=None, checker=lambda comment: True,
-                untrusted_status=Comment.statuses.moderation):
+                status_getter=lambda author, comment: Comment.statuses.published):
     if comment and not checker(comment):
         return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
 
@@ -21,7 +21,7 @@ def add_comment(request, defaults={}, redirect=None, connection=None,
 
         if form.is_valid():
             new_comment = form.save(False)
-            
+
             if 'view' in request.POST:
                 comment = new_comment
             else:
@@ -30,7 +30,7 @@ def add_comment(request, defaults={}, redirect=None, connection=None,
                 new_comment.__dict__.update(defaults)
 
                 if not new_comment.created_by.trusted:
-                    new_comment.status = untrusted_status
+                    new_comment.status = status_getter(new_comment)
 
                 new_comment.save()
 

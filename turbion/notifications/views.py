@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404
 from django import http, forms
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.profiles.models import Profile
 from turbion.notifications.models import Event
-from turbion.notifications.eventdescriptor import EventSpot
+from turbion.notifications.event import EventSpot
 from turbion.utils.views import status_redirect
 from turbion.utils.descriptor import to_object
 
@@ -44,24 +45,33 @@ class UnsubscribeForm(forms.Form):
 
         return data
 
+@login_required
 def unsubscribe(request, user_id, event_id):
     user  = get_object_or_404(Profile, pk=user_id)
     event = get_object_or_404(Event, pk=event_id)
 
     desc = event.descriptor.instance
 
-    form = UnsubscribeForm(data=request.GET, user=user, event_descriptor=desc)
+    form = UnsubscribeForm(
+        data=request.GET,
+        user=user,
+        event_descriptor=desc
+    )
 
-    if form.is_valid():
-        connection = form.cleaned_data["connection"]
+    if user != request.user:
+        return http.HttpResponseForbidden()
 
-        desc.unsubscribe(user, connection)
+    if not form.is_valid():
+        return http.HttpResponseBadRequest()
 
-        return status_redirect(
-                    request,
-                    title=_("Unsubscribe"),
-                    section=_("Notifications"),
-                    message=_("You've been unsubscribed from \"%s\"") % desc.name,
-                    next="/"
-            )
-    raise http.Http404
+    connection = form.cleaned_data["connection"]
+
+    desc.unsubscribe(user, connection)
+
+    return status_redirect(
+                request,
+                title=_("Unsubscribe"),
+                section=_("Notifications"),
+                message=_("You've been unsubscribed from \"%s\"") % desc.meta.name,
+                next="/"
+        )

@@ -2,5 +2,5 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('turbion.feedback.views',
-    url(r'^$',                          'index', name="turbion_feedback"),
+    url(r'^$', 'index', name="turbion_feedback"),
 )

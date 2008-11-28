@@ -1,0 +1,14 @@
+Notification on event: {{descriptor}}
+===========================
+
+Hi, {{recipient}}!
+
+The new event accurs: {{descriptor}}{% if obj %} connected to {{obj}}{% endif %}
+
+{% if descriptor.meta.description %}
+Event descrption: {{descriptor.meta.description}}
+{% endif %}
+
+---------------------------
+To unsubscribe from notification visit:
+  {{unsubscribe_url}}

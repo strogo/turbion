@@ -9,7 +9,6 @@
    "name": "Test Blog",
    "socialbookmarks": "",
    "post_per_page": 5,
-   "review_count": 0,
    "slug": "test"
   }
  },
@@ -18,7 +17,6 @@
   "model": "blogs.post",
   "fields": {
    "status": "published",
-   "review_count": 179,
    "mood": "",
    "title": "First Post",
    "text": "Post Text",
@@ -38,7 +36,6 @@
   "model": "blogs.post",
   "fields": {
    "status": "published",
-   "review_count": 179,
    "mood": "",
    "title": "Second Post",
    "text": "Some Post Text",
@@ -58,7 +55,6 @@
   "model": "blogs.post",
   "fields": {
    "status": "published",
-   "review_count": 179,
    "mood": "",
    "title": "Third Post",
    "text": "Some Post Text Text",

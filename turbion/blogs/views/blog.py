@@ -17,28 +17,32 @@ from turbion.utils.decorators import paged, templated
 from turbion.utils.pagination import paginate
 
 @blog_view
-def sitemap( request, blog, sitemaps ):
-    return django_sitemap( request, sitemaps = dict( [ ( k, s( blog ) ) for k, s in sitemaps.iteritems() ] ) )
+def sitemap(request, blog, sitemaps):
+    return django_sitemap(
+        request,
+        sitemaps=dict([(k, s(blog)) for k, s in sitemaps.iteritems()])
+    )
 
-def index_sitemap( request, sitemaps ):
+def index_sitemap(request):
     current_site = Site.objects.get_current()
     sites = []
     protocol = request.is_secure() and 'https' or 'http'
 
-    for slug in Blog.objects.all().values_list( "slug", flat = True ):
-        sitemap_url = reverse('turbion_blog_sitemap', kwargs={'blog': slug})
-        sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
-
-        sitemap_url = reverse('turbion_pages_sitemap', kwargs={'blog': slug})
-        sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
+    for slug in Blog.objects.all().values_list("slug", flat=True):
+        urls = (
+            reverse('turbion_blog_sitemap', args=(slug,)),
+            reverse('turbion_pages_sitemap', args=(slug,))
+        )
+        for sitemap_url in urls:
+            sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
 
     xml = loader.render_to_string('sitemap_index.xml', {'sitemaps': sites})
     return http.HttpResponse(xml, mimetype='application/xml')
 
 @blog_view
-def feed( request, blog, url, feed_dict ):
+def feed(request, blog, url, feed_dict):
     if not feed_dict:
-        raise http.Http404, "No feeds are registered."
+        raise http.Http404("No feeds are registered.")
 
     try:
         slug, param = url.split('/', 1)
@@ -48,12 +52,13 @@ def feed( request, blog, url, feed_dict ):
     try:
         f = feed_dict[slug]
     except KeyError:
-        raise http.Http404, "Slug %r isn't registered." % slug
+        raise http.Http404("Slug %r isn't registered." % slug)
 
     try:
-        feedgen = f( blog, slug, request).get_feed(param)
+        feedgen = f(blog, slug, request).get_feed(param)
     except feeds.FeedDoesNotExist:
-        raise http.Http404, "Invalid feed parameters. Slug %r is valid, but other parameters, or lack thereof, are not." % slug
+        raise http.Http404("Invalid feed parameters. Slug %r is valid, but "
+                           "other parameters, or lack thereof, are not." % slug)
 
     response = http.HttpResponse(mimetype=feedgen.mime_type)
     feedgen.write(response, 'utf-8')

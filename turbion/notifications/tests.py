@@ -8,6 +8,7 @@ from django import http
 
 from turbion.notifications import EventDescriptor
 from turbion.profiles.models import Profile
+from turbion.utils.testing import BaseViewTest
 
 class Owner(models.Model):
     name = models.CharField(max_length=50)
@@ -25,11 +26,11 @@ class AnimalAdd(EventDescriptor):
     def get_connection(self, instance):
         return instance.owner
 
-class NotifTestCase(TestCase):
-    fixtures = ["profiles", "dbtemplates"]
+class NotificationsTestCase(BaseViewTest):
+    fixtures = ["turbion/test/profiles"]
 
     def setUp(self):
-        self.profile = Profile.objects.get(username = "daev")
+        self.profile = self.user
 
         self.owner = Owner.objects.create(name="Sam")
 
@@ -49,7 +50,7 @@ class NotifTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_unsubscribe(self):
-        from django.core.urlresolvers import reverse
+        self.login()
 
         AnimalAdd.instance.subscribe(self.profile, self.owner)
 

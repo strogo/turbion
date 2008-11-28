@@ -14,9 +14,10 @@ from turbion.blogs.decorators import blog_view
 @blog_view
 def index(request, blog):
     if request.method == 'POST':
-        feedback_form = FeedbackForm(request=request, blog=blog, data=request.POST)
-        if feedback_form.is_valid():
-            feedback = feedback_form.save(False)
+        form = FeedbackForm(request=request, blog=blog, data=request.POST)
+
+        if form.is_valid():
+            feedback = form.save(False)
             feedback.blog = blog
             feedback.save()
 
@@ -24,18 +25,18 @@ def index(request, blog):
                             sender=Feedback,
                             instance=feedback
                     )
-
+            
             return status_redirect(
                             request,
                             title=_(u"Thanks"),
-                            section= _(u"Feedback"),
+                            section=_(u"Feedback"),
                             next="/",
                             message=_(u"Thanks. Your request will be handled by the administrator.")
                         )
     else:
-        feedback_form = FeedbackForm(request=request, blog=blog)
+        form = FeedbackForm(request=request, blog=blog)
 
     return {
-        "feedback_form": feedback_form,
+        "form": form,
         "blog": blog
     }

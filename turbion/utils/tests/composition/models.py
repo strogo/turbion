@@ -45,7 +45,7 @@ class Event(models.Model):
 
 class Country(models.Model):
     name = models.CharField(max_length=250)
-    
+
     class Meta:
         app_label="utils"
 
@@ -99,7 +99,11 @@ class HLComment(models.Model):
         app_label="utils"
 
 class HLPost(models.Model):
-   #comment_count=ChildsAggregation("commen_set", lambda post: post.comments.count())
+   #comment_count=ChildsAggregation(
+   #                "comments",
+   #                lambda post: post.comments.count(),
+   #                native=models.PositiveIntegerField()
+   #              )
 
    class Meta:
         app_label="utils"
@@ -110,7 +114,7 @@ class HLMovie(models.Model):
 
     #headline = AttributesAggregation(
     #             native=models.CharField(max_length=250),
-    #             field="director",
+    #             fields=["director"],
     #             do=lambda movie: "%s, by %s" % (movie.title, movie.director.name)
     #          )
 
@@ -127,8 +131,9 @@ class HLFood(models.Model):
     ingridients = models.ManyToManyField(HLIngridient)
 
     #ingridients_str = ChildsAggregation(
-    #                    "ingridients",
-    #                    lambda food: ", ",join(food.ingridients.all()),
+    #                    native=models.CharField(max_length=250),
+    #                    field="ingridients",
+    #                    do=lambda food: ", ",join(food.ingridients.all()),
     #                    signal=ingridient_added,
     #                    instance_getter=lambda instance, to, *args, **kwargs: to
     #                )

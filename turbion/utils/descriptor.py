@@ -27,6 +27,7 @@ def to_model(dscr):
 
 def to_object(dscr):
     if dscr and isinstance(dscr, basestring):
+        dscr = dscr.replace("%3A", ":")
         if dscr.startswith("model:"):
             return to_model(dscr[len("model:"):])
 

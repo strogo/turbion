@@ -18,7 +18,9 @@ def has_capability_for(perm, obj_name=None, cond="AND"):
             if request.user.has_capability_for(perm, obj, cond):
                 return func(request, *args, **kwargs)
             else:
-                return http.HttpResponseRedirect(reverse("no_capability") + "?" + urlencode({"from": request.path}, doseq=True))
+                return http.HttpResponseRedirect(
+                    reverse("no_capability") + "?" + urlencode({"from": request.path}, doseq=True)
+                )
         _decorator.__doc__ = func.__doc__
         _decorator.perm = perm
         return _decorator

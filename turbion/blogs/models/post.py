@@ -37,12 +37,12 @@ class Post(models.Model, CommentedModel):
     created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
     created_by    = models.ForeignKey(Profile, related_name="created_posts", verbose_name=_("created by"))
 
-    published_on  = models.DateTimeField(editable=False, verbose_name=_("published on"), blank=True, null=True, db_index=True)
+    published_on  = models.DateTimeField(editable=False, verbose_name=_("published on"),
+                                         blank=True, null=True, db_index=True)
 
     edited_on     = models.DateTimeField(null=True, editable=False, verbose_name=_("edited on"))
-    edited_by     = models.ForeignKey(Profile, null=True, blank=True, related_name="edited_blogs", verbose_name=_("edited by"))
-
-    review_count  = models.IntegerField(default=0, editable=False, verbose_name=_("review count"))
+    edited_by     = models.ForeignKey(Profile, null=True, blank=True,
+                                      related_name="edited_blogs", verbose_name=_("edited by"))
 
     title         = models.CharField(max_length=130, verbose_name=_("title"))
     slug          = models.CharField(max_length=130, editable=False, verbose_name=_("slug"), db_index=True)
@@ -84,11 +84,6 @@ class Post(models.Model, CommentedModel):
     @models.permalink
     def get_atom_feed_url(self):
         return ("turbion_blog_atom", ("%s/%s" % (self.blog.slug, self.id),))
-
-    def inc_reviews(self):
-        self.__class__._default_manager.\
-                    filter(pk=self._get_pk_val()).\
-                    update(review_count=self.review_count + 1)
 
     def __unicode__(self):
         return self.title

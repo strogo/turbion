@@ -16,8 +16,8 @@ class ProfileMixin(object):
         return {
             "username": self.username,
             "email": "test@foo.bar",
-            "password": self.password,
-            "password_confirm": self.password
+            "new_password1": self.password,
+            "new_password2": self.password
         }
 
     @property
@@ -81,8 +81,8 @@ class ChangePasswordTest(BaseViewTest, ProfileMixin):
     def test_good_change(self):
         data = {
             "old_password" : self.password,
-            "password": self.new_password,
-            "password_confirm" : self.new_password
+            "new_password1": self.new_password,
+            "new_password2" : self.new_password
         }
 
         response = self.assertStatus(

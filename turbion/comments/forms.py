@@ -26,7 +26,7 @@ class CommentForm(forms.Form):
 
     def clean_notify(self):
         notify = self.cleaned_data["notify"]
-        if notify and not self.cleaned_data.get("email"):
+        if notify and ("email" in self.fields and not self.cleaned_data.get("email")):
             raise forms.ValidationError(_("You have to provide email address"
                                             " to recieve notifications"))
         return notify
