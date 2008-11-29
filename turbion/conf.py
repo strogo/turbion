@@ -85,8 +85,6 @@ class GenericConfigurator(object):
             else:
                 raw_name = name
 
-            option_value = work_options.pop(raw_name, None)
-
             handler_name = "handle_%s" % raw_name.lower()
             handler = curry(getattr(self, handler_name, lambda x, options: True), options=options)
 
@@ -105,6 +103,7 @@ class GenericConfigurator(object):
         import inspect
 
         outer_scope = inspect.stack()[1][0].f_locals
+
         outer_scope.update(self.merge_settings(outer_scope, **options))
 
     def merge_settings(self, project_settings, **options):
