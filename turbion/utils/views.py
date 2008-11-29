@@ -14,7 +14,7 @@ def status_redirect(request, title, section, message, next, button="Continue"):
             "from"   : request.build_absolute_uri(),
             "button" : button,}
 
-    return http.HttpResponseRedirect(reverse("status") + "?" + urlencode(query))
+    return http.HttpResponseRedirect(reverse("turbion_status") + "?" + urlencode(query))
 
 fields = ["title", "section", "message", "next", "button", "from"]
 

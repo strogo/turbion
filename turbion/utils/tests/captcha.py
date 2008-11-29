@@ -1,17 +1,28 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 from django import forms
+from django import http
 
 from turbion.utils.testing import RequestFactory
+from turbion.utils.captcha.storage import CaptchaManager
 from turbion.utils.captcha.forms import CaptchaField
 from turbion.utils.captcha.utils import get_solution
 
 class CaptchaImageTest(TestCase):
     def setUp(self):
-        pass
+        self.session = {}
+
+        session_store = CaptchaManager(self.session)
+        self.test = session_store.make_test()
 
     def test_image_generation(self):
-        pass
+        response = http.HttpResponse(mimetype ='image/jpeg')
+        CaptchaManager(self.session).render_test(response, self.test.id)
+
+        self.assertEqual(
+            response.status_code,
+            200
+        )
 
 class CaptchaFormTest(TestCase):
     def setUp(self):

@@ -9,13 +9,13 @@ from django.http import Http404
 from django.utils.encoding import smart_str
 
 class SessionStore(object):
-    def __init__(self, request):
+    def __init__(self, session):
         """
         data = {key: (test, data)}
         """
-        self.request = request
+        self.session = session
 
-        self._data = request.session.setdefault("turbion_captcha", {})
+        self._data = session.setdefault("turbion_captcha", {})
 
     def __getitem__(self, key):
         return self._data[key][0]
@@ -64,8 +64,8 @@ class SessionFactory(Captcha.Factory):
                 del self.storedInstances[key]
 
 class CaptchaManager(object):
-    def __init__(self, request):
-        self.factory = SessionFactory(request)
+    def __init__(self, session):
+        self.factory = SessionFactory(session)
 
     def make_test(self):
         test_class = Tests.PseudoGimpy

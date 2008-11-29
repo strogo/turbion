@@ -26,7 +26,7 @@ class CaptchaWidget(forms.MultiWidget):
         test = self.manager.make_test()
         self._test_id = test.id
 
-        return (test.id, reverse('captcha_image', kwargs={"id": test.id}))
+        return (test.id, reverse('turbion_captcha_image', kwargs={"id": test.id}))
 
     def value_from_datadict(self, data, files, name):
         value = super(CaptchaWidget, self).value_from_datadict(data, files, name)
@@ -48,7 +48,7 @@ class CaptchaField(forms.Field):
     def __init__(self, request, *args, **kwargs):
         from turbion.utils.captcha import CaptchaManager
 
-        self.manager = CaptchaManager(request)
+        self.manager = CaptchaManager(request.session)
 
         super(CaptchaField, self).__init__(*args, **kwargs)
         self.widget.manager = self.manager
@@ -64,5 +64,5 @@ class CaptchaField(forms.Field):
             raise forms.ValidationError("Recognition error")
         elif not test.testSolutions([word]):
             raise forms.ValidationError("Word was recognized incorrect")
-        
+
         return (id, word)

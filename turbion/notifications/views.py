@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404
 from django import http, forms
-from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.profiles.models import Profile
@@ -45,7 +44,6 @@ class UnsubscribeForm(forms.Form):
 
         return data
 
-@login_required
 def unsubscribe(request, user_id, event_id):
     user  = get_object_or_404(Profile, pk=user_id)
     event = get_object_or_404(Event, pk=event_id)
@@ -58,11 +56,8 @@ def unsubscribe(request, user_id, event_id):
         event_descriptor=desc
     )
 
-    if user != request.user:
-        return http.HttpResponseForbidden()
-
     if not form.is_valid():
-        return http.HttpResponseBadRequest()
+        return http.HttpResponseBadRequest("Incorrect request params")
 
     connection = form.cleaned_data["connection"]
 

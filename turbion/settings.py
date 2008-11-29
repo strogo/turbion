@@ -4,6 +4,8 @@ import os
 import turbion
 from turbion.conf import Merge
 
+TURBION_BASE_PATH = os.path.normpath(os.path.dirname(__file__))
+
 TURBION_CONTEXT_PROCESSORS = [
     "turbion.options.context_processors.options_globals",
 ]
@@ -50,7 +52,7 @@ TURBION_AUTHENTICATION_BACKENDS = [
 ]
 
 TURBION_LOCALE_PATHS = [
-    os.path.join(os.path.dirname(turbion.__file__), "locale")
+    os.path.join(TURBION_BASE_PATH, "locale")
 ]
 
 TURBION_INSTALLED_APPS          = Merge(TURBION_APPS, "INSTALLED_APPS")
