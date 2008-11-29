@@ -22,11 +22,14 @@ class Feedback(models.Model):
 
     blog       = models.ForeignKey(Blog, related_name="feedbacks")
 
-    created_on = models.DateTimeField(default=datetime.now, verbose_name=_('creation date'))
-    created_by = models.ForeignKey(Profile, related_name="created_feedbacks")
+    created_on = models.DateTimeField(default=datetime.now, verbose_name=_('creation on'))
+    created_by = models.ForeignKey(Profile, related_name="created_feedbacks",
+                                   verbose_name=_("created by"))
 
-    edited_on  = models.DateTimeField(verbose_name=_('update date'), null=True, blank=True)
-    edited_by  = models.ForeignKey(Profile, related_name="edited_feedbacks", null=True, blank=True)
+    edited_on  = models.DateTimeField(verbose_name=_('update on'),
+                                      null=True, blank=True)
+    edited_by  = models.ForeignKey(Profile, related_name="edited_feedbacks",
+                                   verbose_name=_("edited by"), null=True, blank=True)
 
     subject    = models.CharField(max_length=255, verbose_name=_("subject"))
 
