@@ -148,13 +148,3 @@ class ViewsTest(BaseViewTest):
 
     def test_tags(self):
         self.assertStatus(blog_reverse("turbion_blog_tags", args=(self.blog.slug,)))
-
-    if settings.TURBION_USE_DJAPIAN:
-        def test_search(self):
-            pass
-
-        def test_search_posts(self):
-            pass
-
-        def test_search_comments(self):
-            pass

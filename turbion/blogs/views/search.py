@@ -59,7 +59,7 @@ def search(request, blog):
 
     context.update(generic_search(request,
                                    models=[Post, Comment],
-                                   filters={"post": {"blog": blog.id, "status": Post.statuses.published}},
+                                   filters={"post": {"blog": blog.slug, "status": Post.statuses.published}},
                                 )
                      )
 
@@ -83,7 +83,7 @@ def posts(request, blog):
 
     context.update(generic_search(request,
                                   models=(Post,),
-                                  filters={"post": {"blog": blog.id, "status": Post.statuses.published}},
+                                  filters={"post": {"blog": blog.slug, "status": Post.statuses.published}},
                     )
                 )
     return context
