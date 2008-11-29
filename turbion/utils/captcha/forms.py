@@ -36,7 +36,7 @@ class CaptchaWidget(forms.MultiWidget):
     def decompress(self, value):
         test = self.manager.make_test()
         self._test_id = test.id
-        value = (test.id, reverse('captcha_image', kwargs={"id": test.id}))
+        value = (test.id, reverse('turbion_captcha_image', kwargs={"id": test.id}))
         return value
 
     def get_id(self):
