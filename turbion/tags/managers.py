@@ -78,3 +78,28 @@ class TaggedItemManager(models.Manager):
             "item_id": instance._get_pk_val(),
             "item_dscr": to_descriptor(instance.__class__)
         }
+
+class BaseTaggedModelManager(models.Manager):
+    @property
+    def descriptor(self):
+        return to_descriptor(self.model)
+
+    @property
+    def table_name(self):
+        return quote_name(self.model._meta.db_table)
+
+    @property
+    def taggeditems_table_name(self):
+        from turbion.tags.models import TaggedItem
+
+        return quote_name(TaggedItem._meta.db_table)
+
+    def for_tag(sself, tag):
+        return self.extra(
+            where=[
+                "%s.tag_id=%s" % (self.taggeditems_table_name, tag.id),
+                "%s.item_dscr=%s" % (self.taggeditems_table_name, self.descriptor),
+                "%s.item_id=%s.id" % (self.taggeditems_table_name, self.table_name)
+            ],
+            tables=[TaggedItem._meta.db_table]
+        )

@@ -5,13 +5,10 @@ from django.db import models
 from django.db import connection
 
 from turbion.utils.models import GenericManager
-
+from turbion.tags.managers import BaseTaggedModelManager
 from turbion.comments.models import Comment
 from turbion.tags.models import TaggedItem
 from turbion.utils.descriptor import to_descriptor
-
-quote_name             = connection.ops.quote_name
-taggeditems_table_name = quote_name(TaggedItem._meta.db_table)
 
 class BlogManager(models.Manager):
     def get_oldest(self):
@@ -29,15 +26,7 @@ class BlogManager(models.Manager):
 
         return blog
 
-class PostManager(GenericManager):
-    @property
-    def descriptor(self):
-        return to_descriptor(self.model)
-
-    @property
-    def table_name(self):
-        return quote_name(self.model._meta.db_table)
-
+class PostManager(GenericManager, BaseTaggedModelManager):
     def get_query_set(self):
         return super(PostManager, self).get_query_set().select_related("created_by", "blog")
 
@@ -49,14 +38,3 @@ class PostManager(GenericManager):
                         blog=blog,
                         author=user
                 )
-
-    def for_tag(self, blog, tag):
-        return self.filter(blog=blog).\
-                    extra(
-                        where=[
-                            "%s.tag_id = %s" % (taggeditems_table_name, tag.id),
-                            '%s.item_dscr = "%s"' % (taggeditems_table_name, self.descriptor),
-                            "%s.item_id = %s.id" % (taggeditems_table_name, self.table_name)
-                        ],
-                        tables=[TaggedItem._meta.db_table]
-                    )
