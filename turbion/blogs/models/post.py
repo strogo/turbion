@@ -104,3 +104,6 @@ class Post(models.Model, CommentedModel):
         unique_together     = (("blog", "published_on", "title", "slug"),)
         app_label           = "blogs"
         db_table            = "turbion_post"
+
+
+from turbion.blogs.models import indexer
