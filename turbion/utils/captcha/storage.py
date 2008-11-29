@@ -66,6 +66,7 @@ class SessionFactory(Captcha.Factory):
 class CaptchaManager(object):
     def __init__(self, session):
         self.factory = SessionFactory(session)
+        session["__turbion_captcha_access"] = time.time()
 
     def make_test(self):
         test_class = Tests.PseudoGimpy
