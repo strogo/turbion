@@ -94,11 +94,16 @@ class BaseTaggedModelManager(models.Manager):
 
         return quote_name(TaggedItem._meta.db_table)
 
-    def for_tag(sself, tag):
-        return self.extra(
+    def for_tag(self, tag, queryset=None):
+        from turbion.tags.models import TaggedItem
+
+        if queryset is None:
+            queryset = self.get_query_set()
+
+        return queryset.extra(
             where=[
                 "%s.tag_id=%s" % (self.taggeditems_table_name, tag.id),
-                "%s.item_dscr=%s" % (self.taggeditems_table_name, self.descriptor),
+                "%s.item_dscr='%s'" % (self.taggeditems_table_name, self.descriptor),
                 "%s.item_id=%s.id" % (self.taggeditems_table_name, self.table_name)
             ],
             tables=[TaggedItem._meta.db_table]

@@ -38,3 +38,6 @@ class PostManager(GenericManager, BaseTaggedModelManager):
                         blog=blog,
                         author=user
                 )
+
+    def for_tag(self, blog, tag):
+        return super(PostManager, self).for_tag(tag, self.for_blog(blog))
