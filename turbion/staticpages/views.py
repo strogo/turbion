@@ -12,5 +12,7 @@ from turbion.blogs.decorators import blog_view
 @blog_view
 def dispatcher(request, blog, slug):
     page = get_object_or_404(Page.published, blog=blog, slug=slug)
-    return {"page": page,
-            "blog": blog}, page.template or 'turbion/staticpages/generic.html'
+    return {
+        "page": page,
+        "blog": blog
+    }, page.template or 'turbion/staticpages/generic.html'
