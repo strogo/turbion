@@ -5,6 +5,7 @@ from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.db import models
 from django.conf import settings
+from django.utils.encoding import force_unicode
 
 from turbion.utils import memoize
 from turbion.utils.descriptor import to_descriptor
@@ -62,7 +63,7 @@ class EventDescriptor(object):
     default_subject = "{{descriptor}} notification"
 
     def __unicode__(self):
-        return self.meta.name
+        return force_unicode(self.meta.name)
 
     def get_connection(self, instance):
         return instance
