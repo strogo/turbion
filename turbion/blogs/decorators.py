@@ -13,6 +13,15 @@ from turbion.utils.decorators import special_titled
 
 titled = special_titled(section=u"{{blog.name}}")
 
+def blog_dummy(view):
+    def _decorator(request, blog, *args, **kwargs):
+        return view(request, *args, **kwargs)
+
+    _decorator.__dict__ = view.__dict__
+    _decorator.__doct__ = view.__doc__
+    _decorator.__name__ = view.__name__
+    return _decorator
+
 def blog_view(view_func):
     """
     Picks up blog slug and `converts` it into blog object
