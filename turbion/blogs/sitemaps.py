@@ -12,25 +12,25 @@ class BlogSitemap(Sitemap):
         self.blog = blog
 
 class PostSitemap(BlogSitemap):
-    changefreq = "always"
-    priority = 0.9
+    changefreq = "never"
+    priority = 0.5
 
     def items(self):
         query_set = Post.published.for_blog(self.blog).filter(showing=Post.show_settings.everybody)
         return query_set
 
     def lastmod(self, post):
-        return post.edited_on
+        return post.edited_on and post.edited_on or post.published_on
 
 class CommentSitemap(BlogSitemap):
-    changefreq = "always"
+    changefreq = "never"
     priority = 0.5
 
     def items(self):
         return Comment.published.for_object(self.blog)#FIXME: remove comments reg/private posts
 
     def lastmod(self, comment):
-        return comment.date
+        return comment.edited_on and comment.edited_on or comment.created_on
 
 class GlobalSitemap(Sitemap):
     pass
