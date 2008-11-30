@@ -14,7 +14,7 @@ class PostprocessField(models.CharField):
 
         defaults = {
             "choices": [(label, name) for label, name in self.default_choices\
-                            if limit_choices_to and name in limit_choices_to or True],
+                            if limit_choices_to and name in limit_choices_to],
             "max_length": 50,
             "default": "markdown"
         }
