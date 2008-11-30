@@ -16,7 +16,7 @@ class PostprocessField(models.CharField):
             "choices": [(label, name) for label, name in self.default_choices\
                             if limit_choices_to and name in limit_choices_to or True],
             "max_length": 50,
-            "default": "dummy"
+            "default": "markdown"
         }
 
         defaults.update(kwargs)
@@ -27,6 +27,7 @@ class PostprocessedTextField(models.TextField):
     def __init__(self, *args, **kwargs):
         self.html_name = kwargs.pop("html_name", None)
         self.postprocessor_name = kwargs.pop("postprocessor_name", None)
+        self.limit_choices_to = kwargs.pop("limit_choices_to", None)
 
         super(PostprocessedTextField, self).__init__(*args, **kwargs)
 
@@ -39,8 +40,13 @@ class PostprocessedTextField(models.TextField):
         if self.postprocessor_name is None:
             self.postprocessor_name = "%s_postprocessor" % name
 
-        models.TextField(editable=False, blank=True).contribute_to_class(cls, self.html_name)
-        PostprocessField(verbose_name=_("postprocessor")).contribute_to_class(cls, self.postprocessor_name)
+        models.TextField(
+            editable=False, blank=True
+        ).contribute_to_class(cls, self.html_name)
+        PostprocessField(
+            verbose_name=_("postprocessor"),
+            limit_choices_to=self.limit_choices_to
+        ).contribute_to_class(cls, self.postprocessor_name)
 
     def pre_save(self, model_instance, add):
         value = super(PostprocessedTextField, self).pre_save(model_instance, add)

@@ -8,7 +8,7 @@ from turbion.comments import forms
 
 def add_comment(request, defaults={}, redirect=None, connection=None,
                 comment=None, checker=lambda comment: True,
-                status_getter=lambda author, comment: Comment.statuses.published):
+                status_getter=lambda comment: Comment.statuses.published):
     if comment and not checker(comment):
         return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
 

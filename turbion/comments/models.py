@@ -71,7 +71,7 @@ class Comment(models.Model):
     edited_by = models.ForeignKey(Profile, related_name="edited_comments",
                                   null=True, blank=True, verbose_name=_("edited by"))
 
-    text = PostprocessedTextField(verbose_name=_("text"))
+    text = PostprocessedTextField(verbose_name=_("text"), limit_choices_to=["markdown"])
 
     status = models.CharField(max_length=20,
                               choices=statuses,
