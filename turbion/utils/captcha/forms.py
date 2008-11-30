@@ -28,16 +28,13 @@ class CaptchaWidget(forms.MultiWidget):
 
         return (test.id, reverse('turbion_captcha_image', kwargs={"id": test.id}))
 
-    def value_from_datadict(self, data, files, name):
-        value = super(CaptchaWidget, self).value_from_datadict(data, files, name)
-        del value[1] # empty faky image widget data
-        return value
+    def render1(self, name, value, attrs=None):
+        print name, value
+
+        return ""
 
     def decompress(self, value):
-        test = self.manager.make_test()
-        self._test_id = test.id
-        value = (test.id, reverse('turbion_captcha_image', kwargs={"id": test.id}))
-        return value
+        return self.initial
 
     def get_id(self):
         return self._test_id
@@ -54,7 +51,7 @@ class CaptchaField(forms.Field):
         self.widget.manager = self.manager
 
     def clean(self, value):
-        id, word = value
+        id, image, word = value
 
         test = self.manager.get_test(id)
 
@@ -65,4 +62,4 @@ class CaptchaField(forms.Field):
         elif not test.testSolutions([word]):
             raise forms.ValidationError("Word was recognized incorrect")
 
-        return (id, word)
+        return (id, image, word)
