@@ -29,7 +29,7 @@ class ServerGateway(object):
 
     def __call__(self, request, *args, **kwargs):
         if kwargs:
-            raise RuntimeError, "Xmlrpc server gateway cannot handle key variable argumets"
+            raise RuntimeError("Xmlrpc server gateway cannot handle key variable argumets")
 
         def custom_dispatch(method, params):
             return self.dispatcher._dispatch(method, params + tuple(args))
