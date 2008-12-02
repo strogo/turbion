@@ -45,7 +45,7 @@ class PostsFeed(BasePostFeed, BlogFieldBase):
         posts = Post.published.for_blog(self.blog)
         if not self.request.user.is_authenticated_confirmed():
             posts = posts.filter(showing=Post.show_settings.everybody)
-        return posts.order_by("-published_on")
+        return posts.order_by("-published_on")[:10]
 
 class PostsFeedAtom(PostsFeed):
     feed_type = Atom1Feed
@@ -89,8 +89,13 @@ class CommentsFeed(BlogFieldBase):
         return comment.created_by
 
     def items(self, post):
-        return post and Comment.published.for_object(post).order_by("-created_on").distinct()\
-                    or Comment.published.for_model_with_rel(Post, self.blog).order_by("-created_on").distinct()
+        queryset = Comment.published
+        if post:
+            comments = queryset.for_object(post).order_by("-created_on").distinct()
+        else:
+            comments = queryset.for_model_with_rel(Post, self.blog).order_by("-created_on").distinct()
+
+        return comments[:50]
 
 class CommentsFeedAtom(CommentsFeed):
     feed_type = Atom1Feed
@@ -120,7 +125,7 @@ class TagFeed( BasePostFeed, BlogFieldBase):
         return u"Entries with tag '%s'" % tag.name
 
     def items(self, tag):
-        return Post.published.for_tag(self.blog, tag)
+        return Post.published.for_tag(self.blog, tag)[:10]
 
 class TagFeedAtom(TagFeed):
     feed_type = Atom1Feed
