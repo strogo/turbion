@@ -131,5 +131,3 @@ class CommentAdd(EventDescriptor):
         if recipient == comment.created_by:
             return False
         return True
-
-from turbion.comments import indexer
