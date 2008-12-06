@@ -26,13 +26,13 @@ def blog(request, blog):
     if not request.user.is_authenticated_confirmed():
         posts = posts.filter(showing=Post.show_settings.everybody)
 
-    post_paginator = paginate(posts,
+    post_page = paginate(posts,
                               request.page,
                               blog.post_per_page)
 
     context = {
         "blog": blog,
-        "post_paginator": post_paginator
+        "post_page": post_page
     }
 
     return context
@@ -60,14 +60,14 @@ def tag(request, blog, tag_slug):
     if not request.user.is_authenticated_confirmed():
         posts = posts.filter(showing=Post.show_settings.everybody)
 
-    post_paginator = paginate(posts,
+    post_page = paginate(posts,
                               request.page,
                               blog.post_per_page)
 
     return {
         "blog": blog,
         "tag": _tag,
-        "post_paginator": post_paginator
+        "post_page": post_page
     }
 
 @blog_view
@@ -76,17 +76,14 @@ def tag(request, blog, tag_slug):
 @titled(page='{{post.title}}')
 def post(request, blog, post):
     comment_form = comments_forms.CommentForm(request=request)
-    form_action = blog_reverse(
-                    "turbion_blog_comment_add",
-                    args=(post.blog.slug, post.id)
-            )
 
-    comments = Comment.published.for_object(post).select_related("created_by").order_by("created_on")
+    comments = Comment.published.for_object(post)\
+                        .select_related("created_by")\
+                        .order_by("created_on")
 
     return {
         "blog": blog,
         "post": post,
         "comments": comments,
-        "comment_form": comment_form,
-        "form_action": form_action
+        "comment_form": comment_form
     }
