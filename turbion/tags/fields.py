@@ -22,7 +22,7 @@ class ModelTagManager(object):
                                          **TaggedItem.objects.get_item_connection(self.instance))
         item.delete()
 
-    def replace( self, *tags ):
+    def replace(self, *tags):
         tags = map(Tag.objects.create_tag, tags)
 
         my_tags = set(self.all())

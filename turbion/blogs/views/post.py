@@ -18,7 +18,7 @@ from turbion.utils.decorators import paged, templated
 
 @blog_view
 @paged
-@templated('turbion/blogs/list.html')
+@templated('turbion/blogs/post_list.html')
 @titled(page=_('Blog'))
 def blog(request, blog):
     posts = Post.published.for_blog(blog)
@@ -51,7 +51,7 @@ def tags(request, blog):
 
 @blog_view
 @paged
-@templated('turbion/blogs/list.html')
+@templated('turbion/blogs/post_list.html')
 @titled(page=_('Tag "{{tag}}"'))
 def tag(request, blog, tag_slug):
     _tag = get_object_or_404(blog.tags, slug=tag_slug)
