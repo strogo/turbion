@@ -55,8 +55,10 @@ class Blog(models.Model):
     def calendar(self):
         if not hasattr(self, "_calendar"):
             from turbion.blogs.models import Post
-            self._calendar = BlogCalendar(self,
-                                          Post.published.for_blog(Blog.objects.get(pk=self._get_pk_val())))
+            self._calendar = BlogCalendar(
+                self,
+                Post.published.for_blog(self)
+            )
         return self._calendar
 
     @utils.permalink
