@@ -28,7 +28,7 @@ D = dict
                             suffix=lambda instance, created, *args, **kwargs: instance.blog.id
                         ),
                       suffix=lambda context, blog: blog.id,
-                      file_name='turbion/blogs/pads/archive_pad.html',
+                      file_name='turbion/blogs/pads/archive.html',
                       takes_context=True)
 def archive_pad(context, blog):
     months = Post.published.for_blog(blog).dates("created_on", "month", order='DESC').distinct()
@@ -43,7 +43,7 @@ def archive_pad(context, blog):
                                "signal": (signals.post_save, signals.post_delete),
                                "suffix": lambda instance, *args, **kwargs: instance.connection.blog.id},
                       suffix=lambda context, blog: blog.id,
-                      file_name='turbion/blogs/pads/top_commenters_pad.html',
+                      file_name='turbion/blogs/pads/top_commenters.html',
                       takes_context=True)
 def top_commenters_pad(context, blog, count=5):
     dscr = to_descriptor(Post)
@@ -79,7 +79,7 @@ def top_commenters_pad(context, blog, count=5):
                         suffix=lambda instance, *args, **kwargs: instance.connection.blog.id
                       ),
                       suffix=lambda context, blog: blog.id,
-                      file_name='turbion/blogs/pads/last_comments_pad.html',
+                      file_name='turbion/blogs/pads/last_comments.html',
                       takes_context=True)
 def last_comments_pad(context, blog, count=5):
     comments = Comment.published.for_model_with_rel(Post, blog).order_by("-created_on").distinct()[:count]
@@ -91,7 +91,7 @@ def last_comments_pad(context, blog, count=5):
                                "signal": signals.post_save,
                                "suffix": lambda instance, created, *args, **kwargs: instance.blog.id},
                       suffix=lambda context, blog: blog.id,
-                      file_name='turbion/blogs/pads/top_posts_pad.html',
+                      file_name='turbion/blogs/pads/top_posts.html',
                       takes_context=True)
 def top_posts_pad(context, blog, count=5):
     return  {
@@ -103,7 +103,7 @@ def top_posts_pad(context, blog, count=5):
                                 "signal": signals.post_save,
                                 "suffix": lambda instance, created, *args, **kwargs: instance.blog.id},
                       suffix=lambda context, blog: blog.id,
-                      file_name='turbion/blogs/pads/tags_pad.html',
+                      file_name='turbion/blogs/pads/tags.html',
                       takes_context=True)
 def tags_pad(context, blog):
     return {
@@ -119,7 +119,7 @@ def tags_pad(context, blog):
                         suffix=lambda instance, *args, **kwargs: (instance.blog.id, instance.published_on.year, instance.published_on.month)
                       ),
                       suffix=lambda context, blog: (blog.id, blog.calendar.current.year, blog.calendar.current.month),
-                      file_name='turbion/blogs/pads/calendar_pad.html',
+                      file_name='turbion/blogs/pads/calendar.html',
                       takes_context=True)
 def calendar_pad(context, blog):
     return {"blog": blog}
@@ -131,7 +131,7 @@ def calendar_pad(context, blog):
                         checker=lambda *args,**kwargs: True
                       ),
                       suffix=lambda context, post: [post.blog.id, post.id],
-                      file_name='turbion/blogs/pads/prevnext_pad.html',
+                      file_name='turbion/blogs/pads/prevnext.html',
                       takes_context=True)
 def prevnext_pad(context, post):
     filter = Post.published.lookups
