@@ -8,14 +8,14 @@ class YearIter(object):
 
     def get_next_month(self):
         if self.current.month + 1 > 12:
-            return date( year = self.current.year + 1, month = 1, day = 1 )
-        return date( year = self.current.year, month = self.current.month + 1, day = 1 )
-    next_month = property( get_next_month )
+            return date(year=self.current.year + 1, month=1, day=1)
+        return date(year=self.current.year, month=self.current.month + 1, day=1)
+    next_month = property(get_next_month)
 
     def get_prev_month(self):
         if self.current.month - 1 <= 0:
-            return date( year = self.current.year - 1, month = 12, day = 1 )
-        return date( year = self.current.year, month = self.current.month - 1, day = 1 )
+            return date(year=self.current.year - 1, month=12, day=1)
+        return date(year=self.current.year, month=self.current.month - 1, day=1)
     prev_month = property(get_prev_month)
 
     def get_month_name(self):
@@ -54,21 +54,27 @@ class Calendar(object):
         raise NotImplementedError
 
     def _get_dates(self):
-        filter = {"%s__year" % self.date_field : self.current.year,
-                  "%s__month" % self.date_field : self.current.month}
+        filter = {
+            "%s__year" % self.date_field: self.current.year,
+            "%s__month" % self.date_field: self.current.month
+        }
 
         self._dates = self.queryset.filter(**filter).dates(self.date_field, 'day')
 
         return self._dates
     dates = property(_get_dates)
 
+    def weekdays(self):
+        from django.utils.dates import WEEKDAYS
+        return WEEKDAYS.values()
+
     def __iter__(self):
         try:
-            import calendar
-            cal = calendar.Calendar()
+            from calendar import Calendar
         except (ImportError, AttributeError):
-            from turbion.utils import calendar24
-            cal = calendar24.Calendar()
+            from turbion.utils.calendar24 import Calendar
+
+        cal = Calendar()
 
         urls = self.get_per_day_urls(self.dates)
 
