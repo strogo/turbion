@@ -4,11 +4,13 @@ from django.db import models
 from django import http
 
 from turbion.comments.models import Comment
+from turbion.comments.fields import CommentCountField
 from turbion.comments import views
 from turbion.utils.testing import RequestFactory, BaseViewTest
 
 class Article(models.Model):
     title = models.CharField(max_length=20)
+    comment_count = CommentCountField()
 
     def get_absolute_url(self):
         return "/foobar/"
@@ -37,7 +39,7 @@ class CommentAddTest(BaseViewTest):
         data = {
             "text": "Foo bar text",
             "notify": True,
-            'text_postprocessor': "dummy"
+            'text_postprocessor': "markdown"
         }
 
         request = self.client.post("/foobar/", data=data)
@@ -46,6 +48,7 @@ class CommentAddTest(BaseViewTest):
                             request,
                             connection=self.article
                     )
+
         self.assert_(isinstance(response, http.HttpResponse))
         self.assertResponseStatus(response, http.HttpResponseRedirect.status_code)
 
@@ -53,10 +56,13 @@ class CommentAddTest(BaseViewTest):
 
         self.assertEqual(comment.status, Comment.statuses.published)
 
+        article = Article.objects.get()
+        self.assertEqual(article.comment_count, 1)
+
     def test_add_guest(self):
         data = {
             "text": "Foo bar text",
-            'text_postprocessor': "dummy",
+            'text_postprocessor': "markdown",
             "notify": True,
             "nickname": "Test User",
             "email": "testuser@domain.com",
@@ -84,7 +90,7 @@ class CommentAddTest(BaseViewTest):
         comment = Comment.objects.get()
 
         self.assertEqual(comment.status, Comment.statuses.published)
-        
+
     def test_edit(self):
         comment = self._create_comment()
 
@@ -92,7 +98,7 @@ class CommentAddTest(BaseViewTest):
 
         data = {
             "text": "New comment text",
-            'text_postprocessor': "dummy",
+            'text_postprocessor': "markdown",
         }
 
         request = self.client.post("/foobar/", data=data)

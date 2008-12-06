@@ -8,7 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.blogs import managers
 from turbion.blogs.models.blog import Blog
-from turbion.comments.models import Comment, CommentedModel
+from turbion.comments.models import Comment
+from turbion.comments.fields import CommentCountField
 from turbion.tags.models import Tag
 from turbion.tags.fields import TagsField
 from turbion.profiles.models import Profile
@@ -17,7 +18,7 @@ from turbion.blogs import utils
 from turbion.utils.postprocessing.fields import PostprocessedTextField
 from turbion.utils.enum import Enum
 
-class Post(models.Model, CommentedModel):
+class Post(models.Model):
     statuses = Enum(draft    =_("draft"),
                     trash    =_("trashed"),
                     published=_("published")
@@ -32,7 +33,7 @@ class Post(models.Model, CommentedModel):
             )
 
     blog          = models.ForeignKey(Blog, verbose_name=_("blog"), related_name="posts")
-    comment_count = models.PositiveIntegerField(default=0, editable=False, verbose_name=_("comment count"))
+    comment_count = CommentCountField(verbose_name=_("comment count"))
 
     created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
     created_by    = models.ForeignKey(Profile, related_name="created_posts", verbose_name=_("created by"))

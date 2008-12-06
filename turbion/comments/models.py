@@ -16,11 +16,6 @@ from turbion.utils.descriptor import DescriptorField, GenericForeignKey, to_desc
 
 quote_name = connection.ops.quote_name
 
-class CommentedModel(object):
-    def update_comment_count(self):
-        self.comment_count = Comment.published.for_object(self).count()
-        self.save()
-
 class CommentManager(GenericManager):
     def get_query_set(self):
         return super(CommentManager, self).get_query_set().select_related("created_by")
@@ -99,19 +94,6 @@ class Comment(models.Model):
         created = not self._get_pk_val()
 
         super(Comment, self).save(*args, **kwargs)
-
-        if created:
-            self.update_connection_comment_count()
-
-    def update_connection_comment_count(self):
-        try:
-            self.connection.update_comment_count()
-        except AttributeError:
-            pass
-
-    def delete(self):
-        super(Comment,self).delete()
-        self.update_connection_comment_count()
 
     class Meta:
         ordering            = ("-created_on",)
