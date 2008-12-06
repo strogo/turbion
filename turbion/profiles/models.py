@@ -127,7 +127,7 @@ class Profile(User):
     def __unicode__(self):
         return self.name
 
-    def get_absolute_url(self):
+    def get_site_url(self):
         if self.is_confirmed:
             type_map = {
                 Profile.sites.profile: models.permalink(
@@ -141,6 +141,9 @@ class Profile(User):
             }
             return type_map.get(self.site_view, self.site)
         return self.site
+
+    def get_absolute_url(self):
+        return self.get_site_url()
 
     class Meta:
         verbose_name        = _('profile')
