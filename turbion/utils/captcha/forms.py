@@ -28,10 +28,12 @@ class CaptchaWidget(forms.MultiWidget):
 
         return (test.id, reverse('turbion_captcha_image', kwargs={"id": test.id}))
 
-    def render1(self, name, value, attrs=None):
-        print name, value
+    def render(self, name, value, attrs=None):
+        if isinstance(value, (list, tuple)):
+            value = list(value)
+            value[1] = reverse('turbion_captcha_image', kwargs={"id": value[0]})
 
-        return ""
+        return super(CaptchaWidget, self).render(name, value, attrs)
 
     def decompress(self, value):
         return self.initial
