@@ -1,0 +1,10 @@
+{% extends "turbion/blogs/base.html" %}
+
+{% block content %}
+<div class="page">
+    <h2>{{page.title}}</h2>
+    <p>
+        {{page.text_html|safe}}
+    </p>
+</div>
+{% endblock %}
