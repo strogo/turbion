@@ -6,11 +6,23 @@ from django.db import models
 
 from turbion.pingback import client, signals
 from turbion.utils.enum import Enum
+from turbion.utils.models import GenericManager
 from turbion.utils.descriptor import DescriptorField, GenericForeignKey
 
+class IncomingManager(GenericManager):
+    def for_object(self, obj):
+        from turbion.utils.descriptor import to_descriptor
+
+        return self.filter(
+            descriptor=to_descriptor(obj.__class__),
+            object_id=obj._get_pk_val()
+        )
+
 class Incoming(models.Model):
-    types = Enum(pingback="pingback",
-                trackback="trackback")
+    types = Enum(
+        pingback="pingback",
+        trackback="trackback"
+    )
 
     type       = models.CharField(max_length=10, choices=types, default=types.pingback,
                                   verbose_name=_("type"))
@@ -20,6 +32,7 @@ class Incoming(models.Model):
 
     date       = models.DateTimeField(default=datetime.now, verbose_name=_("date"))
     status     = models.CharField(max_length=255, verbose_name=_("status"))
+    finished   = models.BooleanField(default=False, verbose_name=_("finished"))
 
     title      = models.CharField(max_length=255, null=True, verbose_name=_("title"))
     paragraph  = models.TextField(null=True, verbose_name=_("paragraph"))
@@ -27,6 +40,10 @@ class Incoming(models.Model):
     descriptor = DescriptorField(null=True, blank=True, verbose_name=_("descriptor"))
     object_id  = models.PositiveIntegerField(null=True, blank=True)
     object     = GenericForeignKey()
+
+    objects = models.Manager()
+    pingbacks = IncomingManager(type=types.pingback, finished=True)
+    trackbacks = IncomingManager(type=types.trackback, finished=True)
 
     class Meta:
         verbose_name        = _("incoming")
