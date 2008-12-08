@@ -23,7 +23,7 @@ def add(request, blog, post_id):
                         request,
                         connection=post,
                         status_getter=blog.get_comment_status,
-                        defaults={}
+                        next=post.get_absolute_url() + "#comment_%(id)s"
                 )
 
     if isinstance(context, dict):
@@ -31,6 +31,7 @@ def add(request, blog, post_id):
             "blog": blog,
             "post": post,
         })
+    print context
     return context
 
 @blog_view

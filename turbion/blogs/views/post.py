@@ -10,7 +10,7 @@ from turbion.blogs.models import Blog, Post, Comment
 from turbion.profiles.models import Profile
 from turbion.blogs.utils import blog_reverse
 from turbion.comments import forms as comments_forms
-
+from turbion.pingback.models import Incoming
 from turbion.tags.models import Tag
 
 from turbion.utils.pagination import paginate
@@ -81,9 +81,12 @@ def post(request, blog, post):
                         .select_related("created_by")\
                         .order_by("created_on")
 
+    pingbacks = Incoming.pingbacks.for_object(post)
+
     return {
         "blog": blog,
         "post": post,
         "comments": comments,
+        "pingbacks": pingbacks,
         "comment_form": comment_form
     }

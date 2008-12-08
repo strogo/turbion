@@ -7,9 +7,10 @@ from django import db
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+
 from turbion.utils._calendar import Calendar
 from turbion.utils.postprocessing.fields import PostprocessField
-
+from turbion.utils import memoize
 from turbion.blogs import managers
 from turbion.tags.models import Tag
 from turbion.profiles.models import Profile
@@ -104,6 +105,19 @@ class Blog(models.Model):
 
     def is_author(self, user):
         return self.authors.filter(pk=user._get_pk_val()).count()
+
+    @memoize
+    def generate_menu(self):
+        from turbion.staticpages.models import Page
+        menu = [
+            (_("blog"), self.get_absolute_url()),
+            (_("feedback"), utils.reverse("turbion_feedback", args=(self.slug,))),
+        ]
+
+        menu += [(page.title, page.get_absolute_url())
+                    for page in Page.published.filter(blog=self)]
+
+        return menu
 
     class Meta:
         verbose_name        = _('blog')
