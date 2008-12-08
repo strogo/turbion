@@ -84,14 +84,9 @@ class Comment(models.Model):
     def __unicode__(self):
         return "%s - %s" % (self.created_by.name, self.created_on)
 
-    def get_absolute_url(self):
-        return self.connection.get_absolute_url() +"#comment_%s" % self.id
-
     def save(self, *args, **kwargs):
         if self.edited_by:
             self.edited_on = datetime.now()
-
-        created = not self._get_pk_val()
 
         super(Comment, self).save(*args, **kwargs)
 

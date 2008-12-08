@@ -6,11 +6,11 @@ from turbion.comments.models import Comment, CommentAdd
 from turbion.comments import signals
 from turbion.comments import forms
 
-def add_comment(request, defaults={}, redirect=None, connection=None,
+def add_comment(request, next, defaults={}, connection=None,
                 comment=None, checker=lambda comment: True,
                 status_getter=lambda comment: Comment.statuses.published):
     if comment and not checker(comment):
-        return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
+        return HttpResponseRedirect(next % comment.__dict__)
 
     if request.method == 'POST':
         form = forms.CommentForm(
@@ -22,13 +22,13 @@ def add_comment(request, defaults={}, redirect=None, connection=None,
         if form.is_valid():
             new_comment = form.save(False)
 
+            if connection:
+                new_comment.connection = connection
+            new_comment.__dict__.update(defaults)
+
             if 'view' in request.POST:
                 comment = new_comment
             else:
-                if connection:
-                    new_comment.connection = connection
-                new_comment.__dict__.update(defaults)
-
                 if not new_comment.created_by.trusted:
                     new_comment.status = status_getter(new_comment)
 
@@ -48,7 +48,7 @@ def add_comment(request, defaults={}, redirect=None, connection=None,
                 if form.cleaned_data["notify"]:
                     CommentAdd.instance.subscribe(new_comment.created_by, new_comment.connection)
 
-                return HttpResponseRedirect(redirect and redirect or new_comment.get_absolute_url())
+                return HttpResponseRedirect(next % new_comment.__dict__)
     else:
         form = forms.CommentForm(
                         request=request,
