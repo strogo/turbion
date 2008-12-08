@@ -1,0 +1,11 @@
+{% load blogs.common %}
+<h2>Latest comments (<a href="{% blog_url turbion_blog_atom blog.slug,"comments" %}">rss</a>)</h2>
+<ul>
+	{%for comment in comments %}
+	{% with comment.connection as post %}
+		<li>
+			<a href="{{post.get_absolute_url}}#comment_{{comment.id}}">{{comment.created_by.name}} » "{{post}}"</a>
+		</li>
+	{% endwith %}
+	{%endfor%}
+</ul>

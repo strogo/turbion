@@ -1,0 +1,40 @@
+{% load blogs.common calendar %}
+<h2>Календарь</h2>
+{% with blog.calendar as calendar %}
+<div id="calendar_wrap">
+	<table id="wp-calendar">
+		<caption>{{calendar.year_iter.month_name}} {{calendar.current.year}}</caption>
+		<thead>
+			<tr>
+			{% for day in calendar.weekdays %}
+				<th abbr="{{day}}" scope="col" title="{{day}}">{{day|capfirst|first}}</th>
+			{% endfor %}
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<td colspan="3" id="prev">
+					<a href="{{calendar.get_prev_month_url}}" title="">&laquo; {{calendar.year_iter.prev_month_name}}</a>
+				</td>
+				<td class="pad">&nbsp;</td>
+				<td colspan="3" id="next" class="pad">
+					<a href="{{calendar.get_next_month_url}}" title="">{{calendar.year_iter.next_month_name}}&raquo;</a>
+				</td>
+			</tr>
+		</tfoot>
+		<tbody>
+        {% for week in calendar %}
+            <tr>
+                {% for day in week %}
+                <td>
+                    {% if day.2 %}
+                        {% if day.1 %}<a href="{{day.1}}">{{day.0}}</a>{% else %}{{day.0}}{% endif %}
+                    {% else %}&nbsp;{% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endwith %}

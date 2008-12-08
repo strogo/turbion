@@ -1,0 +1,10 @@
+{% load blogs.common %}
+<h2>Tags</h2>
+<ul>
+    {% for tag in tags %}
+    <li>
+        <a href="{% blog_url turbion_blog_tag blog.slug,tag.slug %}">{{tag}}</a>
+         (<a href="{% blog_url turbion_blog_atom blog.slug,"tag"%}{{tag.slug}}/">rss</a>)
+    </li>
+    {% endfor %}
+</ul>
