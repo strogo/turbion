@@ -22,7 +22,7 @@ class Command(NoArgsCommand):
         for clone_meta in self.get_clone_profiles(fields):
             lookup = dict([(field, clone_meta[i]) for i, field in enumerate(fields)])
 
-            clones = Profile.objects.filter(**lookup).order_by("-email", "date_joined")
+            clones = Profile.objects.filter(**lookup).order_by("-email", "-date_joined")
 
             base_obj, others = clones[0], clones[1:]
 
@@ -53,18 +53,21 @@ related_object._get_pk_val(),)
                     obj.delete()
 
     def get_clone_profiles(self, fields):
+        fields = map(connection.ops.quote_name, fields)
+        not_nulls = " AND ".join(['%(f)s IS NOT NULL AND %(f)s != ""' % {'f': field} for field in fields])
+
         query = """SELECT DISTINCT
 			%(fields)s, COUNT(*) AS count
                    FROM
-                        turbion_profile AS p
+                        turbion_profile p
                    JOIN
-                        auth_user AS u ON u.id=p.user_ptr_id
+                        auth_user u ON u.id=p.user_ptr_id
                    WHERE
-                        is_confirmed=0
+                        is_confirmed=0 AND %(not_nulls)s
                    GROUP BY
                         %(fields)s
                    HAVING
-                        count > 1;""" % {'fields': ",".join(map(connection.ops.quote_name, fields))}
+                        count > 1;""" % {'fields': ",".join(fields), 'not_nulls': not_nulls}
 
         cursor = connection.cursor()
 
