@@ -12,22 +12,17 @@ class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
         make_option('--dry', action='store_true', default=False,
             help='Dry run. Make no changes'),
-        make_option('--exclude_email', action='store_true', default=False,
-            help='Exclude email from clone search')
+        make_option('--fields', action='store', default="username,email",
+            help='Key field names')
     )
 
-    def handle_noargs(self, **options):
-        dry = options["dry"]
-        exclude_email = options["exclude_email"]
+    def handle_noargs(self, dry=False, fields="username,email", **options):
+        fields = fields.split(",")
 
-        for clone_meta in self.get_clone_profiles(exclude_email):
-            lookup = {
-                "nickname": clone_meta[0]
-            }
-            if not exclude_email:
-                lookup.update({"email": clone_meta[1]})
+        for clone_meta in self.get_clone_profiles(fields):
+            lookup = dict([(field, clone_meta[i]) for i, field in enumerate(fields)])
 
-            clones = Profile.objects.filter(**lookup).order_by("-email")
+            clones = Profile.objects.filter(**lookup).order_by("-email", "date_joined")
 
             base_obj, others = clones[0], clones[1:]
 
@@ -45,7 +40,7 @@ class Command(NoArgsCommand):
                     for related_object in related_model._default_manager.filter(**{name: obj}):
                         setattr(related_object, name, base_obj)
 
-                        print u"\t\tSaving %s - %s with reassigned profile" % (related_model._meta.object_name, 
+                        print u"\t\tSaving %s - %s with reassigned profile" % (related_model._meta.object_name,
 related_object._get_pk_val(),)
                         if not dry:
                             try:
@@ -57,13 +52,9 @@ related_object._get_pk_val(),)
                 if not dry:
                     obj.delete()
 
-    def get_clone_profiles(self, exclude_email):
-        email_str = ", email"
-        if exclude_email:
-            email_str = ""
-
+    def get_clone_profiles(self, fields):
         query = """SELECT DISTINCT
-                        nickname%s, COUNT(*) AS count
+			%(fields)s, COUNT(*) AS count
                    FROM
                         turbion_profile AS p
                    JOIN
@@ -71,9 +62,9 @@ related_object._get_pk_val(),)
                    WHERE
                         is_confirmed=0
                    GROUP BY
-                        nickname%s
+                        %(fields)s
                    HAVING
-                        count > 1;""" % (email_str, email_str)
+                        count > 1;""" % {'fields': ",".join(map(connection.ops.quote_name, fields))}
 
         cursor = connection.cursor()
 
