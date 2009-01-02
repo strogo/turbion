@@ -31,7 +31,10 @@ D = dict
                       file_name='turbion/blogs/pads/archive.html',
                       takes_context=True)
 def archive_pad(context, blog):
-    months = Post.published.for_blog(blog).dates("created_on", "month", order='DESC').distinct()
+    queryset = Post.published.for_blog(blog)
+
+    months = [(month, lambda: queryset.filter(published_on__year=month.year, published_on__month=month.month).count())\
+                  for month in queryset.dates("published_on", "month", order='DESC').distinct()]
 
     return {
         'blog': blog,

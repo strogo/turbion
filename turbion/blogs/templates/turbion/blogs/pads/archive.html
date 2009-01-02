@@ -1,9 +1,11 @@
 {% load blogs.common %}
+
 <h2>Archive (<a href="{% blog_url turbion_blog_archive blog.slug %}">index</a>)</h2>
 <ul>
-	{% for month in months %}
-	<li>
+    {% for month, count in months %}
+    <li>
         <a href="{% blog_url turbion_blog_archive_month blog.slug,month.year,month.month %}" title="{{month|date:"F Y"}}">{{month|date:"F Y"}}</a>
+	({{count}})
     </li>
-	{% endfor %}
+    {% endfor %}
 </ul>

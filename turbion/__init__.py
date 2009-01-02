@@ -10,3 +10,6 @@ class TurbionConfigurator(GenericConfigurator):
 from turbion import settings
 
 configure = TurbionConfigurator(settings, "TURBION_")
+
+
+VERSION = (0, 8, 0, 'Pushkin', 0)
