@@ -35,6 +35,8 @@ def index_sitemap(request):
         )
         for sitemap_url in urls:
             sites.append('%s://%s%s' % (protocol, current_site.domain, sitemap_url))
+    
+    sites.append('%s://%s%s' % (protocol, current_site.domain, reverse("turbion_profiles_sitemap")))
 
     xml = loader.render_to_string('sitemap_index.xml', {'sitemaps': sites})
     return http.HttpResponse(xml, mimetype='application/xml')
