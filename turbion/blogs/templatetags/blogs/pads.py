@@ -139,12 +139,12 @@ def calendar_pad(context, blog):
 def prevnext_pad(context, post):
     filter = Post.published.lookups
     try:
-        prev_post = post.get_previous_by_created_on(**filter)#FIXME: remove created_on dependency
+        prev_post = post.get_previous_by_published_on(**filter)
     except Post.DoesNotExist:
         prev_post = None
 
     try:
-        next_post = post.get_next_by_created_on(**filter)
+        next_post = post.get_next_by_published_on(**filter)
     except Post.DoesNotExist:
         next_post = None
 
