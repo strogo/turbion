@@ -117,8 +117,8 @@ class Post(models.Model):
         except IndexError:
             raise self.DoesNotExist("%s matching query does not exist." % self.__class__._meta.object_name)
 
-    get_previous_by_published_on = lambda self, kwargs: self._get_near_post(False, **kwargs)
-    get_next_by_published_on = lambda self, kwargs: self._get_near_post(True, **kwargs)
+    get_previous_by_published_on = lambda self, **kwargs: self._get_near_post(False, **kwargs)
+    get_next_by_published_on = lambda self, **kwargs: self._get_near_post(True, **kwargs)
 
     class Meta:
         verbose_name        = 'post'
