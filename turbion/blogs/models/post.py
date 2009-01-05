@@ -46,7 +46,8 @@ class Post(models.Model):
                                       related_name="edited_blogs", verbose_name=_("edited by"))
 
     title         = models.CharField(max_length=130, verbose_name=_("title"))
-    slug          = models.CharField(max_length=130, editable=False, verbose_name=_("slug"), db_index=True)
+    slug          = models.CharField(max_length=130, editable=False,
+                                     verbose_name=_("slug"), db_index=True)
 
     mood          = models.CharField(max_length=50, null=True, blank=True, verbose_name=_("mood"))
     location      = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("location"))
@@ -54,16 +55,16 @@ class Post(models.Model):
 
     text          = PostprocessedTextField(verbose_name=_("text"))
 
-    status        = models.CharField(max_length=10, choices=statuses, default=statuses.draft, verbose_name=_("status"))
+    status        = models.CharField(max_length=10, choices=statuses, db_index=True,
+                                     default=statuses.draft, verbose_name=_("status"))
 
-    commenting    = models.CharField(max_length=10,
-                                     choices = commenting_settings,
-                                     default = commenting_settings.allow,
+    commenting    = models.CharField(max_length=10, choices=commenting_settings,
+                                     default=commenting_settings.allow,
                                      verbose_name=_("commenting"))
-    showing       = models.CharField(max_length = 10,
-                                     choices = show_settings,
-                                     default = show_settings.everybody,
-                                     verbose_name=_("showing"))
+    showing       = models.CharField(max_length = 10, choices=show_settings,
+                                     default=show_settings.everybody,
+                                     verbose_name=_("showing"),
+                                     db_index=True)
 
     objects = managers.PostManager()
 
@@ -93,6 +94,7 @@ class Post(models.Model):
         if not self.slug:
             from turbion.utils.text import slugify
             self.slug = slugify(self.title)
+            
         if self.edited_by:
             self.edited_on = datetime.now()
 

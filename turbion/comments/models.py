@@ -102,7 +102,7 @@ class CommentAdd(EventDescriptor):
         name = _("new comment added")
         to_object = True
         trigger = (Comment, comment_signals.comment_added)
-        content_type = "text/html"
+        content_type = "html"
 
     def allow_recipient(self, recipient, comment, *args, **kwargs):
         if recipient == comment.created_by:
