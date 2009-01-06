@@ -107,10 +107,11 @@ class Post(models.Model):
         op = is_next and 'gt' or 'lt'
         order = not is_next and '-' or ''
 
-        q = models.Q(**{'published_on__%s' % op: self.published_on})
-        qs = self.__class__._default_manager.filter(**kwargs)\
-                                        .filter(q)\
-                                        .exclude(pk=self.pk)\
+        kwargs.update({
+            'published_on__%s' % op: self.published_on,
+            'published_on__isnull': False
+        })
+        qs = self.__class__._default_manager.filter(**kwargs).exclude(pk=self.pk)\
                                         .order_by('%spublished_on' % order)
         try:
             return qs[0]

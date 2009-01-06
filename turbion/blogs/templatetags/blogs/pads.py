@@ -33,8 +33,17 @@ D = dict
 def archive_pad(context, blog):
     queryset = Post.published.for_blog(blog)
 
-    months = [(month, lambda: queryset.filter(published_on__year=month.year, published_on__month=month.month).count())\
-                  for month in queryset.dates("published_on", "month", order='DESC').distinct()]
+    class MonthMeta(object):
+        def __init__(self, month):
+            self.month = month
+
+        def count(self):
+            return queryset._clone().filter(
+                        published_on__year=self.month.year,
+                        published_on__month=self.month.month
+            ).count()
+
+    months = map(MonthMeta, queryset.dates("published_on", "month", order='DESC').distinct())
 
     return {
         'blog': blog,

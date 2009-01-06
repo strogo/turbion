@@ -1,5 +1,5 @@
 {% extends "turbion/blogs/base.html" %}
-{% load blogs.common %}
+{% load blogs.common blogs.pads %}
 
 {% block content %}
     {% block post %}
@@ -15,6 +15,10 @@
         </p>
     </div>
     {% endblock %}
+
+    <div id="timeline">
+        {% prevnext_pad post %}
+    </div>
 
     {% block comments %}
         {% if comments %}
