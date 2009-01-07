@@ -46,8 +46,7 @@ class Post(models.Model):
                                       related_name="edited_blogs", verbose_name=_("edited by"))
 
     title         = models.CharField(max_length=130, verbose_name=_("title"))
-    slug          = models.CharField(max_length=130, editable=False,
-                                     verbose_name=_("slug"), db_index=True)
+    slug          = models.CharField(max_length=130, verbose_name=_("slug"), blank=True, db_index=True)
 
     mood          = models.CharField(max_length=50, null=True, blank=True, verbose_name=_("mood"))
     location      = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("location"))
@@ -95,14 +94,14 @@ class Post(models.Model):
             from turbion.utils.text import slugify
             self.slug = slugify(self.title)
 
-        if self.edited_by:
-            self.edited_on = datetime.now()
+        self.edited_on = datetime.now()
 
         super(Post, self).save(*args, **kwargs)
 
     def publicate(self, notify=True):
         from turbion.comments.models import CommentAdd
         from turbion import pingback
+        from turbion.blogs import signals
         
         self.published_on = datetime.now()
 
@@ -119,7 +118,7 @@ class Post(models.Model):
         )
 
         signals.post_published.send(
-            blog=self.blog,
+            sender=self.__class__,
             post=self
         )
 
