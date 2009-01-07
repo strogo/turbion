@@ -100,6 +100,29 @@ class Post(models.Model):
 
         super(Post, self).save(*args, **kwargs)
 
+    def publicate(self, notify=True):
+        from turbion.comments.models import CommentAdd
+        from turbion import pingback
+        
+        self.published_on = datetime.now()
+
+        self.save()
+
+        if notify:
+            CommentAdd.instance.subscribe(self.created_by, self)
+
+        pingback.signals.send_pingback.send(
+            sender=Post,
+            instance=self,
+            url=self.get_absolute_url(),
+            text=self.text_html,
+        )
+
+        signals.post_published.send(
+            blog=self.blog,
+            post=self
+        )
+
     def _get_near_post(self, is_next, **kwargs):
         if self.published_on is None:
             raise ValueError("Cannot find next or prev post when published_on is None")

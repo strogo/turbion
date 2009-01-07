@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django import forms
+
 from turbion import admin
 from turbion.blogs.models import Blog, Post
 
@@ -7,7 +9,13 @@ class BlogAdmin(admin.ModelAdmin):
 
 admin.site.register(Blog, BlogAdmin)
 
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+
 class PostAdmin(admin.ModelAdmin):
+    form = PostForm
+
     list_display       = (
         'blog', 'title', "created_by", 'created_on', 'published_on',
         'status', 'comment_count'

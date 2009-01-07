@@ -11,11 +11,9 @@ from turbion.utils.decorators import titled, templated
 from turbion.blogs.decorators import blog_view, post_view
 from turbion.blogs import signals
 from turbion.blogs.models import Blog, BlogRoles, Post, Comment
-from turbion.comments.models import CommentAdd
 from turbion.feedback.models import Feedback
 from turbion.dashboard import forms
 from turbion.profiles.models import Profile
-from turbion import pingback
 from turbion.roles.decorators import has_capability_for
 from turbion.dashboard.decorators import access_required
 
@@ -99,27 +97,11 @@ def post_new(request, blog, post=None):
                     new_post.edited_by = request.user
 
                 if was_draft and new_post.is_published:
-                    new_post.published_on = datetime.now()
-                    just_published = True
+                    new_post.publicate(form.cleaned_data["notify"])
+                else:
+                    new_post.save()
 
-                new_post.save()
                 form.save_tags()
-
-                if just_published:
-                    if form.cleaned_data["notify"]:
-                        CommentAdd.instance.subscribe(post.created_by, new_post)
-
-                    pingback.signals.send_pingback.send(
-                        sender=Post,
-                        instance=new_post,
-                        url=new_post.get_absolute_url(),
-                        text=new_post.text_html,
-                    )
-
-                    signals.post_published.send(
-                        blog=blog,
-                        post=new_post
-                    )
 
                 return http.HttpResponseRedirect(
                                 reverse("turbion_dashboard_blog_posts",
