@@ -6,6 +6,7 @@ from turbion import admin
 from turbion.profiles.models import Profile
 
 class ProfileAdmin(admin.ModelAdmin):
+    exclude = ["password", "last_visit", "last_login", "user_permissions", "groups"]
     list_display  = (
         "username", "nickname", "email", "last_visit", "site",
         "is_confirmed", "ip", "host", "birth_date", "gender", "postprocessor"
