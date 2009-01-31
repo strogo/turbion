@@ -14,10 +14,6 @@ class BlogProjectCommand(LabelCommand):
     requires_model_validation = False
 
     local_options_list = (
-        make_option('--use-djapian', action='store_true', default=False,
-            help="Don't use Djapian", dest="use_djapian"),
-        make_option('--disable-openid', action='store_true', default=False,
-            help="Don't use Turbion openid infrasructure", dest="disable_openid"),
         make_option('--blogs-multiple', action='store_true', default=False,
             help="Allow multiple blogs", dest="blogs_multiple"),
     )
@@ -52,26 +48,30 @@ class BlogProjectCommand(LabelCommand):
         settings_file_name = os.path.join(label, "settings.py")
 
         valid_options = dict([(opt.dest, opt.default) for opt in self.local_options_list])
-        options = [(name, value) for name, value in options.iteritems()\
+        options = [(name.upper(), value) for name, value in options.iteritems()\
                             if (name in valid_options and valid_options[name] != value)]
 
         lines = file(settings_file_name, "r").readlines()
+
+        mark = False
+        for i, line in enumerate(lines[:]):
+            if "INSTALLED_APPS" in line:
+                mark = True
+            if mark and ")" in line:
+                lines.insert(i, "    'turbion',\n")
+                break
+
         lines.append(
+            "\n" +
+            "from turbion.settings import *\n\n" +
+            "\n".join(["TURBION_%s=%s" % opt for opt in options]) +
             "\n"
-            "from turbion import configure\n\n"
-            "configure(%s)\n" % ", ".join(["%s=%s" % opt for opt in options])
         )
 
         file(settings_file_name, "w").writelines(lines)
 
-    def _check_modules(self, use_djapian, disable_openid, **options):
+    def _check_modules(self, **options):
         modules = ["turbion"]
-
-        if use_djapian:
-            modules += ["djapian"]
-
-        if not disable_openid:
-            modules += ["openid"]
 
         res = True
 
