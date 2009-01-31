@@ -8,7 +8,7 @@ from django.http import Http404
 from turbion.core.blogs.models import Comment, Post
 from turbion.core.tags.models import Tag
 from turbion.core.blogs import utils
-
+from turbion.core.profiles import get_profile
 from turbion.core.utils.title import gen_title
 
 class BlogFieldBase(Feed):
@@ -43,7 +43,7 @@ class PostsFeed(BasePostFeed, BlogFieldBase):
 
     def items(self):
         posts = Post.published.for_blog(self.blog)
-        if not self.request.user.is_authenticated_confirmed():
+        if not get_profile(self.request).is_authenticated_confirmed():
             posts = posts.filter(showing=Post.show_settings.everybody)
         return posts.order_by("-published_on")[:10]
 
@@ -58,7 +58,7 @@ class CommentsFeed(BlogFieldBase):
     def get_object(self, bits):
         if len(bits) == 1:
             query_set = Post.published.for_blog(self.blog)
-            if not self.request.user.is_authenticated_confirmed():
+            if not get_profile(self.request).is_authenticated_confirmed():
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
             return get_object_or_404(query_set,
                                      pk=bits[0])

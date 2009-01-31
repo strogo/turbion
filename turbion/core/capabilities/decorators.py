@@ -4,6 +4,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlencode
 
+from turbion.core.profiles import get_profile
+
 def has_capability(cap=None, set=None, instance=None, all=True):
     assert(cap is not None or set is not None)
 
@@ -20,7 +22,7 @@ def has_capability(cap=None, set=None, instance=None, all=True):
             else:
                 obj = None
 
-            if request.user.has_capability(cap=cap, set=set, instance=obj, all=all):
+            if get_profile(request).has_capability(cap=cap, set=set, instance=obj, all=all):
                 return func(request, *args, **kwargs)
             else:
                 return http.HttpResponseRedirect(

@@ -58,7 +58,7 @@ class BlogProjectCommand(LabelCommand):
         lines = file(settings_file_name, "r").readlines()
         lines.append(
             "\n"
-            "from turbion.conf import configure\n\n"
+            "from turbion import configure\n\n"
             "configure(%s)\n" % ", ".join(["%s=%s" % opt for opt in options])
         )
 

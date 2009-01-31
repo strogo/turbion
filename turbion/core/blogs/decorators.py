@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
+import re
+
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponsePermanentRedirect
 from django.shortcuts import *
 
-import re
-
 from turbion.core.blogs.models import Blog, Post
 from turbion.core.aliases import check_aliases
 from turbion.core.utils.decorators import special_titled
+from turbion.core.profiles import get_profile
 
 titled = special_titled(section=u"{{blog.name}}")
 
@@ -49,12 +50,12 @@ def blog_view(view_func):
 def post_view(view_func):
     def _decor(request, blog, *args, **kwargs):
         if request.user.is_authenticated()\
-            and request.user.has_capability(cap="blog.caps.edit_post", instance=blog):
+            and get_profile(request).has_capability(cap="blog.caps.edit_post", instance=blog):
             query_set = Post.objects.for_blog(blog)
         else:
             query_set = Post.published.for_blog(blog)
 
-            if not request.user.is_authenticated_confirmed():
+            if not get_profile(request).is_authenticated_confirmed():
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
 
         published_on = dict(

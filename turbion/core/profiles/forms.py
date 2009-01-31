@@ -6,7 +6,7 @@ from django.forms.extras import SelectDateWidget
 from datetime import date
 
 from turbion.core.utils.captcha.forms import CaptchaField
-
+from turbion.core.profiles import get_profile
 from turbion.core.profiles.models import Profile
 
 class ProfileForm(forms.ModelForm):
@@ -37,7 +37,7 @@ def extract_profile_data(request):
 def combine_profile_form_with(form_class, request, field="created_by",\
                               need_captcha=True, fields=None,\
                               postprocessor_field=None):
-    if not request.user.is_confirmed:
+    if not get_profile(request).is_confirmed:
         class UserForm(form_class, forms.ModelForm):
             nickname  = forms.CharField(required=True, label=_ ("name"))
             email = forms.EmailField(required=False, label=_("email"),
@@ -51,14 +51,14 @@ def combine_profile_form_with(form_class, request, field="created_by",\
                 if not initial:
                     initial = {}
 
-                initial.update(request.user.__dict__)
+                initial.update(get_profile(request).__dict__)
                 super(UserForm, self).__init__(initial=initial, *args, **kwargs)
 
             def get_user(self):
                 form_data = dict([(key, value) for key, value in self.cleaned_data.iteritems()\
                                                 if key in ['nickname', 'email', 'site']])
 
-                profile = request.user
+                profile = get_profile(request)
 
                 if not profile.is_authenticated():
                     from django.contrib.auth import login
@@ -99,7 +99,7 @@ def combine_profile_form_with(form_class, request, field="created_by",\
             def __init__(self, *args, **kwargs):
                 if postprocessor_field:
                     initial = {
-                        postprocessor_field: request.user.postprocessor
+                        postprocessor_field: get_profile(request).postprocessor
                     }
                 else:
                     initial = {}
@@ -110,7 +110,7 @@ def combine_profile_form_with(form_class, request, field="created_by",\
 
             def save(self, commit=True):
                 obj = super(UserForm, self).save(commit=False)
-                setattr(obj, field, request.user)
+                setattr(obj, field, get_profile(request))
                 if commit:
                     obj.save()
 

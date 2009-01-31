@@ -3,6 +3,7 @@ from django import forms
 
 from turbion import admin
 from turbion.core.blogs.models import Blog, Post
+from turbion.core.profiles import get_profile
 
 class BlogAdmin(admin.ModelAdmin):
     list_display = ("id", 'slug', 'name', 'created_on', "created_by")
@@ -30,10 +31,10 @@ class PostAdmin(admin.ModelAdmin):
 
     def save_model(self, request, post, form, change):
         if not change:
-            post.created_by = request.user
+            post.created_by = get_profile(request)
         else:
-            post.edited_by = request.user
-        
+            post.edited_by = get_profile(request)
+
         was_draft = True
         if change:
             was_draft = Post.objects.get(pk=post.pk).status = Post.statuses.draft

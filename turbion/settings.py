@@ -6,63 +6,30 @@ from turbion.conf import Merge
 
 TURBION_BASE_PATH = os.path.normpath(os.path.dirname(__file__))
 
-#TURBION_CONTEXT_PROCESSORS = [
-#    "turbion.core.options.context_processors.options_globals",
-#]
-
 TURBION_APPS = [
-    'djapian',
-
     'turbion',
-
-    #'turbion.contrib.pingback',
-    #'turbion.contrib.gears',
-
-    #'turbion.contrib.dbtemplates',
-    #'turbion.contrib.openid',
-    #'turbion.contrib.registration',
 ]
 
 TURBION_MIDDLEWARE_CLASSES = [
-#    (0,    'turbion.contrib.aliases.middleware.AliasesMiddleware', ),
-    ('django.contrib.auth.middleware.AuthenticationMiddleware', 'turbion.core.profiles.middleware.AuthenticationMiddleware')
-]
-
-TURBION_TEMPLATE_LOADERS = [
-    (None, 'turbion.dbtemplates.loader.load_template_source',),
+    ('django.contrib.auth.middleware.AuthenticationMiddleware',
+     'turbion.core.profiles.middleware.AuthenticationMiddleware')
 ]
 
 TURBION_AUTHENTICATION_BACKENDS = [
 #    (None, 'turbion.openid.backend.OpenidBackend'),
-    ('django.contrib.auth.backends.ModelBackend', "turbion.core.profiles.backend.OnlyActiveBackend")
-]
-
-TURBION_LOCALE_PATHS = [
-    os.path.join(TURBION_BASE_PATH, "locale")
+    ('django.contrib.auth.backends.ModelBackend',
+     "turbion.core.profiles.backend.OnlyActiveBackend")
 ]
 
 TURBION_INSTALLED_APPS          = Merge(TURBION_APPS, "INSTALLED_APPS")
 TURBION_MIDDLEWARE_CLASSES      = Merge(TURBION_MIDDLEWARE_CLASSES, "MIDDLEWARE_CLASSES")
-#TURBION_CONTEXT_PROCESSORS      = Merge(TURBION_CONTEXT_PROCESSORS, "TEMPLATE_CONTEXT_PROCESSORS")
-#TURBION_TEMPLATE_LOADERS        = Merge(TURBION_TEMPLATE_LOADERS, "TEMPLATE_LOADERS")
 TURBION_AUTHENTICATION_BACKENDS = Merge(TURBION_AUTHENTICATION_BACKENDS, "AUTHENTICATION_BACKENDS")
-TURBION_LOCALE_PATHS            = Merge(TURBION_LOCALE_PATHS, "LOCALE_PATHS")
 
 TURBION_BLOGS_MULTIPLE = False
 TURBION_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'
 
-TURBION_OPENID_STORE_ROOT = "/var/tmp/"
-
 TURBION_BASE_UPLOAD_PATH = "upload/turbion/"
-
-TURBION_POST_PERMALINK_PREFIX = ""
 
 TURBION_USE_DJAPIAN = False
 
 TURBION_NOTIFACTIONS_FROM_EMAIL = "notifs@%(domain)s"
-
-from turbion.contrib.pingback.settings import *#FIXME
-from turbion.contrib.openid.settings import *#FIXME
-
-# Djapian related
-DJAPIAN_DATABASE_PATH = "djapian"

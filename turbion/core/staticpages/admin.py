@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from turbion import admin
 from turbion.core.staticpages.models import Page
+from turbion.core.profiles import get_profile
 
 class PageAdmin(admin.ModelAdmin):
     list_display = (
@@ -12,7 +13,7 @@ class PageAdmin(admin.ModelAdmin):
 
     def save_model(self, request, page, form, change):
         if not change:
-            page.edited_by = request.user
+            page.edited_by = get_profile(request)
 
         page.save()
 

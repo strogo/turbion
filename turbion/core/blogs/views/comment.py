@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.core.blogs.decorators import blog_view, post_view, titled
 from turbion.core.comments import views, models
 from turbion.core.blogs.models import Post
-
+from turbion.core.profiles import get_profile
 from turbion.core.utils.decorators import templated, paged
 
 @blog_view
@@ -43,7 +43,7 @@ def edit(request, blog, comment_id):
     context = views.edit_comment(request,
                                  comment=comment,
                                  redirect=post.get_absolute_url()+"#comment_%(id)s",
-                                 checker=lambda comment: request.user in (comment.author, post.created_by))
+                                 checker=lambda comment: get_profile(request) in (comment.author, post.created_by))
 
     if isinstance(context, dict):
         context.update({

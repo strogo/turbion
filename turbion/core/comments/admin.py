@@ -4,6 +4,7 @@ from django.utils.encoding import force_unicode
 
 from turbion import admin
 from turbion.core.comments.models import Comment
+from turbion.core.profiles import get_profile
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
@@ -25,7 +26,7 @@ class CommentAdmin(admin.ModelAdmin):
 
     def save_model(self, request, comment, form, change):
         if not change:
-            comment.edited_by = request.user
+            comment.edited_by = get_profile(request)
 
         comment.save()
 

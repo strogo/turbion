@@ -23,12 +23,11 @@ sitemaps = {
     'comments': CommentSitemap
 }
 
-post_url_pattern = r"^%s(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/(?P<post_slug>[\w_-]+)/" % settings.TURBION_POST_PERMALINK_PREFIX.lstrip('/')
-
 urlpatterns = patterns('turbion.core.blogs.views',
  url(r'^$',                                  'post.blog', name="turbion_blog_index"),
 
- url(post_url_pattern + "$",                 'post.post', name="turbion_blog_post"),
+ url(r"^(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/"
+     r"(?P<post_slug>[\w_-]+)/$",            'post.post', name="turbion_blog_post"),
 
  url(r'^p/(?P<post_id>\d+)/comment/add/$',   'comment.add', name="turbion_blog_comment_add"),
  url(r'^comment/(?P<comment_id>\d+)/edit/$', 'comment.edit', name="turbion_blog_comment_edit"),

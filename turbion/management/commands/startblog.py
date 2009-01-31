@@ -4,8 +4,6 @@ from django.db import models
 
 from optparse import make_option
 
-from turbion.core.roles.models import Role, Capability
-
 class Command(LabelCommand):
     help = 'Create a new blog instance'
     args = "blogname"

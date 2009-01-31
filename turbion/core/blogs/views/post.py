@@ -11,7 +11,7 @@ from turbion.core.profiles.models import Profile
 from turbion.core.blogs.utils import blog_reverse
 from turbion.core.comments import forms as comments_forms
 from turbion.core.tags.models import Tag
-
+from turbion.core.profiles import get_profile
 from turbion.core.utils.pagination import paginate
 from turbion.core.utils.decorators import paged, templated
 
@@ -22,7 +22,7 @@ from turbion.core.utils.decorators import paged, templated
 def blog(request, blog):
     posts = Post.published.for_blog(blog)
 
-    if not request.user.is_authenticated_confirmed():
+    if not get_profile(request).is_authenticated_confirmed():
         posts = posts.filter(showing=Post.show_settings.everybody)
 
     post_page = paginate(posts,
@@ -56,7 +56,7 @@ def tag(request, blog, tag_slug):
     _tag = get_object_or_404(blog.tags, slug=tag_slug)
     posts = Post.published.for_tag(blog, _tag)
 
-    if not request.user.is_authenticated_confirmed():
+    if not get_profile(request).is_authenticated_confirmed():
         posts = posts.filter(showing=Post.show_settings.everybody)
 
     post_page = paginate(posts,
