@@ -20,7 +20,7 @@ class BlogProjectCommand(LabelCommand):
 
     option_list = LabelCommand.option_list + local_options_list
 
-    def handle_label(self, label, **options):
+    def handle_label(self, label, blogs_multiple=False, **options):
         if not self._check_modules(**options):
             return "Cannot create project"
 
@@ -29,12 +29,10 @@ class BlogProjectCommand(LabelCommand):
         self._patch_urls(label, **options)
         self._patch_settings(label, **options)
 
-    def _patch_urls(self, label, **options):
+    def _patch_urls(self, label, blogs_multiple):
         urls_file_name = os.path.join(label, "urls.py")
 
-        pattern = "blog"
-        if options["blogs_multiple"]:
-            pattern += "s"
+        pattern = blogs_multiple and "blogs" or "blog"
 
         lines = file(urls_file_name, "r").readlines()
         lines.insert(-1,

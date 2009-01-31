@@ -21,7 +21,7 @@ class BlogManager(models.Manager):
 
         blog = self.create(name=name, slug=slug, created_by=owner)
 
-        owner.grant_capabilities(set="blog.caps", instance=blog)
+        owner.grant_capability(set="blog.caps", instance=blog)
 
         return blog
 
