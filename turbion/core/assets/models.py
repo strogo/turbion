@@ -57,7 +57,7 @@ class Asset(models.Model):
         dscr = to_descriptor(obj.__class__)
         id = obj._get_pk_val()
 
-        Connection.objects.get_or_create(
+        AssetConnection.objects.get_or_create(
                     object_dscr=dscr,
                     object_id=id,
                     asset=self
@@ -82,7 +82,7 @@ class Asset(models.Model):
         verbose_name_plural = _("assets")
         db_table            = "turbion_asset"
 
-class Connection(models.Model):
+class AssetConnection(models.Model):
     object_dscr = DescriptorField()
     object_id = models.PositiveIntegerField()
     object    = GenericForeignKey("object_dscr","object_id")
