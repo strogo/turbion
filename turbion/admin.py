@@ -2,4 +2,10 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-site = admin.AdminSite()
+class TurbionAdminSite(admin.AdminSite):
+    def inject(self, other_site):
+        other_site._registry.update(
+            self._registry
+        )
+
+site = TurbionAdminSite()

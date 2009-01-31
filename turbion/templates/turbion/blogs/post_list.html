@@ -1,0 +1,24 @@
+{% extends "turbion/blogs/base.html" %}
+
+{% block content %}
+    <div>
+        {% block content_header %}
+        {% endblock %}
+    </div>
+    {% for post in post_page.object_list %}
+    <div class="post_thumbnail">
+        <h3><a href="{{post.get_absolute_url}}">{{post.title}}</a></h3>
+        <div class="post_body prepend-1">
+            <div class="meta">
+                <p>Author: {{post.created_by}}</p>
+                <p>Published on: {{post.published_on}}</p>
+                <p>Tags: {{post.tags.all|join:", "}}</p>
+                <p><a href="{{post.get_absolute_url}}#comments">Comments {{post.comment_count}}</a></p>
+            </div>
+            <p class="post_text">
+                {{post.text_html|truncatewords_html:80|safe}}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

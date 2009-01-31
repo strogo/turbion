@@ -1,0 +1,106 @@
+[
+ {
+  "pk": 1,
+  "model": "turbion.blog",
+  "fields": {
+   "additional_post_fields": false,
+   "created_on": "2008-05-17 02:00:23",
+   "created_by": 1,
+   "name": "Test Blog",
+   "socialbookmarks": "",
+   "post_per_page": 5,
+   "slug": "test"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "turbion.post",
+  "fields": {
+   "status": "published",
+   "mood": "",
+   "title": "First Post",
+   "text": "Post Text",
+   "created_by": 2,
+   "published_on": "2006-11-17 16:54:47",
+   "edited_by" : 1,
+   "blog": 1,
+   "music": "",
+   "location": "",
+   "created_on": "2006-11-17 16:54:47",
+   "slug": "first",
+   "showing": "everybody"
+  }
+ },
+ {
+  "pk": 2,
+  "model": "turbion.post",
+  "fields": {
+   "status": "published",
+   "mood": "",
+   "title": "Second Post",
+   "text": "Some Post Text",
+   "created_by": 1,
+   "edited_by" : 1,
+   "blog": 1,
+   "music": "",
+   "location": "",
+   "created_on": "2007-12-17 16:54:47",
+   "published_on": "2006-11-17 16:54:47",
+   "slug": "second",
+   "showing": "everybody"
+  }
+ },
+ {
+  "pk": 3,
+  "model": "turbion.post",
+  "fields": {
+   "status": "published",
+   "mood": "",
+   "title": "Third Post",
+   "text": "Some Post Text Text",
+   "created_by": 1,
+   "edited_by" : 1,
+   "blog": 1,
+   "music": "",
+   "location": "",
+   "created_on": "2008-12-17 16:54:47",
+   "published_on": "2006-11-17 16:54:47",
+   "slug": "third",
+   "showing": "everybody"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "turbion.taggeditem",
+  "fields": {
+   "item_id": 3,
+   "item_dscr": "model:turbion.post",
+   "tag": 1
+  }
+ },
+ {
+  "pk": 2,
+  "model": "turbion.taggeditem",
+  "fields": {
+   "item_id": 3,
+   "item_dscr": "model:turbion.post",
+   "tag": 2
+  }
+ },
+ {
+  "pk": 2,
+  "model": "turbion.tag",
+  "fields": {
+   "name": "bar",
+   "slug": "bar"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "turbion.tag",
+  "fields": {
+   "name": "foo",
+   "slug": "foo"
+  }
+ }
+]

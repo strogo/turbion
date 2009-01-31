@@ -6,40 +6,26 @@ from turbion.conf import Merge
 
 TURBION_BASE_PATH = os.path.normpath(os.path.dirname(__file__))
 
-TURBION_CONTEXT_PROCESSORS = [
-    "turbion.options.context_processors.options_globals",
-]
+#TURBION_CONTEXT_PROCESSORS = [
+#    "turbion.core.options.context_processors.options_globals",
+#]
 
 TURBION_APPS = [
-    'turbion.utils.postprocessing',
-
     'djapian',
 
-    'turbion.utils',
-    'turbion.tags',
-    'turbion.comments',
-    'turbion.blogs',
-    'turbion.profiles',
-    'turbion.feedback',
-    'turbion.staticpages',
+    'turbion',
 
-    'turbion.pingback',
-    'turbion.notifications',
-    'turbion.gears',
+    #'turbion.contrib.pingback',
+    #'turbion.contrib.gears',
 
-    'turbion.dbtemplates',
-    'turbion.roles',
-    'turbion.options',
-    'turbion.aliases',
-    'turbion.openid',
-    'turbion.registration',
-    'turbion.dashboard',
-    'turbion.assets'
+    #'turbion.contrib.dbtemplates',
+    #'turbion.contrib.openid',
+    #'turbion.contrib.registration',
 ]
 
 TURBION_MIDDLEWARE_CLASSES = [
-    (0,    'turbion.aliases.middleware.AliasesMiddleware', ),
-    ('django.contrib.auth.middleware.AuthenticationMiddleware', 'turbion.profiles.middleware.AuthenticationMiddleware')
+#    (0,    'turbion.contrib.aliases.middleware.AliasesMiddleware', ),
+    ('django.contrib.auth.middleware.AuthenticationMiddleware', 'turbion.core.profiles.middleware.AuthenticationMiddleware')
 ]
 
 TURBION_TEMPLATE_LOADERS = [
@@ -47,8 +33,8 @@ TURBION_TEMPLATE_LOADERS = [
 ]
 
 TURBION_AUTHENTICATION_BACKENDS = [
-    (None, 'turbion.openid.backend.OpenidBackend'),
-    ('django.contrib.auth.backends.ModelBackend', "turbion.registration.backend.OnlyActiveBackend")
+#    (None, 'turbion.openid.backend.OpenidBackend'),
+    ('django.contrib.auth.backends.ModelBackend', "turbion.core.profiles.backend.OnlyActiveBackend")
 ]
 
 TURBION_LOCALE_PATHS = [
@@ -57,8 +43,8 @@ TURBION_LOCALE_PATHS = [
 
 TURBION_INSTALLED_APPS          = Merge(TURBION_APPS, "INSTALLED_APPS")
 TURBION_MIDDLEWARE_CLASSES      = Merge(TURBION_MIDDLEWARE_CLASSES, "MIDDLEWARE_CLASSES")
-TURBION_CONTEXT_PROCESSORS      = Merge(TURBION_CONTEXT_PROCESSORS, "TEMPLATE_CONTEXT_PROCESSORS")
-TURBION_TEMPLATE_LOADERS        = Merge(TURBION_TEMPLATE_LOADERS, "TEMPLATE_LOADERS")
+#TURBION_CONTEXT_PROCESSORS      = Merge(TURBION_CONTEXT_PROCESSORS, "TEMPLATE_CONTEXT_PROCESSORS")
+#TURBION_TEMPLATE_LOADERS        = Merge(TURBION_TEMPLATE_LOADERS, "TEMPLATE_LOADERS")
 TURBION_AUTHENTICATION_BACKENDS = Merge(TURBION_AUTHENTICATION_BACKENDS, "AUTHENTICATION_BACKENDS")
 TURBION_LOCALE_PATHS            = Merge(TURBION_LOCALE_PATHS, "LOCALE_PATHS")
 
@@ -75,8 +61,8 @@ TURBION_USE_DJAPIAN = False
 
 TURBION_NOTIFACTIONS_FROM_EMAIL = "notifs@%(domain)s"
 
-from turbion.pingback.settings import *
-from turbion.openid.settings import *
+from turbion.contrib.pingback.settings import *#FIXME
+from turbion.contrib.openid.settings import *#FIXME
 
 # Djapian related
 DJAPIAN_DATABASE_PATH = "djapian"
