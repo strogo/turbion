@@ -41,7 +41,7 @@ urlpatterns = patterns('turbion.core.blogs.views',
  url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/$', 'archive.day',   name="turbion_blog_archive_day"),
 )
 
-if settings.TURBION_USE_DJAPIAN:
+if "djapian" in settings.INSTALLED_APPS:
     urlpatterns += patterns('turbion.core.blogs.views',
      url(r'^search/$',            'search.search',   name="turbion_blog_search"),
      url(r'^search/posts/$',      'search.posts',    name="turbion_blog_search_posts"),
