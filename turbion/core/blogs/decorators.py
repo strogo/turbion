@@ -8,7 +8,6 @@ from django.http import Http404, HttpResponsePermanentRedirect
 from django.shortcuts import *
 
 from turbion.core.blogs.models import Post
-from turbion.core.aliases import check_aliases
 from turbion.core.utils.decorators import special_titled
 from turbion.core.profiles import get_profile
 
