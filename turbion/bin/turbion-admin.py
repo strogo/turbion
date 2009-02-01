@@ -43,9 +43,9 @@ class BlogProjectCommand(LabelCommand):
     def _patch_settings(self, label, **options):
         settings_file_name = os.path.join(label, "settings.py")
 
-        valid_options = dict([(opt.dest, opt.default) for opt in self.local_options_list])
-        options = [(name.upper(), value) for name, value in options.iteritems()\
-                            if (name in valid_options and valid_options[name] != value and value is not None)]
+        options = []
+        if options.get("name", None):
+            options += [("BLOG_NAME", options["name"])]
 
         lines = file(settings_file_name, "r").readlines()
 

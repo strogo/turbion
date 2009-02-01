@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 
 from django.db import models
@@ -186,9 +185,14 @@ class PostCapabilities(capabilities.CapabilitySet):
         capabilities.generate_triple("post", "blog post")[1:]
     )
 
-    def get_instance(self, instance):
-        if isinstance(instance, Post):
-            return instance.blog
-        return instance
+capabilities.register(PostCapabilities, name="post.caps", model=Post)
 
-capabilities.register(Post, PostCapabilities, name="post.caps")
+class BlogCapabilities(capabilities.CapabilitySet):
+    defs = dict(
+        capabilities.generate_triple("post", "blog post")[:1] +
+        capabilities.generate_triple("page", "blog static page")[:1] +
+        [("upload_asset", _("Can upload blog asset")),
+         ("edit_asset", _("Can edit blog asset")),]
+    )
+
+capabilities.register(BlogCapabilities, name="blog.caps", model=Post)

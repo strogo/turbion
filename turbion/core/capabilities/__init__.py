@@ -82,7 +82,7 @@ class CapabilitySetManager(object):
 
 sets = CapabilitySetManager()
 
-def register(model, capability_set, name=None):
+def register(capability_set, name=None, model=None):
     if name is None:
         name = "%s.%s" % (model._meta.object_name, capability_set.__name__.lower())
 

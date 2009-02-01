@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-import re
-
 from django.test import TestCase
 
 from django.core.urlresolvers import reverse

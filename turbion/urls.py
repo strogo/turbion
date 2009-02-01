@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 from django.contrib.sitemaps.views import index, sitemap
 

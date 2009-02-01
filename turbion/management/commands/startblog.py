@@ -1,50 +1,29 @@
 # -*- coding: utf-8 -*-
-from django.core.management.base import LabelCommand
+from django.core.management.base import NoArgsCommand
 from django.db import models
 
 from optparse import make_option
 
-class Command(LabelCommand):
-    help = 'Create a new blog instance'
-    args = "blogname"
+class Command(NoArgsCommand):
+    help = 'Creates the blog infrastructure'
 
     requires_model_validation = True
 
-    option_list = LabelCommand.option_list + (
-        make_option('--slug', dest='slug', default=None,
-            help='Specifies the slug for the blog.'),
+    option_list = NoArgsCommand.option_list + (
         make_option('--owner', dest='owner', default=None,
             help='Specifies the blog\'s owner username.'),
         make_option('--noinput', action='store_false', dest='interactive', default=True,
             help='Tells Django to NOT prompt the user for input of any kind.'),
     )
 
-    def handle_label(self, blog_name, slug=None, owner=None, **options):
-        print "Creating new blog..."
-        print "Blog name: %s" % blog_name
-
-        if not slug:
-            slug = self._get_slug(blog_name)
+    def handle_noargs(self, owner=None, **options):
+        print "Performing blog setup..."
 
         owner = self._get_owner(owner)
 
-        blog = self._create_blog(blog_name, slug, owner)
+        blog = self._create_blog(owner)
 
-        print "Blog '%s' created successful." % blog
-
-    def _get_slug(self, name):
-        from turbion.core.utils.text import slugify
-        default_slug = slugify(name)
-
-        slug = raw_input("Please enter blog slug(default: %s): " % default_slug)
-        if slug:
-            slug = slugify(slug)
-        else:
-            slug = default_slug
-
-        print "Selected slug: %s" % slug
-
-        return slug
+        print "Blog setup successful."
 
     def _get_owner(self, name=None):
         from turbion.core.profiles.models import Profile
@@ -64,7 +43,7 @@ class Command(LabelCommand):
 
         return profile
 
-    def _create_blog(self, name, slug, owner):
-        from turbion.core.blogs.models import Blog
+    def _create_blog(self, owner):
+        from turbion.core.blogs.managers import setup_blog
 
-        return Blog.objects.create_blog(name, slug, owner)
+        setup_blog(owner)
