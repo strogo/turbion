@@ -2,7 +2,7 @@
 from django import forms
 
 from turbion import admin
-from turbion.core.feedback.models import Feedback
+from turbion.contrib.feedback.models import Feedback
 from turbion.core.profiles import get_profile
 
 class FeedbackAdmin(admin.ModelAdmin):

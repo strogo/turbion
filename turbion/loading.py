@@ -1,8 +1,7 @@
 
 SUB_APPLICATIONS = (
-    "assets", "blogs", "comments", "feedback", "profiles", "tags", "staticpages",
-    "utils", "aliases", "capabilities"
-    #options,
+    "assets", "blogs", "comments", "profiles", "tags", "staticpages",
+    "utils", "capabilities"
 )
 
 class NoModuleError(Exception):

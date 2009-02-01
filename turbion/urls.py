@@ -22,20 +22,12 @@ urlpatterns = patterns('',
     url(r'^utils/',               include('turbion.core.utils.urls')),
     url(r'^profile/',             include('turbion.core.profiles.urls')),
     url(r'^notifications/',       include('turbion.core.notifications.urls')),
+    url(r'^staticpages/',         include('turbion.core.staticpages.urls')),
 
     url(r'',                      include('turbion.core.blogs.urls')),
-    url(r'pages/',                include('turbion.core.staticpages.urls')),
-    url(r'feedback/',             include('turbion.core.feedback.urls')),
 
     url(r'^sitemap\.xml$',        sitemap, {'sitemaps': sitemaps}, 'turbion_sitemap_index'),
     url(r'^sitemap_(?P<section>.+)\.xml$', sitemap, {'sitemaps': sitemaps}, 'turbion_sitemap'),
-)
-
-urlpatterns1 = patterns('',
-    url(r'^openid/',              include('turbion.openid.urls')),
-    url(r'^pingback/',            include('turbion.pingback.urls')),
-    url(r'^gears/',               include('turbion.gears.urls')),
-    url(r'^registration/',        include('turbion.registration.urls')),
 )
 
 from turbion import loading

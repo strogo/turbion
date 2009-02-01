@@ -30,7 +30,6 @@ class Alias(models.Model):#FIXME: move to contrib and restore middleware
     active  = GenericManager(is_active=True)
 
     class Meta:
-        app_label = "turbion"
         db_table = "turbion_alias"
 
         verbose_name = _("alias")

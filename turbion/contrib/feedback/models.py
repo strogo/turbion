@@ -4,7 +4,7 @@ from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.feedback import signals
+from turbion.contrib.feedback import signals
 from turbion.core.profiles.models import Profile
 from turbion.core.notifications import EventDescriptor
 from turbion.core.utils.enum import Enum
@@ -48,7 +48,6 @@ class Feedback(models.Model):
         super(Feedback, self).save(*args, **kwargs)
 
     class Meta:
-        app_label           = "turbion"
         verbose_name        = _('feedback')
         verbose_name_plural = _('feedbacks')
         ordering            = ('-created_on',)

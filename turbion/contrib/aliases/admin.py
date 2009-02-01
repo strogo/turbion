@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from turbion import admin
-from turbion.core.aliases.models import Alias
+from turbion.contrib.aliases.models import Alias
 
 class AliasAdmin(admin.ModelAdmin):
     list_display = (

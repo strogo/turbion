@@ -2,7 +2,7 @@
 from django import forms
 
 from turbion.core.profiles.forms import combine_profile_form_with
-from turbion.core.feedback.models import Feedback
+from turbion.contrib.feedback.models import Feedback
 
 class _FeedbackForm(forms.ModelForm):
     class Meta:
