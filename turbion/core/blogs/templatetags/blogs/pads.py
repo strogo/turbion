@@ -8,6 +8,7 @@ from django.db import connection
 from turbion.core.utils.descriptor import to_descriptor
 
 from turbion.core.blogs.models import Post, Comment
+from turbion.core.blogs.models.blog import BlogCalendar
 from turbion.core.profiles.models import Profile
 from turbion.core.tags.models import Tag
 from turbion.core.utils.cache.tags import cached_inclusion_tag
@@ -139,7 +140,14 @@ def tags_pad(context):
                       file_name='turbion/blogs/pads/calendar.html',
                       takes_context=True)
 def calendar_pad(context):
-    return {"blog": None}
+    if "blog_calendar" in context:
+        blog_calendar = context["blog_calendar"]
+    else:
+        blog_calendar = BlogCalendar()
+
+    return {
+        "blog_calendar": blog_calendar
+    }
 
 @cached_inclusion_tag(register,
                       trigger=D(

@@ -24,8 +24,7 @@ class SearchTest(BaseViewTest):
     def setUp(self):
         from turbion.core.comments.models import CommentAdd
 
-        self.blog = Blog.objects.get(slug="test")
-        self.post = Post.objects.filter(blog=self.blog)[0]
+        self.post = Post.objects.all()[0]
 
         CommentAdd.manager.subscribe(self.post.created_by, self.post)
 

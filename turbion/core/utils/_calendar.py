@@ -31,9 +31,8 @@ class YearIter(object):
     next_month_name = property(get_next_month_name)
 
 class Calendar(object):
-    def __init__(self, instance, queryset, current=None):
-        self.instance = instance
-        self.queryset = queryset
+    def __init__(self, current=None, queryset=None):
+        self.queryset = queryset is None and self.__class__.queryset or queryset
         self.current = current and current or date.today()
 
     def _set_current(self, current):

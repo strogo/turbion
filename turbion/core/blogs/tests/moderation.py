@@ -13,8 +13,8 @@ class BaseTest(object):
         self.post = Post.objects.all()[0]
         self.profile = Profile.objects.all()[0]
 
-        self.post.blog.comments_moderation = self.moderation
-        self.post.blog.save()
+        self.post.comments_moderation = self.moderation
+        self.post.save()
 
     def _add_comment(self, author):
         comment = Comment(
@@ -31,7 +31,7 @@ class BaseTest(object):
         comment = self._add_comment(self.profile)
 
         self.assertEqual(
-            self.post.blog.get_comment_status(comment),
+            self.post.get_comment_status(comment),
             self.registered_status
         )
 
@@ -42,7 +42,7 @@ class BaseTest(object):
         comment = self._add_comment(self.profile)
 
         self.assertEqual(
-            self.post.blog.get_comment_status(comment),
+            self.post.get_comment_status(comment),
             self.untrusted_status
         )
 
@@ -54,7 +54,7 @@ class BaseTest(object):
         comment = self._add_comment(self.profile)
 
         self.assertEqual(
-            self.post.blog.get_comment_status(comment),
+            self.post.get_comment_status(comment),
             self.guest_status
         )
 

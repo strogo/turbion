@@ -26,7 +26,7 @@ urlpatterns = patterns('',
 
     url(r'',                      include('turbion.core.blogs.urls')),
 
-    url(r'^sitemap\.xml$',        sitemap, {'sitemaps': sitemaps}, 'turbion_sitemap_index'),
+    url(r'^sitemap\.xml$',        sitemap, {'sitemaps': sitemaps}, 'turbion_index_sitemap'),
     url(r'^sitemap_(?P<section>.+)\.xml$', sitemap, {'sitemaps': sitemaps}, 'turbion_sitemap'),
 )
 

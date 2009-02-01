@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
@@ -8,4 +9,7 @@ class TurbionAdminSite(admin.AdminSite):
             self._registry
         )
 
-site = TurbionAdminSite()
+contrib_site = site = TurbionAdminSite()
+
+if settings.TURBION_CONTRIB_GLOBAL_ADMIN:
+    contrib_site = admin.site

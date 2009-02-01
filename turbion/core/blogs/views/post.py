@@ -41,10 +41,8 @@ def blog(request):
 @templated('turbion/blogs/tags.html')
 @titled(page=_('Tags'))
 def tags(request):
-    _tags = blog.tags
-
     return {
-        "tags": _tags,
+        "tags": Tag.objects.for_model(Post),
     }
 
 @paged

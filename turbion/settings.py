@@ -11,3 +11,5 @@ TURBION_TITLE_PATTERN = '%(page)s | %(section)s | %(site)s'
 TURBION_BASE_UPLOAD_PATH = "upload/turbion/"
 
 TURBION_NOTIFACTIONS_FROM_EMAIL = "notifs@%(domain)s"
+
+TURBION_CONTRIB_GLOBAL_ADMIN = True

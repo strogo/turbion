@@ -27,7 +27,7 @@ class PostsFeed(BasePostFeed):
 
     def title(self):
         return gen_title({
-            "page": settings.TRUBION_BLOG_NAME,
+            "page": settings.TURBION_BLOG_NAME,
             "section": "Latest entries"
         })
 
@@ -36,7 +36,7 @@ class PostsFeed(BasePostFeed):
         return ("turbion_blog_index",)
 
     def description(self):
-        return u"Latest entries of blog '%s'" % settings.TRUBION_BLOG_NAME
+        return "Latest entries of blog '%s'" % settings.TURBION_BLOG_NAME
 
     def items(self):
         posts = Post.published.all()
@@ -61,12 +61,12 @@ class CommentsFeed(Feed):
 
     def title(self, post):
         return gen_title({
-            "page": settings.TRUBION_BLOG_NAME,
+            "page": settings.TURBION_BLOG_NAME,
             "section": "Latest comments" + (post and u' on "%s"' % post.title or "")
         })
 
     def link(self, post):
-        return post and post.get_absolute_url() or revere("turbion_blog_index")
+        return post and post.get_absolute_url() or reverse("turbion_blog_index")
 
     def description(self, post):
         if post:
@@ -108,7 +108,7 @@ class TagFeed(BasePostFeed):
 
     def title(self, tag):
         return gen_title({
-            "page": settings.TRUBION_BLOG_NAME,
+            "page": settings.TURBION_BLOG_NAME,
             "section": "Latest entries with tag '%s'" % tag.name
         })
 

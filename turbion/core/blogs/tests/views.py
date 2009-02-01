@@ -35,10 +35,10 @@ class BlogsViews(BaseViewTest):
         self.assertStatus(self.post.get_absolute_url())
 
     def test_posts_feed(self):
-        self.assertStatus(reverse("turbion_blog_atom", args=("posts")))
+        self.assertStatus(reverse("turbion_blog_atom", args=("posts",)))
 
     def test_comments_feed(self):
-        self.assertStatus(reverse("turbion_blog_atom", args=("comments")) )
+        self.assertStatus(reverse("turbion_blog_atom", args=("comments",)) )
 
     def test_post_comments_feed(self):
         self.assertStatus(
@@ -49,10 +49,10 @@ class BlogsViews(BaseViewTest):
         pass
 
     def test_sitemap(self):
-        response = self.assertStatus(reverse("turbion_blog_sitemap"))
+        response = self.assertStatus(reverse("turbion_sitemap", args=("posts",)))
 
-    def test_global_sitemap(self):
-        response = self.assertStatus(reverse("turbion_global_blog_sitemap"))
+    def test_index_sitemap(self):
+        response = self.assertStatus(reverse("turbion_index_sitemap"))
 
     def _create_comment(self):
         return {}

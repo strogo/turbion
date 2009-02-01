@@ -8,4 +8,4 @@ class AliasAdmin(admin.ModelAdmin):
     )
     list_filter = ('is_active', 'status_code', 'exclude_user_agent')
 
-admin.site.register(Alias, AliasAdmin)
+admin.contrib_site.register(Alias, AliasAdmin)

@@ -71,6 +71,8 @@ class Post(models.Model):
                                      default=show_settings.everybody,
                                      verbose_name=_("showing"),
                                      db_index=True)
+    comments_moderation =  models.CharField(max_length=20, choices=moderations,
+                                            default=moderations.none)
 
     objects = managers.PostManager()
 
@@ -149,6 +151,27 @@ class Post(models.Model):
 
     get_previous_by_published_on = lambda self, **kwargs: self._get_near_post(False, **kwargs)
     get_next_by_published_on = lambda self, **kwargs: self._get_near_post(True, **kwargs)
+
+    def get_comment_status(self, comment):
+        from turbion.core.comments.models import Comment
+
+        author = comment.created_by
+
+        if self.comments_moderation == Post.moderations.all:
+            return Comment.statuses.moderation
+
+        elif self.comments_moderation == Post.moderations.none:
+            return Comment.statuses.published
+
+        elif self.comments_moderation == Post.moderations.guests:
+            if not author.is_confirmed:
+                return Comment.statuses.moderation
+
+        elif self.comments_moderation == Post.moderations.untrusted:
+            if not author.is_confirmed or not author.trusted:
+                return Comment.statuses.moderation
+
+        return Comment.statuses.published
 
     class Meta:
         app_label           = "turbion"

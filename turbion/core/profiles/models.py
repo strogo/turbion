@@ -8,6 +8,7 @@ from datetime import date
 
 from turbion.core.utils.enum import Enum
 from turbion.core.utils.postprocessing.fields import PostprocessField
+from turbion.core.utils.models import GenericManager
 
 class ProfileManager(UserManager):
     def generate_username(self, data):
@@ -68,6 +69,8 @@ class Profile(User):
     # right as registered user when posting comment
     trusted = models.BooleanField(default=False, verbose_name=_("trusted"))
 
+    is_public = models.BooleanField(default=False, verbose_name=_("public"))
+
     birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
     gender = models.CharField(max_length=10, verbose_name =_('gender'), choices=genders, null=True, blank=True)
 
@@ -96,6 +99,7 @@ class Profile(User):
     postprocessor = PostprocessField()
 
     objects = ProfileManager()
+    public = GenericManager(is_public=True)
 
     def is_authenticated_confirmed(self):
         return self.is_authenticated() and self.is_confirmed

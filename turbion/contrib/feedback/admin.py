@@ -15,4 +15,4 @@ class FeedbackAdmin(admin.ModelAdmin):
 
         feedback.save()
 
-admin.site.register(Feedback, FeedbackAdmin)
+admin.contrib_site.register(Feedback, FeedbackAdmin)

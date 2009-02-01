@@ -17,7 +17,6 @@ class StaticPagesViews(BaseViewTest):
             slug="testpage",
             text="Some text"
         )
-        self.blog = blog
 
         for i in range(5):
             Page.objects.create(
@@ -31,4 +30,4 @@ class StaticPagesViews(BaseViewTest):
         response = self.assertStatus(self.page.get_absolute_url())
 
     def test_sitemap(self):
-        response = self.assertStatus(reverse("turbion_pages_sitemap", args=[self.blog.slug,]))
+        response = self.assertStatus(reverse("turbion_sitemap", args=["pages",]))

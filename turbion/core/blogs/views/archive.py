@@ -7,6 +7,7 @@ from turbion.core.utils.pagination import paginate
 
 from turbion.core.blogs.decorators import titled
 from turbion.core.blogs.models import Post
+from turbion.core.blogs.models.blog import BlogCalendar
 
 from datetime import date
 
@@ -19,9 +20,10 @@ def index(request):
 
 @paged
 @templated('turbion/blogs/archive_list.html')
-@titled(page=_('Blog archive on {{blog.calendar.current.year}}'))
+@titled(page=_('Blog archive on {{blog_calendar.current.year}}'))
 def year(request, year_id):
-    blog.calendar.current = date(year=int(year_id), month=1, day=1)
+    blog_calendar = BlogCalendar(date(*map(int, [year_id, 1, 1])))
+
     post_page = paginate(
         Post.published.filter(published_on__year=year_id),
         request.page,
@@ -30,14 +32,15 @@ def year(request, year_id):
 
     return {
         "post_page": post_page,
-        "blog": blog
+        "blog_calendar": blog_calendar
     }
 
 @paged
 @templated('turbion/blogs/archive_list.html')
-@titled(page=_('Blog archive on {{blog.calendar.current.year}}/{{blog.calendar.current.month}}'))
+@titled(page=_('Blog archive on {{blog_calendar.current.year}}/{{blog_calendar.current.month}}'))
 def month(request, year_id, month_id):
-    blog.calendar.current = date(year=int(year_id), month=int(month_id), day=1)
+    blog_calendar = BlogCalendar(date(*map(int, [year_id, month_id, 1])))
+
     post_page = paginate(
         Post.published.filter(
             published_on__year=int(year_id),
@@ -49,13 +52,15 @@ def month(request, year_id, month_id):
 
     return {
         "post_page" : post_page,
+        "blog_calendar": blog_calendar
     }
 
 @paged
 @templated('turbion/blogs/archive_list.html')
-@titled(page=_('Blog archive on {{blog.calendar.current.year}}/{{blog.calendar.current.month}}/{{blog.calendar.current.day}}'))
+@titled(page=_('Blog archive on {{blog_calendar.current.year}}/{{blog_calendar.current.month}}/{{blog_calendar.current.day}}'))
 def day(request, year_id, month_id, day_id):
-    blog.calendar.current = date(year=int(year_id), month=int(month_id), day=int(day_id))
+    blog_calendar = BlogCalendar(date(*map(int, [year_id, month_id, day_id])))
+
     post_page = paginate(
         Post.published.filter(
             published_on__year=year_id,
@@ -68,4 +73,5 @@ def day(request, year_id, month_id, day_id):
 
     return {
         "post_page": post_page,
+        "blog_calendar": blog_calendar
     }

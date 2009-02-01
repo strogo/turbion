@@ -56,7 +56,7 @@ class Page(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ("turbion_pages_dispatcher", (self.blog.slug, self.slug))
+        return ("turbion_pages_dispatcher", (self.slug,))
 
     class Meta:
         app_label           = "turbion"

@@ -21,7 +21,7 @@ def add(request, post_id):
     context = views.add_comment(
         request,
         connection=post,
-        status_getter=blog.get_comment_status,
+        status_getter=post.get_comment_status,
         next=post.get_absolute_url() + "#comment_%(id)s"
     )
 
