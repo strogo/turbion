@@ -11,9 +11,8 @@ from django.core import mail
 
 from turbion.core.utils.testing import BaseViewTest
 
-from turbion.core.blogs.models import Blog, Post, Comment
+from turbion.core.blogs.models import Post, Comment
 from turbion.core.comments.models import CommentAdd
-from turbion.core.blogs.utils import blog_reverse
 from turbion.core.profiles.models import Profile
 
 class BlogsViews(BaseViewTest):
@@ -25,42 +24,35 @@ class BlogsViews(BaseViewTest):
     def setUp(self):
         from turbion.core.comments.models import CommentAdd
 
-        self.blog = Blog.objects.get(slug="test")
-        self.post = Post.objects.filter(blog=self.blog)[0]
+        self.post = Post.objects.all()[0]
 
         CommentAdd.manager.subscribe(self.post.created_by, self.post)
 
     def test_index(self):
-        self.assertStatus(self.blog.get_absolute_url())
+        self.assertStatus(reverse("turbion_blog_index"))
 
     def test_post(self):
         self.assertStatus(self.post.get_absolute_url())
 
     def test_posts_feed(self):
-        self.assertStatus(blog_reverse("turbion_blog_atom", args=(self.blog.slug, "posts")))
+        self.assertStatus(reverse("turbion_blog_atom", args=("posts")))
 
     def test_comments_feed(self):
-        self.assertStatus(blog_reverse("turbion_blog_atom", args=(self.blog.slug, "comments")) )
+        self.assertStatus(reverse("turbion_blog_atom", args=("comments")) )
 
     def test_post_comments_feed(self):
         self.assertStatus(
-            blog_reverse(
-                "turbion_blog_atom",
-                args=(
-                    self.blog.slug,
-                    "comments/%s/" % self.post.id
-                )
-            )
+            reverse("turbion_blog_atom", args=("comments/%s/" % self.post.id,))
         )
 
     def test_tag_feed(self):
         pass
 
     def test_sitemap(self):
-        response = self.assertStatus(blog_reverse("turbion_blog_sitemap", args=(self.blog.slug,)))
+        response = self.assertStatus(reverse("turbion_blog_sitemap"))
 
     def test_global_sitemap(self):
-        response = self.assertStatus(blog_reverse("turbion_global_blog_sitemap"))
+        response = self.assertStatus(reverse("turbion_global_blog_sitemap"))
 
     def _create_comment(self):
         return {}
@@ -68,7 +60,7 @@ class BlogsViews(BaseViewTest):
     def test_comment_add(self):
         self.login()
 
-        url = blog_reverse("turbion_blog_comment_add", args=(self.blog.slug, self.post.id))
+        url = reverse("turbion_blog_comment_add", args=(self.post.id,))
         CommentAdd.manager.subscribe(self.post.created_by)
 
         comment = {
@@ -83,7 +75,7 @@ class BlogsViews(BaseViewTest):
                         method="post"
                 )
 
-        post = Post.published.for_blog(self.blog).get(pk=self.post.pk)
+        post = Post.published.get(pk=self.post.pk)
 
         self.assertEqual(post.comment_count, 1)
         self.assertEqual(len(CommentAdd.manager.recipients(post)), 1)
@@ -93,25 +85,25 @@ class BlogsViews(BaseViewTest):
 
         comment = self.hack_captcha(response)
 
-        url = blog_reverse("turbion_blog_comment_add", args=(self.blog.slug, self.post.id))
+        url = reverse("turbion_blog_comment_add", args=(self.post.id,))
 
         comment.update({
-                    "text": "My comment",
-                    "text_postprocessor": "markdown",
-                    "nickname": "Alex",
-                    "email": "foo@bar.com",
-                    "site": "http://foobar.com",
-                    'notify': True,
+            "text": "My comment",
+            "text_postprocessor": "markdown",
+            "nickname": "Alex",
+            "email": "foo@bar.com",
+            "site": "http://foobar.com",
+            'notify': True,
         })
 
         response = self.assertStatus(
-                        url,
-                        data=comment,
-                        status=http.HttpResponseRedirect.status_code,
-                        method="post"
-                )
+            url,
+            data=comment,
+            status=http.HttpResponseRedirect.status_code,
+            method="post"
+        )
 
-        post = Post.published.for_blog(self.blog).get(pk=self.post._get_pk_val())
+        post = Post.published.get(pk=self.post.pk)
 
         self.assertEqual(post.comment_count, 1)
 
@@ -125,25 +117,25 @@ class BlogsViews(BaseViewTest):
 
         comment = Comment.objects.all()[0]
         response = self.assertStatus(
-                    reverse("turbion_comment_delete", args=(comment._get_pk_val(),)),
+                    reverse("turbion_comment_delete", args=(comment.pk,)),
                     http.HttpResponseRedirect.status_code
                 )
 
-        post = Post.published.for_blog(self.blog).get(pk=self.post.pk)
+        post = Post.published.get(pk=self.post.pk)
 
         self.assertEqual(post.comment_count, 0)
 
     def test_archive_day(self):
-        self.assertStatus(blog_reverse("turbion_blog_archive_day", args=(self.blog.slug, '2007', '12', '17')))
+        self.assertStatus(reverse("turbion_blog_archive_day", args=('2007', '12', '17')))
 
     def test_archive_month(self):
-        self.assertStatus(blog_reverse("turbion_blog_archive_month", args=(self.blog.slug, '2006', '11')))
+        self.assertStatus(reverse("turbion_blog_archive_month", args=('2006', '11')))
 
     def test_archive_year(self):
-        self.assertStatus(blog_reverse("turbion_blog_archive_year", args=(self.blog.slug, '2007')))
+        self.assertStatus(reverse("turbion_blog_archive_year", args=('2007',)))
 
     def test_tag(self):
-        self.assertStatus(blog_reverse("turbion_blog_tag", args=(self.blog.slug, "foo")))
+        self.assertStatus(reverse("turbion_blog_tag", args=("foo",)))
 
     def test_tags(self):
-        self.assertStatus(blog_reverse("turbion_blog_tags", args=(self.blog.slug,)))
+        self.assertStatus(reverse("turbion_blog_tags"))

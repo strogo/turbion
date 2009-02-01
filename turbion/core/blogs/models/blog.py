@@ -17,7 +17,7 @@ from turbion.core.blogs import utils
 from turbion.core.utils.enum import Enum
 from turbion.core import capabilities
 
-class Blog(models.Model):
+class Blog:
     moderations = Enum(
         none=_("none"),
         all=_("all"),
@@ -25,19 +25,10 @@ class Blog(models.Model):
         untrusted=_("untrusted")
     )
 
-    slug = models.CharField(
-                    max_length=50,
-                    unique=True,
-                    verbose_name=_("slug")
-            )
+    name = settings.TRUBION_BLOG_NAME
 
-    name = models.CharField(max_length=50, default='Turbion Blog', verbose_name=_("name"))
-
-    created_on = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
-    created_by = models.ForeignKey(Profile, related_name="created_blogs", verbose_name=_("created on"))
-
-    post_per_page = models.SmallIntegerField(default=5, verbose_name=_("posts per page"))
-    additional_post_fields = models.BooleanField(default=False)
+    post_per_page = settings.TRUBION_BLOG_POSTS_PER_PAGE
+     = models.BooleanField(default=False)
     socialbookmarks = models.CharField(max_length=255, verbose_name=_("social bookmarks"), blank=True)
     comments_moderation = models.CharField(max_length=20, choices=moderations, default=moderations.none)
 

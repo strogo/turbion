@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from turbion.core.blogs.models import Blog, Post
+from turbion.core.blogs.models import Post
 from turbion.core.comments.models import Comment
 from turbion.core.profiles.models import Profile
 
@@ -59,28 +59,28 @@ class BaseTest(object):
         )
 
 class NoneModerationTest(BaseTest, TestCase):
-    moderation = Blog.moderations.none
+    moderation = Post.moderations.none
 
     registered_status = Comment.statuses.published
     untrusted_status = Comment.statuses.published
     guest_status = Comment.statuses.published
 
 class AllModerationTest(BaseTest, TestCase):
-    moderation = Blog.moderations.all
+    moderation = Post.moderations.all
 
     registered_status = Comment.statuses.moderation
     untrusted_status = Comment.statuses.moderation
     guest_status = Comment.statuses.moderation
 
 class GuestsModerationTest(BaseTest, TestCase):
-    moderation = Blog.moderations.guests
+    moderation = Post.moderations.guests
 
     registered_status = Comment.statuses.published
     untrusted_status = Comment.statuses.published
     guest_status = Comment.statuses.moderation
 
 class UntrustedModerationTest(BaseTest, TestCase):
-    moderation = Blog.moderations.untrusted
+    moderation = Post.moderations.untrusted
 
     registered_status = Comment.statuses.published
     untrusted_status = Comment.statuses.moderation

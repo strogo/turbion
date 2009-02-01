@@ -15,7 +15,7 @@ class IncomingManager(GenericManager):
 
         return self.filter(
             descriptor=to_descriptor(obj.__class__),
-            object_id=obj._get_pk_val()
+            object_id=obj.pk
         )
 
 class Incoming(models.Model):

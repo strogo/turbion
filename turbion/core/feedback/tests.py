@@ -2,9 +2,8 @@
 from django.core import mail
 from django import http
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
-from turbion.core.blogs.utils import reverse
-from turbion.core.blogs.models import Blog
 from turbion.core.profiles.models import Profile
 from turbion.core.feedback.models import FeedbackAdd
 from turbion.core.utils.testing import BaseViewTest
@@ -16,14 +15,13 @@ class FeedbackPageTest(BaseViewTest):
 
     def setUp(self):
         self.profile = Profile.objects.all()[0]
-        self.blog = Blog.objects.all()[0]
 
         self.login()
 
-        FeedbackAdd.manager.subscribe(self.profile, self.blog)
+        FeedbackAdd.manager.subscribe(self.profile)
 
     def test_submit_feedback(self):
-        url = reverse("turbion_feedback", args=(self.blog.slug,))
+        url = reverse("turbion_feedback")
 
         self.assertStatus(
             url,

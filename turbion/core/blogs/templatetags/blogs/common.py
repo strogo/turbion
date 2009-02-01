@@ -5,9 +5,9 @@ from django.utils.encoding import smart_str
 from django.conf import settings
 from django.db.models import signals
 from django.db import connection
+from django.core.urlresolvers import reverse
 
 from turbion.core.blogs.models import Post, Comment
-from turbion.core.blogs.utils import blog_reverse
 from turbion.core.utils.cache.tags import cached_inclusion_tag
 
 register = template.Library()
@@ -46,11 +46,11 @@ class BlogURLNode(template.Node):
         kwargs = dict([(smart_str(k,'ascii'), v.resolve(context))
                        for k, v in self.kwargs.items()])
         try:
-            return blog_reverse(self.view_name, args=args, kwargs=kwargs)
+            return reverse(self.view_name, args=args, kwargs=kwargs)
         except NoReverseMatch:
             try:
                 project_name = settings.SETTINGS_MODULE.split('.')[0]
-                return blog_reverse(project_name + '.' + self.view_name,
+                return reverse(project_name + '.' + self.view_name,
                                args=args, kwargs=kwargs)
             except NoReverseMatch:
                 return ''

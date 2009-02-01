@@ -5,10 +5,10 @@ from turbion.core.profiles import get_profile
 
 class PageAdmin(admin.ModelAdmin):
     list_display = (
-        'title', 'slug', 'blog', 'created_on', 'edited_on', 'created_by',
+        'title', 'slug', 'created_on', 'edited_on', 'created_by',
         'status', 'text_postprocessor'
     )
-    list_filter = ('blog', 'status')
+    list_filter = ('status',)
     list_display_links = ('title',)
 
     def save_model(self, request, page, form, change):

@@ -16,7 +16,7 @@ class AssetManager(models.Manager):
 
         return self.filter(
                         connections__object_dscr=dscr,
-                        connections__object_id=obj._get_pk_val()
+                        connections__object_id=obj.pk
                 )
 
 class Asset(models.Model):
@@ -55,7 +55,7 @@ class Asset(models.Model):
 
     def connect_to(self, obj):
         dscr = to_descriptor(obj.__class__)
-        id = obj._get_pk_val()
+        id = obj.pk
 
         AssetConnection.objects.get_or_create(
                     object_dscr=dscr,

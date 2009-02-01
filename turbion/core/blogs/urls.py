@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 from django.conf import settings
+from django.contrib.syndication.views import feed
 
 from turbion.core.blogs import feeds
-from turbion.core.blogs.sitemaps import PostSitemap, CommentSitemap, GlobalSitemap
-from turbion.core.blogs.utils import blog_url
 
 atom_feeds = {
     'posts'   : feeds.PostsFeedAtom,
@@ -16,11 +15,6 @@ rss_feeds = {
     'posts'   : feeds.PostsFeed,
     'comments': feeds.CommentsFeed,
     'tag'     : feeds.TagFeed,
-}
-
-sitemaps = {
-    'posts'   : PostSitemap,
-    'comments': CommentSitemap
 }
 
 urlpatterns = patterns('turbion.core.blogs.views',
@@ -48,8 +42,7 @@ if "djapian" in settings.INSTALLED_APPS:
      url(r'^search/comments/$',   'search.comments', name="turbion_blog_search_comments"),
     )
 
-urlpatterns += patterns('turbion.core.blogs.views',
- url(r'^feeds/rss/(?P<url>.*)/$',   'blog.feed',    {"feed_dict": rss_feeds}, "turbion_blog_rss"),
- url(r'^feeds/atom/(?P<url>.*)/$',  'blog.feed',    {"feed_dict": atom_feeds},"turbion_blog_atom"),
- url(r'^blog_sitemap.xml$',         'blog.sitemap', {'sitemaps': sitemaps},   "turbion_blog_sitemap"),
+urlpatterns += patterns('',
+ url(r'^feeds/rss/(?P<url>.*)/$',   feed,    {"feed_dict": rss_feeds}, "turbion_blog_rss"),
+ url(r'^feeds/atom/(?P<url>.*)/$',  feed,    {"feed_dict": atom_feeds},"turbion_blog_atom"),
 )

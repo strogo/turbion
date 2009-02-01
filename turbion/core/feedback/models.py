@@ -4,7 +4,6 @@ from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.blogs.models import Blog
 from turbion.core.feedback import signals
 from turbion.core.profiles.models import Profile
 from turbion.core.notifications import EventDescriptor
@@ -18,8 +17,6 @@ class Feedback(models.Model):
         done=_("done"),
         new=_("new"),
     )
-
-    blog       = models.ForeignKey(Blog, editable=False, related_name="feedbacks")
 
     created_on = models.DateTimeField(default=datetime.now, editable=False,
                                       verbose_name=_('creation on'))

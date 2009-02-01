@@ -2,7 +2,6 @@
 from django.test import TestCase
 from django import http
 
-from turbion.core.blogs.models import Blog
 from turbion.core.aliases.models import Alias
 
 class SimpleAliasTest(TestCase):

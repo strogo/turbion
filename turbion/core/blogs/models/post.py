@@ -7,32 +7,39 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.blogs import managers
-from turbion.core.blogs.models.blog import Blog
 from turbion.core.comments.models import Comment
 from turbion.core.comments.fields import CommentCountField
 from turbion.core.tags.models import Tag
 from turbion.core.tags.fields import TagsField
 from turbion.core.profiles.models import Profile
-from turbion.core.blogs import utils
 from turbion.core import capabilities
 from turbion.core.utils.postprocessing.fields import PostprocessedTextField
 from turbion.core.utils.enum import Enum
 
 class Post(models.Model):
-    statuses = Enum(draft    =_("draft"),
-                    trash    =_("trashed"),
-                    published=_("published")
-                )
+    moderations = Enum(
+        none=_("none"),
+        all=_("all"),
+        guests=_("guests"),
+        untrusted=_("untrusted")
+    )
 
-    commenting_settings = Enum(allow   =_("allow"),
-                               disallow=_("disallow"),
-            )
+    statuses = Enum(
+        draft=_("draft"),
+        trash=_("trashed"),
+        published=_("published")
+    )
 
-    show_settings = Enum(everybody=_("everybody"),
-                         registred=_("registered"),
-            )
+    commenting_settings = Enum(
+        allow =_("allow"),
+        disallow=_("disallow"),
+    )
 
-    blog          = models.ForeignKey(Blog, verbose_name=_("blog"), related_name="posts")
+    show_settings = Enum(
+        everybody=_("everybody"),
+        registred=_("registered"),
+    )
+
     comment_count = CommentCountField(verbose_name=_("comment count"))
 
     created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
@@ -71,10 +78,10 @@ class Post(models.Model):
 
     tags = TagsField()
 
-    @utils.permalink
+    @models.permalink
     def get_absolute_url(self):
         args = (
-            self.blog.slug, self.published_on.year, self.published_on.month,
+            self.published_on.year, self.published_on.month,
             self.published_on.day, self.slug,
         )
         return ("turbion_blog_post", args)
@@ -84,7 +91,7 @@ class Post(models.Model):
 
     @models.permalink
     def get_atom_feed_url(self):
-        return ("turbion_blog_atom", ("%s/%s" % (self.blog.slug, self.id),))
+        return ("turbion_blog_atom", ("%s" % self.id,))
 
     def __unicode__(self):
         return self.title
@@ -148,7 +155,7 @@ class Post(models.Model):
         verbose_name        = 'post'
         verbose_name_plural = 'posts'
         ordering            = ('-published_on', '-created_on',)
-        unique_together     = (("blog", "published_on", "title", "slug"),)
+        unique_together     = (("published_on", "title", "slug"),)
         db_table            = "turbion_post"
 
 class PostCapabilities(capabilities.CapabilitySet):

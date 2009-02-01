@@ -27,7 +27,7 @@ class TagsField( forms.ModelMultipleChoiceField ):
 
         queryset   = Tag.objects.filter_for_model( model )
 
-        if form.instance._get_pk_val():
+        if form.instance.pk:
             initial = form.instance.tags.all().values_list( "id", flat = True )
         else:
             initial = None

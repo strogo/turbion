@@ -95,7 +95,7 @@ class GenericForeignKey(object):
         pk = None
         if value is not None:
             descriptor = value.__class__
-            pk = value._get_pk_val()
+            pk = value.pk
 
         setattr(instance, self.dscr_field, descriptor)
         setattr(instance, self.pk_field, pk)

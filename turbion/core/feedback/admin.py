@@ -6,8 +6,8 @@ from turbion.core.feedback.models import Feedback
 from turbion.core.profiles import get_profile
 
 class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ("subject", "blog", "created_on", "created_by", "status")
-    list_filter = ("blog", "status",)
+    list_display = ("subject", "created_on", "created_by", "status")
+    list_filter = ("status",)
 
     def save_model(self, request, feedback, form, change):
         if not change:

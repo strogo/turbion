@@ -11,9 +11,8 @@ from django.core.management import call_command
 
 from turbion.core.utils.testing import BaseViewTest
 
-from turbion.core.blogs.models import Blog, Post, Comment
+from turbion.core.blogs.models import Post, Comment
 from turbion.core.comments.models import CommentAdd
-from turbion.core.blogs.utils import reverse
 from turbion.core.profiles.models import Profile
 
 class SearchTest(BaseViewTest):

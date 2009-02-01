@@ -28,7 +28,7 @@ class LatestGearsAtom(Feed):
     item_link = link
 
     def item_guid(self, info):
-        return "<gear: %s>" % info._get_pk_val()
+        return "<gear: %s>" % info.pk
 
     def items(self):
         return GearSpot.revolve_all()

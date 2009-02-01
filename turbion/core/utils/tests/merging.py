@@ -62,7 +62,7 @@ class Merge(TestCase):
         )
 
     def _test_objects(self, other):
-        my_profile = MyProfile.objects.get(pk=self.my_profile._get_pk_val())
+        my_profile = MyProfile.objects.get(pk=self.my_profile.pk)
         self.assertEqual(other.nickname, my_profile.nickname)
         self.assertEqual(other.website, my_profile.www)
         self.assertEqual(other.dob, my_profile.birth)

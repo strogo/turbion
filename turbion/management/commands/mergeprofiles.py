@@ -41,7 +41,7 @@ class Command(NoArgsCommand):
                         setattr(related_object, name, base_obj)
 
                         print u"\t\tSaving %s - %s with reassigned profile" % (related_model._meta.object_name,
-related_object._get_pk_val(),)
+related_object.pk,)
                         if not dry:
                             try:
                             	related_object.save()

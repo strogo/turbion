@@ -17,6 +17,7 @@ class TagManager(models.Manager):
         pks = TaggedItem.objects.filter_for_model(model, **kwargs).values_list("tag", flat=True).distinct()
 
         return Tag.objects.filter(pk__in=pks.query)
+    for_model = filter_for_model
 
     def create_tag(self, tag):
         if isinstance(tag, (long, int)):
@@ -37,7 +38,7 @@ class TagManager(models.Manager):
 
 class TaggedItemManager(models.Manager):
     def filter_for_object(self, obj):
-        query_set = self.filter_for_model(obj.__class__).filter(item_id=obj._get_pk_val())
+        query_set = self.filter_for_model(obj.__class__).filter(item_id=obj.pk)
 
         return query_set
 
@@ -75,7 +76,7 @@ class TaggedItemManager(models.Manager):
 
     def get_item_connection(self, instance):
         return {
-            "item_id": instance._get_pk_val(),
+            "item_id": instance.pk,
             "item_dscr": to_descriptor(instance.__class__)
         }
 

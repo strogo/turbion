@@ -2,12 +2,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.blogs.models import Blog
-
 from turbion.core.utils.models import GenericManager
 from turbion.core.utils.enum import NamedEnum
 
-class Alias(models.Model):
+class Alias(models.Model):#FIXME: move to contrib and restore middleware
     user_agents = NamedEnum(
         feedburner=("(feedburner|feedvalidator)", "feedburner bot"),
     )
@@ -16,8 +14,6 @@ class Alias(models.Model):
         redirect =(302, "redirect"),
         permanent=(301, "permanent redirect")
     )
-
-    blog = models.ForeignKey(Blog, related_name="aliases", verbose_name=_("blog"))
 
     from_url    = models.CharField(max_length=250, unique=True, verbose_name=_("from url"))
     to_url      = models.CharField(max_length=250, verbose_name=_("to url"))

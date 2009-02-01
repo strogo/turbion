@@ -20,7 +20,7 @@ class CommentManager(GenericManager):
     def get_query_set(self):
         return super(CommentManager, self).get_query_set().select_related("created_by")
 
-    def for_model_with_rel(self, model, obj):
+    def for_model_with_rel(self, model, obj): #FIXME: remove method
         dscr = to_descriptor(model)
 
         for field in  model._meta.fields:
@@ -38,13 +38,13 @@ class CommentManager(GenericManager):
 
         raise ValueError("Model %s has no relations to %s" % (model, obj.__class__))
 
-    def for_object(self, obj):
-        dscr = to_descriptor(obj.__class__)
+    def for_model(self, model):
+        dscr = to_descriptor(model)
 
-        return self.filter(
-                        connection_dscr=dscr,
-                        connection_id=obj._get_pk_val()
-                    )
+        return self.filter(connection_dscr=dscr)
+
+    def for_object(self, obj):
+        return self.for_model(obj.__class__).filter(connection_id=obj.pk)
 
 class Comment(models.Model):
     connection_dscr = DescriptorField(editable=False)

@@ -20,7 +20,7 @@ class EventManager(object):
         if obj:
             return {
                 "connection_dscr": to_descriptor(obj.__class__),
-                "connection_id": obj._get_pk_val()
+                "connection_id": obj.pk
             }
         else:
             return {
@@ -163,7 +163,7 @@ class EventManager(object):
     def get_user_hash(self, user):
         import md5
 
-        hash = md5.new("%s.%s" % (user._get_pk_val(), user)).hexdigest()
+        hash = md5.new("%s.%s" % (user.pk, user)).hexdigest()
 
         return hash
 
@@ -177,14 +177,14 @@ class EventManager(object):
 
         url = reverse(
                 "turbion_notifications_unsubscribe",
-                args=(user._get_pk_val(), self._get_event()._get_pk_val())
+                args=(user.pk, self._get_event().pk)
         )
 
         url += "?"
         if obj:
             url += urlencode({
                     "connection_dscr": to_descriptor(obj.__class__),
-                    "connection_id": obj._get_pk_val(),
+                    "connection_id": obj.pk,
                     "code":  hash
             })
 

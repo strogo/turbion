@@ -118,7 +118,7 @@ class Profile(User):
         return type_map.get(self.name_view, self.username)
 
     def update_visit(self, when):
-        self.__class__._default_manager.filter(pk=self._get_pk_val()).\
+        self.__class__._default_manager.filter(pk=self.pk).\
                                         update(last_visit=when)
 
     def __unicode__(self):

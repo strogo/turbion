@@ -9,6 +9,7 @@ from turbion.core.utils.descriptor import to_descriptor
 
 from turbion.core.blogs.models import Post, Comment
 from turbion.core.profiles.models import Profile
+from turbion.core.tags.models import Tag
 from turbion.core.utils.cache.tags import cached_inclusion_tag
 
 register = template.Library()
@@ -27,13 +28,13 @@ D = dict
                       trigger=D(
                             sender=Post,
                             signal=signals.post_save,
-                            suffix=lambda instance, created, *args, **kwargs: instance.blog.id
+                            suffix=lambda instance, created, *args, **kwargs: []
                         ),
-                      suffix=lambda context, blog: blog.id,
+                      suffix=lambda context: [],
                       file_name='turbion/blogs/pads/archive.html',
                       takes_context=True)
-def archive_pad(context, blog):
-    queryset = Post.published.for_blog(blog)
+def archive_pad(context):
+    queryset = Post.published.all()
 
     class MonthMeta(object):
         def __init__(self, month):
@@ -48,7 +49,6 @@ def archive_pad(context, blog):
     months = map(MonthMeta, queryset.dates("published_on", "month", order='DESC').distinct())
 
     return {
-        'blog': blog,
         'months': months,
     }
 
@@ -57,12 +57,12 @@ def archive_pad(context, blog):
                         sender=Comment,
                         signal=(signals.post_save, signals.post_delete),
                         filter=post_comments_filter,
-                        suffix=lambda instance, *args, **kwargs: instance.connection.blog.id
+                        suffix=lambda instance, *args, **kwargs: [],
                   ),
-                  suffix=lambda context, blog: blog.id,
+                  suffix=lambda context: [],
                   file_name='turbion/blogs/pads/top_commenters.html',
                   takes_context=True)
-def top_commenters_pad(context, blog, count=5):
+def top_commenters_pad(context, count=5):
     dscr = to_descriptor(Post)
 
     extra_select="""
@@ -71,12 +71,10 @@ def top_commenters_pad(context, blog, count=5):
         WHERE cc.connection_dscr="%(dscr)s"
             AND cc.connection_id=pp.%(post_pk_name)s
             AND cc.created_by_id=%(profile_table)s.%(profile_pk_name)s
-            AND pp.blog_id=%(blog_id)s
             AND pp.created_by_id!=cc.created_by_id
     """ % {
         "comment_table": comments_table_name,
         "dscr": dscr,
-        "blog_id": blog._get_pk_val(),
         "profile_table": profiles_table_name,
         "profile_pk_name": Profile._meta.pk.attname,
         "post_table": posts_table_name,
@@ -94,13 +92,13 @@ def top_commenters_pad(context, blog, count=5):
                         sender=Comment,
                         signal=signals.post_save,
                         filter=post_comments_filter,
-                        suffix=lambda instance, *args, **kwargs: instance.connection.blog.id
+                        suffix=lambda instance, *args, **kwargs: []
                       ),
-                      suffix=lambda context, blog: blog.id,
+                      suffix=lambda context: [],
                       file_name='turbion/blogs/pads/last_comments.html',
                       takes_context=True)
-def last_comments_pad(context, blog, count=5):
-    comments = Comment.published.for_model_with_rel(Post, blog).order_by("-created_on").distinct()[:count]
+def last_comments_pad(context, count=5):
+    comments = Comment.published.for_model(Post).order_by("-created_on").distinct()[:count]
 
     return  {"comments": comments}
 
@@ -108,27 +106,26 @@ def last_comments_pad(context, blog, count=5):
                       trigger=D(
                         sender= Post,
                         signal=signals.post_save,
-                        suffix=lambda instance, created, *args, **kwargs: instance.blog.id
+                        suffix=lambda instance, created, *args, **kwargs: []
                         ),
-                      suffix=lambda context, blog: blog.id,
+                      suffix=lambda context: [],
                       file_name='turbion/blogs/pads/top_posts.html',
                       takes_context=True)
-def top_posts_pad(context, blog, count=5):
+def top_posts_pad(context, count=5):
     return  {
-        "posts": Post.published.for_blog(blog).order_by('-comment_count')[:count]
+        "posts": Post.published.all().order_by('-comment_count')[:count]
     }
 
 @cached_inclusion_tag(register,
                       trigger={"sender": Post,
                                 "signal": signals.post_save,
-                                "suffix": lambda instance, created, *args, **kwargs: instance.blog.id},
-                      suffix=lambda context, blog: blog.id,
+                                "suffix": lambda instance, created, *args, **kwargs: []},
+                      suffix=lambda contex: [],
                       file_name='turbion/blogs/pads/tags.html',
                       takes_context=True)
-def tags_pad(context, blog):
+def tags_pad(context):
     return {
-        "blog": blog,
-        "tags" : blog.tags
+        "tags" : Tag.objects.for_model(Post)
     }
 
 @cached_inclusion_tag(register,
@@ -136,13 +133,13 @@ def tags_pad(context, blog):
                         sender=Post,
                         signal=(signals.post_save, signals.post_delete),
                         filter=lambda post: post.is_published,
-                        suffix=lambda instance, *args, **kwargs: (instance.blog.id, instance.published_on.year, instance.published_on.month)
+                        suffix=lambda instance, *args, **kwargs: (instance.published_on.year, instance.published_on.month)
                       ),
-                      suffix=lambda context, blog: (blog.id, blog.calendar.current.year, blog.calendar.current.month),
+                      suffix=lambda context: [],
                       file_name='turbion/blogs/pads/calendar.html',
                       takes_context=True)
-def calendar_pad(context, blog):
-    return {"blog": blog}
+def calendar_pad(context):
+    return {"blog": None}
 
 @cached_inclusion_tag(register,
                       trigger=D(
@@ -150,7 +147,7 @@ def calendar_pad(context, blog):
                         signal=signals.post_save,
                         checker=lambda *args,**kwargs: True
                       ),
-                      suffix=lambda context, post: [post.blog.id, post.id],
+                      suffix=lambda context, post: [post.id],
                       file_name='turbion/blogs/pads/prevnext.html',
                       takes_context=True)
 def prevnext_pad(context, post):

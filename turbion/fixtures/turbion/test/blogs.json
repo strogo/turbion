@@ -1,19 +1,6 @@
 [
  {
   "pk": 1,
-  "model": "turbion.blog",
-  "fields": {
-   "additional_post_fields": false,
-   "created_on": "2008-05-17 02:00:23",
-   "created_by": 1,
-   "name": "Test Blog",
-   "socialbookmarks": "",
-   "post_per_page": 5,
-   "slug": "test"
-  }
- },
- {
-  "pk": 1,
   "model": "turbion.post",
   "fields": {
    "status": "published",
@@ -23,7 +10,6 @@
    "created_by": 2,
    "published_on": "2006-11-17 16:54:47",
    "edited_by" : 1,
-   "blog": 1,
    "music": "",
    "location": "",
    "created_on": "2006-11-17 16:54:47",
@@ -41,7 +27,6 @@
    "text": "Some Post Text",
    "created_by": 1,
    "edited_by" : 1,
-   "blog": 1,
    "music": "",
    "location": "",
    "created_on": "2007-12-17 16:54:47",
@@ -60,7 +45,6 @@
    "text": "Some Post Text Text",
    "created_by": 1,
    "edited_by" : 1,
-   "blog": 1,
    "music": "",
    "location": "",
    "created_on": "2008-12-17 16:54:47",
