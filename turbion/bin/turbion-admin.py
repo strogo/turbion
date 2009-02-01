@@ -14,30 +14,28 @@ class BlogProjectCommand(LabelCommand):
     requires_model_validation = False
 
     local_options_list = (
-        make_option('--blogs-multiple', action='store_true', default=False,
-            help="Allow multiple blogs", dest="blogs_multiple"),
+        make_option('--name', action='store', default=None,
+            help="Blog name", dest="name"),
     )
 
     option_list = LabelCommand.option_list + local_options_list
 
-    def handle_label(self, label, blogs_multiple=False, **options):
-        if not self._check_modules(**options):
+    def handle_label(self, label, name=None, **options):
+        if not self._check_modules(name=name, **options):
             return "Cannot create project"
 
         management.call_command("startproject", label)
 
-        self._patch_urls(label, **options)
-        self._patch_settings(label, **options)
+        self._patch_urls(label)
+        self._patch_settings(label, name=name)
 
-    def _patch_urls(self, label, blogs_multiple):
+    def _patch_urls(self, label):
         urls_file_name = os.path.join(label, "urls.py")
-
-        pattern = blogs_multiple and "blogs" or "blog"
 
         lines = file(urls_file_name, "r").readlines()
         lines.insert(-1,
             "\n"
-            "    (r'^%s/', include('turbion.urls')),\n" % pattern
+            "    (r'^blog/', include('turbion.urls')),\n"
         )
 
         file(urls_file_name, "w").writelines(lines)
@@ -47,7 +45,7 @@ class BlogProjectCommand(LabelCommand):
 
         valid_options = dict([(opt.dest, opt.default) for opt in self.local_options_list])
         options = [(name.upper(), value) for name, value in options.iteritems()\
-                            if (name in valid_options and valid_options[name] != value)]
+                            if (name in valid_options and valid_options[name] != value and value is not None)]
 
         lines = file(settings_file_name, "r").readlines()
 
