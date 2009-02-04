@@ -3,32 +3,23 @@ from django.test import TestCase
 from django.db import models
 from django import http
 
-from turbion.core.comments.models import Comment
-from turbion.core.comments.fields import CommentCountField
-from turbion.core.comments import views
+from turbion.core.blogs.models import Comment, Post
+from turbion.core.blogs.views import comment as views
 from turbion.core.utils.testing import RequestFactory, BaseViewTest
 
-class ArticleForComments(models.Model):
-    title = models.CharField(max_length=20)
-    comment_count = CommentCountField()
-
-    def get_absolute_url(self):
-        return "/foobar/"
-
-    class Meta:
-        app_label = "turbion"
-
-class CommentAddTest(BaseViewTest):
-    fixtures = ['turbion/test/profiles']
+class CommentsTest(BaseViewTest):
+    fixtures = [
+        'turbion/test/blogs',
+        'turbion/test/profiles'
+    ]
 
     def setUp(self):
-        self.article = ArticleForComments.objects.create(title="foobar")
+        self.post = Post.objects.all()[0]
         self.client = RequestFactory()
 
     def _create_comment(self):
         comment = Comment(
-            connection_dscr=self.article.__class__,
-            connection_id=self.article.id,
+            post=self.post,
             text="Foo bar text",
             created_by=self.user
         )
@@ -50,7 +41,7 @@ class CommentAddTest(BaseViewTest):
         response = views.add_comment(
                             request,
                             next="/",
-                            connection=self.article
+                            post=self.post
                     )
 
         self.assert_(isinstance(response, http.HttpResponse))
@@ -60,8 +51,8 @@ class CommentAddTest(BaseViewTest):
 
         self.assertEqual(comment.status, Comment.statuses.published)
 
-        article = ArticleForComments.objects.get()
-        self.assertEqual(article.comment_count, 1)
+        post = Post.objects.get(pk=self.post.pk)
+        self.assertEqual(post.comment_count, 1)
 
     def test_add_guest(self):
         data = {
@@ -76,7 +67,7 @@ class CommentAddTest(BaseViewTest):
         response_dict = views.add_comment(
                     initial_request,
                     next="/",
-                    connection=self.article
+                    post=self.post
             )
         response_dict["comment_form"].as_p()
         data.update(self.hack_captcha(initial_request))
@@ -87,7 +78,7 @@ class CommentAddTest(BaseViewTest):
         response = views.add_comment(
                             request,
                             next="/",
-                            connection=self.article
+                            post=self.post
                     )
 
         self.assert_(isinstance(response, http.HttpResponse))
@@ -109,12 +100,12 @@ class CommentAddTest(BaseViewTest):
 
         request = self.client.post("/foobar/", data=data)
 
-        response = views.edit_comment(
-                            request,
-                            next="/",
-                            connection=self.article,
-                            comment=comment
-                    )
+        response = views.add_comment(
+            request,
+            next="/",
+            post=self.post,
+            comment=comment
+        )
         self.assert_(isinstance(response, http.HttpResponse))
         self.assertResponseStatus(response, http.HttpResponseRedirect.status_code)
 
@@ -128,9 +119,9 @@ class CommentAddTest(BaseViewTest):
         request = self.client.post("/foobar/")
 
         response = views.delete(
-                            request,
-                            comment_id=comment.id
-                    )
+            request,
+            comment_id=comment.id
+        )
         self.assert_(isinstance(response, http.HttpResponse))
         self.assertResponseStatus(response, http.HttpResponseRedirect.status_code)
 

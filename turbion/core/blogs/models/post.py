@@ -6,8 +6,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.blogs import managers
-from turbion.core.comments.models import Comment
-from turbion.core.comments.fields import CommentCountField
+from turbion.core.blogs.fields import CommentCountField
 from turbion.core.blogs.models.tag import Tag
 from turbion.core.profiles.models import Profile
 from turbion.core import capabilities
@@ -106,7 +105,7 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
     def publicate(self, notify=True):
-        from turbion.core.comments.models import CommentAdd
+        from turbion.core.blogs.models.comment import CommentAdd
         from turbion.core.blogs import signals
 
         self.published_on = datetime.now()
@@ -151,7 +150,7 @@ class Post(models.Model):
     get_next_by_published_on = lambda self, **kwargs: self._get_near_post(True, **kwargs)
 
     def get_comment_status(self, comment):
-        from turbion.core.comments.models import Comment
+        from turbion.core.blogs.models.comment import Comment
 
         author = comment.created_by
 

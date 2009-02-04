@@ -11,8 +11,7 @@ from django.core.management import call_command
 
 from turbion.core.utils.testing import BaseViewTest
 
-from turbion.core.blogs.models import Post, Comment
-from turbion.core.comments.models import CommentAdd
+from turbion.core.blogs.models import Post, Comment, CommentAdd
 from turbion.core.profiles.models import Profile
 
 class SearchTest(BaseViewTest):
@@ -22,8 +21,6 @@ class SearchTest(BaseViewTest):
     ]
 
     def setUp(self):
-        from turbion.core.comments.models import CommentAdd
-
         self.post = Post.objects.all()[0]
 
         CommentAdd.manager.subscribe(self.post.created_by, self.post)

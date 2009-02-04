@@ -20,8 +20,6 @@ posts_table_name    = quote_name(Post._meta.db_table)
 comments_table_name = quote_name(Comment._meta.db_table)
 profiles_table_name = quote_name(Profile._meta.db_table)
 
-post_comments_filter = lambda comment: comment.connection_dscr == to_descriptor(Post)
-
 D = dict
 
 @cached_inclusion_tag(register,
@@ -56,29 +54,22 @@ def archive_pad(context):
                       trigger=D(
                         sender=Comment,
                         signal=(signals.post_save, signals.post_delete),
-                        filter=post_comments_filter,
                         suffix=lambda instance, *args, **kwargs: [],
                   ),
                   suffix=lambda context: [],
                   file_name='turbion/blogs/pads/top_commenters.html',
                   takes_context=True)
 def top_commenters_pad(context, count=5):
-    dscr = to_descriptor(Post)
-
     extra_select="""
         SELECT COUNT(*)
-        FROM %(comment_table)s AS cc, %(post_table)s AS pp
-        WHERE cc.connection_dscr="%(dscr)s"
-            AND cc.connection_id=pp.%(post_pk_name)s
-            AND cc.created_by_id=%(profile_table)s.%(profile_pk_name)s
+        FROM %(comment_table)s AS cc JOIN %(post_table)s pp ON (cc.post_id=pp.id)
+        WHERE
+            cc.created_by_id=%(profile_table)s.user_ptr_id
             AND pp.created_by_id!=cc.created_by_id
     """ % {
         "comment_table": comments_table_name,
-        "dscr": dscr,
         "profile_table": profiles_table_name,
-        "profile_pk_name": Profile._meta.pk.attname,
         "post_table": posts_table_name,
-        "post_pk_name": Post._meta.pk.attname
     }
 
     return  {
@@ -91,14 +82,13 @@ def top_commenters_pad(context, count=5):
                       trigger=D(
                         sender=Comment,
                         signal=signals.post_save,
-                        filter=post_comments_filter,
                         suffix=lambda instance, *args, **kwargs: []
                       ),
                       suffix=lambda context: [],
                       file_name='turbion/blogs/pads/last_comments.html',
                       takes_context=True)
 def last_comments_pad(context, count=5):
-    comments = Comment.published.for_model(Post).order_by("-created_on").distinct()[:count]
+    comments = Comment.published.all().order_by("-created_on").distinct()[:count]
 
     return  {"comments": comments}
 

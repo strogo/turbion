@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from turbion.core.blogs.decorators import post_view, login_required, titled
 from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles.models import Profile
-from turbion.core.comments import forms as comments_forms
+from turbion.core.blogs.forms import comment as forms
 from turbion.core.profiles import get_profile
 from turbion.core.utils.pagination import paginate
 from turbion.core.utils.decorators import paged, templated
@@ -68,10 +68,10 @@ def tag(request, tag_slug):
 @templated('turbion/blogs/post.html')
 @titled(page='{{post.title}}')
 def post(request, post):
-    comment_form = comments_forms.CommentForm(request=request)
+    comment_form = forms.CommentForm(request=request)
 
-    comments = Comment.published.for_object(post)\
-                        .select_related("created_by")\
+    comments = Comment.published.filter(post=post)\
+                        .select_related("created_by", "post")\
                         .order_by("created_on")
 
     return {

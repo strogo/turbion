@@ -10,52 +10,21 @@ from turbion.core.profiles.models import Profile
 from turbion.core.utils.postprocessing.fields import PostprocessedTextField
 from turbion.core.utils.models import GenericManager
 from turbion.core.utils.enum import Enum
-from turbion.core.utils.descriptor import DescriptorField, GenericForeignKey, to_descriptor
 from turbion.core.notifications import EventDescriptor
-from turbion.core.comments import signals as comment_signals
-
-quote_name = connection.ops.quote_name
+from turbion.core.blogs import signals as blogs_signals
 
 class CommentManager(GenericManager):
     def get_query_set(self):
         return super(CommentManager, self).get_query_set().select_related("created_by")
 
-    def for_model_with_rel(self, model, obj): #FIXME: remove method
-        dscr = to_descriptor(model)
-
-        for field in  model._meta.fields:
-            if isinstance(field, models.ForeignKey):
-                if field.rel.to == obj.__class__:
-                    return self.filter(connection_dscr=dscr).\
-                                extra(
-                                    where=["%s.%s= %s" % (
-                                            quote_name(model._meta.db_table),
-                                            quote_name(field.column),
-                                            getattr(obj, field.rel.field_name))
-                                        ],
-                                    tables=[model._meta.db_table]
-                                )
-
-        raise ValueError("Model %s has no relations to %s" % (model, obj.__class__))
-
-    def for_model(self, model):
-        dscr = to_descriptor(model)
-
-        return self.filter(connection_dscr=dscr)
-
-    def for_object(self, obj):
-        return self.for_model(obj.__class__).filter(connection_id=obj.pk)
-
 class Comment(models.Model):
-    connection_dscr = DescriptorField(editable=False)
-    connection_id = models.PositiveIntegerField(editable=False, verbose_name=_("connection"))
-    connection = GenericForeignKey("connection_dscr", "connection_id")
+    post = models.ForeignKey('turbion.Post', related_name="comments", verbose_name=_("post"))
 
     statuses = Enum(
-                published="published",
-                moderation="on moderation",
-                hided="hided",
-        )
+        published="published",
+        moderation="on moderation",
+        hided="hided",
+    )
 
     created_on = models.DateTimeField(default=datetime.now, verbose_name=_("created on"))
 
@@ -101,7 +70,7 @@ class CommentAdd(EventDescriptor):
     class Meta:
         name = _("new comment added")
         to_object = True
-        trigger = (Comment, comment_signals.comment_added)
+        trigger = (Comment, blogs_signals.comment_added)
         content_type = "html"
 
     def allow_recipient(self, recipient, comment, *args, **kwargs):

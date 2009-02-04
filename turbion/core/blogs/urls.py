@@ -25,6 +25,7 @@ urlpatterns = patterns('turbion.core.blogs.views',
 
  url(r'^p/(?P<post_id>\d+)/comment/add/$',   'comment.add', name="turbion_blog_comment_add"),
  url(r'^comment/(?P<comment_id>\d+)/edit/$', 'comment.edit', name="turbion_blog_comment_edit"),
+ url(r'^comment/(?P<comment_id>\d+)/delete/$', 'comment.delete', name="turbion_blog_comment_delete"),
 
  url(r'^tags/$',                             'post.tags', name="turbion_blog_tags"),
  url(r'^tag/(?P<tag_slug>[\w_-]+)/$',        'post.tag' , name="turbion_blog_tag"),

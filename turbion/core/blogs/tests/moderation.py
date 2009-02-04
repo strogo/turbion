@@ -2,8 +2,7 @@
 
 from django.test import TestCase
 
-from turbion.core.blogs.models import Post
-from turbion.core.comments.models import Comment
+from turbion.core.blogs.models import Post, Comment
 from turbion.core.profiles.models import Profile
 
 class BaseTest(object):
@@ -20,9 +19,9 @@ class BaseTest(object):
         comment = Comment(
             created_by=author,
             text="test",
-            text_postprocessor="dummy"
+            text_postprocessor="dummy",
+            post=self.post
         )
-        comment.connection = self.post
         comment.save()
 
         return comment

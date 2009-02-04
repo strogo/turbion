@@ -1,7 +1,6 @@
 from django.db import models
 
 from turbion.core.utils.models import GenericManager
-from turbion.core.comments.models import Comment
 
 def setup_blog(owner):
     owner.grant_capability(set="blog.caps")

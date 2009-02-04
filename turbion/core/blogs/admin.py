@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.utils.text import truncate_words
+from django.utils.encoding import force_unicode
 
 from turbion import admin
-from turbion.core.blogs.models import Post
+from turbion.core.blogs.models import Post, Comment
 from turbion.core.profiles import get_profile
 
 class PostForm(forms.ModelForm):
@@ -38,6 +40,28 @@ class PostAdmin(admin.ModelAdmin):
         else:
             post.save()
 
-        #form.save_tags()
+        form.save_m2m()
 
 admin.site.register(Post, PostAdmin)
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = (
+        'created_on', 'post', 'status', 'created_by', 'headline',
+        'text_postprocessor',
+    )
+    list_per_page = 25
+
+    date_hierarchy = 'created_on'
+    list_filter = ('status',)
+
+    def headline(self, comment):
+        return truncate_words(comment.text, 5)
+    headline.short_description = 'headline'
+
+    def save_model(self, request, comment, form, change):
+        if not change:
+            comment.edited_by = get_profile(request)
+
+        comment.save()
+
+admin.site.register(Comment, CommentAdmin)

@@ -16,7 +16,6 @@ sitemaps = {
 }
 
 urlpatterns = patterns('',
-    url(r'^comments/',            include('turbion.core.comments.urls')),
     url(r'^dashboard/(.*)',       admin.site.root, name='turbion_admin_root'),
     url(r'^utils/',               include('turbion.core.utils.urls')),
     url(r'^profile/',             include('turbion.core.profiles.urls')),

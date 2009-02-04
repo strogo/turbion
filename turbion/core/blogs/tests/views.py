@@ -8,8 +8,7 @@ from django.core import mail
 
 from turbion.core.utils.testing import BaseViewTest
 
-from turbion.core.blogs.models import Post, Comment
-from turbion.core.comments.models import CommentAdd
+from turbion.core.blogs.models import Post, Comment, CommentAdd
 from turbion.core.profiles.models import Profile
 
 class BlogsViews(BaseViewTest):
@@ -19,8 +18,6 @@ class BlogsViews(BaseViewTest):
     ]
 
     def setUp(self):
-        from turbion.core.comments.models import CommentAdd
-
         self.post = Post.objects.all()[0]
 
         CommentAdd.manager.subscribe(self.post.created_by, self.post)
@@ -114,7 +111,7 @@ class BlogsViews(BaseViewTest):
 
         comment = Comment.objects.all()[0]
         response = self.assertStatus(
-                    reverse("turbion_comment_delete", args=(comment.pk,)),
+                    reverse("turbion_blog_comment_delete", args=(comment.pk,)),
                     http.HttpResponseRedirect.status_code
                 )
 

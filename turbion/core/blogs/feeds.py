@@ -77,19 +77,18 @@ class CommentsFeed(Feed):
         return comment.created_on
 
     def item_link(self, comment):
-        post = comment.connection
-        return post.get_absolute_url() + "#comment_%s" % comment.id
+        return comment.post.get_absolute_url() + "#comment_%s" % comment.id
 
     def item_author_name(self, comment ):
         return comment.created_by
 
     def items(self, post):
-        queryset = Comment.published
+        queryset = Comment.published.select_related("post")
 
         if post:
-            comments = queryset.for_object(post).order_by("-created_on").distinct()
+            comments = queryset.filter(post=post).order_by("-created_on").distinct()
         else:
-            comments = queryset.for_model(Post).order_by("-created_on").distinct()
+            comments = queryset.all().order_by("-created_on").distinct()
 
         return comments[:50]
 
