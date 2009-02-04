@@ -50,25 +50,8 @@
    "created_on": "2008-12-17 16:54:47",
    "published_on": "2006-11-17 16:54:47",
    "slug": "third",
-   "showing": "everybody"
-  }
- },
- {
-  "pk": 1,
-  "model": "turbion.taggeditem",
-  "fields": {
-   "item_id": 3,
-   "item_dscr": "model:turbion.post",
-   "tag": 1
-  }
- },
- {
-  "pk": 2,
-  "model": "turbion.taggeditem",
-  "fields": {
-   "item_id": 3,
-   "item_dscr": "model:turbion.post",
-   "tag": 2
+   "showing": "everybody",
+   "tags": [1, 2]
   }
  },
  {

@@ -12,25 +12,8 @@
    "edited_by" : 1,
    "created_on": "2008-02-02 16:54:47",
    "slug": "first",
-   "showing": "everybody"
-  }
- },
- {
-  "pk": 1,
-  "model": "turbion.taggeditem",
-  "fields": {
-   "item_id": 1,
-   "item_dscr": "model:turbion.post",
-   "tag": 1
-  }
- },
- {
-  "pk": 2,
-  "model": "turbion.taggeditem",
-  "fields": {
-   "item_id": 1,
-   "item_dscr": "model:turbion.post",
-   "tag": 2
+   "showing": "everybody",
+   "tags": [1, 2]
   }
  },
  {

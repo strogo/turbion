@@ -1,6 +1,6 @@
 
 SUB_APPLICATIONS = (
-    "assets", "blogs", "comments", "profiles", "tags", "staticpages",
+    "assets", "blogs", "comments", "profiles", "staticpages",
     "utils", "capabilities"
 )
 
