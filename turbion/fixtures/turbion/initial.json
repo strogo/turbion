@@ -1,0 +1,69 @@
+[
+ {
+  "pk": 1,
+  "model": "turbion.post",
+  "fields": {
+   "status": "published",
+   "title": "First Post",
+   "text": "Hi! This is my blog first post. Feel free to comment",
+   "text_html": "Hi! This is my blog first post. Feel free to comment",
+   "created_by": 1,
+   "published_on": "2008-02-02 16:54:47",
+   "edited_by" : 1,
+   "created_on": "2008-02-02 16:54:47",
+   "slug": "first",
+   "showing": "everybody"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "turbion.taggeditem",
+  "fields": {
+   "item_id": 1,
+   "item_dscr": "model:turbion.post",
+   "tag": 1
+  }
+ },
+ {
+  "pk": 2,
+  "model": "turbion.taggeditem",
+  "fields": {
+   "item_id": 1,
+   "item_dscr": "model:turbion.post",
+   "tag": 2
+  }
+ },
+ {
+  "pk": 1,
+  "model": "turbion.tag",
+  "fields": {
+   "name": "Hello",
+   "slug": "hello"
+  }
+ },
+ {
+  "pk": 2,
+  "model": "turbion.tag",
+  "fields": {
+   "name": "World",
+   "slug": "world"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "turbion.page",
+  "fields": {
+   "status": "show",
+   "text_postprocessor": "markdown",
+   "edited_by": 1,
+   "text_html": "Hello, It's me!",
+   "title": "About",
+   "text": "Hello, It's me!",
+   "created_by": 1,
+   "created_on": "2008-02-02 16:54:47",
+   "edited_on": "2008-02-02 16:54:47",
+   "template": "",
+   "slug": "about"
+  }
+ }
+]

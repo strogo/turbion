@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from turbion.core.blogs.models.post import Post, Comment
 
 from django.conf import settings
