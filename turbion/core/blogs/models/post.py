@@ -8,8 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.core.blogs import managers
 from turbion.core.comments.models import Comment
 from turbion.core.comments.fields import CommentCountField
-from turbion.core.tags.models import Tag
-from turbion.core.tags.fields import TagsField
+from turbion.core.blogs.models.tag import Tag
 from turbion.core.profiles.models import Profile
 from turbion.core import capabilities
 from turbion.core.utils.postprocessing.fields import PostprocessedTextField
@@ -77,7 +76,7 @@ class Post(models.Model):
 
     published = managers.PostManager(status=statuses.published)
 
-    tags = TagsField()
+    tags = models.ManyToManyField(Tag, related_name="posts")
 
     @models.permalink
     def get_absolute_url(self):

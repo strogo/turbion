@@ -7,10 +7,9 @@ from django.db.models import signals
 from django.db import connection
 from turbion.core.utils.descriptor import to_descriptor
 
-from turbion.core.blogs.models import Post, Comment
+from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.blogs.models.blog import BlogCalendar
 from turbion.core.profiles.models import Profile
-from turbion.core.tags.models import Tag
 from turbion.core.utils.cache.tags import cached_inclusion_tag
 
 register = template.Library()
@@ -126,7 +125,7 @@ def top_posts_pad(context, count=5):
                       takes_context=True)
 def tags_pad(context):
     return {
-        "tags" : Tag.objects.for_model(Post)
+        "tags" : Tag.active.all(),
     }
 
 @cached_inclusion_tag(register,

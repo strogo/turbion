@@ -7,8 +7,7 @@ from django.shortcuts import *
 from django import http
 from django.conf import settings
 
-from turbion.core.blogs.models import Comment, Post
-from turbion.core.tags.models import Tag
+from turbion.core.blogs.models import Comment, Post, Tag
 from turbion.core.profiles import get_profile
 from turbion.core.utils.title import gen_title
 
@@ -103,7 +102,7 @@ class TagFeed(BasePostFeed):
 
     def get_object(self, bits):
         if len(bits) == 1:
-            return get_object_or_404(Tag.objects.for_model(Post), slug=bits[0])
+            return get_object_or_404(Tag.objects, slug=bits[0])
         raise http.Http404
 
     def title(self, tag):

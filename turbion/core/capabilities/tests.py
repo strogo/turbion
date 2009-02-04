@@ -17,7 +17,7 @@ class AnimalCapabilities(capabilities.CapabilitySet):
         bar = "user can do bar stuff"
     )
 
-capabilities.register(Animal, AnimalCapabilities, name="animal.caps")
+capabilities.register(AnimalCapabilities, model=Animal, name="animal.caps")
 
 class CapabilitiesTest(TestCase):
     fixtures = ["turbion/test/profiles"]

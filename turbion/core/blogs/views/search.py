@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.core.blogs.decorators import blog_view, titled
 from turbion.core.blogs.models import Post
 from turbion.core.blogs.models import Comment
-from turbion.core.tags.models import Tag
 from turbion.core.blogs.utils import reverse
 from turbion.core.utils.decorators import templated, paged
 

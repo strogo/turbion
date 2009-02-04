@@ -6,9 +6,8 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.assets.models import Asset
-from turbion.core.tags.forms import TagsField
 
-class AssetForm( forms.ModelForm ):
+class AssetForm(forms.ModelForm):
     class Meta:
         model = Asset
         exclude = ["created_by", "created_on", "edited_by", "edited_on"]
@@ -16,14 +15,12 @@ class AssetForm( forms.ModelForm ):
     resize_to    = forms.CharField(required=False)
     thumbnail_to = forms.CharField(required=False)
 
-    def __init__( self, *args, **kwargs ):
-        super( AssetForm, self ).__init__( *args, **kwargs )
+    def __init__(self, *args, **kwargs):
+        super(AssetForm, self).__init__(*args, **kwargs)
 
         self.fields["filename"].required = False
         self.fields["mime_type"].required = False
         self.fields["type"].required = False
-
-        self.fields["tags"] = TagsField( form = self )
 
     def _guess_mime_type(self, filename):
         import mimetypes

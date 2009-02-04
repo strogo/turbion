@@ -1,4 +1,5 @@
 from turbion.core.blogs.models.post import Post, Comment
+from turbion.core.blogs.models.tag import Tag
 
 from django.conf import settings
 
