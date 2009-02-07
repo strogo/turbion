@@ -44,6 +44,4 @@ class Command(NoArgsCommand):
         return profile
 
     def _create_blog(self, owner):
-        from turbion.core.blogs.managers import setup_blog
-
-        setup_blog(owner)
+        pass

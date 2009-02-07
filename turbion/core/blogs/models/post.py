@@ -9,7 +9,6 @@ from turbion.core.blogs import managers
 from turbion.core.blogs.fields import CommentCountField
 from turbion.core.blogs.models.tag import Tag
 from turbion.core.profiles.models import Profile
-from turbion.core import capabilities
 from turbion.core.utils.postprocessing.fields import PostprocessedTextField
 from turbion.core.utils.enum import Enum
 
@@ -177,20 +176,3 @@ class Post(models.Model):
         ordering            = ('-published_on', '-created_on',)
         unique_together     = (("published_on", "title", "slug"),)
         db_table            = "turbion_post"
-
-class PostCapabilities(capabilities.CapabilitySet):
-    defs = dict(
-        capabilities.generate_triple("post", "blog post")[1:]
-    )
-
-capabilities.register(PostCapabilities, name="post.caps", model=Post)
-
-class BlogCapabilities(capabilities.CapabilitySet):
-    defs = dict(
-        capabilities.generate_triple("post", "blog post")[:1] +
-        capabilities.generate_triple("page", "blog static page")[:1] +
-        [("upload_asset", _("Can upload blog asset")),
-         ("edit_asset", _("Can edit blog asset")),]
-    )
-
-capabilities.register(BlogCapabilities, name="blog.caps", model=Post)

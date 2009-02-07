@@ -3,7 +3,6 @@ from django.db import models
 
 from turbion.core.utils._calendar import Calendar
 from turbion.core.blogs.models import Post
-from turbion.core import capabilities
 
 class BlogCalendar(Calendar):
     date_field = "published_on"
