@@ -26,9 +26,6 @@ class AnonymousProfile(AnonymousUser):
     site_view = None
     last_visit = None
 
-    def has_capability_for(self, *args, **kwargs):
-        return False
-
     def is_authenticated_confirmed(self):
         return False
 

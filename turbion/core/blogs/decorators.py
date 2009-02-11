@@ -15,8 +15,7 @@ titled = special_titled(section=settings.TURBION_BLOG_NAME)
 
 def post_view(view_func):
     def _decor(request, *args, **kwargs):
-        if request.user.is_authenticated()\
-            and get_profile(request).has_capability(cap="blog.caps.edit_post"):
+        if request.user.is_authenticated():
             query_set = Post.objects.all()
         else:
             query_set = Post.published.all()
