@@ -7,7 +7,7 @@ from django.db.models import signals
 from datetime import date
 
 from turbion.core.utils.enum import Enum
-from turbion.core.utils.postprocessing.fields import PostprocessField
+from turbion.core.utils.markup.fields import MarkupField
 from turbion.core.utils.models import GenericManager
 
 class ProfileManager(UserManager):
@@ -96,7 +96,7 @@ class Profile(User):
                                 verbose_name=_('site view'))
     last_visit = models.DateTimeField(null=True, blank=True, verbose_name=_('last visit'))
 
-    postprocessor = PostprocessField()
+    filter = MarkupField()
 
     objects = ProfileManager()
     public = GenericManager(is_public=True)

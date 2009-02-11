@@ -19,7 +19,7 @@ class BaseTest(object):
         comment = Comment(
             created_by=author,
             text="test",
-            text_postprocessor="dummy",
+            text_filter="dummy",
             post=self.post
         )
         comment.save()

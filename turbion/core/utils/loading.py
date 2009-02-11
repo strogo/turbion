@@ -38,5 +38,5 @@ def list_sub_modules(base, module_name):
     return [os.path.splitext(name)[0] for name in names]
 
 def get_sub_modules(base, module_name):
-    for sub_mod_name in list_sub_modules(base, module_name):
-        yield get_module("%s.%s" % (base, module_name), sub_mod_name)
+    return [get_module("%s.%s" % (base, module_name), sub_mod_name)\
+                    for sub_mod_name in list_sub_modules(base, module_name)]

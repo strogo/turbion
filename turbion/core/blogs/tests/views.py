@@ -59,7 +59,7 @@ class BlogsViews(BaseViewTest):
 
         comment = {
             "text": "My comment",
-            "text_postprocessor": "markdown"
+            "text_filter": "markdown"
         }
 
         response = self.assertStatus(
@@ -83,7 +83,7 @@ class BlogsViews(BaseViewTest):
 
         comment.update({
             "text": "My comment",
-            "text_postprocessor": "markdown",
+            "text_filter": "markdown",
             "nickname": "Alex",
             "email": "foo@bar.com",
             "site": "http://foobar.com",

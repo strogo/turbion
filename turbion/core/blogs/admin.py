@@ -47,7 +47,7 @@ admin.site.register(Post, PostAdmin)
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
         'created_on', 'post', 'status', 'created_by', 'headline',
-        'text_postprocessor',
+        'text_filter',
     )
     list_per_page = 25
 

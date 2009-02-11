@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 
 from turbion.core.profiles.models import Profile
-from turbion.core.utils.postprocessing.fields import PostprocessedTextField
+from turbion.core.utils.markup.fields import MarkupTextField
 from turbion.core.utils.models import GenericManager
 from turbion.core.utils.enum import Enum
 from turbion.core.notifications import EventDescriptor
@@ -35,7 +35,7 @@ class Comment(models.Model):
     edited_by = models.ForeignKey(Profile, related_name="edited_comments",
                                   editable=False, null=True, verbose_name=_("edited by"))
 
-    text = PostprocessedTextField(verbose_name=_("text"), limit_choices_to=["markdown"])
+    text = MarkupTextField(verbose_name=_("text"), limit_choices_to=["markdown"])
 
     status = models.CharField(max_length=20,
                               choices=statuses,

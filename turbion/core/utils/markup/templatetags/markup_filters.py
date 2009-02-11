@@ -1,19 +1,12 @@
 # -*- coding: utf-8 -*-
 from django import template
 
-from turbion.core.utils.postprocessing import ProcessorSpot
+from turbion.core.utils.markup.fitlers import Filter
 
 register = template.Library()
 
-def wrap(method):
-    def _inner(value):
-        if value is None:
-            value = ""
-        return method(value)
-    return _inner
-
-for name, func in ProcessorSpot.processors.iteritems():
-    register.filter(name, wrap(func.postprocess))
+for name, func in Filter.manager.all():
+    register.filter(name, func.to_html)
 
 @register.filter
 def sanitize(value):

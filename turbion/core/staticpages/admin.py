@@ -6,7 +6,7 @@ from turbion.core.profiles import get_profile
 class PageAdmin(admin.ModelAdmin):
     list_display = (
         'title', 'slug', 'created_on', 'edited_on', 'created_by',
-        'status', 'text_postprocessor'
+        'status', 'text_filter'
     )
     list_filter = ('status',)
     list_display_links = ('title',)

@@ -7,7 +7,7 @@ from turbion.core.profiles.forms import combine_profile_form_with
 class _CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ("text", "text_postprocessor")
+        fields = ("text", "text_filter")
 
     notify = forms.BooleanField(initial=False, required=False, label=_("notify"))
 
@@ -18,7 +18,7 @@ class CommentForm(forms.Form):
                                     request=request,
                                     field="created_by",
                                     need_captcha=True,
-                                    postprocessor_field="text_postprocessor"
+                                    filter_field="text_filter"
                             )
 
         self.__class__.__init__(self, *args, **kwargs)

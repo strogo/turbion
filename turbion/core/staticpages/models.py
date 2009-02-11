@@ -5,7 +5,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.utils.postprocessing.fields import PostprocessedTextField
+from turbion.core.utils.markup.fields import MarkupTextField
 from turbion.core.utils.enum import Enum
 from turbion.core.utils.models import GenericManager
 
@@ -30,7 +30,7 @@ class Page(models.Model):
     title      = models.CharField(max_length=100, verbose_name=_("title"))
     slug       = models.SlugField()
 
-    text       = PostprocessedTextField(verbose_name=_("text"))
+    text       = MarkupTextField(verbose_name=_("text"))
 
     status     = models.CharField(max_length=10, choices=statuses,
                                 default=statuses.published, verbose_name=_("status"))

@@ -36,7 +36,7 @@ def extract_profile_data(request):
 
 def combine_profile_form_with(form_class, request, field="created_by",\
                               need_captcha=True, fields=None,\
-                              postprocessor_field=None):
+                              filter_field=None):
     if not get_profile(request).is_confirmed:
         class UserForm(form_class, forms.ModelForm):
             nickname  = forms.CharField(required=True, label=_ ("name"))
@@ -97,9 +97,9 @@ def combine_profile_form_with(form_class, request, field="created_by",\
     else:
         class UserForm(form_class):
             def __init__(self, *args, **kwargs):
-                if postprocessor_field:
+                if filter_field:
                     initial = {
-                        postprocessor_field: get_profile(request).postprocessor
+                        filter_field: get_profile(request).filter
                     }
                 else:
                     initial = {}

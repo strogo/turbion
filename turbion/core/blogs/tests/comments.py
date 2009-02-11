@@ -33,7 +33,7 @@ class CommentsTest(BaseViewTest):
         data = {
             "text": "Foo bar text",
             "notify": True,
-            'text_postprocessor': "markdown"
+            'text_filter': "markdown"
         }
 
         request = self.client.post("/foobar/", data=data)
@@ -57,7 +57,7 @@ class CommentsTest(BaseViewTest):
     def test_add_guest(self):
         data = {
             "text": "Foo bar text",
-            'text_postprocessor': "markdown",
+            'text_filter': "markdown",
             "notify": True,
             "nickname": "Test User",
             "email": "testuser@domain.com",
@@ -95,7 +95,7 @@ class CommentsTest(BaseViewTest):
 
         data = {
             "text": "New comment text",
-            'text_postprocessor': "markdown",
+            'text_filter': "markdown",
         }
 
         request = self.client.post("/foobar/", data=data)

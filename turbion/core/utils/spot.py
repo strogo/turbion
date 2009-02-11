@@ -15,6 +15,19 @@ class SpotManager(object):
     def add(self, obj_type):
         self._objects.append(self.create(obj_type))
 
+class DictSpotManager(SpotManager):
+    def __init__(self):
+        self._objects = {}
+
+    def all(self):
+        return self._objects.items()
+
+    def get(self, key):
+        return self._objects[key]
+
+    def add(self, obj_type):
+        self._objects[obj_type.meta.descriptor] = self.create(obj_type)
+
 class SpotMeta(object):
     def __init__(self, name, descriptor):
         self.name = name

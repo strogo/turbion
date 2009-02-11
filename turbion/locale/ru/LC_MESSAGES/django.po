@@ -836,6 +836,6 @@ msgstr "Страница"
 msgid "Section"
 msgstr "Секция"
 
-#: utils/postprocessing/fields.py:43
-msgid "postprocessor"
+#: utils/markup/fields.py:43
+msgid "filter"
 msgstr "постпроцессор"

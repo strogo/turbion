@@ -9,7 +9,7 @@ from turbion.core.blogs import managers
 from turbion.core.blogs.fields import CommentCountField
 from turbion.core.blogs.models.tag import Tag
 from turbion.core.profiles.models import Profile
-from turbion.core.utils.postprocessing.fields import PostprocessedTextField
+from turbion.core.utils.markup.fields import MarkupTextField
 from turbion.core.utils.enum import Enum
 
 class Post(models.Model):
@@ -55,7 +55,7 @@ class Post(models.Model):
     location      = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("location"))
     music         = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("music"))
 
-    text          = PostprocessedTextField(verbose_name=_("text"))
+    text          = MarkupTextField(verbose_name=_("text"))
 
     status        = models.CharField(max_length=10, choices=statuses, db_index=True,
                                      default=statuses.draft, verbose_name=_("status"))

@@ -33,7 +33,7 @@
       "last_visit": null,
       "is_confirmed": true,
       "trusted": true,
-      "postprocessor": "dummy",
+      "filter": "dummy",
       "icq": null,
       "interests": null,
       "host": null,

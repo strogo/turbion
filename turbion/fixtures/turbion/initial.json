@@ -37,7 +37,7 @@
   "model": "turbion.page",
   "fields": {
    "status": "show",
-   "text_postprocessor": "markdown",
+   "text_filter": "markdown",
    "edited_by": 1,
    "text_html": "Hello, It's me!",
    "title": "About",
