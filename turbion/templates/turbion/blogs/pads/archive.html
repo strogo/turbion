@@ -1,10 +1,10 @@
 {% load blogs.common %}
 
-<h2>Archive (<a href="{% blog_url turbion_blog_archive blog.slug %}">index</a>)</h2>
+<h2>Archive (<a href="{% url turbion_blog_archive blog.slug %}">index</a>)</h2>
 <ul>
     {% for meta in months %}
     <li>
-        <a href="{% blog_url turbion_blog_archive_month blog.slug,meta.month.year,meta.month.month %}" title="{{meta.month|date:"F Y"}}">{{meta.month|date:"F Y"}}</a>
+        <a href="{% url turbion_blog_archive_month meta.month.year,meta.month.month %}" title="{{meta.month|date:"F Y"}}">{{meta.month|date:"F Y"}}</a>
 	({{meta.count}})
     </li>
     {% endfor %}

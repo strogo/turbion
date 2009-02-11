@@ -1,5 +1,5 @@
 {% load blogs.common %}
-<h2>Latest comments (<a href="{% blog_url turbion_blog_atom blog.slug,"comments" %}">rss</a>)</h2>
+<h2>Latest comments (<a href="{% url turbion_blog_atom "comments" %}">rss</a>)</h2>
 <ul>
 	{%for comment in comments %}
 	{% with comment.connection as post %}
