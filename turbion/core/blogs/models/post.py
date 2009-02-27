@@ -23,6 +23,7 @@ class Post(models.Model):
     statuses = Enum(
         draft=_("draft"),
         trash=_("trashed"),
+        hidden=_("hidden"),
         published=_("published")
     )
 

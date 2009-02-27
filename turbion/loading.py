@@ -20,6 +20,13 @@ def admins():
         except NoModuleError:
             pass
 
+def indexes():
+    for app in SUB_APPLICATIONS:
+        try:
+            get_module_attrs("turbion.core.%s" % app, "index")
+        except NoModuleError:
+            pass
+
 def tests():
     from django.test import TestCase
     test_classes = {}
