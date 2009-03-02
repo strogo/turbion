@@ -1,0 +1,11 @@
+<h2>Login</h2>
+{% if user.is_authenticated_confirmed %}
+<p>Hi, {{user.name}}</p>
+{% endif %}
+<ul>
+    {% for url in urls %}
+    <li>
+        <a href="{{url.1}}">{{url.0}}</a>
+    </li>
+    {% endfor %}
+</ul>

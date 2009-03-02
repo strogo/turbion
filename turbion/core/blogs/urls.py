@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib.syndication.views import feed
@@ -28,12 +27,12 @@ urlpatterns = patterns('turbion.core.blogs.views',
  url(r'^comment/(?P<comment_id>\d+)/delete/$', 'comment.delete', name="turbion_blog_comment_delete"),
 
  url(r'^tags/$',                             'post.tags', name="turbion_blog_tags"),
- url(r'^tag/(?P<tag_slug>[\w_-]+)/$',        'post.tag' , name="turbion_blog_tag"),
+ url(r'^tags/(?P<tag_slug>[\w_-]+)/$',       'post.tag' , name="turbion_blog_tag"),
 
  url(r'^archive/$',                          'archive.index', name="turbion_blog_archive"),
- url(r'^archive/(?P<year_id>\d{4})/$',       'archive.year',  name="turbion_blog_archive_year"),
- url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/$',  'archive.month', name="turbion_blog_archive_month"),
- url(r'^archive/(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/$', 'archive.day',   name="turbion_blog_archive_day"),
+ url(r'^(?P<year_id>\d{4})/$',       'archive.year',  name="turbion_blog_archive_year"),
+ url(r'^(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/$',  'archive.month', name="turbion_blog_archive_month"),
+ url(r'^(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/$', 'archive.day',   name="turbion_blog_archive_day"),
 )
 
 if "djapian" in settings.INSTALLED_APPS:

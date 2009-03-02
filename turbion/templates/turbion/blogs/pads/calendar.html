@@ -1,7 +1,7 @@
 {% load blogs.common %}
 <h2>Calendar</h2>
-{% with blog.calendar as calendar %}
-<div id="calendar_wrap">
+{% with blog_calendar as calendar %}
+<div id="calendar_wrap" class="span-6">
     <table id="wp-calendar">
 	<caption>{{calendar.year_iter.month_name}} {{calendar.current.year}}</caption>
 	<thead>

@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="{{MEDIA_URL}}turbion/blueprint/print.css" type="text/css" media="print">
     <!--[if IE]><link rel="stylesheet" href="{{MEDIA_URL}}turbion/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
 
+    <meta content='turbion' name='generator'/>
+
+    {% block syndication %}
+    {% endblock %}
+
     <style>
     #sidebar ul li{
         list-style-type: none;
@@ -38,6 +43,9 @@
 	    </li>
 	    <li class="sidebar_pad">
 		{% archive_pad %}
+	    </li>
+            <li class="sidebar_pad">
+		{% login_pad %}
 	    </li>
 	    <li class="sidebar_pad">
 		{% calendar_pad %}

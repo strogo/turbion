@@ -1,12 +1,13 @@
-# -*- coding: utf-8 -*-
 from django import template
 from django.template import resolve_variable, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str
 from django.conf import settings
 from django.db.models import signals
 from django.db import connection
-from turbion.core.utils.descriptor import to_descriptor
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
+from turbion.core.utils.descriptor import to_descriptor
 from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.blogs.models.blog import BlogCalendar
 from turbion.core.profiles.models import Profile
@@ -162,4 +163,29 @@ def prevnext_pad(context, post):
     return {
         "prev_post": prev_post,
         "next_post": next_post
+    }
+
+@register.inclusion_tag(
+    file_name='turbion/blogs/pads/login.html',
+    takes_context=True
+)
+def login_pad(context):
+    from turbion.core.profiles import get_profile
+    urls = []
+    user = get_profile(context["user"])
+
+    if user.is_authenticated_confirmed():
+        urls.append((_("Logout"), reverse('django.contrib.auth.views.logout')))
+
+        if user.is_author:
+            urls.append((_("Dashboard"), reverse('turbion_dashboard', args=("",))))
+    else:
+        urls.append((_("Login"), reverse('django.contrib.auth.views.login')))
+
+        if "turbion.contrib.openid" in settings.INSTALLED_APPS:
+            urls.append((_("Openid"), reverse("turbion_openid_login")))
+
+    return {
+        "user": user,
+        "urls": urls
     }

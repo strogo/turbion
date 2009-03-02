@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.core.urlresolvers import reverse
 
 from turbion.core.utils._calendar import Calendar
 from turbion.core.blogs.models import Post

@@ -1,10 +1,10 @@
 {% load blogs.common %}
-<h2>Tags</h2>
+<h2>Tags (<a href="{% url turbion_blog_tags %}">cloud</a>)</h2>
 <ul>
     {% for tag in tags %}
     <li>
-        <a href="{% url turbion_blog_tag tag.slug %}">{{tag}}</a>
-        (<a href="{% url turbion_blog_atom "tag"%}{{tag.slug}}/">rss</a>)
+        <a href="{{tag.get_absolute_url}}">{{tag}}</a> ({{tag.post_count}})
+        (<a href="{{tag.get_feed_url.atom}}">rss</a>)
     </li>
     {% endfor %}
 </ul>

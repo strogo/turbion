@@ -34,33 +34,30 @@ class ProfileManager(UserManager):
         profile.name_view = Profile.names.nickname
         profile.is_confirmed = False
         profile.ip = ip
-        profile.host = host
         profile.save()
 
         return profile
 
     def has_superuser(self):
-        return self.filter(is_staff=True, is_superuser=True, is_active=True,
-                           is_confirmed=True).count() != 0
+        return self.filter(
+            is_staff=True, is_superuser=True, is_active=True, is_confirmed=True
+        ).count() != 0
 
 class Profile(User):
     names = Enum(
-                nickname      =_("nick"),
-                full_name     =_("full name"),
-                full_name_nick=_("full name with nick"),
-            )
+        nickname      =_("nick"),
+        full_name     =_("full name"),
+        full_name_nick=_("full name with nick"),
+    )
     sites = Enum(
-                profile=_("profile"),
-                site   =_("site"),
-            )
-    genders = Enum(
-                male  =_('male'),
-                female=_('female')
-            )
+        openid=_("openid"),
+        site   =_("site"),
+    )
 
     nickname = models.CharField(max_length=150, null=True, verbose_name =_('nickname'))
     ip = models.IPAddressField(null=True, blank=True, verbose_name =_('IP'))
-    host = models.CharField(max_length=250,null=True, blank=True, verbose_name =_('host'))
+
+    is_author = models.BooleanField(default=False, verbose_name=_("blog author"))
 
     # False when user is guest and not confirmed his profie
     is_confirmed = models.BooleanField(default=True, verbose_name =_('confirmed'))
@@ -69,37 +66,17 @@ class Profile(User):
     # right as registered user when posting comment
     trusted = models.BooleanField(default=False, verbose_name=_("trusted"))
 
-    is_public = models.BooleanField(default=False, verbose_name=_("public"))
-
-    birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
-    gender = models.CharField(max_length=10, verbose_name =_('gender'), choices=genders, null=True, blank=True)
-
-    country = models.CharField(max_length=50, verbose_name=_('country'), null=True, blank=True)
-    city = models.CharField(max_length=50, verbose_name=_('city'), null=True, blank=True)
-
     site = models.CharField(blank=True, max_length=100, null=True, verbose_name=('site'))
-
-    biography = models.TextField(null=True, blank=True, verbose_name=_('biography'))
-    interests = models.TextField(null=True, blank=True, verbose_name=_('interests'))
-    education = models.TextField(null=True, blank=True, verbose_name=_("education"))
-    work = models.TextField(null=True, blank=True, verbose_name=_("work"))
-
-    gtalk = models.EmailField(blank=True, null=True, verbose_name=_('google talk'))
-    msn = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('msn id'))
-    icq = models.CharField(max_length=10, blank=True, null=True, verbose_name=_('icq uin'))
-    jabber = models.CharField(max_length=75, null=True, blank=True, verbose_name=_('jabber id'))
-    skype = models.CharField(max_length=15, blank=True, null=True, verbose_name=_('skype'))
 
     name_view = models.CharField(max_length=20, choices=names, null=True, blank=True, verbose_name=_('name view'))
     site_view = models.CharField(max_length=20, choices=sites,
-                                 default=sites.profile, null=True, blank=True,
+                                 default=sites.site, null=True, blank=True,
                                 verbose_name=_('site view'))
     last_visit = models.DateTimeField(null=True, blank=True, verbose_name=_('last visit'))
 
     filter = MarkupField()
 
     objects = ProfileManager()
-    public = GenericManager(is_public=True)
 
     def is_authenticated_confirmed(self):
         return self.is_authenticated() and self.is_confirmed

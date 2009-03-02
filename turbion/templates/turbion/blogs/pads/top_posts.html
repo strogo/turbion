@@ -3,7 +3,7 @@
 	{% for post in posts %}
 	<li>
 		<a href="{{post.get_absolute_url}}">{{post}}</a> ({{post.comment_count}})
-		 (<a href="{{post.get_atom_feed_url}}">rss</a>)
+		 (<a href="{{post.get_feed_url.atom}}">rss</a>)
 	</li>
 	{% endfor %}
 </ul>

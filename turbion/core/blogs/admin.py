@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 from django import forms
 from django.utils.text import truncate_words
 from django.utils.encoding import force_unicode
 
 from turbion import admin
-from turbion.core.blogs.models import Post, Comment
+from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles import get_profile
 
 class PostForm(forms.ModelForm):
@@ -65,3 +64,11 @@ class CommentAdmin(admin.ModelAdmin):
         comment.save()
 
 admin.site.register(Comment, CommentAdmin)
+
+class TagAdmin(admin.ModelAdmin):
+    list_display = (
+        'name', 'slug', 'post_count',
+    )
+    list_per_page = 25
+
+admin.site.register(Tag, TagAdmin)

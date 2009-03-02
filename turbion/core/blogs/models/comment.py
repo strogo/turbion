@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.db import models, connection
 from django.conf import settings
 from django.db.models import signals
@@ -52,6 +51,9 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return "%s - %s" % (self.created_by.name, self.created_on)
+
+    def get_absolute_url(self):
+        return self.post.get_absolute_url() + "#comment_%s" % self.pk
 
     def save(self, *args, **kwargs):
         if self.edited_by:

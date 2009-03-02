@@ -4,10 +4,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 from turbion.core.blogs import managers
 from turbion.core.blogs.fields import CommentCountField
-from turbion.core.blogs.models.tag import Tag
+#from turbion.core.blogs.models.tag import Tag
 from turbion.core.profiles.models import Profile
 from turbion.core.utils.markup.fields import MarkupTextField
 from turbion.core.utils.enum import Enum
@@ -75,7 +76,7 @@ class Post(models.Model):
 
     published = managers.PostManager(status=statuses.published)
 
-    tags = models.ManyToManyField(Tag, related_name="posts")
+    tags = models.ManyToManyField("turbion.Tag", related_name="posts")
 
     @models.permalink
     def get_absolute_url(self):
@@ -88,9 +89,11 @@ class Post(models.Model):
     is_published = property(lambda self: self.status == Post.statuses.published)
     allow_comments = property(lambda self: self.commenting == Post.commenting_settings.allow)
 
-    @models.permalink
-    def get_atom_feed_url(self):
-        return ("turbion_blog_atom", ("%s" % self.id,))
+    def get_feed_url(self):
+        return {
+            "atom": reverse("turbion_blog_atom", args=("comments/%s" % self.pk,)),
+            "rss": reverse("turbion_blog_rss", args=("comments/%s" % self.pk,))
+        }
 
     def __unicode__(self):
         return self.title
