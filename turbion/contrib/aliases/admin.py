@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from turbion import admin
+from django.contrib import admin
 from turbion.contrib.aliases.models import Alias
 
 class AliasAdmin(admin.ModelAdmin):
@@ -8,4 +7,4 @@ class AliasAdmin(admin.ModelAdmin):
     )
     list_filter = ('is_active', 'status_code', 'exclude_user_agent')
 
-admin.contrib_site.register(Alias, AliasAdmin)
+admin.site.register(Alias, AliasAdmin)

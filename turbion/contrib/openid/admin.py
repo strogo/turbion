@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from turbion import admin
+from django.contrib import admin
 from turbion.openid.models import Identity
 
 class IdentityAdmin(admin.ModelAdmin):

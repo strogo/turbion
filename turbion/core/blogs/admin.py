@@ -2,7 +2,7 @@ from django import forms
 from django.utils.text import truncate_words
 from django.utils.encoding import force_unicode
 
-from turbion import admin
+from django.contrib import admin
 from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles import get_profile
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 
-from turbion import admin
+from django.contrib import admin
 from turbion.contrib.feedback.models import Feedback
 from turbion.core.profiles import get_profile
 
@@ -15,4 +15,4 @@ class FeedbackAdmin(admin.ModelAdmin):
 
         feedback.save()
 
-admin.contrib_site.register(Feedback, FeedbackAdmin)
+admin.site.register(Feedback, FeedbackAdmin)

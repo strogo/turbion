@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from turbion import admin
+from django.contrib import admin
 from turbion.core.staticpages.models import Page
 from turbion.core.profiles import get_profile
 
