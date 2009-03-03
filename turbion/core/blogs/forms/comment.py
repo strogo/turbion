@@ -17,7 +17,6 @@ class CommentForm(forms.Form):
                                     _CommentForm,
                                     request=request,
                                     field="created_by",
-                                    need_captcha=True,
                                     filter_field="text_filter"
                             )
 

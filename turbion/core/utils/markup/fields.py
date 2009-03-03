@@ -53,6 +53,6 @@ class MarkupTextField(models.TextField):
 
         filter = getattr(model_instance, self.filter_field_name)
 
-        setattr(model_instance, self.html_name, FIlter.manager.get(filter).to_html(value))
+        setattr(model_instance, self.html_name, Filter.manager.get(filter).to_html(value))
 
         return value

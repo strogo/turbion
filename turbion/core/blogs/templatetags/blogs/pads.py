@@ -176,9 +176,6 @@ def login_pad(context):
 
     if user.is_authenticated_confirmed():
         urls.append((_("Logout"), reverse('django.contrib.auth.views.logout')))
-
-        if user.is_author:
-            urls.append((_("Dashboard"), reverse('turbion_dashboard', args=("",))))
     else:
         urls.append((_("Login"), reverse('django.contrib.auth.views.login')))
 

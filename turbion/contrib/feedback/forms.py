@@ -14,8 +14,7 @@ class FeedbackForm(forms.Form):
         self.__class__ = combine_profile_form_with(
                                 _FeedbackForm,
                                 request=request,
-                                field="created_by",
-                                need_captcha=False
+                                field="created_by"
                         )
 
         self.__class__.__init__(self, *args, **kwargs)

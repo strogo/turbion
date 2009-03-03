@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.blogs.decorators import blog_view, titled
+from turbion.core.blogs.decorators import titled
 from turbion.core.blogs.models import Post
 from turbion.core.blogs.models import Comment
 from turbion.core.blogs.utils import reverse
@@ -45,11 +44,10 @@ def get_ids(queryset):
     return [d["id"] for d in queryset.values("id")]
 
 @paged
-@blog_view
 @templated('turbion/blogs/search/results.html')
 @titled(page=_('Search'))
-def search(request, blog):
-    blog_search_action = reverse("turbion_blog_search", args=(blog.slug,))
+def search(request):
+    blog_search_action = reverse("turbion_blog_search")
 
     context = {
         "blog": blog,
@@ -69,11 +67,10 @@ def search(request, blog):
     return context
 
 @paged
-@blog_view
 @templated('turbion/blogs/search/posts.html')
 @titled(page=_('Search in posts'))
 def posts(request, blog):
-    blog_search_action = reverse("turbion_blog_search_posts", args=(blog.slug,))
+    blog_search_action = reverse("turbion_blog_search_posts")
 
     context = {
         "blog": blog,
@@ -88,11 +85,10 @@ def posts(request, blog):
     return context
 
 @paged
-@blog_view
 @templated('turbion/blogs/search/comments.html')
 @titled(page=_('Search in comments'))
 def comments(request, blog):
-    blog_search_action = reverse("turbion_blog_search_comments", args=(blog.slug,))
+    blog_search_action = reverse("turbion_blog_search_comments")
 
     context = {
         "blog": blog,

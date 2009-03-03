@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.extras import SelectDateWidget
+from django.conf import settings
 
 from datetime import date
 
-from turbion.core.utils.captcha.forms import CaptchaField
 from turbion.core.profiles import get_profile
 from turbion.core.profiles.models import Profile
 
@@ -35,8 +34,7 @@ def extract_profile_data(request):
     }
 
 def combine_profile_form_with(form_class, request, field="created_by",\
-                              need_captcha=True, fields=None,\
-                              filter_field=None):
+                              fields=None, filter_field=None):
     if not get_profile(request).is_confirmed:
         class UserForm(form_class, forms.ModelForm):
             nickname  = forms.CharField(required=True, label=_ ("name"))
@@ -44,8 +42,9 @@ def combine_profile_form_with(form_class, request, field="created_by",\
                                      help_text=_("Only internal usage"))
             site  = forms.URLField(required=False, label=_("site"))
 
-            if need_captcha:
-                captcha = CaptchaField(request=request, required=True, label=_("check"))
+            if settings.TURBION_USE_SUPERCAPTCHA:
+                from supercaptcha import CaptchaField
+                captcha = CaptchaField(label=_("check"))
 
             def __init__(self, initial=None, *args, **kwargs ):
                 if not initial:

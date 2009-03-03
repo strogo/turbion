@@ -7,7 +7,7 @@ class FilterManager(spot.DictSpotManager):
 
     def get(self, key):
         self.load()
-        return super(FIlterManager, self).get(key)
+        return super(FilterManager, self).get(key)
 
     def all(self):
         self.load()

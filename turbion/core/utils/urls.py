@@ -10,6 +10,5 @@ def uri_reverse(view, urlconf=None, args=None, kwargs=None):
     return "http://%s%s" % (domain, reverse(view, urlconf, args, kwargs))
 
 urlpatterns = patterns('',
-    url( r'^captcha/(?P<id>\w+)/$',  "turbion.core.utils.captcha.views.image", name="turbion_captcha_image"),
     url( r'^status/',                "turbion.core.utils.views.status",        name="turbion_status"),
 )
