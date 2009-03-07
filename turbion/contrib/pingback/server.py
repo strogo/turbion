@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.core import urlresolvers
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -6,33 +5,17 @@ from django.contrib.sites.models import Site
 import urllib2
 from urlparse import urlparse, urlsplit
 
-from turbion.utils.urlfetch import fetch
-from turbion.pingback import signals
-from turbion.pingback import client
-from turbion.pingback.models import Incoming
-from turbion.pingback import utils
-from turbion.utils.descriptor import to_object
+from turbion.core.utils.urlfetch import fetch
+from turbion.contrib.pingback import signals, utils, client
+from turbion.contrib.pingback.models import Pingback
+from turbion.models import Post
 
-def resolve_model(model_id):
-    try:
-        dscr = to_object(model_id)
-    except ValueError:
-        raise utils.PingError(0x0021)
-
-    return dscr
-
-def resolve_object(model, id):
-    try:
-        obj = model._default_manager.get(pk=id)
-    except (model.DoesNotExist,):
-        raise utils.PingError(0x0021)
-    return obj
-
-def ping(source_uri, target_uri, model_id, id):
-    incoming, created = Incoming.objects.get_or_create(
-                                    source_url=source_uri,
-                                    target_url=target_uri
-                            )
+def ping(source_uri, target_uri, id):
+    pingback, created = Pingback.objects.get_or_create(
+        source_url=source_uri,
+        target_url=target_uri,
+        incoming=True
+    )
     if not created:
         raise utils.PingError(0x0030)
 
@@ -40,13 +23,15 @@ def ping(source_uri, target_uri, model_id, id):
         domain = Site.objects.get_current().domain
         scheme, server, path, query, fragment = urlsplit(target_uri)
 
-        model = resolve_model( model_id )
-
-        obj = resolve_object(model, id)
-        if obj.get_absolute_url() != path + query:
+        try:
+            post = Post.objects.get(pk=id)
+        except Post.DoesNotExist:
             raise utils.PingError(0x0021)
 
-        incoming.object = obj
+        if post.get_absolute_url() != path + query:
+            raise utils.PingError(0x0021)
+
+        pingback.post = post
 
         try:
             doc = fetch(source_uri).content
@@ -54,18 +39,18 @@ def ping(source_uri, target_uri, model_id, id):
             raise utils.PingError(0x0010)
 
         parser = utils.SourceParser(doc)
-        title = incoming.title = parser.get_title()
-        paragraph = incoming.paragraph = parser.get_paragraph(target_uri)
+        title = pingback.title = parser.get_title()
+        paragraph = pingback.paragraph = parser.get_paragraph(target_uri)
 
-        status = incoming.status = 'Pingback from %s to %s registered. Keep the web talking! :-)' % (source_uri, target_uri)
+        status = pingback.status = 'Pingback from %s to %s registered. Keep the web talking! :-)' % (source_uri, target_uri)
 
-        incoming.save()
+        pingback.save()
 
         signals.pingback_recieved.send(
-                    sender=obj.__class__,
-                    instance=obj,
-                    incoming=incoming
-            )
+            sender=post.__class__,
+            instance=post,
+            pingback=pingback
+        )
 
         return {
             "status": status,
@@ -76,6 +61,6 @@ def ping(source_uri, target_uri, model_id, id):
             "model": model
         }
     except utils.PingError, e:
-        incoming.status = e.code
-        incoming.save()
+        pingback.status = e.code
+        pingback.save()
         raise

@@ -1,17 +1,10 @@
-# -*- coding: utf-8 -*-
 from django.contrib import admin
-from turbion.pingback.models import Incoming, Outgoing
 
-class IncomingAdmin(admin.ModelAdmin):
-    list_display= ("target_url", "source_url", "date", "title", "finished")
-    list_filter = ("descriptor",)
+from turbion.contrib.pingback.models import Pingback
+
+class PingbackAdmin(admin.ModelAdmin):
+    list_display= ("target_url", "post", "source_url", "incoming", "date", "title", "finished")
+    list_filter = ("incoming", "finished")
     list_per_page = 25
 
-admin.site.register(Incoming, IncomingAdmin)
-
-class OutgoingAdmin(admin.ModelAdmin):
-    list_display = ("target_uri", "date", "title", "status", "rpcserver",)
-    list_filter = ("descriptor", )
-    list_per_page = 25
-
-admin.site.register(Outgoing, OutgoingAdmin)
+admin.site.register(Pingback, PingbackAdmin)
