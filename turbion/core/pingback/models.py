@@ -3,11 +3,11 @@ from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
-from turbion.contrib.pingback import client, signals
+from turbion.core.pingback import client, signals
 from turbion.core.utils.enum import Enum
 from turbion.core.utils.models import GenericManager
 
-from turbion.models import Post
+from turbion.core.blogs.models import Post
 
 class Pingback(models.Model):
     incoming   = models.BooleanField(verbose_name=_("incoming"))
@@ -30,6 +30,7 @@ class Pingback(models.Model):
     outgoings = GenericManager(incoming=False, finished=True)
 
     class Meta:
+        app_label           = "turbion"
         verbose_name        = _("pingback")
         verbose_name_plural = _("pingbacks")
         db_table            = "turbion_pingback"

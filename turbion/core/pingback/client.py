@@ -36,8 +36,8 @@ def call_ping(gateway, source_uri, target_uri):
         return str(e)
 
 def process_for_pingback(post, url, text, **kwargs):
-    from turbion.contrib.pingback.models import Pingback
-    from turbion.contrib.pingback import utils
+    from turbion.core.pingback.models import Pingback
+    from turbion.core.pingback import utils
 
     domain = Site.objects.get_current().domain
 

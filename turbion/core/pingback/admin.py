@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from turbion.contrib.pingback.models import Pingback
+from turbion.core.pingback.models import Pingback
 
 class PingbackAdmin(admin.ModelAdmin):
     list_display= ("target_url", "post", "source_url", "incoming", "date", "title", "finished")

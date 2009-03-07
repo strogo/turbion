@@ -1,7 +1,7 @@
 from turbion.core.utils.loading import get_module_attrs, NoModuleError
 
 SUB_APPLICATIONS = (
-    "assets", "blogs", "profiles", "utils"
+    "assets", "blogs", "profiles", "utils", "pingback"
 )
 
 def connectors():

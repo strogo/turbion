@@ -6,8 +6,8 @@ import urllib2
 from urlparse import urlparse, urlsplit
 
 from turbion.core.utils.urlfetch import fetch
-from turbion.contrib.pingback import signals, utils, client
-from turbion.contrib.pingback.models import Pingback
+from turbion.core.pingback import signals, utils, client
+from turbion.core.pingback.models import Pingback
 from turbion.models import Post
 
 def ping(source_uri, target_uri, id):
