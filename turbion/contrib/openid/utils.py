@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 
-from turbion.utils.urls import uri_reverse
-from turbion.profiles.models import Profile
-from turbion.openid.models import Identity, Association
+from turbion.core.utils.urls import uri_reverse
+from turbion.core.profiles.models import Profile
+from turbion.contrib.openid.models import Association
 
 def get_consumer(session):
     from openid.consumer import consumer
@@ -18,9 +17,9 @@ def get_server():
     from turbion.openid.store import DatabaseStore
 
     return server.Server(
-                DatabaseStore(Association.origins.server),
-                uri_reverse("turbion_openid_endpoint")
-        )
+        DatabaseStore(Association.origins.server),
+        uri_reverse("turbion_openid_endpoint")
+    )
 
 def complete(request):
     data = dict(request.GET.items())
@@ -44,21 +43,6 @@ def get_auth_urls(request):
     return_to = site_url + reverse('turbion_openid_authenticate')
 
     return trust_url, return_to
-
-def create_user(username, email, response):
-    user = Profile.objects.create_user(
-                                    username.lower(),
-                                    email,
-                                    Profile.objects.make_random_password()
-                                )
-    user.nickname = user.username
-    user.save()
-
-    connection = Identity.objects.create(
-                        user=user,
-                        url=response.identity_url
-                    )
-    return connection
 
 def _save_request(request, openid_request):
     if openid_request:

@@ -76,6 +76,8 @@ class Profile(User):
 
     filter = MarkupField()
 
+    openid = models.URLField(verbose_name=_('openid'), blank=True, null=True, unique=True)
+
     objects = ProfileManager()
 
     def is_authenticated_confirmed(self):

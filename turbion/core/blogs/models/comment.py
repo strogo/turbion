@@ -22,7 +22,7 @@ class Comment(models.Model):
     statuses = Enum(
         published="published",
         moderation="on moderation",
-        hided="hided",
+        hidden="hidden",
     )
 
     created_on = models.DateTimeField(default=datetime.now, verbose_name=_("created on"))

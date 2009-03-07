@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 import time
 import base64
 from openid.store.filestore import OpenIDStore
 
 from django.db import connection
 
-from turbion.openid.models import Association, Nonce
+from turbion.contrib.openid.models import Association, Nonce
 
 qn = connection.ops.quote_name
 

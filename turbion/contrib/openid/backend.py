@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.contrib.auth.backends import ModelBackend
 
-from turbion.profiles.models import Profile
-from turbion.profiles.forms import extract_profile_data
-from turbion.registration.backend import OnlyActiveBackend
-from turbion.openid import utils
-from turbion.openid.models import Identity
+from turbion.core.profiles.models import Profile
+from turbion.core.profiles.forms import extract_profile_data
+from turbion.contrib.openid import utils
 
 USERNAME_PREFIX = "toi_"
 
@@ -15,7 +13,7 @@ def gen_username(identity_url):
     unique = md5.new(identity_url).hexdigest()[:30 - len(USERNAME_PREFIX)]
     return '%s%s' % (USERNAME_PREFIX, unique)
 
-class OpenidBackend(OnlyActiveBackend):
+class OpenidBackend(ModelBackend):
     def authenticate(self, request):
         from openid.consumer import consumer as openid_consumer
 
@@ -25,8 +23,8 @@ class OpenidBackend(OnlyActiveBackend):
             return
 
         try:
-            connection = Identity.objects.get(url=response.identity_url)
-        except Identity.DoesNotExist:
+            profile = Profile.objects.get(openid=response.identity_url)
+        except Profile.DoesNotExist:
             sreg_response = utils.complete_sreg(response) or {}
 
             profile = Profile.objects.create_profile(
@@ -39,6 +37,7 @@ class OpenidBackend(OnlyActiveBackend):
                                     "toi@turbion.turbion"
                                 )
                             )
+            profile.openid = response.identity_url
             profile.is_active = True
 
             profile.__dict__.update(
@@ -46,9 +45,4 @@ class OpenidBackend(OnlyActiveBackend):
             )
             profile.save()
 
-            connection = Identity.objects.create(
-                user=profile,
-                url=response.identity_url
-            )
-
-        return connection.user
+        return profile

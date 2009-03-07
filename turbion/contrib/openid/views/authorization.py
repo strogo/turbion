@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django import http
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -6,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.openid import forms, utils, models, backend
+from turbion.contrib.openid import forms, utils, models, backend
 
 from turbion.utils.decorators import templated, titled
 

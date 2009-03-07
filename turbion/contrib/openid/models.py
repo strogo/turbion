@@ -1,41 +1,11 @@
-# -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 from datetime import datetime
 
-from turbion.profiles.models import Profile
-from turbion.utils.models import GenericManager
-from turbion.utils.enum import Enum
-
-class IdentityManager(GenericManager):
-    def add_identifier(self, username, openid_url, **kwargs):
-        user = User.objects.get(username=username)
-
-        identity, _ = self.get_or_create(user=user, url=openid_url, defaults=kwargs)
-
-        return identity
-
-class Identity(models.Model):
-    user = models.ForeignKey(Profile, null=True, related_name="openid_identifiers")
-
-    added_on = models.DateTimeField(default=datetime.now)
-
-    last_login = models.DateTimeField(null=True, blank=True)
-    url = models.URLField(max_length=250, unique=True)
-    default = models.BooleanField(default=False)
-    local = models.BooleanField(default=False)
-
-    objects = IdentityManager()
-    locals = IdentityManager(local=True)
-    globals = IdentityManager(local=False)
-
-    def __unicode__(self):
-        return self.url
-
-    class Meta:
-        db_table = "turbion_openid_identity"
+from turbion.core.utils.models import GenericManager
+from turbion.core.utils.enum import Enum
 
 # models needed to openid library store
 
@@ -76,6 +46,9 @@ class Nonce(models.Model):
 class Trust(models.Model):
     url = models.URLField(unique=True)
     date = models.DateTimeField(default=datetime.now)
+
+    def __unicode__(self):
+        return self.url
 
     class Meta:
         db_table = "turbion_openid_trust"
