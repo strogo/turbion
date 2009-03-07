@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 from django.db import models
 
-from turbion.utils.models import GenericManager
+from turbion.core.utils.models import GenericManager
 
 class Template(models.Model):
     path = models.CharField(max_length=250, unique=True)

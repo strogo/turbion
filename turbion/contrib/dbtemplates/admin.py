@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 from django.contrib import admin
-from turbion.dbtemplates.models import Template
+
+from turbion.contrib.dbtemplates.models import Template
 
 class TemplateAdmin(admin.ModelAdmin):
     list_display = ("path", "is_active",)
