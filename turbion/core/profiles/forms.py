@@ -82,6 +82,9 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                     profile = None
 
                     if 'openid' in form_data:
+                        if not "nickname" in form_data:
+                            form_data["nickname"] = form_data["openid"]
+                        
                         try:
                             profile = Profile.objects.get(openid=form_data['openid'])
                         except Profile.DoesNotExist:

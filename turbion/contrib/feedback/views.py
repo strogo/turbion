@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.utils.decorators import templated, titled
@@ -22,13 +21,19 @@ def index(request):
                 instance=feedback
             )
 
-            return status_redirect(
+            response = status_redirect(
                 request,
                 title=_(u"Thanks"),
                 section=_(u"Feedback"),
                 next="/",
                 message=_(u"Thanks. Your request will be handled by the administrator.")
             )
+
+            if form.need_auth_redirect():
+                return form.auth_redirect(
+                    response["Location"]
+                )
+            return response
     else:
         form = FeedbackForm(request=request)
 
