@@ -6,13 +6,6 @@ from turbion.core.profiles.models import Profile
 from turbion.core.profiles.forms import extract_profile_data
 from turbion.contrib.openid import utils
 
-USERNAME_PREFIX = "toi_"
-
-def gen_username(identity_url):
-    import md5
-    unique = md5.new(identity_url).hexdigest()[:30 - len(USERNAME_PREFIX)]
-    return '%s%s' % (USERNAME_PREFIX, unique)
-
 class OpenidBackend(ModelBackend):
     def authenticate(self, request):
         from openid.consumer import consumer as openid_consumer
@@ -27,7 +20,7 @@ class OpenidBackend(ModelBackend):
         data = {
             "nickname": sreg_response.get(
                 "nickname",
-                gen_username(response.identity_url)
+                Profile.objects.generate_username(response.identity_url)
             ),
             "email": sreg_response.get(
                 "email",
@@ -38,10 +31,14 @@ class OpenidBackend(ModelBackend):
         try:
             profile = Profile.objects.get(openid=response.identity_url)
 
+            # Handle case when we get additional data with SREG
+            # for exist profile
             for field, value in data.iteritems():
                 if value and not getattr(profile, field):
                     setattr(profile, field, value)
 
+            # profile may be unconfirmed when created
+            # while comment/feedback posting
             if not profile.is_confirmed:
                 profile.is_confirmed = True
         except Profile.DoesNotExist:
@@ -54,7 +51,7 @@ class OpenidBackend(ModelBackend):
             profile.__dict__.update(
                 extract_profile_data(request)
             )
-        
+
         profile.save()
 
         return profile

@@ -10,11 +10,9 @@ from turbion.core.utils.markup.fields import MarkupField
 from turbion.core.utils.models import GenericManager
 
 class ProfileManager(UserManager):
-    def generate_username(self, data):
+    def generate_username(self, data, base="turbion_"):
         import md5
         import random
-
-        base = "turbion_"
 
         hash = md5.new(repr(data)+str(random.random())).hexdigest()[:30-len(base)]
 
