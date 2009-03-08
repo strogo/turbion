@@ -22,27 +22,39 @@ class OpenidBackend(ModelBackend):
         if response.status != openid_consumer.SUCCESS:
             return
 
+        sreg_response = utils.complete_sreg(response) or {}
+
+        data = {
+            "nickname": sreg_response.get(
+                "nickname",
+                gen_username(response.identity_url)
+            ),
+            "email": sreg_response.get(
+                "email",
+                ""
+            )
+        }
+
         try:
             profile = Profile.objects.get(openid=response.identity_url)
-        except Profile.DoesNotExist:
-            sreg_response = utils.complete_sreg(response) or {}
 
+            for field, value in data.iteritems():
+                if value and not getattr(profile, field):
+                    setattr(profile, field, value)
+
+            if not profile.is_confirmed:
+                profile.is_confirmed = True
+        except Profile.DoesNotExist:
             profile = Profile.objects.create_profile(
-                sreg_response.get(
-                    "nickname",
-                    gen_username(response.identity_url)
-                ),
-                sreg_response.get(
-                    "email",
-                    "toi@turbion.turbion"
-                )
+                **data
             )
             profile.openid = response.identity_url
-            profile.is_active = True
+            profile.just_created = True
 
             profile.__dict__.update(
                 extract_profile_data(request)
             )
-            profile.save()
+        
+        profile.save()
 
         return profile

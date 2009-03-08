@@ -1,7 +1,3 @@
-import os
-
-TURBION_BASE_PATH = os.path.normpath(os.path.dirname(__file__))
-
 TURBION_BLOG_NAME = "Turbion based blog"
 TURBION_BLOG_POSTS_PER_PAGE = 5
 TURBION_ADDITIONAL_POST_FIELDS = False

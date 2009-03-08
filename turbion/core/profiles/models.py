@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.db import models, connection
 from django.contrib.auth.models import User, UserManager
 from django.utils.translation import ugettext_lazy as _
@@ -24,7 +23,7 @@ class ProfileManager(UserManager):
     def create_profile(self, *args, **kwargs):
         return self.create_user(*args, **kwargs)
 
-    def create_guest_profile(self, nickname, email=None, site=None, ip=None, host=None):
+    def create_guest_profile(self, nickname, email=None, site=None, ip=None, host=None, **kwargs):
         profile = self.create_user(username=self.generate_username([nickname,email,site]),
                                    email=email and email or "",
                                    password=None)
@@ -34,6 +33,7 @@ class ProfileManager(UserManager):
         profile.name_view = Profile.names.nickname
         profile.is_confirmed = False
         profile.ip = ip
+        profile.__dict__.update(kwargs)
         profile.save()
 
         return profile
@@ -108,22 +108,17 @@ class Profile(User):
         return self.name
 
     def get_site_url(self):
-        if self.is_confirmed:
+        if self.is_confirmed and self.openid:
             type_map = {
-                Profile.sites.profile: models.permalink(
-                                        lambda: (
-                                            "turbion.profiles.views.profile",
-                                            (),
-                                            {"profile_user": self.username}
-                                            )
-                                        )(),
+                Profile.sites.openid: self.openid,
                 Profile.sites.site: self.site
             }
             return type_map.get(self.site_view, self.site)
         return self.site
 
+    @models.permalink
     def get_absolute_url(self):
-        return self.get_site_url()
+        return ("turbion_profile", (self.username,))
 
     class Meta:
         app_label           = "turbion"

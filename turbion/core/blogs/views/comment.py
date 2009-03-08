@@ -1,7 +1,7 @@
-from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+from django import http
 
 from turbion.core.blogs.decorators import post_view, titled
 from turbion.core.blogs.models import Post, Comment, CommentAdd
@@ -18,10 +18,10 @@ def add_comment(request, next, defaults={}, post=None,
 
     if request.method == 'POST':
         form = forms.CommentForm(
-                        data=request.POST,
-                        request=request,
-                        instance=comment
-                )
+            data=request.POST,
+            request=request,
+            instance=comment
+        )
 
         if form.is_valid():
             new_comment = form.save(False)
@@ -44,9 +44,9 @@ def add_comment(request, next, defaults={}, post=None,
                     signal = signals.comment_added
 
                 signal.send(
-                        sender=Comment,
-                        comment=new_comment,
-                        instance=post
+                    sender=Comment,
+                    comment=new_comment,
+                    instance=post
                 )
 
                 if form.cleaned_data["notify"]:
@@ -55,12 +55,17 @@ def add_comment(request, next, defaults={}, post=None,
                         new_comment.post
                     )
 
-                return HttpResponseRedirect(next % new_comment.__dict__)
+                if form.need_auth_redirect():
+                    return http.HttpResponseRedirect(
+                        form.auth_redirect(next % new_comment.__dict__)
+                    )
+
+                return http.HttpResponseRedirect(next % new_comment.__dict__)
     else:
         form = forms.CommentForm(
-                        request=request,
-                        instance=comment
-                )
+            request=request,
+            instance=comment
+        )
 
     return {
         "comment_form": form,
@@ -73,7 +78,7 @@ def add(request, post_id):
     post = get_object_or_404(Post.published.all(), pk=post_id)
 
     if not post.allow_comments:
-        return HttpResponseRedirect(post.get_absolute_url())#FIXME: add message showing
+        return http.HttpResponseRedirect(post.get_absolute_url())#FIXME: add message showing
 
     context = add_comment(
         request,
@@ -98,7 +103,7 @@ def edit(request, comment_id):
     context = add_comment(
         request,
         comment=comment,
-        redirect=post.get_absolute_url()+"#comment_%(id)s",
+        redirect=post.get_absolute_url() + "#comment_%(id)s",
         checker=lambda comment: get_profile(request) in (comment.author, post.created_by)
     )
 
@@ -112,4 +117,4 @@ def delete(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     comment.delete()
 
-    return HttpResponseRedirect(request.GET.get("redirect", "/"))
+    return http.HttpResponseRedirect(request.GET.get("redirect", "/"))

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -25,17 +24,18 @@ def profile(request, profile):
 @templated('turbion/profiles/edit_profile.html')
 @titled(page=_("Edit"), section=_("Profile {{profile}}"))
 def edit_profile(request, profile):
-    if request.POST:
+    if request.method == "POST":
         profile_form = forms.ProfileForm(
-                                    data=request.POST,
-                                    instance=profile
-                        )
+            data=request.POST,
+            instance=profile
+        )
         if profile_form.is_valid():
             profile_form.save()
     else:
-         profile_form = forms.ProfileForm(instance=profile)
+        profile_form = forms.ProfileForm(instance=profile)
 
     return {
-        "profile_form":  profile_form,
-        "profile":       profile
+        "profile_form": profile_form,
+        "profile":      profile,
+        "just_created": "just_created" in request.GET
     }

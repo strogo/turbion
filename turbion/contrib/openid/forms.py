@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.core.profiles.models import Profile
 from turbion.contrib.openid import utils
 
-class OpenidLoginForm(forms.Form):
+class OpenidLoginForm(forms.ModelForm):
     openid = forms.CharField(label=_("openid"), required=True)
 
     def __init__(self, request, *args, **kwargs):
@@ -31,13 +31,16 @@ class OpenidLoginForm(forms.Form):
 
         return openid_url
 
-    def auth_redirect(self, target):
+    def auth_redirect(self, next=None):
         from openid.extensions import sreg
 
         sreg_request = sreg.SRegRequest(optional=["nickname", "email",])
         self.openid_request.addExtension(sreg_request)
 
         trust_url, return_to = utils.get_auth_urls(self.request)
+
+        if next or "next" in self.request.REQUEST:
+            self.openid_request.return_to_args['next'] = next or self.request.REQUEST["next"]
 
         url = self.openid_request.redirectURL(trust_url, return_to)
 

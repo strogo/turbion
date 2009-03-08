@@ -7,10 +7,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.contrib.openid import forms, utils, models, backend
 
+from turbion.core.profiles import get_profile
 from turbion.core.utils.decorators import templated, titled
 
-def post_redirect(request):
-    redirect = request.GET.get("redirect", request.META.get("HTTP_REFERER", "/"))
+def get_redirect(request):
+    redirect = request.REQUEST.get("next", request.META.get("HTTP_REFERER", "/"))
 
     return redirect
 
@@ -20,46 +21,47 @@ def login(request):
     if request.method == 'POST':
         form = forms.OpenidLoginForm(request, data=request.POST)
         if form.is_valid():
-            after_auth_redirect = form.auth_redirect(post_redirect(request))
+            after_auth_redirect = form.auth_redirect(get_redirect(request))
             return http.HttpResponseRedirect(after_auth_redirect)
     else:
         form = forms.OpenidLoginForm(request.session)
+    
     return {
         'form': form,
-        'redirect': post_redirect(request)
+        'next': get_redirect(request)
     }
 
 def authenticate(request):
-    print 777
     user = auth.authenticate(request=request)
 
     if not user:
-        return http.HttpResponseForbidden(_('Authorization error'))
+        return http.HttpResponseForbidden(_('Openid authorization error'))
 
     auth.login(request, user)
 
-    if user.username.startswith(backend.USERNAME_PREFIX):
-        return http.HttpResponseRedirect(reverse("turbion_openid_collect"))
+    if hasattr(user, "just_created"):
+        return http.HttpResponseRedirect(
+            reverse("turbion_profile_edit", args=(user.username,)) + "?just_created=1"
+        )
 
-    return http.HttpResponseRedirect(request.GET.get('redirect', '/'))
+    return http.HttpResponseRedirect(request.GET.get('next', '/'))
 
+@login_required
 @templated('turbion/openid/collect.html')
 @titled(page=_("Information collection"), section=_("OpenID Authorization"))
 def collect(request):
-    if request.user.is_authenticated() and request.user.username.startswith("toi_"):
-        if request.POST:
-            user_info_form = forms.UserInfoForm(request.POST, instance=request.user)
+    if request.POST:
+        user_info_form = forms.UserInfoForm(request.POST, instance=get_profile(request))
 
-            if user_info_form.is_valid():
-                user_info_form.save()
+        if user_info_form.is_valid():
+            user_info_form.save()
 
-                return http.ResponseRedirect(request.GET.get('redirect', '/'))
-        else:
-            user_info_form = forms.UserInfoForm(instance=request.user)
+            return http.ResponseRedirect(request.GET.get('redirect', '/'))
+    else:
+        user_info_form = forms.UserInfoForm(instance=request.user)
 
-        return {
-            "user_info_form": user_info_form,
-            "user_info_form_action": "./",
-            "redirect": request.GET.get('redirect', '/')
-        }
-    raise http.Http404
+    return {
+        "user_info_form": user_info_form,
+        "user_info_form_action": "./",
+        "redirect": request.GET.get('redirect', '/')
+    }
