@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import cgi
 
 from django import http
@@ -8,16 +7,16 @@ from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.openid import forms, utils, models
-from turbion.utils.urls import uri_reverse
-from turbion.utils.decorators import templated, titled
+from turbion.contrib.openid import forms, utils, models
+from turbion.core.utils.urls import uri_reverse
+from turbion.core.utils.decorators import templated, titled
 
 @templated('turbion/openid/server/endpoint.html')
 @titled(page=_("Login"), section=_("OpenID Authorization"))
 def endpoint(request):
     from openid.server.server import ProtocolError
     server = utils.get_server()
-    print 1
+
     data = dict(request.GET.items())
     if request.method == "POST":
         data.update(dict(request.POST.items()))
@@ -144,7 +143,7 @@ def _add_sreg(request, openid_response):
         'country': 'ES',
         'language': 'eu',
         'timezone': 'America/New_York',
-        }
+    }
 
     sreg_req = sreg.SRegRequest.fromOpenIDRequest(openid_request)
     sreg_resp = sreg.SRegResponse.extractResponse(sreg_req, sreg_data)

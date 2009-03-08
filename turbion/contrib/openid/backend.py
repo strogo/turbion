@@ -28,15 +28,15 @@ class OpenidBackend(ModelBackend):
             sreg_response = utils.complete_sreg(response) or {}
 
             profile = Profile.objects.create_profile(
-                                sreg_response.get(
-                                    "nickname",
-                                    gen_username(response.identity_url)
-                                ),
-                                sreg_response.get(
-                                    "email",
-                                    "toi@turbion.turbion"
-                                )
-                            )
+                sreg_response.get(
+                    "nickname",
+                    gen_username(response.identity_url)
+                ),
+                sreg_response.get(
+                    "email",
+                    "toi@turbion.turbion"
+                )
+            )
             profile.openid = response.identity_url
             profile.is_active = True
 

@@ -1,16 +1,16 @@
 from django import forms
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
-from turbion.profiles.models import Profile
-from turbion.openid import utils
-from turbion.registration.forms import RegistrationFormBase
+from turbion.core.profiles.models import Profile
+from turbion.contrib.openid import utils
 
 class OpenidLoginForm(forms.Form):
-    openid = forms.CharField(label="openid url", required=True)
+    openid = forms.CharField(label=_("openid"), required=True)
 
-    def __init__(self, request, **kwargs):
-        super(OpenidLoginForm, self).__init__(**kwargs)
+    def __init__(self, request, *args, **kwargs):
+        super(OpenidLoginForm, self).__init__(*args, **kwargs)
 
         self.request = request
 
@@ -43,7 +43,7 @@ class OpenidLoginForm(forms.Form):
 
         return url
 
-class UserInfoForm(forms.ModelForm, RegistrationFormBase):
+class UserInfoForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ("username", "email")

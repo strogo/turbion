@@ -12,8 +12,8 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = (
-            'username', 'email', 'first_name', 'last_name', 'birth_date',
-            'gender', 'city', 'country', 'biography', 'education', 'work',
+            'username', 'email', 'first_name', 'last_name', 'site'
+            'name_view', 'site_view'
         )
 
     def clean_username(self):
@@ -41,6 +41,8 @@ def combine_profile_form_with(form_class, request, field="created_by",\
             email = forms.EmailField(required=False, label=_("email"),
                                      help_text=_("Only internal usage"))
             site  = forms.URLField(required=False, label=_("site"))
+
+            openid = forms.URLField(required=False, label=_("openid"))
 
             if settings.TURBION_USE_SUPERCAPTCHA:
                 from supercaptcha import CaptchaField

@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.contrib.openid import forms, utils, models, backend
 
-from turbion.utils.decorators import templated, titled
+from turbion.core.utils.decorators import templated, titled
 
 def post_redirect(request):
     redirect = request.GET.get("redirect", request.META.get("HTTP_REFERER", "/"))
@@ -30,6 +30,7 @@ def login(request):
     }
 
 def authenticate(request):
+    print 777
     user = auth.authenticate(request=request)
 
     if not user:
