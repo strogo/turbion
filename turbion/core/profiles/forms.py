@@ -46,7 +46,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                 def __init__(self, request, *args, **kwargs):
                     super(BaseForm, self).__init__(*args, **kwargs)
 
-        class UserForm(form_class, BaseForm):
+        class ProfileForm(form_class, BaseForm):
             nickname  = forms.CharField(required=not USE_OPENID, label=_('name'))
             email = forms.EmailField(required=False, label=_('email'),
                                      help_text=_('Only internal usage'))
@@ -64,7 +64,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                     initial = {}
 
                 initial.update(get_profile(request).__dict__)
-                super(UserForm, self).__init__(initial=initial, request=request, *args, **kwargs)
+                super(ProfileForm, self).__init__(initial=initial, request=request, *args, **kwargs)
 
             def get_user(self):
                 form_data = dict([(key, value) for key, value in self.cleaned_data.iteritems()\
@@ -84,7 +84,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                     if 'openid' in form_data:
                         if not "nickname" in form_data:
                             form_data["nickname"] = form_data["openid"]
-                        
+
                         try:
                             profile = Profile.objects.get(openid=form_data['openid'])
                         except Profile.DoesNotExist:
@@ -110,7 +110,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                 return self.cleaned_data.get('openid', None) not in (None, '')
 
             def save(self, commit=True):
-                obj = super(UserForm, self).save(False)
+                obj = super(ProfileForm, self).save(False)
 
                 user = self.get_user()
 
@@ -120,9 +120,16 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
                 return obj
 
-        return UserForm
+            if USE_OPENID:
+                def clean_openid(self):
+                    value = self.cleaned_data["openid"]
+                    if value:
+                        return super(ProfileForm, self).clean_openid()
+                    return value
+
+        return ProfileForm
     else:
-        class UserForm(form_class):
+        class ProfileForm(form_class):
             def __init__(self, *args, **kwargs):
                 if filter_field:
                     initial = {
@@ -133,17 +140,17 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
                 initial.update(kwargs.pop('initial', {}))
 
-                super(UserForm, self).__init__(initial=initial, *args, **kwargs)
+                super(ProfileForm, self).__init__(initial=initial, *args, **kwargs)
 
             def need_auth_redirect(self):
                 return False
 
             def save(self, commit=True):
-                obj = super(UserForm, self).save(commit=False)
+                obj = super(ProfileForm, self).save(commit=False)
                 setattr(obj, field, get_profile(request))
                 if commit:
                     obj.save()
 
                 return obj
 
-    return UserForm
+    return ProfileForm
