@@ -86,9 +86,9 @@ def top_commenters_pad(context, count=5):
                         suffix=lambda instance, *args, **kwargs: []
                       ),
                       suffix=lambda context: [],
-                      file_name='turbion/blogs/pads/last_comments.html',
+                      file_name='turbion/blogs/pads/latest_comments.html',
                       takes_context=True)
-def last_comments_pad(context, count=5):
+def latest_comments_pad(context, count=5):
     comments = Comment.published.all().order_by("-created_on").distinct()[:count]
 
     return  {"comments": comments}
@@ -185,4 +185,19 @@ def login_pad(context):
     return {
         "user": user,
         "urls": urls
+    }
+
+@register.inclusion_tag(
+    file_name='turbion/blogs/pads/search.html',
+    takes_context=True
+)
+def search_pad(context):
+    from turbion.core.blogs.forms import SearchForm
+
+    request = context.get("request")
+
+    return {
+        "request": request,
+        "form": SearchForm(initial={"query": request and request.GET.get("query", "") or ""}),
+        "action": reverse("turbion_blog_search")
     }

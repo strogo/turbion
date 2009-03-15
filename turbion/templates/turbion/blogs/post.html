@@ -68,7 +68,7 @@
     {% block comment_form %}
     <div id="comment_form">
         <h3>Leave your comment:</h3>
-        <form method="POST" action={% url turbion_blog_comment_add post.id %}>
+        <form method="POST" action="{% url turbion_blog_comment_add post.id %}">
             {{comment_form.as_p}}
             <p>
                 <input type="submit" name="view" value="Preview"/>

@@ -6,7 +6,13 @@ from turbion.core.utils.models import GenericManager
 from turbion.core.blogs.fields import PostCountField
 
 class TagManager(GenericManager):
-    pass
+    def get_query_set(self):
+        from turbion.core.blogs.models import Post
+        total_ratio = float(super(TagManager, self).get_query_set().count()) / Post.published.count()
+
+        return super(TagManager, self).get_query_set().extra(
+            select={"ratio": "post_count * %s" % total_ratio}
+        )
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name=_("name"))

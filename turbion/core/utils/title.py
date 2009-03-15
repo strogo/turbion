@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 def gen_title(bits, pattern=None):
     domain = Site.objects.get_current().domain
 
-    pattern = settings.TURBION_TITLE_PATTERN
+    pattern = pattern or settings.TURBION_TITLE_PATTERN
 
     defaults = {
         "page": _("Page"),

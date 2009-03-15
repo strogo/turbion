@@ -32,6 +32,7 @@ def year(request, year_id):
 
     return {
         "post_page": post_page,
+        "on": "year",
         "blog_calendar": blog_calendar
     }
 
@@ -52,6 +53,7 @@ def month(request, year_id, month_id):
 
     return {
         "post_page" : post_page,
+        "on": "month",
         "blog_calendar": blog_calendar
     }
 
@@ -73,5 +75,6 @@ def day(request, year_id, month_id, day_id):
 
     return {
         "post_page": post_page,
+        "on": "day",
         "blog_calendar": blog_calendar
     }

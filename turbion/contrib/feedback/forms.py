@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django import forms
 
 from turbion.core.profiles.forms import combine_profile_form_with
@@ -10,7 +9,7 @@ class _FeedbackForm(forms.ModelForm):
         fields = ("subject", "text")
 
 class FeedbackForm(forms.Form):
-    def __init__(self, request, blog, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         self.__class__ = combine_profile_form_with(
                                 _FeedbackForm,
                                 request=request,

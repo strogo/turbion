@@ -93,7 +93,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                     if not profile:
                         profile = Profile.objects.create_guest_profile(**form_data)
 
-                    if not 'openid' in form_data:
+                    if not form_data.get('openid', None):
                         profile.backend = '%s.%s' % (
                             ModelBackend.__module__,
                             ModelBackend.__name__

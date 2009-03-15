@@ -12,7 +12,7 @@ from turbion.core.utils.urls import uri_reverse
 from turbion.core.utils.decorators import templated, titled
 
 @templated('turbion/openid/server/endpoint.html')
-@titled(page=_("Login"), section=_("OpenID Authorization"))
+@titled(page=_("Endpoint"), section=_("OpenID Server"))
 def endpoint(request):
     from openid.server.server import ProtocolError
     server = utils.get_server()
@@ -82,7 +82,7 @@ def _render_response(request, openid_request):
     return r
 
 @templated('turbion/openid/server/decide.html')
-@titled(page=u"Allow authentication", section=u"OpenID Authentication")
+@titled(page=u"Trust decision", section=u"OpenID Server")
 def decide(request, openid_request=None):
     from openid.yadis.discover import DiscoveryFailure
     from openid.fetchers import HTTPFetchingError
@@ -154,12 +154,12 @@ def xrds(request):
     from openid.consumer.discover import OPENID_IDP_2_0_TYPE
 
     response = direct_to_template(
-                    request,
-                    'turbion/openid/server/xrds.xml',
-                    {
-                        'type_uri': OPENID_IDP_2_0_TYPE,
-                        'endpoint_url': uri_reverse("turbion_openid_endpoint"),
-                    }
-            )
+        request,
+        'turbion/openid/server/xrds.xml',
+        {
+            'type_uri': OPENID_IDP_2_0_TYPE,
+            'endpoint_url': uri_reverse("turbion_openid_endpoint"),
+        }
+    )
     response['Content-Type'] = YADIS_CONTENT_TYPE
     return response
