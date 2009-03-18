@@ -7,6 +7,10 @@ from turbion.core.profiles.models import Profile
 from turbion.contrib.openid import utils
 
 class OpenidLoginForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = [None]
+
     openid = forms.CharField(label=_("openid"), required=True)
 
     def __init__(self, request, *args, **kwargs):
