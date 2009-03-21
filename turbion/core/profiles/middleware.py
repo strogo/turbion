@@ -23,7 +23,6 @@ class AnonymousProfile(AnonymousUser):
     skype = None
     name_view = None
     site_view = None
-    last_visit = None
 
     def is_authenticated_confirmed(self):
         return False
@@ -52,8 +51,5 @@ class AuthenticationMiddleware(object):
     def process_request(self, request):
         assert hasattr(request, 'session'), "The Turbion profile authentication middleware requires session middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'."
         request.__class__.user = LazyUser()
-
-        if request.user.is_authenticated():
-            request.user.update_visit(datetime.now())
 
         return None

@@ -70,7 +70,6 @@ class Profile(User):
     site_view = models.CharField(max_length=20, choices=sites,
                                  default=sites.site, null=True, blank=True,
                                 verbose_name=_('site view'))
-    last_visit = models.DateTimeField(null=True, blank=True, verbose_name=_('last visit'))
 
     filter = MarkupField()
 
@@ -97,10 +96,6 @@ class Profile(User):
                 Profile.names.full_name_nick: self.full_name_with_nick
         }
         return type_map.get(self.name_view, self.username)
-
-    def update_visit(self, when):
-        self.__class__._default_manager.filter(pk=self.pk).\
-                                        update(last_visit=when)
 
     def __unicode__(self):
         return self.name

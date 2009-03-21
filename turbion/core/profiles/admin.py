@@ -5,9 +5,9 @@ from django.contrib import admin
 from turbion.core.profiles.models import Profile
 
 class ProfileAdmin(admin.ModelAdmin):
-    exclude = ['password', 'last_visit', 'last_login', 'user_permissions', 'groups']
+    exclude = ['password', 'last_login', 'user_permissions', 'groups']
     list_display  = (
-        'username', 'nickname', 'email', 'last_visit', 'site',
+        'username', 'nickname', 'email', 'site',
         'is_confirmed', 'trusted', 'is_author',  'ip', 'filter', 'openid'
     )
     list_per_page = 50
