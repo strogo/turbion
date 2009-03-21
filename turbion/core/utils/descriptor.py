@@ -12,7 +12,8 @@ def to_descriptor(value):
         return value
 
     if value is None:
-        raise ValueError("None value cannot be converted to descriptor")
+        return ""
+        #raise ValueError("None value cannot be converted to descriptor")
 
     if is_model(value):
         meta = value._meta

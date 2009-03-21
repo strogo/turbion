@@ -7,8 +7,6 @@ D = dict
 
 class CommentCountField(CompositionField):
     def __init__(self, verbose_name=None, editable=False):
-        from turbion.core.blogs.models.comment import Comment
-
         super(CommentCountField, self).__init__(
             native=models.PositiveIntegerField(
                 default=0, editable=editable, verbose_name=verbose_name
@@ -20,7 +18,7 @@ class CommentCountField(CompositionField):
                 )
             ],
             commons=D(
-                sender_model=Comment,
+                sender_model="turbion.comment",
                 field_holder_getter=lambda comment: comment.post,
             ),
             commit=True,
