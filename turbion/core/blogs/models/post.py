@@ -38,8 +38,6 @@ class Post(models.Model):
         registred=_("registered"),
     )
 
-    comment_count = CommentCountField(verbose_name=_("comment count"))
-
     created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
     created_by    = models.ForeignKey(Profile, related_name="created_posts", verbose_name=_("created by"))
 
@@ -180,3 +178,5 @@ class Post(models.Model):
         ordering            = ('-published_on', '-created_on',)
         unique_together     = (("published_on", "title", "slug"),)
         db_table            = "turbion_post"
+
+Post.add_to_class("comment_count", CommentCountField(verbose_name=_("comment count")))
