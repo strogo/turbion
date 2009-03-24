@@ -1,12 +1,15 @@
-# -*- coding: utf-8 -*-
 from django import template
 
-from turbion.core.utils.markup.fitlers import Filter
+from turbion.core.utils.markup.filters import Filter
 
 register = template.Library()
 
 for name, func in Filter.manager.all():
     register.filter(name, func.to_html)
+
+@register.filter
+def markup(text, filter="markdown"):
+    return Filter.manager.get(filter).to_html(text)
 
 @register.filter
 def sanitize(value):

@@ -21,9 +21,10 @@ def profile(request, profile):
 
 @profile_view
 @owner_required
-@templated('turbion/profiles/edit_profile.html')
+@templated('turbion/profiles/edit.html')
 @titled(page=_("Edit"), section=_("Profile {{profile}}"))
 def edit_profile(request, profile):
+    updated = False
     if request.method == "POST":
         profile_form = forms.ProfileForm(
             data=request.POST,
@@ -31,11 +32,13 @@ def edit_profile(request, profile):
         )
         if profile_form.is_valid():
             profile_form.save()
+            updated = True
     else:
         profile_form = forms.ProfileForm(instance=profile)
 
     return {
         "profile_form": profile_form,
         "profile":      profile,
-        "just_created": "just_created" in request.GET
+        "just_created": "just_created" in request.GET,
+        "updated":      updated,
     }

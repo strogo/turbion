@@ -44,7 +44,7 @@ def tags(request):
     }
 
 @paged
-@templated('turbion/blogs/post_list.html')
+@templated('turbion/blogs/tag_list.html')
 @titled(page=_('Tag "{{tag}}"'))
 def tag(request, tag_slug):
     _tag = get_object_or_404(Tag.active, slug=tag_slug)

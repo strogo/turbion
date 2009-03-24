@@ -13,20 +13,15 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = (
-            'username', 'email', 'first_name', 'last_name', 'site'
+            'nickname', 'email', 'first_name', 'last_name', 'site',
             'name_view', 'site_view'
         )
 
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        try:
-            user = Profile.objects.get(username=username)
-            if user != self.instance:
-                raise forms.ValidationError(_('This username already exists'))
-        except Profile.DoesNotExist:
-            pass
+    def save(self, commit=True):
+        self.instance.is_confirmed = True
+        return super(ProfileForm, self).save(commit)
 
-        return username
+ProfileForm.base_fields.keyOrder = ProfileForm.Meta.fields
 
 def extract_profile_data(request):
     return {

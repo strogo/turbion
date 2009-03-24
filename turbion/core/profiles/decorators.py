@@ -7,8 +7,8 @@ from turbion.core.profiles.models import Profile
 from turbion.core.profiles import get_profile
 
 def profile_view(view_func):
-    def _decor(request, profile_user, *args, **kwargs):
-        profile = get_object_or_404(Profile, username=profile_user)
+    def _decor(request, profile_id, *args, **kwargs):
+        profile = get_object_or_404(Profile, pk=profile_id)
 
         return view_func(request, profile=profile, *args, **kwargs)
 

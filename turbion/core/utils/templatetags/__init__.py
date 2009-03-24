@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from inspect import getargspec
 
 from django.template import TemplateSyntaxError, Node, Variable, generic_tag_compiler
@@ -8,8 +7,8 @@ from turbion.core.utils.loading import get_module_attrs
 
 __path__.extend(get_module_attrs("turbion.core.utils.markup", "templatetags")["__path__"])
 
-def simple_tag_with_request( register ):
-    def _wrapper( func ):
+def simple_tag_with_request(register):
+    def _wrapper(func):
         decorated_function = getattr(func, "_decorated_function", func)
         func_name = decorated_function.__name__
 

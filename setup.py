@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from ez_setup import use_setuptools
 use_setuptools()
 
@@ -7,15 +8,15 @@ from setuptools import setup, find_packages
 from turbion import get_version
 
 setup(
-    name = "Turbion",
+    name = "turbion",
     version = get_version(),
     packages = find_packages(),
 
     scripts = ['turbion/bin/turbion-admin.py'],
 
     install_requires = [
-        'Imaging>=1.1.6',
         'Pytils',
+        'markdown2>=1.0.1.11'
     ],
 
     author = "Alex Koshelev",
