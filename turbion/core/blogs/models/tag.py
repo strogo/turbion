@@ -8,7 +8,12 @@ from turbion.core.blogs.fields import PostCountField
 class TagManager(GenericManager):
     def get_query_set(self):
         from turbion.core.blogs.models import Post
-        total_ratio = float(super(TagManager, self).get_query_set().count()) / Post.published.count()
+        post_count = Post.published.count()
+
+        if post_count != 0:
+            total_ratio = float(super(TagManager, self).get_query_set().count()) / post_count
+        else:
+            total_ratio = 0
 
         return super(TagManager, self).get_query_set().extra(
             select={"ratio": "post_count * %s" % total_ratio}
