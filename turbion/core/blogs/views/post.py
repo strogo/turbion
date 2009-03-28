@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from turbion.core.blogs.decorators import post_view, login_required, titled
 from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles.models import Profile
+from turbion.core.pingback.models import Pingback
 from turbion.core.blogs.forms import comment as forms
 from turbion.core.profiles import get_profile
 from turbion.core.utils.pagination import paginate
@@ -74,8 +75,15 @@ def post(request, post):
                         .select_related("created_by", "post")\
                         .order_by("created_on")
 
+    pingbacks = Pingback.objects.filter(
+        post=post,
+        incoming=True,
+        finished=True,
+    )
+
     return {
         "post": post,
         "comments": comments,
+        'pingbacks': pingbacks,
         "comment_form": comment_form
     }
