@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -10,8 +9,12 @@ class ProfilesViewsTest(BaseViewTest):
     fixtures = ["turbion/test/profiles"]
 
     def test_profile_index(self):
-        response = self.assertStatus(reverse("turbion_profile_index", kwargs={"profile_user": "test"}))
+        self.assertStatus(reverse("turbion_profile", kwargs={"profile_id": 1}))
 
+    def test_profile_edit(self):
+        self.login()
+
+        self.assertStatus(reverse("turbion_profile_edit", kwargs={"profile_id": 1}))
 
 class ProfileCreation(TestCase):
     def test_creation(self):

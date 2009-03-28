@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404
 from django import http, forms
 from django.utils.translation import ugettext_lazy as _
@@ -14,9 +13,9 @@ class UnsubscribeForm(forms.Form):
     connection_id = forms.IntegerField(required=True)
     code = forms.CharField(required=True)
 
-    def __init__(self, event_descriptor, user, *args, **kwargs):
+    def __init__(self, manager, user, *args, **kwargs):
         self.user = user
-        self.event_descriptor = event_descriptor
+        self.manager = manager
         super(UnsubscribeForm, self).__init__(*args, **kwargs)
 
     def clean_connection_dscr(self):
@@ -27,7 +26,7 @@ class UnsubscribeForm(forms.Form):
     def clean_code(self):
         code = self.cleaned_data["code"]
 
-        hash = self.event_descriptor.get_user_hash(self.user)
+        hash = self.manager.get_user_hash(self.user)
 
         if hash != code:
             raise forms.ValidationError(_("Wrong code"))
@@ -48,12 +47,12 @@ def unsubscribe(request, user_id, event_id):
     user  = get_object_or_404(Profile, pk=user_id)
     event = get_object_or_404(Event, pk=event_id)
 
-    desc = event.descriptor.instance
+    manager = event.descriptor.manager
 
     form = UnsubscribeForm(
         data=request.GET,
         user=user,
-        event_descriptor=desc
+        manager=manager
     )
 
     if not form.is_valid():
@@ -61,12 +60,12 @@ def unsubscribe(request, user_id, event_id):
 
     connection = form.cleaned_data["connection"]
 
-    desc.unsubscribe(user, connection)
+    manager.unsubscribe(user, connection)
 
     return status_redirect(
                 request,
                 title=_("Unsubscribe"),
                 section=_("Notifications"),
-                message=_("You've been unsubscribed from \"%s\"") % desc.meta.name,
+                message=_("You've been unsubscribed from \"%s\"") % event.descriptor.meta.name,
                 next="/"
         )

@@ -76,20 +76,21 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                     )
 
                     profile = None
+                    openid = form_data.get('openid', None)
 
-                    if 'openid' in form_data:
+                    if openid:
                         if not "nickname" in form_data:
-                            form_data["nickname"] = form_data["openid"]
+                            form_data["nickname"] = openid
 
                         try:
-                            profile = Profile.objects.get(openid=form_data['openid'])
+                            profile = Profile.objects.get(openid=openid)
                         except Profile.DoesNotExist:
                             pass
 
                     if not profile:
                         profile = Profile.objects.create_guest_profile(**form_data)
 
-                    if not form_data.get('openid', None):
+                    if not openid:
                         profile.backend = '%s.%s' % (
                             ModelBackend.__module__,
                             ModelBackend.__name__

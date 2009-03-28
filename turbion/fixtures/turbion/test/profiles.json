@@ -24,25 +24,11 @@
       "name_view": null,
       "ip": null,
       "site": null,
-      "skype": null,
-      "user_permissions": [],
-      "education": null,
-      "jabber": null,
-      "biography": null,
-      "city": null,
       "is_confirmed": true,
       "trusted": true,
       "filter": "dummy",
-      "icq": null,
-      "interests": null,
-      "host": null,
-      "groups": [],
       "nickname": null,
-      "gender": null,
-      "work": null,
-      "site_view": "profile",
-      "country": null,
-      "birth_date": null
+      "site_view": "profile"
     }
   }
 ]

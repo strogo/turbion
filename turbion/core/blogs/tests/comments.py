@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.test import TestCase
 from django.db import models
 from django import http
@@ -39,10 +38,10 @@ class CommentsTest(BaseViewTest):
         request = self.client.post("/foobar/", data=data)
 
         response = views.add_comment(
-                            request,
-                            next="/",
-                            post=self.post
-                    )
+            request,
+            next="/",
+            post=self.post
+        )
 
         self.assert_(isinstance(response, http.HttpResponse))
         self.assertResponseStatus(response, http.HttpResponseRedirect.status_code)

@@ -66,14 +66,15 @@ class Profile(User):
 
     site = models.CharField(blank=True, max_length=100, null=True, verbose_name=('site'))
 
-    name_view = models.CharField(max_length=20, choices=names, null=True, blank=True, verbose_name=_('name view'))
+    name_view = models.CharField(max_length=20, choices=names, null=True, blank=True,
+                                 verbose_name=_('name view'))
     site_view = models.CharField(max_length=20, choices=sites,
                                  default=sites.site, null=True, blank=True,
                                 verbose_name=_('site view'))
 
     filter = MarkupField()
 
-    openid = models.URLField(verbose_name=_('openid'), blank=True, null=True, unique=True)
+    openid = models.URLField(verbose_name=_('openid'), blank=True, default='')
 
     objects = ProfileManager()
 

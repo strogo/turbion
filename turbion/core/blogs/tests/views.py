@@ -63,11 +63,11 @@ class BlogsViews(BaseViewTest):
         }
 
         response = self.assertStatus(
-                        url,
-                        data=comment,
-                        status=http.HttpResponseRedirect.status_code,
-                        method="post"
-                )
+            url,
+            data=comment,
+            status=http.HttpResponseRedirect.status_code,
+            method="post"
+        )
 
         post = Post.published.get(pk=self.post.pk)
 
@@ -111,9 +111,9 @@ class BlogsViews(BaseViewTest):
 
         comment = Comment.objects.all()[0]
         response = self.assertStatus(
-                    reverse("turbion_blog_comment_delete", args=(comment.pk,)),
-                    http.HttpResponseRedirect.status_code
-                )
+            reverse("turbion_blog_comment_delete", args=(comment.pk,)),
+            http.HttpResponseRedirect.status_code
+        )
 
         post = Post.published.get(pk=self.post.pk)
 
