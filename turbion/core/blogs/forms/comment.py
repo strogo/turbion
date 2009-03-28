@@ -14,11 +14,11 @@ class _CommentForm(forms.ModelForm):
 class CommentForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
         self.__class__ = combine_profile_form_with(
-                                    _CommentForm,
-                                    request=request,
-                                    field="created_by",
-                                    filter_field="text_filter"
-                            )
+            _CommentForm,
+            request=request,
+            field="created_by",
+            filter_field="text_filter"
+        )
 
         self.__class__.__init__(self, *args, **kwargs)
 

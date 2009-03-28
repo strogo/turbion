@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -7,14 +6,14 @@ from turbion.core.utils.markup.filters import Filter
 class MarkupField(models.CharField):
     __metaclass__ = models.SubfieldBase
 
-    default_choices = [(name, name) for name, filter in Filter.manager.all()]
+    default_choices = [(name, name) for name, filter in Filter.manager.all() if name not in ['dummy']]
 
     def __init__(self, limit_choices_to=None, *args, **kwargs):
         self.limit_choices_to = limit_choices_to
 
         defaults = {
             "choices": [(label, name) for label, name in self.default_choices\
-                            if limit_choices_to and name in limit_choices_to],
+                            if (limit_choices_to and name in limit_choices_to) or True],
             "max_length": 50,
             "default": "markdown"
         }

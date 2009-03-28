@@ -14,7 +14,7 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = (
             'nickname', 'email', 'first_name', 'last_name', 'site',
-            'name_view', 'site_view'
+            'name_view', 'site_view', 'filter'
         )
 
     def save(self, commit=True):
@@ -26,14 +26,13 @@ ProfileForm.base_fields.keyOrder = ProfileForm.Meta.fields
 def extract_profile_data(request):
     ip = request.META.get('REMOTE_ADDR')
     return {
-        'ip': ':' in ip and ip.rsplit(':', 1)[1] or ip,
-        'host': request.META.get('REMOTE_HOST')
+        'ip': ':' in ip and ip.rsplit(':', 1)[1] or ip
     }
 
 USE_OPENID = 'turbion.contrib.openid' in settings.INSTALLED_APPS
 
 def combine_profile_form_with(form_class, request, field='created_by',\
-                              fields=None, filter_field=None):
+                              fields=None, filter_field=None, markup_filter_filed='text_filter'):
     if not get_profile(request).is_confirmed:
         if USE_OPENID:
             from turbion.contrib.openid.forms import OpenidLoginForm as BaseForm
@@ -123,6 +122,8 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                     if value:
                         return super(ProfileForm, self).clean_openid()
                     return value
+
+        ProfileForm.base_fields.pop(markup_filter_filed)
 
         return ProfileForm
     else:
