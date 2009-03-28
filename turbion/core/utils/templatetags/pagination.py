@@ -38,7 +38,7 @@ class QueryNode(template.Node):
         )
 
         if data:
-            return urlencode(dict([(k, v) for k, v in data.iteritems() if v not in (None, '')]))
+            return '?' + urlencode(dict([(k, v) for k, v in data.iteritems() if v not in (None, '')]))
         else:
             return ''
 
