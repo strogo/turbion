@@ -117,14 +117,6 @@ class Post(models.Model):
         if notify:
             CommentAdd.manager.subscribe(self.created_by, self)
 
-#from turbion import pingback
-#        pingback.signals.send_pingback.send(
- #           sender=Post,
-#            instance=self,
-#            url=self.get_absolute_url(),
-#            text=self.text_html,
-#        )
-
         signals.post_published.send(
             sender=self.__class__,
             post=self

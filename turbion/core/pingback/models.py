@@ -3,7 +3,8 @@ from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
-from turbion.core.pingback import client, signals
+from turbion.core.blogs import signals
+from turbion.core.pingback import client
 from turbion.core.utils.enum import Enum
 from turbion.core.utils.models import GenericManager
 
@@ -36,4 +37,4 @@ class Pingback(models.Model):
         db_table            = "turbion_pingback"
         ordering            = ["-date", "-finished"]
 
-signals.send_pingback.connect(client.process_for_pingback)
+signals.post_published.connect(client.process_for_pingback)

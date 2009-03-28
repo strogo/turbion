@@ -35,7 +35,7 @@ def call_ping(gateway, source_uri, target_uri):
     except xmlrpclib.Fault, e:
         return str(e)
 
-def process_for_pingback(post, url, text, **kwargs):
+def process_for_pingback(post, **kwargs):
     from turbion.core.pingback.models import Pingback
     from turbion.core.pingback import utils
 
@@ -43,12 +43,12 @@ def process_for_pingback(post, url, text, **kwargs):
 
     local_uri = 'http://%s%s' % (domain, url)
 
-    for target_url in utils.parse_html_links(text, domain):
+    for target_url in utils.parse_html_links(post.text_html, domain):
         try:
             Pingback.objects.get(
                 target_uri=target_url,
                 post=post,
-                status=True
+                finished=True
             )
             continue# do nothing if we just have pinged this url from this instance of model
         except Pingback.DoesNotExist:
@@ -69,5 +69,6 @@ def process_for_pingback(post, url, text, **kwargs):
         out = Pingback.objects.create(
             post=post,
             target_uri=target_url,
-            status=status
+            status=status,
+            finished=gateway is not None and status
         )
