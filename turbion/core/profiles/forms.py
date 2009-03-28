@@ -24,8 +24,9 @@ class ProfileForm(forms.ModelForm):
 ProfileForm.base_fields.keyOrder = ProfileForm.Meta.fields
 
 def extract_profile_data(request):
+    ip = request.META.get('REMOTE_ADDR')
     return {
-        'ip': request.META.get('REMOTE_ADDR'),
+        'ip': ':' in ip and ip.rsplit(':', 1)[1] or ip,
         'host': request.META.get('REMOTE_HOST')
     }
 

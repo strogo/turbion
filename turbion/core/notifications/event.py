@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-from django.template import loader
-from django.template import Context, Template
+from django.template import loader, Context, Template, TemplateDoesNotExist
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.db import models
@@ -109,14 +107,16 @@ class EventManager(object):
         recipients = self.recipients(obj)
 
         if not len(recipients):
-            return "no recipients"
+            return "No recipients"
 
         domain = Site.objects.get_current().domain
         from_email = settings.TURBION_NOTIFACTIONS_FROM_EMAIL % {"domain": domain}
 
         event = self._get_event()
-
-        body_template = self._get_template()
+        try:
+            body_template = self._get_template()
+        except TemplateDoesNotExist:
+            return "No template"
         title_template = Template(event.subject_title or self.event.default_subject)
 
         emails = set()
@@ -158,7 +158,7 @@ class EventManager(object):
                 except Exception:
                     continue
 
-        return "success"
+        return "Success"
 
     def get_user_hash(self, user):
         import md5
@@ -176,16 +176,16 @@ class EventManager(object):
         hash = self.get_user_hash(user)
 
         url = reverse(
-                "turbion_notifications_unsubscribe",
-                args=(user.pk, self._get_event().pk)
+            "turbion_notifications_unsubscribe",
+            args=(user.pk, self._get_event().pk)
         )
 
         url += "?"
         if obj:
             url += urlencode({
-                    "connection_dscr": to_descriptor(obj.__class__),
-                    "connection_id": obj.pk,
-                    "code":  hash
+                "connection_dscr": to_descriptor(obj.__class__),
+                "connection_id": obj.pk,
+                "code":  hash
             })
 
         return url

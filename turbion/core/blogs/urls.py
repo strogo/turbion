@@ -22,7 +22,7 @@ urlpatterns = patterns('turbion.core.blogs.views',
  url(r"^(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/"
      r"(?P<post_slug>[\w_-]+)/$",            'post.post', name="turbion_blog_post"),
 
- url(r'^p/(?P<post_id>\d+)/comment/add/$',   'comment.add', name="turbion_blog_comment_add"),
+ url(r'^posts/(?P<post_id>\d+)/comment/add/$', 'comment.add', name="turbion_blog_comment_add"),
  url(r'^comment/(?P<comment_id>\d+)/edit/$', 'comment.edit', name="turbion_blog_comment_edit"),
  url(r'^comment/(?P<comment_id>\d+)/delete/$', 'comment.delete', name="turbion_blog_comment_delete"),
 
