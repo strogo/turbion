@@ -68,7 +68,8 @@ class Post(models.Model):
                                      verbose_name=_("showing"),
                                      db_index=True)
     comments_moderation =  models.CharField(max_length=20, choices=moderations,
-                                            default=moderations.none)
+                                            default=moderations.none,
+                                            verbose_name=_("comments moderation"))
 
     objects = managers.PostManager()
 

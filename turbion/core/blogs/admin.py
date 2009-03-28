@@ -15,7 +15,8 @@ class PostAdmin(admin.ModelAdmin):
 
     list_display       = (
         'title', 'created_by', 'created_on', 'published_on',
-        'status', 'comment_count'
+        'status', 'comment_count', 'showing', 'commenting',
+        'comments_moderation',
     )
     list_display_links = ('title',)
     list_filter        = ('status', 'created_by',)
@@ -23,6 +24,7 @@ class PostAdmin(admin.ModelAdmin):
     search_fields      = (
         'title', 'created_by__username', 'created_by__nickname', 'created_by__email',
     )
+    list_select_related = True
 
     def save_model(self, request, post, form, change):
         if not change:
@@ -49,6 +51,7 @@ class CommentAdmin(admin.ModelAdmin):
         'text_filter',
     )
     list_per_page = 25
+    list_select_related = True
 
     date_hierarchy = 'created_on'
     list_filter = ('status',)

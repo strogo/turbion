@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.conf import settings
 from django import template
 from django.contrib.sites.models import Site
@@ -10,16 +9,15 @@ domain = Site.objects.get_current().domain
 @register.simple_tag
 def google_urchin(uacct):
     if not settings.DEBUG:
-        return """
-            <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-            </script>
-            <script type="text/javascript">
-            _uacct = "%(uacct)s";
-            _uOsr.push('mail.ru','rambler.ru','webalta','aport','blogs.yandex.ru')
-            _uOkw.push('q','words', 'q', 'r', 'text')
-            urchinTracker();
-            </script>
-            """ % {'uacct': uacct}
+        return """<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("%(uacct)s");
+pageTracker._trackPageview();
+} catch(err) {}</script>""" % {'uacct': uacct}
     else:
         return ""
 
