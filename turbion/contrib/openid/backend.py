@@ -30,6 +30,8 @@ class OpenidBackend(ModelBackend):
             )
         }
 
+        # Getting profile created by comment/feedback post.
+        # We must associate this identity with it
         created_profile = request.REQUEST.get('created_profile')
         if created_profile:
             try:

@@ -53,23 +53,3 @@ def authenticate(request):
         )
 
     return http.HttpResponseRedirect(request.GET.get('next', '/'))
-
-@login_required
-@templated('turbion/openid/collect.html')
-@titled(page=_("Information collection"))
-def collect(request):
-    if request.POST:
-        user_info_form = forms.UserInfoForm(request.POST, instance=get_profile(request))
-
-        if user_info_form.is_valid():
-            user_info_form.save()
-
-            return http.ResponseRedirect(request.GET.get('redirect', '/'))
-    else:
-        user_info_form = forms.UserInfoForm(instance=request.user)
-
-    return {
-        "user_info_form": user_info_form,
-        "user_info_form_action": "./",
-        "redirect": request.GET.get('redirect', '/')
-    }

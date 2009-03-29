@@ -32,7 +32,7 @@ def extract_profile_data(request):
 USE_OPENID = 'turbion.contrib.openid' in settings.INSTALLED_APPS
 
 def combine_profile_form_with(form_class, request, field='created_by',\
-                              fields=None, filter_field=None, markup_filter_filed='text_filter'):
+                              fields=None, filter_field=None, markup_filter_fieled='text_filter'):
     if not get_profile(request).is_confirmed:
         if USE_OPENID:
             from turbion.contrib.openid.forms import OpenidLoginForm as BaseForm
@@ -128,7 +128,8 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
                     return self.cleaned_data
 
-        ProfileForm.base_fields.pop(markup_filter_filed)
+        # Remove filter selection for not logged in user
+        ProfileForm.base_fields.pop(markup_filter_fieled, None)
 
         return ProfileForm
     else:

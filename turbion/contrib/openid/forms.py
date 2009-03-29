@@ -54,11 +54,6 @@ class OpenidLoginForm(forms.ModelForm):
 
         return url
 
-class UserInfoForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ("username", "email")
-
 class DecideForm(forms.Form):
     decisions = (
         ("allow","allow"),
