@@ -67,6 +67,8 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
                 profile = get_profile(request)
 
+                openid = form_data.pop('openid', None)
+
                 if not profile.is_authenticated():
                     from django.contrib.auth import login
 
@@ -74,18 +76,13 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                         extract_profile_data(request)
                     )
 
-                    profile = None
-                    openid = form_data.pop('openid', None)
-
                     if openid:
                         if not form_data.get('nickname', None):
                             form_data["nickname"] = openid
 
                     profile = Profile.objects.create_guest_profile(**form_data)
 
-                    if openid:
-                        self.created_profile = profile
-                    else:
+                    if not openid:
                         profile.backend = '%s.%s' % (
                             ModelBackend.__module__,
                             ModelBackend.__name__
@@ -93,6 +90,9 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                         login(request, profile)
                 else:
                     profile.__dict__.update(form_data)
+
+                if openid:
+                    self.created_profile = profile
 
                 profile.save()
 
@@ -118,6 +118,15 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                     if value:
                         return super(ProfileForm, self).clean_openid()
                     return value
+
+                def clean(self):
+                    nickname = self.cleaned_data['nickname']
+                    openid = self.cleaned_data['openid']
+
+                    if not nickname and not openid:
+                        raise forms.ValidationError(_(u'Any of nickname or openid is required.'))
+
+                    return self.cleaned_data
 
         ProfileForm.base_fields.pop(markup_filter_filed)
 

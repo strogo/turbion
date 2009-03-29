@@ -92,9 +92,9 @@ class Profile(User):
     @property
     def name(self):
         type_map = {
-                Profile.names.nickname      : self.nickname,
-                Profile.names.full_name     : self.full_name,
-                Profile.names.full_name_nick: self.full_name_with_nick
+            Profile.names.nickname      : self.nickname,
+            Profile.names.full_name     : self.full_name,
+            Profile.names.full_name_nick: self.full_name_with_nick
         }
         return type_map.get(self.name_view, self.username)
 
@@ -107,7 +107,7 @@ class Profile(User):
                 Profile.sites.openid: self.openid,
                 Profile.sites.site: self.site
             }
-            return type_map.get(self.site_view, self.site)
+            return type_map.get(self.site_view, self.site or self.openid)
         return self.site
 
     @models.permalink

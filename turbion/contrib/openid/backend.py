@@ -49,6 +49,10 @@ class OpenidBackend(ModelBackend):
         if not profile:
             if created_profile:
                 profile = created_profile
+
+                profile.__dict__.update(
+                    data
+                )
             else:
                 profile = Profile.objects.create_guest_profile(
                     **data
@@ -71,12 +75,6 @@ class OpenidBackend(ModelBackend):
         # profile may be unconfirmed when created
         # while comment/feedback posting
         profile.is_confirmed = True
-
-        # Handle case when we get additional data with SREG
-        # for exist profile
-        for field, value in data.iteritems():
-            if value and not getattr(profile, field, None):
-                setattr(profile, field, value)
 
         profile.save()
 
