@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.syndication.feeds import Feed
 from django.utils.feedgenerator import Atom1Feed
@@ -117,7 +116,7 @@ class TagFeed(BasePostFeed):
         return u"Entries with tag '%s'" % tag.name
 
     def items(self, tag):
-        return Post.published.for_tag(tag)[:10]
+        return Post.published.filter(tags=tag).distinct()[:10]
 
 class TagFeedAtom(TagFeed):
     feed_type = Atom1Feed

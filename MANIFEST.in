@@ -4,3 +4,4 @@ include LICENSE
 
 recursive-include media *
 recursive-include turbion *.html
+recursive-include turbion/locale *

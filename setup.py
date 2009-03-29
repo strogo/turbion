@@ -2,10 +2,13 @@
 from ez_setup import use_setuptools
 use_setuptools()
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, findall
 
 # assume that it is relative import
 from turbion import get_version
+
+def strip_turbion(paths):
+    return [p[len('turbion/'):] for p in paths]
 
 setup(
     name = "turbion",
@@ -13,6 +16,10 @@ setup(
     packages = find_packages(),
 
     scripts = ['turbion/bin/turbion-admin.py'],
+
+    package_data={
+        'turbion': strip_turbion(findall('turbion/locale')) + strip_turbion(findall('turbion/templates'))
+    },
 
     install_requires = [
         'Pytils',
