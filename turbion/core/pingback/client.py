@@ -41,7 +41,7 @@ def process_for_pingback(post, **kwargs):
 
     domain = Site.objects.get_current().domain
 
-    local_uri = 'http://%s%s' % (domain, url)
+    local_uri = 'http://%s%s' % (domain, post.get_absolute_url())
 
     for target_url in utils.parse_html_links(post.text_html, domain):
         try:
