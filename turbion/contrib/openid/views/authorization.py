@@ -4,11 +4,14 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import smart_str
 
 from turbion.contrib.openid import forms, utils, models, backend
 
 from turbion.core.profiles import get_profile
-from turbion.core.utils.decorators import templated, titled
+from turbion.core.utils.decorators import templated, special_titled
+
+titled = special_titled(section=_("OpenID Authorization"))
 
 def get_redirect(request):
     redirect = request.REQUEST.get("next", request.META.get("HTTP_REFERER", "/"))
@@ -16,7 +19,7 @@ def get_redirect(request):
     return redirect
 
 @templated('turbion/openid/login.html')
-@titled(page=_("Login"), section=_("OpenID Authorization"))#TODO: add custom_templated with defined `section`
+@titled(page=_("Login"))
 def login(request):
     if request.method == 'POST':
         form = forms.OpenidLoginForm(request, data=request.POST)
@@ -25,17 +28,22 @@ def login(request):
             return http.HttpResponseRedirect(after_auth_redirect)
     else:
         form = forms.OpenidLoginForm(request.session)
-    
+
     return {
         'form': form,
         'next': get_redirect(request)
     }
 
+@templated('turbion/openid/result.html')
+@titled(page=_("Result"))
 def authenticate(request):
     user = auth.authenticate(request=request)
 
     if not user:
-        return http.HttpResponseForbidden(_('Openid authorization error'))
+        return {
+            'success': False,
+            'message': _('Openid authentication error')
+        }
 
     auth.login(request, user)
 
@@ -48,7 +56,7 @@ def authenticate(request):
 
 @login_required
 @templated('turbion/openid/collect.html')
-@titled(page=_("Information collection"), section=_("OpenID Authorization"))
+@titled(page=_("Information collection"))
 def collect(request):
     if request.POST:
         user_info_form = forms.UserInfoForm(request.POST, instance=get_profile(request))

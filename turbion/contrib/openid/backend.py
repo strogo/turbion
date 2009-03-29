@@ -5,6 +5,7 @@ from django.contrib.auth.backends import ModelBackend
 from turbion.core.profiles.models import Profile
 from turbion.core.profiles.forms import extract_profile_data
 from turbion.contrib.openid import utils
+import turbion
 
 class OpenidBackend(ModelBackend):
     def authenticate(self, request):
@@ -13,6 +14,7 @@ class OpenidBackend(ModelBackend):
         consumer, response = utils.complete(request)
 
         if response.status != openid_consumer.SUCCESS:
+            turbion.logger.warning("OpenID login fails: %s" % response.status)
             return
 
         sreg_response = utils.complete_sreg(response) or {}
@@ -20,7 +22,7 @@ class OpenidBackend(ModelBackend):
         data = {
             "nickname": sreg_response.get(
                 "nickname",
-                Profile.objects.generate_username(response.identity_url)
+                response.identity_url
             ),
             "email": sreg_response.get(
                 "email",
@@ -28,29 +30,53 @@ class OpenidBackend(ModelBackend):
             )
         }
 
+        created_profile = request.REQUEST.get('created_profile')
+        if created_profile:
+            try:
+                created_profile = Profile.objects.get(pk=created_profile)
+            except Profile.DoesNotExist:
+                created_profile = None
+
         try:
-            profile = Profile.objects.get(openid=response.identity_url)
+            qs = Profile.objects.filter(openid=response.identity_url)
+            if created_profile:
+                qs = qs.exclude(pk=created_profile.pk)
 
-            # Handle case when we get additional data with SREG
-            # for exist profile
-            for field, value in data.iteritems():
-                if value and not getattr(profile, field):
-                    setattr(profile, field, value)
-
-            # profile may be unconfirmed when created
-            # while comment/feedback posting
-            if not profile.is_confirmed:
-                profile.is_confirmed = True
+            profile = qs.get()
         except Profile.DoesNotExist:
-            profile = Profile.objects.create_profile(
-                **data
-            )
+            profile = None
+
+        if not profile:
+            if created_profile:
+                profile = created_profile
+            else:
+                profile = Profile.objects.create_guest_profile(
+                    **data
+                )
+                profile.just_created = True
             profile.openid = response.identity_url
-            profile.just_created = True
 
             profile.__dict__.update(
                 extract_profile_data(request)
             )
+        else:
+            if created_profile:
+                for rel in Profile._meta.get_all_related_objects():
+                    model = rel.model
+                    field_name = rel.field.name
+
+                    model._default_manager.filter(**{field_name: created_profile}).update(**{field_name: profile})
+                created_profile.delete()
+
+        # profile may be unconfirmed when created
+        # while comment/feedback posting
+        profile.is_confirmed = True
+
+        # Handle case when we get additional data with SREG
+        # for exist profile
+        for field, value in data.iteritems():
+            if value and not getattr(profile, field, None):
+                setattr(profile, field, value)
 
         profile.save()
 

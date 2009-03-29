@@ -17,6 +17,7 @@ class OpenidLoginForm(forms.ModelForm):
         super(OpenidLoginForm, self).__init__(*args, **kwargs)
 
         self.request = request
+        self.created_profile = None
 
     def clean_openid(self):
         from openid.consumer import discover
@@ -45,6 +46,9 @@ class OpenidLoginForm(forms.ModelForm):
 
         if next or "next" in self.request.REQUEST:
             self.openid_request.return_to_args['next'] = next or self.request.REQUEST["next"]
+
+        if self.created_profile:
+            self.openid_request.return_to_args['created_profile'] = str(self.created_profile.pk)
 
         url = self.openid_request.redirectURL(trust_url, return_to)
 
