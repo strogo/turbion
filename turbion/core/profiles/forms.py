@@ -120,8 +120,8 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                     return value
 
                 def clean(self):
-                    nickname = self.cleaned_data['nickname']
-                    openid = self.cleaned_data['openid']
+                    nickname = self.cleaned_data.get('nickname')
+                    openid = self.cleaned_data.get('openid')
 
                     if not nickname and not openid:
                         raise forms.ValidationError(_(u'Any of nickname or openid is required.'))
