@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import *
 from django import http
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.blogs.models import Comment, Post, Tag
 from turbion.core.profiles import get_profile
@@ -26,7 +27,7 @@ class PostsFeed(BasePostFeed):
     def title(self):
         return gen_title({
             "page": settings.TURBION_BLOG_NAME,
-            "section": "Latest entries"
+            "section": _("Latest entries")
         })
 
     @models.permalink
@@ -34,7 +35,7 @@ class PostsFeed(BasePostFeed):
         return ("turbion_blog_index",)
 
     def description(self):
-        return "Latest entries of blog '%s'" % settings.TURBION_BLOG_NAME
+        return _("Latest entries of blog '%s'") % settings.TURBION_BLOG_NAME
 
     def items(self):
         posts = Post.published.all()
@@ -60,7 +61,7 @@ class CommentsFeed(Feed):
     def title(self, post):
         return gen_title({
             "page": settings.TURBION_BLOG_NAME,
-            "section": "Latest comments" + (post and u' on "%s"' % post.title or "")
+            "section": _("Latest comments") + (post and " on '%s'" % post.title or "")
         })
 
     def link(self, post):
@@ -68,15 +69,15 @@ class CommentsFeed(Feed):
 
     def description(self, post):
         if post:
-            return u'Comments on "%s"' % post.title
+            return _("Comments on '%s'") % post.title
         else:
-            return u"All comments"
+            return _("Latest comments")
 
     def item_pubdate(self, comment):
         return comment.created_on
 
     def item_link(self, comment):
-        return comment.post.get_absolute_url() + "#comment_%s" % comment.id
+        return comment.get_absolute_url()
 
     def item_author_name(self, comment ):
         return comment.created_by
@@ -106,14 +107,14 @@ class TagFeed(BasePostFeed):
     def title(self, tag):
         return gen_title({
             "page": settings.TURBION_BLOG_NAME,
-            "section": "Latest entries with tag '%s'" % tag.name
+            "section": _("Latest entries with tag '%s'") % tag.name
         })
 
     def link(self, tag):
         return reverse("turbion_blog_tag", args=(tag.slug,))
 
     def description(self, tag):
-        return u"Entries with tag '%s'" % tag.name
+        return _("Entries with tag '%s'") % tag.name
 
     def items(self, tag):
         return Post.published.filter(tags=tag).distinct()[:10]
