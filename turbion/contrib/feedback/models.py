@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 
 from django.db import models
@@ -40,7 +39,7 @@ class Feedback(models.Model):
     accepted = GenericManager(status=statuses.accepted)
 
     def __unicode__(self):
-        return "%s" % self.created_on
+        return "%s by %s" % (self.subject, self.created_by)
 
     def save(self, *args, **kwargs):
         if self.edited_by:
@@ -53,12 +52,7 @@ class Feedback(models.Model):
         ordering            = ('-created_on',)
         db_table            = "turbion_feedback"
 
-
 class FeedbackAdd(EventDescriptor):
     class Meta:
         name = _("New feedback added")
-        to_object = True
         trigger = (Feedback, signals.feedback_added)
-
-    def get_connection(self, instance):
-        return instance.blog
