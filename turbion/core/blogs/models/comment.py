@@ -50,7 +50,7 @@ class Comment(models.Model):
         return self.created_on != self.edited_on
 
     def __unicode__(self):
-        return "%s - %s" % (self.created_by.name, self.created_on)
+        return "Comment on %s by %s" % (self.post, self.created_by.name,)
 
     def get_absolute_url(self):
         return self.post.get_absolute_url() + "#comment_%s" % self.pk

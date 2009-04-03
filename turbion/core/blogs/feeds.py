@@ -38,7 +38,7 @@ class PostsFeed(BasePostFeed):
         return _("Latest entries of blog '%s'") % settings.TURBION_BLOG_NAME
 
     def items(self):
-        posts = Post.published.all()
+        posts = Post.published.all().select_related()
         if not get_profile(self.request).is_authenticated_confirmed():
             posts = posts.filter(showing=Post.show_settings.everybody)
         return posts.order_by("-published_on")[:10]
@@ -49,7 +49,6 @@ class PostsFeedAtom(PostsFeed):
 
 class CommentsFeed(Feed):
     description_template = "turbion/blogs/feeds/comment_description.html"
-    title_template = "turbion/blogs/feeds/comment_title.html"
 
     def get_object(self, bits):
         if len(bits) == 1:
@@ -83,7 +82,7 @@ class CommentsFeed(Feed):
         return comment.created_by
 
     def items(self, post):
-        queryset = Comment.published.select_related("post")
+        queryset = Comment.published.select_related()
 
         if post:
             comments = queryset.filter(post=post).order_by("-created_on").distinct()
@@ -117,7 +116,7 @@ class TagFeed(BasePostFeed):
         return _("Entries with tag '%s'") % tag.name
 
     def items(self, tag):
-        return Post.published.filter(tags=tag).distinct()[:10]
+        return Post.published.filter(tags=tag).select_related().distinct()[:10]
 
 class TagFeedAtom(TagFeed):
     feed_type = Atom1Feed
