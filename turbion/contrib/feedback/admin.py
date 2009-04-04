@@ -7,7 +7,7 @@ from turbion.core.profiles import get_profile
 class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('subject', 'created_on', 'created_by', 'status')
     list_filter = ('status',)
-    list_select_related = ('created_by',)
+    list_select_related = True
 
     def save_model(self, request, feedback, form, change):
         if not change:
