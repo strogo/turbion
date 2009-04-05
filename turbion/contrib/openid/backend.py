@@ -52,9 +52,10 @@ class OpenidBackend(ModelBackend):
             if created_profile:
                 profile = created_profile
 
-                profile.__dict__.update(
-                    data
-                )
+                # updated only empty fields
+                for name, value in data.iteritems():
+                    if not getattr(profile, name, None):
+                        setattr(profile, name, value)
             else:
                 profile = Profile.objects.create_guest_profile(
                     **data
