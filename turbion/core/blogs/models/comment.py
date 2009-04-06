@@ -20,9 +20,9 @@ class Comment(models.Model):
     post = models.ForeignKey('turbion.Post', related_name="comments", verbose_name=_("post"))
 
     statuses = Enum(
-        published="published",
-        moderation="on moderation",
-        hidden="hidden",
+        published=_("published"),
+        moderation=_("moderation"),
+        hidden=_("hidden"),
     )
 
     created_on = models.DateTimeField(default=datetime.now, verbose_name=_("created on"))
