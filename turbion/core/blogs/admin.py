@@ -61,7 +61,7 @@ class CommentAdmin(admin.ModelAdmin):
     headline.short_description = 'headline'
 
     def save_model(self, request, comment, form, change):
-        if not change:
+        if change:
             comment.edited_by = get_profile(request)
 
         comment.save()
