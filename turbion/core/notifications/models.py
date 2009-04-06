@@ -1,6 +1,11 @@
+from datetime import datetime
+
 from django.db import models
 from django.template import Template, Context
 from django.utils.translation import ugettext_lazy as _
+from django.core.mail import EmailMessage
+from django.contrib.sites.models import Site
+from django.conf import settings
 
 from turbion.core.profiles.models import Profile
 from turbion.core.utils.descriptor import DescriptorField, GenericForeignKey
@@ -41,3 +46,31 @@ class EventConnection(models.Model):
         verbose_name_plural = _("event connections")
         unique_together     = [("event", "user", "connection_dscr", "connection_id")]
         db_table            = "turbion_event_connection"
+
+class Message(models.Model):
+    email = models.EmailField()
+    subject = models.CharField(max_length=255)
+    date = models.DateTimeField(default=datetime.now)
+
+    body = models.TextField()
+    content_type = models.CharField(max_length=50, blank=True)
+
+    def send(self):
+        domain = Site.objects.get_current().domain
+        from_email = settings.TURBION_NOTIFACTIONS_FROM_EMAIL % {"domain": domain}
+
+        msg = EmailMessage(
+            self.subject,
+            self.body,
+            from_email,
+            [self.email]
+        )
+
+        if self.content_type:
+            msg.content_subtype = self.content_type
+
+        msg.send()
+
+    class Meta:
+        ordering = ['date']
+        app_label = "turbion"

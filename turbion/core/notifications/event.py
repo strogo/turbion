@@ -1,13 +1,12 @@
 from django.template import loader, Context, Template, TemplateDoesNotExist
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMessage
 from django.db import models
 from django.conf import settings
 from django.utils.encoding import force_unicode
 
 from turbion.core.utils import memoize
 from turbion.core.utils.descriptor import to_descriptor
-from turbion.core.notifications.models import Event, EventConnection
+from turbion.core.notifications.models import Event, EventConnection, Message
 from turbion.core.profiles.models import Profile
 
 class EventManager(object):
@@ -110,7 +109,6 @@ class EventManager(object):
             return "No recipients"
 
         domain = Site.objects.get_current().domain
-        from_email = settings.TURBION_NOTIFACTIONS_FROM_EMAIL % {"domain": domain}
 
         event = self._get_event()
         try:
@@ -143,20 +141,12 @@ class EventManager(object):
 
                 context.update(kwargs)
 
-                msg = EmailMessage(
-                    title_template.render(context),
-                    body_template.render(context),
-                    from_email,
-                    [email]
+                msg = Message.objects.create(
+                    email=email,
+                    subject=title_template.render(context),
+                    body=body_template.render(context),
+                    content_type=self.event.meta.content_type or ''
                 )
-
-                if self.event.meta.content_type:
-                    msg.content_subtype = self.event.meta.content_type
-
-                try:
-                    msg.send()
-                except Exception:
-                    continue
 
         return "Success"
 
