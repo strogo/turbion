@@ -19,7 +19,7 @@ class PostAdmin(admin.ModelAdmin):
         'comments_moderation',
     )
     list_display_links = ('title',)
-    list_filter        = ('status', 'created_by',)
+    list_filter        = ('status', )
     list_per_page      = 50
     search_fields      = (
         'title', 'created_by__username', 'created_by__nickname', 'created_by__email',

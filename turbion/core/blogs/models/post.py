@@ -75,7 +75,7 @@ class Post(models.Model):
 
     published = managers.PostManager(status=statuses.published)
 
-    tags = models.ManyToManyField("turbion.Tag", related_name="posts")
+    tags = models.ManyToManyField("turbion.Tag", related_name="posts", blank=True)
 
     @models.permalink
     def get_absolute_url(self):
