@@ -46,7 +46,7 @@ def process_for_pingback(post, **kwargs):
     for target_url in utils.parse_html_links(post.text_html, domain):
         try:
             Pingback.objects.get(
-                target_url=target_url,
+                target_url= target_url,
                 post=post,
                 finished=True
             )
