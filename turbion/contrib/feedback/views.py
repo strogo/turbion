@@ -16,15 +16,16 @@ def index(request):
         antispam.process_form_init(request, form)
 
         if form.is_valid():
-            feedback = form.save()
+            feedback = form.save(False)
+
+            if antispam.process_form_submit(request, form, feedback) == "spam":
+                feedback.status = Feedback.statuses.rejected
+
+            feedback.save()
 
             signals.feedback_added.send(
                 sender=Feedback,
                 instance=feedback
-            )
-
-            decision = antispam.process_form_submit(
-                request, form, feedback
             )
 
             response = status_redirect(

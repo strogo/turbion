@@ -38,11 +38,13 @@ def add_comment(request, next, defaults={}, post=None,
                 if not new_comment.created_by.trusted:
                     new_comment.status = status_getter(new_comment)
 
-                new_comment.save()
-
                 decision = antispam.process_form_submit(
                     request, form, new_comment, post
                 )
+                if decision == "spam":
+                    new_comment.status = Comment.statuses.spam
+
+                new_comment.save()
 
                 if comment:
                     signal = signals.comment_edited

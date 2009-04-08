@@ -89,7 +89,7 @@ class EventManager(object):
                 sender = None
                 signal = trigger
 
-            signal.connect(self.fire, sender=sender)
+            signal.connect(self.event_handler, sender=sender)
 
     def _get_template(self):
         event = self._get_event()
@@ -99,6 +99,10 @@ class EventManager(object):
             name = self.event.meta.descriptor.replace(".", "/") + ".html"
 
         return loader.select_template([name, self.event.default_template])
+
+    def event_handler(self, *args, **kwargs):
+        if self.event.allow_event(*args, **kwargs):
+            return self.fire(*args, **kwargs)
 
     def fire(self, instance=None, *args, **kwargs):
         obj = self.event.get_connection(instance)
@@ -217,6 +221,9 @@ class EventDescriptor(object):
 
     def get_connection(self, instance):
         return instance
+
+    def allow_event(self, *args, **kwargs):
+        return True
 
     def allow_recipient(self, *args, **kwargs):
         return True

@@ -23,6 +23,7 @@ class Comment(models.Model):
         published=_("published"),
         moderation=_("moderation"),
         hidden=_("hidden"),
+        spam=_("spam"),
     )
 
     created_on = models.DateTimeField(default=datetime.now, verbose_name=_("created on"))
@@ -74,6 +75,9 @@ class CommentAdd(EventDescriptor):
         to_object = True
         trigger = (Comment, blogs_signals.comment_added)
         content_type = "html"
+
+    def allow_event(self, comment, *args, **kwargs):
+        return comment.status == Comment.statuses.published
 
     def allow_recipient(self, recipient, comment, *args, **kwargs):
         if recipient == comment.created_by:
