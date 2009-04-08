@@ -12,7 +12,7 @@ TURBION_USE_SUPERCAPTCHA = True
 
 TURBION_PINGBACK_PARAGRAPH_LENGTH = 200
 
-TURBION_ANTISPAM_FILTERS = ['captcha',]# 'akismet']
+TURBION_ANTISPAM_FILTERS = ['captcha', 'akismet']
 
 TURBION_AKISMET_API_METHODS = {
     'verify-key': 'http://rest.akismet.com/1.1/verify-key',

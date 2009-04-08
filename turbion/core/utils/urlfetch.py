@@ -1,7 +1,7 @@
 import httplib2
-from urllib import urlencode
 
 from django.conf import settings
+from django.utils.http import urlencode
 
 class ResponseObject(object):
     def __init__(self, status_code, content, headers={}):
@@ -20,7 +20,7 @@ class UrlFetcher(object):
         data = data and urlencode(data) or ''
 
         resp, content = http.request(
-            url, method, data=data, headers=headers
+            url, method, data, headers=headers
         )
 
         return ResponseObject(resp["status"], content, resp)

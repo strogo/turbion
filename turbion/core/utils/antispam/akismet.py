@@ -41,9 +41,6 @@ model_map = {
     Feedback: get_feedback_data,
 }
 
-def process_form_init(request, form, parent=None):
-    pass
-
 def process_form_submit(request, form, child, parent=None):
     model = child.__class__
 
@@ -51,25 +48,27 @@ def process_form_submit(request, form, child, parent=None):
         data = model_map[model](child, parent)
         data.update({
             'blog': site_url,
-            'user_ip': request.META['REMOTE_ADDR'],
-            'user_agent': request.META['HTTP_USER_AGENT'],
-            'referrer': request.META['HTTP_REFERRER'],
+            'user_ip': request.META.get('REMOTE_ADDR'),
+            'user_agent': request.META.get('HTTP_USER_AGENT'),
+            'referrer': request.META.get('HTTP_REFERER'),
         })
         response = _make_request('comment-check', data)
+        
         if response.status_code == '200':
             if response.content == 'true':
                 return 'spam'
-            elif reponse.content == 'false':
+            elif response.content == 'false':
                 return 'ham'
 
     return 'unknown'
 
 def _make_request(method, data, method_map=settings.TURBION_AKISMET_API_METHODS, key=settings.TURBION_AKISMET_API_KEY):
     result = fetch(
-        method[method] % {'api-key': key},
+        method_map[method] % {'api-key': key},
         data,
         headers={
-            'User-Agent': 'Turbion urlfetcher/%s | Antispam' % get_version()
+            'User-Agent': 'Turbion urlfetcher/%s | Antispam' % get_version(),
+            'Content-type': 'application/x-www-form-urlencoded',
         },
         timeout=5,
     )

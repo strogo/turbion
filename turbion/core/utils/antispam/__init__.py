@@ -34,15 +34,15 @@ def anonymous_only(func):
 @anonymous_only
 def process_form_init(request, form, parent=None):
     for filter in filters:
-        if getattr(filter, 'process_form_init'):
+        if hasattr(filter, 'process_form_init'):
             filter.process_form_init(request, form, parent)
 
 @anonymous_only
 def process_form_submit(request, form, child, parent=None):
     decision = 'unknown'
     for filter in filters:
-        if getattr(filter, 'process_form_submit_form_init'):
-            decision = filter.process_form_submit(request, form, parent)
+        if hasattr(filter, 'process_form_submit'):
+            decision = filter.process_form_submit(request, form, child, parent)
             if decision == 'spam':
                 break
     return decision

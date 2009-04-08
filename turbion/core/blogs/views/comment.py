@@ -40,6 +40,10 @@ def add_comment(request, next, defaults={}, post=None,
 
                 new_comment.save()
 
+                decision = antispam.process_form_submit(
+                    request, form, new_comment, post
+                )
+
                 if comment:
                     signal = signals.comment_edited
                 else:
