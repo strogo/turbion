@@ -11,7 +11,7 @@ class ProfileAdmin(admin.ModelAdmin):
         'is_confirmed', 'trusted', 'is_author',  'ip', 'filter', 'openid'
     )
     list_per_page = 50
-    list_display_links = ('username', 'nickname')
+    list_display_links = ('id', 'nickname')
     list_filter   = (
         'is_confirmed', 'trusted', 'is_author', 'is_superuser', 'is_staff', 'filter'
     )

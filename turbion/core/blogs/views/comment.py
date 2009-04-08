@@ -9,6 +9,7 @@ from turbion.core.blogs import signals
 from turbion.core.blogs.forms import comment as forms
 from turbion.core.profiles import get_profile
 from turbion.core.utils.decorators import templated, paged
+from turbion.core.utils import antispam
 
 def add_comment(request, next, defaults={}, post=None,
                 comment=None, checker=lambda comment: True,
@@ -22,6 +23,7 @@ def add_comment(request, next, defaults={}, post=None,
             request=request,
             instance=comment
         )
+        antispam.process_form_init(request, form)
 
         if form.is_valid():
             new_comment = form.save(False)
@@ -66,6 +68,7 @@ def add_comment(request, next, defaults={}, post=None,
             request=request,
             instance=comment
         )
+        antispam.process_form_init(request, form)
 
     return {
         "comment_form": form,

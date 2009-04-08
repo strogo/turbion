@@ -50,10 +50,6 @@ def combine_profile_form_with(form_class, request, field='created_by',\
             if USE_OPENID:
                 openid = forms.URLField(required=False, label=_('openid'))
 
-            if settings.TURBION_USE_SUPERCAPTCHA:
-                from supercaptcha import CaptchaField
-                captcha = CaptchaField(label=_('check'))
-
             def __init__(self, initial=None, *args, **kwargs):
                 if not initial:
                     initial = {}

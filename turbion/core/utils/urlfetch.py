@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+import httplib2
+from urllib import urlencode
+
 from django.conf import settings
 
 class ResponseObject(object):
@@ -8,11 +10,20 @@ class ResponseObject(object):
         self.headers = headers
 
 class UrlFetcher(object):
-    def fetch(self, url, data=None):
-        from urllib2 import urlopen
-        inp = urlopen(url)
+    def fetch(self, url, data=None, headers=None, timeout=10):
+        http = httplib2.Http(timeout=timeout)
 
-        return ResponseObject(inp.code, inp.read(), inp.headers)
+        if headers is None:
+            headers = {}
+
+        method = data and 'POST' or 'GET'
+        data = data and urlencode(data) or ''
+
+        resp, content = http.request(
+            url, method, data=data, headers=headers
+        )
+
+        return ResponseObject(resp["status"], content, resp)
 
 def _get_fetcher():
     fetcher = getattr(settings, "TURBION_URLFETCHER", UrlFetcher)
@@ -28,7 +39,7 @@ def _get_fetcher():
 
     return fetcher
 
-def fetch(url, data=None):
+def fetch(url, data=None, headers=None, timeout=10):
     fetcher = _get_fetcher()
 
-    return fetcher.fetch(url, data)
+    return fetcher.fetch(url, data, headers)

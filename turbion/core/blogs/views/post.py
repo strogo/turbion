@@ -14,6 +14,7 @@ from turbion.core.blogs.forms import comment as forms
 from turbion.core.profiles import get_profile
 from turbion.core.utils.pagination import paginate
 from turbion.core.utils.decorators import paged, templated
+from turbion.core.utils import antispam
 
 @paged
 @templated('turbion/blogs/post_list.html')
@@ -70,6 +71,7 @@ def tag(request, tag_slug):
 @titled(page='{{post.title}}')
 def post(request, post):
     comment_form = forms.CommentForm(request=request)
+    antispam.process_form_init(request, comment_form)
 
     comments = Comment.published.filter(post=post)\
                         .select_related("created_by", "post")\
