@@ -29,7 +29,7 @@ class Comment(models.Model):
     created_on = models.DateTimeField(default=datetime.now, verbose_name=_("created on"))
 
     created_by = models.ForeignKey(Profile, related_name="created_comments",
-                                   editable=False, verbose_name=_("created by"))
+                                   verbose_name=_("created by"))
 
     edited_on = models.DateTimeField(null=True, editable=False, blank=True, verbose_name=_("edited on"))
     edited_by = models.ForeignKey(Profile, related_name="edited_comments",
