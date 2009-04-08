@@ -76,9 +76,9 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                         extract_profile_data(request)
                     )
 
-                    if openid:
-                        if not form_data.get('nickname', None):
-                            form_data["nickname"] = openid
+                    #if openid:
+                    #    if not form_data.get('nickname', None):
+                    #        form_data["nickname"] = openid
 
                     profile = Profile.objects.create_guest_profile(**form_data)
 
