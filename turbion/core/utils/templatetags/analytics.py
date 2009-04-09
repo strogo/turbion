@@ -16,6 +16,25 @@ document.write(unescape("%%3Cscript src='" + gaJsHost + "google-analytics.com/ga
 <script type="text/javascript">
 try {
 var pageTracker = _gat._getTracker("%(uacct)s");
+pageTracker._addOrganic("mail.ru", "q");
+pageTracker._addOrganic("rambler.ru", "query");
+pageTracker._addOrganic("go.mail.ru", "q");
+pageTracker._addOrganic("nova.rambler.ru", "query");
+pageTracker._addOrganic("nigma.ru", "s");
+pageTracker._addOrganic("blogs.yandex.ru", "text");
+pageTracker._addOrganic("webalta.ru", "q");
+pageTracker._addOrganic("aport.ru", "r");
+pageTracker._addOrganic("meta.ua", "q");
+pageTracker._addOrganic("bigmir.net", "q");
+pageTracker._addOrganic("tut.by", "query");
+pageTracker._addOrganic("ukr.net", "search_query");
+pageTracker._addOrganic("poisk.ru", "text");
+pageTracker._addOrganic("liveinternet.ru", "ask");
+pageTracker._addOrganic("gogo.ru", "q");
+pageTracker._addOrganic("gde.ru", "keywords");
+pageTracker._addOrganic("quintura.ru", "request");
+pageTracker._addOrganic("qip.ru", "query");
+pageTracker._addOrganic("metabot.ru","st");
 pageTracker._trackPageview();
 } catch(err) {}</script>""" % {'uacct': uacct}
     else:
