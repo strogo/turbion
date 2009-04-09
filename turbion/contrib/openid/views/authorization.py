@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str
+from django.views.generic.simple import direct_to_template
 
 from turbion.contrib.openid import forms, utils, models, backend
 
@@ -53,3 +54,17 @@ def authenticate(request):
         )
 
     return http.HttpResponseRedirect(request.GET.get('next', '/'))
+
+def xrds(request):
+    from openid.yadis.constants import YADIS_CONTENT_TYPE
+    from openid.server.trustroot import RP_RETURN_TO_URL_TYPE
+
+    return direct_to_template(
+        request,
+        'turbion/openid/xrds.xml',
+        {
+            'type_uri': RP_RETURN_TO_URL_TYPE,
+            'endpoint_url': utils.get_auth_urls()[1],
+        },
+        mimetype=YADIS_CONTENT_TYPE,
+    )

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xrds:XRDS xmlns:xrds="xri://$xrds" xmlns="xri://$xrd*($v*2.0)">
+<XRD>
+    <Service>
+        <Type>{{type_uri}}</Type>
+        <URI>{{endpoint_url}}</URI>
+    </Service>
+</XRD>
+</xrds:XRDS>

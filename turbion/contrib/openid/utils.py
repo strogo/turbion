@@ -44,6 +44,9 @@ def get_auth_urls(request):
 
     return trust_url, return_to
 
+def absolute_uri(url):
+    return "http://%s%s" % (Site.objects.get_current().domain, url)
+
 def _save_request(request, openid_request):
     if openid_request:
         request.session['openid_request'] = openid_request

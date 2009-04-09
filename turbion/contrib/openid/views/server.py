@@ -11,6 +11,11 @@ from turbion.contrib.openid import forms, utils, models
 from turbion.core.utils.urls import uri_reverse
 from turbion.core.utils.decorators import templated, titled
 
+# Maps sreg data fields to Turbion's profile if not equal
+SREG_TO_PROFILE_MAP = {
+    'fullname': 'full_name',
+}
+
 @templated('turbion/openid/server/endpoint.html')
 @titled(page=_("Endpoint"), section=_("OpenID Server"))
 def endpoint(request):
@@ -133,17 +138,25 @@ def decide(request, openid_request=None):
     }
 
 def _add_sreg(request, openid_response):
-    sreg_data = {
-        'fullname': 'Example User',
-        'nickname': 'example',
-        'dob': '1970-01-01',
-        'email': 'invalid@example.com',
-        'gender': 'F',
-        'postcode': '12345',
-        'country': 'ES',
-        'language': 'eu',
-        'timezone': 'America/New_York',
-    }
+    from openid.extension import sreg
+    from turbion.core.profiles.models import Profile
+
+    try:
+        profile = Profile.objects.get(pk=settings.TURBION_OPENID_IDENTITY_PROFILE)
+    except Profile.DoesNotExist:
+        return
+
+    sreg_data = {}
+    for field in sreg.data_fields.keys():
+        try:
+            value = getattr(profile, SREG_TO_PROFILE_MAP.get(field, field))
+        except AtteibuteError:
+            continue
+
+        if callable(value):
+            value = value()
+
+        data[field] = value
 
     sreg_req = sreg.SRegRequest.fromOpenIDRequest(openid_request)
     sreg_resp = sreg.SRegResponse.extractResponse(sreg_req, sreg_data)
@@ -153,13 +166,12 @@ def xrds(request):
     from openid.yadis.constants import YADIS_CONTENT_TYPE
     from openid.consumer.discover import OPENID_IDP_2_0_TYPE
 
-    response = direct_to_template(
+    return direct_to_template(
         request,
         'turbion/openid/server/xrds.xml',
         {
             'type_uri': OPENID_IDP_2_0_TYPE,
             'endpoint_url': uri_reverse("turbion_openid_endpoint"),
-        }
+        },
+        mimetype=YADIS_CONTENT_TYPE,
     )
-    response['Content-Type'] = YADIS_CONTENT_TYPE
-    return response
