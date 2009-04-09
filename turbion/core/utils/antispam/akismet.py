@@ -1,6 +1,7 @@
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
+from django.core.urlresolvers import reverse
 
 from turbion import get_version
 from turbion.core.blogs.models import Comment
@@ -28,7 +29,7 @@ def get_comment_data(comment, parent):
 
 def get_feedback_data(feedback, parent=None):
     return {
-        'permalink': _,
+        'permalink': '%s%s' % (site_url, reverse('turbion_feedback')),
         'comment_type': 'feedback',
         'comment_author': feedback.created_by.name,
         'comment_author_email': feedback.created_by.email,
@@ -53,7 +54,7 @@ def process_form_submit(request, form, child, parent=None):
             'referrer': request.META.get('HTTP_REFERER'),
         })
         response = _make_request('comment-check', data)
-        
+
         if response.status_code == '200':
             if response.content == 'true':
                 return 'spam'
