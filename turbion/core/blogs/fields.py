@@ -16,7 +16,7 @@ class CommentCountField(CompositionField):
             trigger=[
                 D(
                     on=(signals.post_save, signals.post_delete),
-                    do=lambda host, comment, signal: host.comments.count()
+                    do=lambda host, comment, signal: host.comments.filter(**Comment.published.lookups).count()
                 )
             ],
             commons=D(
@@ -43,7 +43,7 @@ class PostCountField(CompositionField):
             trigger=[
                 D(
                     on=(signals.post_save, signals.post_delete),
-                    do=lambda host, comment, signal: host.posts.count()
+                    do=lambda host, comment, signal: host.posts.filter(**Post.published.lookups).count()
                 )
             ],
             commons=D(
