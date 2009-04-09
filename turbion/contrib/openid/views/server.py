@@ -5,6 +5,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.contrib.openid import forms, utils, models
@@ -22,10 +23,8 @@ def endpoint(request):
     from openid.server.server import ProtocolError
     server = utils.get_server()
 
-    data = dict(request.GET.items())
-    if request.method == "POST":
-        data.update(dict(request.POST.items()))
-
+    data = dict(request.REQUEST.items())
+    
     try:
         openid_request = server.decodeRequest(data)
     except ProtocolError, why:
@@ -44,7 +43,7 @@ def endpoint(request):
 
 def _check_id(request, openid_request):
     if not openid_request.idSelect():
-        id_url = getViewURL(request, idPage)
+        id_url = settigs.TURBION_OPENID_IDENTITY_URL
 
         # Confirm that this server can actually vouch for that
         # identifier
@@ -116,9 +115,9 @@ def decide(request, openid_request=None):
             allowed = decision == "allow"
 
             openid_response = openid_request.answer(
-                                allowed,
-                                identity=response_identity
-                            )
+                allowed,
+                identity=response_identity
+            )
 
             if allowed:
                 if form.cleaned_data["allways"]:
@@ -133,7 +132,7 @@ def decide(request, openid_request=None):
     return {
         'form': form,
         'trust_root': trust_root,
-        'trust_handler_url':getViewURL(request, processTrustResult),
+        'trust_handler_url': reverse('turbion_openid_decide'),
         'trust_root_valid': trust_root_valid,
     }
 

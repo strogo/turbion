@@ -21,7 +21,9 @@ class YadisMiddleware(object):
 
     def process_response(self, request, response):
         from openid.yadis.constants import YADIS_HEADER_NAME
-        
-        if response.status_code >= 200 and response.status_code < 300:
+
+        if request.build_absolute_uri() == settings.TURBION_OPENID_IDENTITY_URL and \
+            response.status_code >= 200 and response.status_code < 300:
             response[YADIS_HEADER_NAME] = uri_reverse('turbion_openid_server_xrds')
+
         return response

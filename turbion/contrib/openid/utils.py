@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.urlresolvers import reverse
 
 from turbion.core.utils.urls import uri_reverse
 from turbion.core.profiles.models import Profile
@@ -21,9 +20,7 @@ def get_server():
     )
 
 def complete(request):
-    data = dict(request.GET.items())
-    if request.method=="POST":
-        data.update(dict(request.POST.items()))
+    data = dict(request.REQUEST.items())
 
     consumer = get_consumer(request.session)
 
