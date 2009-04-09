@@ -8,7 +8,7 @@ from django.utils.encoding import smart_str
 from django.views.generic.simple import direct_to_template
 
 from turbion.contrib.openid import forms, utils, models, backend
-
+from turbion.core.utils.urls import uri_reverse
 from turbion.core.profiles import get_profile
 from turbion.core.utils.decorators import templated, special_titled
 
@@ -64,7 +64,7 @@ def xrds(request):
         'turbion/openid/xrds.xml',
         {
             'type_uri': RP_RETURN_TO_URL_TYPE,
-            'endpoint_url': utils.get_auth_urls()[1],
+            'endpoint_url': uri_reverse('turbion_openid_authenticate'),
         },
         mimetype=YADIS_CONTENT_TYPE,
     )

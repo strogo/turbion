@@ -1,20 +1,22 @@
 from django.conf import settings
 
-from turbion.core.utils.url import uri_reverse
+from turbion.core.utils.urls import uri_reverse
 from turbion.contrib.openid.views import authorization, server
 
 class VerificationMiddleware(object):
     def process_request(self, request):
-        from openid.yadis.constants import YADIS_ACCEPT_HEADER
-        if  utils.absolute_url(request.path) == settings.TURBION_OPENID_TRUST_URL and \
-            YADIS_ACCEPT_HEADER in request.META.get('HTTP_ACCEPT', ''):
+        from openid.yadis.constants import YADIS_CONTENT_TYPE
+        print request.build_absolute_uri(), settings.TURBION_OPENID_TRUST_URL
+        print YADIS_CONTENT_TYPE, ',', request.META.get('HTTP_ACCEPT', '')
+        if request.build_absolute_uri() == settings.TURBION_OPENID_TRUST_URL and \
+            YADIS_CONTENT_TYPE in request.META.get('HTTP_ACCEPT', ''):
             return authorization.xrds(request)
 
 class YadisMiddleware(object):
     def process_request(self, request):
-        from openid.yadis.constants import YADIS_ACCEPT_HEADER
-        if  utils.absolute_url(request.path) == settings.TURBION_OPENID_IDENTITY_URL and \
-            YADIS_ACCEPT_HEADER in request.META.get('HTTP_ACCEPT', ''):
+        from openid.yadis.constants import YADIS_CONTENT_TYPE
+        if request.build_absolute_uri() == settings.TURBION_OPENID_IDENTITY_URL and \
+            YADIS_CONTENT_TYPE in request.META.get('HTTP_ACCEPT', ''):
             return server.xrds(request)
 
     def process_response(self, request, response):

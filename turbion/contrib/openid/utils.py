@@ -36,7 +36,7 @@ def complete_sreg(response):
     from openid.extensions import sreg
     return sreg.SRegResponse.fromSuccessResponse(response)
 
-def get_auth_urls(request):
+def get_auth_urls(request=None):
     return settings.TURBION_OPENID_TRUST_URL, uri_reverse('turbion_openid_authenticate')
 
 def _save_request(request, openid_request):
