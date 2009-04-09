@@ -1,11 +1,19 @@
-from turbion.core.utils.url import uri_reverse
-from turbion.contrib.openid import utils
-from turbion.contrib.openid.views import server
+from django.conf import settings
 
-class OpenidServerMiddleware:
+from turbion.core.utils.url import uri_reverse
+from turbion.contrib.openid.views import authorization, server
+
+class VerificationMiddleware(object):
     def process_request(self, request):
         from openid.yadis.constants import YADIS_ACCEPT_HEADER
-        if  utils.absolute_url(request.path) == utils.get_auth_urls()[0] and \
+        if  utils.absolute_url(request.path) == settings.TURBION_OPENID_TRUST_URL and \
+            YADIS_ACCEPT_HEADER in request.META.get('HTTP_ACCEPT', ''):
+            return authorization.xrds(request)
+
+class YadisMiddleware(object):
+    def process_request(self, request):
+        from openid.yadis.constants import YADIS_ACCEPT_HEADER
+        if  utils.absolute_url(request.path) == settings.TURBION_OPENID_IDENTITY_URL and \
             YADIS_ACCEPT_HEADER in request.META.get('HTTP_ACCEPT', ''):
             return server.xrds(request)
 

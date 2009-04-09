@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.contrib.sites.models import Site
 
 from turbion.core.utils.urls import uri_reverse
 from turbion.core.profiles.models import Profile
@@ -38,14 +37,7 @@ def complete_sreg(response):
     return sreg.SRegResponse.fromSuccessResponse(response)
 
 def get_auth_urls(request):
-    site_url =  "http://%s" % Site.objects.get_current().domain
-    trust_url = getattr(settings, "TURBION_OPENID_TRUST_URL", site_url + '/')
-    return_to = site_url + reverse('turbion_openid_authenticate')
-
-    return trust_url, return_to
-
-def absolute_uri(url):
-    return "http://%s%s" % (Site.objects.get_current().domain, url)
+    return settings.TURBION_OPENID_TRUST_URL, uri_reverse('turbion_openid_authenticate')
 
 def _save_request(request, openid_request):
     if openid_request:
