@@ -18,7 +18,9 @@ setup(
     scripts = ['turbion/bin/turbion-admin.py'],
 
     package_data={
-        'turbion': strip_turbion(findall('turbion/locale')) + strip_turbion(findall('turbion/templates'))
+        'turbion': strip_turbion(findall('turbion/locale')) +\
+                   strip_turbion(findall('turbion/templates')) +\
+                   strip_turbion(findall('turbion/contrib/openid/templates'))
     },
 
     install_requires = [
