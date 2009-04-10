@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django import forms, http
 from django.utils.http import urlencode
+from django.utils.translation import ugettext_lazy as _
 
 from turbion import get_version
 from turbion.core.blogs.models import Comment
@@ -149,16 +150,24 @@ class ActionModelAdmin(object):
         )
         return my_urls + urls
 
+    def antispam_submit_action(self, request, obj, action):
+        response = do_action_submit(action, obj)
+        if response.status_code == '200':
+            result = response.content
+
+            self.antispam_do_action(action, obj)
+            self.message_user(request, u"`%s` successfully marked as %s." % (obj, action))
+        else:
+            self.message_user(
+                request,
+                u"`%s` connot be marked %s" % (comment, response.content and u'because %s.' % response.content or '.')
+            )
+
     def antispam_view(self, request, object_id):
         if request.method == 'POST':
             obj = self.model._default_manager.get(pk=object_id)
             action = request.POST.get('action')
-
-            response = do_action_submit(action, obj)
-            if response.status_code == '200':
-                result = response.content
-
-                self.antispam_do_action(action, obj)
+            self.antispam_do_action(request, obj, action)
 
             return http.HttpResponseRedirect(
                 request.META.get('HTTP_REFERER')
@@ -169,12 +178,16 @@ class ActionModelAdmin(object):
         action = self.antispam_map_action(obj)
         name = action == 'spam' and 'Spam' or 'Ham'
 
-        return """
-        <form action="%s" method="POST">
+        return """<form action="%s" method="POST">
         <input type="hidden" name="action" value="%s"/>
         <input class="button" type="submit" style="font-size:10px; padding:1px 2px;" value="%s"/>
         </form>""" % (reverse(self.get_antispam_url_name(), args=(obj.pk,)), action, name)
     antispam.allow_tags = True
+
+    def antispam_action_spam(self, request, queryset):
+        for obj in queryset:
+            self.antispam_submit_action(request, obj, 'spam')
+    antispam_action_spam.short_description = _("Mark selected as spam")
 
 urlpatterns = patterns('',
     url('akismet/submit_action', submit_action, name='akismet_action'),

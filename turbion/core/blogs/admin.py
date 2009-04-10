@@ -58,6 +58,8 @@ class CommentAdmin(akismet.ActionModelAdmin, admin.ModelAdmin):
     date_hierarchy = 'created_on'
     list_filter = ('status',)
 
+    actions = ['antispam_action_spam']
+
     def headline(self, comment):
         return truncate_words(comment.text, 7)
     headline.short_description = 'headline'
