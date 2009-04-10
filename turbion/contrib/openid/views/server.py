@@ -1,13 +1,11 @@
-import cgi
-
 from django import http
 from django.contrib import auth
-from django.contrib.auth.models import User
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from turbion.core.profiles import get_profile
 from turbion.contrib.openid import forms, utils, models
 from turbion.core.utils.urls import uri_reverse
 from turbion.core.utils.decorators import templated, special_titled
@@ -19,6 +17,15 @@ SREG_TO_PROFILE_MAP = {
 
 titled = special_titled(section=_("OpenID Server"))
 
+def identity_profile_required(view):
+    def _decorator(request, *args, **kwargs):
+        if get_profile(request).pk != int(settings.TURBION_OPENID_IDENTITY_PROFILE):
+            return http.HttpResponseForbidden('Access restricted')
+        return view(request, *args, **kwargs)
+    return _decorator
+
+@login_required
+@identity_profile_required
 @templated('turbion/openid/server/endpoint.html')
 @titled(page=_("Endpoint"))
 def endpoint(request):
@@ -38,33 +45,30 @@ def endpoint(request):
         return {}
 
     if openid_request.mode in ["checkid_immediate", "checkid_setup"]:
-        return _check_id(request, openid_request)
+        if not openid_request.idSelect():
+            id_url = settigs.TURBION_OPENID_IDENTITY_URL
+
+            # Confirm that this server can actually vouch for that
+            # identifier
+            if id_url != openid_request.identity:
+                # Return an error response
+                error_response = ProtocolError(
+                    openid_request.message,
+                    "This server cannot verify the URL %r" %
+                    (openid_request.identity,))
+
+                return displayResponse(request, error_response)
+
+        if openid_request.immediate:
+            #FIXME: handle this type of request
+            openid_response = openid_request.answer(False)
+            return _render_response(request, openid_response)
+        else:
+            utils._save_request(request, openid_request)
+            return decide(request, openid_request)
     else:
         openid_response = server.handleRequest(openid_request)
         return _render_response(request, openid_response)
-
-def _check_id(request, openid_request):
-    if not openid_request.idSelect():
-        id_url = settigs.TURBION_OPENID_IDENTITY_URL
-
-        # Confirm that this server can actually vouch for that
-        # identifier
-        if id_url != openid_request.identity:
-            # Return an error response
-            error_response = ProtocolError(
-                openid_request.message,
-                "This server cannot verify the URL %r" %
-                (openid_request.identity,))
-
-            return displayResponse(request, error_response)
-
-    if openid_request.immediate:
-        #FIXME: handle this type of request
-        openid_response = openid_request.answer(False)
-        return _render_response(request, openid_response)
-    else:
-        utils._save_request(request, openid_request)
-        return decide(request, openid_request)
 
 def _render_response(request, openid_request):
     server = utils.get_server()
@@ -72,6 +76,7 @@ def _render_response(request, openid_request):
     try:
         webresponse = server.encodeResponse(openid_response)
     except EncodingError, why:
+        import cgi
         text = why.response.encodeToKVForm()
         return direct_to_template(
             request,
@@ -87,6 +92,8 @@ def _render_response(request, openid_request):
 
     return r
 
+@login_required
+@identity_profile_required
 @templated('turbion/openid/server/decide.html')
 @titled(page=_("Trust decision"))
 def decide(request, openid_request=None):
@@ -105,7 +112,7 @@ def decide(request, openid_request=None):
         trust_root_valid = verifyReturnTo(trust_root, return_to) \
                            and "Valid" or "Invalid"
     except DiscoveryFailure, err:
-        trust_root_valid = "DISCOVERY_FAILED"
+        trust_root_valid = "Discovery faild"
     except HTTPFetchingError, err:
         trust_root_valid = "Unreachable"
 
