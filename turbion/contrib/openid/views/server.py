@@ -10,21 +10,23 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.contrib.openid import forms, utils, models
 from turbion.core.utils.urls import uri_reverse
-from turbion.core.utils.decorators import templated, titled
+from turbion.core.utils.decorators import templated, special_titled
 
 # Maps sreg data fields to Turbion's profile if not equal
 SREG_TO_PROFILE_MAP = {
     'fullname': 'full_name',
 }
 
+titled = special_titled(section=_("OpenID Server"))
+
 @templated('turbion/openid/server/endpoint.html')
-@titled(page=_("Endpoint"), section=_("OpenID Server"))
+@titled(page=_("Endpoint"))
 def endpoint(request):
     from openid.server.server import ProtocolError
     server = utils.get_server()
 
     data = dict(request.REQUEST.items())
-    
+
     try:
         openid_request = server.decodeRequest(data)
     except ProtocolError, why:
@@ -86,7 +88,7 @@ def _render_response(request, openid_request):
     return r
 
 @templated('turbion/openid/server/decide.html')
-@titled(page=u"Trust decision", section=u"OpenID Server")
+@titled(page=_("Trust decision"))
 def decide(request, openid_request=None):
     from openid.yadis.discover import DiscoveryFailure
     from openid.fetchers import HTTPFetchingError
