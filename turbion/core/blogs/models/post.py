@@ -114,8 +114,7 @@ class Post(models.Model):
 
         self.save()
 
-        if notify:
-            CommentAdd.manager.subscribe(self.created_by, self)
+        CommentAdd.manager.subscribe(self.created_by, self)
 
         signals.post_published.send(
             sender=self.__class__,
