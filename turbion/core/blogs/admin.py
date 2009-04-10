@@ -1,10 +1,12 @@
 from django import forms
 from django.utils.text import truncate_words
 from django.utils.encoding import force_unicode
-
 from django.contrib import admin
+from django.core.urlresolvers import reverse
+
 from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles import get_profile
+from turbion.core.utils.antispam import akismet
 
 class PostForm(forms.ModelForm):
     notify = forms.BooleanField(initial=False, required=False)
@@ -45,10 +47,10 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin(akismet.ActionModelAdmin, admin.ModelAdmin):
     list_display = (
         'created_on', 'post', 'status', 'created_by', 'headline',
-        'text_filter',
+        'text_filter', 'antispam'
     )
     list_per_page = 25
     list_select_related = True
@@ -57,8 +59,19 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ('status',)
 
     def headline(self, comment):
-        return truncate_words(comment.text, 5)
+        return truncate_words(comment.text, 7)
     headline.short_description = 'headline'
+
+    def antispam_map_action(self, comment):
+        return comment.status == Comment.statuses.published and 'spam' or 'ham'
+
+    def antispam_do_action(self, action, comment):
+        if action == 'spam':
+            comment.status = Comment.statuses.spam
+        elif action == 'ham':
+            comment.status = Comment.statuses.published
+
+        comment.save()
 
     def save_model(self, request, comment, form, change):
         if change:

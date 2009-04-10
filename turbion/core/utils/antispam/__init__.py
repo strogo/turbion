@@ -20,7 +20,7 @@ for filter_name in settings.TURBION_ANTISPAM_FILTERS:
                 pass
     if mod:
         if hasattr(mod, 'urlpatterns'):
-            urlpatterns += mod.urlpatterns
+            urlpatterns.extend(mod.urlpatterns)
         filters.append(mod)
     else:
         raise ValueError("Cannot load filter '%s'" % filter_name)
