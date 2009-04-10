@@ -20,7 +20,10 @@ API specifications:
 site = Site.objects.get_current()
 site_url = 'http://%s' % site.domain
 
-def get_comment_data(comment, parent):
+def get_comment_data(comment, parent=None):
+    if not parent:
+        parent = comment.post
+
     return {
         'permalink': '%s%s' % (site_url, parent.get_absolute_url()),
         'comment_type': 'comment',
@@ -149,13 +152,13 @@ class ActionModelAdmin(object):
     def antispam_view(self, request, object_id):
         if request.method == 'POST':
             obj = self.model._default_manager.get(pk=object_id)
+            action = request.POST.get('action')
 
-            response = do_action_submit(requesy.GET.get('action'), obj)
+            response = do_action_submit(action, obj)
             if response.status_code == '200':
                 result = response.content
 
-                if result == 'true':
-                    self.antispam_do_action(action, obj)
+                self.antispam_do_action(action, obj)
 
             return http.HttpResponseRedirect(
                 request.META.get('HTTP_REFERER')
@@ -168,7 +171,7 @@ class ActionModelAdmin(object):
 
         return """
         <form action="%s" method="POST">
-        <input type="hidden" value="%s"/>
+        <input type="hidden" name="action" value="%s"/>
         <input class="button" type="submit" style="font-size:11px; padding:1px 2px;" value="%s"/>
         </form>""" % (reverse(self.get_antispam_url_name(), args=(obj.pk,)), action, name)
     antispam.allow_tags = True
