@@ -28,3 +28,7 @@ class CommentForm(forms.Form):
             raise forms.ValidationError(_("You have to provide email address"
                                             " to recieve notifications"))
         return notify
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(required=True, label=_('search'))

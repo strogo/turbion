@@ -8,11 +8,7 @@ from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles import get_profile
 from turbion.core.utils.antispam import akismet
 
-class PostForm(forms.ModelForm):
-    notify = forms.BooleanField(initial=False, required=False)
-
 class PostAdmin(admin.ModelAdmin):
-    form = PostForm
     exclude = ['created_by', 'edited_by']
 
     list_display       = (
