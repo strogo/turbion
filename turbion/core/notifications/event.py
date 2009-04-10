@@ -227,3 +227,7 @@ class EventDescriptor(object):
 
     def allow_recipient(self, *args, **kwargs):
         return True
+
+    @classmethod
+    def to_string(cls):
+        return cls.meta.name

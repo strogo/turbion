@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.mail import EmailMessage
 from django.contrib.sites.models import Site
 from django.conf import settings
+from django.utils.encoding import force_unicode
 
 from turbion.core.profiles.models import Profile
 from turbion.core.utils.descriptor import DescriptorField, GenericForeignKey
@@ -20,7 +21,7 @@ class Event(models.Model):
     subject_title = models.CharField(max_length=250)
 
     def __unicode__(self):
-        return self.descriptor
+        return 'Some Event'#force_unicode(self.descriptor.meta.name)
 
     class Meta:
         app_label           = "turbion"

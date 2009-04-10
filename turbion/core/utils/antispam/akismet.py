@@ -172,7 +172,7 @@ class ActionModelAdmin(object):
         return """
         <form action="%s" method="POST">
         <input type="hidden" name="action" value="%s"/>
-        <input class="button" type="submit" style="font-size:11px; padding:1px 2px;" value="%s"/>
+        <input class="button" type="submit" style="font-size:10px; padding:1px 2px;" value="%s"/>
         </form>""" % (reverse(self.get_antispam_url_name(), args=(obj.pk,)), action, name)
     antispam.allow_tags = True
 
