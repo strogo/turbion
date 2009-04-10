@@ -147,33 +147,30 @@ class ActionModelAdmin(object):
         return my_urls + urls
 
     def antispam_view(self, request, object_id):
-        obj = self._model._default_manager.get(pk=object_id)
+        if request.method == 'POST':
+            obj = self.model._default_manager.get(pk=object_id)
 
-        response = do_action_submit(requesy.GET.get('action'), obj)
-        if response.status_code == '200':
-            result = response.content
+            response = do_action_submit(requesy.GET.get('action'), obj)
+            if response.status_code == '200':
+                result = response.content
 
-            if result == 'true':
-                action = self.antispam_do_action(action, obj)
+                if result == 'true':
+                    self.antispam_do_action(action, obj)
 
-        return http.HttpResponseRedirect(
-            request.META.get('HTTP_REFERER')
-        )
+            return http.HttpResponseRedirect(
+                request.META.get('HTTP_REFERER')
+            )
+        return http.HttpResponseBadRequest('No action or illegal object')
 
     def antispam(self, obj):
         action = self.antispam_map_action(obj)
         name = action == 'spam' and 'Spam' or 'Ham'
 
-        form = ActionForm.for_object(
-            obj,
-            action,
-            reverse(self.get_antispam_url_name(), args=(obj.pk,))
-        )
-
         return """
-        <form action="%s">%s
-        <p><input class="button" type="submit" style="font-size:11px; padding:1px 2px;" value="%s"/></p>
-        </form>""" % (form.action_url, form.as_p(), name)
+        <form action="%s" method="POST">
+        <input type="hidden" value="%s"/>
+        <input class="button" type="submit" style="font-size:11px; padding:1px 2px;" value="%s"/>
+        </form>""" % (reverse(self.get_antispam_url_name(), args=(obj.pk,)), action, name)
     antispam.allow_tags = True
 
 urlpatterns = patterns('',
