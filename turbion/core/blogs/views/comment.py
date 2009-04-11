@@ -6,7 +6,7 @@ from django import http
 from turbion.core.blogs.decorators import post_view, titled
 from turbion.core.blogs.models import Post, Comment, CommentAdd
 from turbion.core.blogs import signals
-from turbion.core.blogs.forms import comment as forms
+from turbion.core.blogs import forms
 from turbion.core.profiles import get_profile
 from turbion.core.utils.decorators import templated, paged
 from turbion.core.utils import antispam

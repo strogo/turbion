@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xrds:XRDS xmlns:xrds="xri://$xrds" xmlns="xri://$xrd*($v*2.0)">
 <XRD>
-    <Service>
-        <Type>{{type_uri}}</Type>
-        <URI>{{endpoint_url}}</URI>
+    {% for service in services %}
+    <Service priority="{{forloop.counter0}}">
+        <Type>{{service.type}}</Type>
+        <URI>{{service.uri}}</URI>
     </Service>
+    {% endfor %}
 </XRD>
 </xrds:XRDS>

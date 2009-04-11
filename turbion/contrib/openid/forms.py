@@ -56,9 +56,9 @@ class OpenidLoginForm(forms.ModelForm):
 
 class DecideForm(forms.Form):
     decisions = (
-        ("allow","allow"),
-        ("disallow", "disallow")
+        ("allow", _("allow")),
+        ("disallow", _("disallow"))
     )
 
-    always = forms.BooleanField(initial=False)
-    decision = forms.ChoiceField(choices=decisions)
+    always = forms.BooleanField(initial=True, label=_('always'))
+    decision = forms.ChoiceField(choices=decisions, initial='allow', label=_('decision'))

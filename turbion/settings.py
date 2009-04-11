@@ -15,7 +15,7 @@ TURBION_ANTISPAM_FILTERS = ['captcha', 'akismet']
 TURBION_AKISMET_API_METHODS = {
     'verify-key': 'http://rest.akismet.com/1.1/verify-key',
     'comment-check': 'http://%(api-key)s.rest.akismet.com/1.1/comment-check',
-    'submit-spam' : 'http://%(api-key)s.rest.akismet.com/1.1/submit-spam',
+    'submit-spam': 'http://%(api-key)s.rest.akismet.com/1.1/submit-spam',
     'submit-ham': 'http://%(api-key)s.rest.akismet.com/1.1/submit-ham'
 }
 

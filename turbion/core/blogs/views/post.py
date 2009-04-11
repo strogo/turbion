@@ -10,7 +10,7 @@ from turbion.core.blogs.decorators import post_view, login_required, titled
 from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles.models import Profile
 from turbion.core.pingback.models import Pingback
-from turbion.core.blogs.forms import comment as forms
+from turbion.core.blogs import forms
 from turbion.core.profiles import get_profile
 from turbion.core.utils.pagination import paginate
 from turbion.core.utils.decorators import paged, templated

@@ -4,6 +4,8 @@ from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_unicode
+from django.conf import settings
 
 from turbion.core.profiles import get_profile
 from turbion.contrib.openid import forms, utils, models
@@ -24,8 +26,6 @@ def identity_profile_required(view):
         return view(request, *args, **kwargs)
     return _decorator
 
-@login_required
-@identity_profile_required
 @templated('turbion/openid/server/endpoint.html')
 @titled(page=_("Endpoint"))
 def endpoint(request):
@@ -38,7 +38,7 @@ def endpoint(request):
         openid_request = server.decodeRequest(data)
     except ProtocolError, why:
         return {
-            'error': str(why)
+            'error': force_unicode(why)
         }
 
     if openid_request is None:
@@ -52,12 +52,13 @@ def endpoint(request):
             # identifier
             if id_url != openid_request.identity:
                 # Return an error response
-                error_response = ProtocolError(
+                why = ProtocolError(
                     openid_request.message,
                     "This server cannot verify the URL %r" %
                     (openid_request.identity,))
-
-                return displayResponse(request, error_response)
+                return {
+                    'error': force_unicode(why)
+                }
 
         if openid_request.immediate:
             #FIXME: handle this type of request
@@ -68,10 +69,11 @@ def endpoint(request):
             return decide(request, openid_request)
     else:
         openid_response = server.handleRequest(openid_request)
-        return _render_response(request, openid_response)
+        return _render_response(request, openid_response, server)
 
-def _render_response(request, openid_request):
-    server = utils.get_server()
+def _render_response(request, openid_response, server=None):
+    if not server:
+        server = utils.get_server()
 
     try:
         webresponse = server.encodeResponse(openid_response)
@@ -116,27 +118,35 @@ def decide(request, openid_request=None):
     except HTTPFetchingError, err:
         trust_root_valid = "Unreachable"
 
-    if request.method=="POST":
-        form = forms.DecideForm(request.POST)
-        if form.is_valid():
-            decision = form.cleaned_data["decision"]
+    try:
+        trust = models.Trust.objects.get(url=trust_root)
+        allowed = True
+    except models.Trust.DoesNotExist:
+        trust = None
+        allowed = None
 
-            allowed = decision == "allow"
+    if not trust:
+        if request.method == "POST":
+            form = forms.DecideForm(request.POST)
+            if form.is_valid():
+                decision = form.cleaned_data["decision"]
 
-            openid_response = openid_request.answer(
-                allowed,
-                identity=response_identity
-            )
+                allowed = decision == "allow"
 
-            if allowed:
-                if form.cleaned_data["allways"]:
-                    Trust.objects.get_or_create(url=identity_url)
+                if allowed and form.cleaned_data["always"]:
+                    trust, _ = models.Trust.objects.get_or_create(url=trust_root)
+        else:
+            form = forms.DecideForm()
 
-                _add_sreg(request, openid_response)
+    if trust and allowed is not None:
+        openid_response = openid_request.answer(
+            allowed,
+            identity=settings.TURBION_OPENID_IDENTITY_URL
+        )
+        if allowed:
+            _add_sreg(openid_request, openid_response)
 
-            return _render_response(request, openid_response)
-    else:
-        form = forms.DecideForm()
+        return _render_response(request, openid_response)
 
     return {
         'form': form,
@@ -145,8 +155,8 @@ def decide(request, openid_request=None):
         'trust_root_valid': trust_root_valid,
     }
 
-def _add_sreg(request, openid_response):
-    from openid.extension import sreg
+def _add_sreg(openid_request, openid_response):
+    from openid.extensions import sreg
     from turbion.core.profiles.models import Profile
 
     try:
@@ -158,28 +168,14 @@ def _add_sreg(request, openid_response):
     for field in sreg.data_fields.keys():
         try:
             value = getattr(profile, SREG_TO_PROFILE_MAP.get(field, field))
-        except AtteibuteError:
+        except AttributeError:
             continue
 
         if callable(value):
             value = value()
 
-        data[field] = value
+        sreg_data[field] = value
 
     sreg_req = sreg.SRegRequest.fromOpenIDRequest(openid_request)
     sreg_resp = sreg.SRegResponse.extractResponse(sreg_req, sreg_data)
     openid_response.addExtension(sreg_resp)
-
-def xrds(request):
-    from openid.yadis.constants import YADIS_CONTENT_TYPE
-    from openid.consumer.discover import OPENID_IDP_2_0_TYPE
-
-    return direct_to_template(
-        request,
-        'turbion/openid/server/xrds.xml',
-        {
-            'type_uri': OPENID_IDP_2_0_TYPE,
-            'endpoint_url': uri_reverse("turbion_openid_endpoint"),
-        },
-        mimetype=YADIS_CONTENT_TYPE,
-    )
