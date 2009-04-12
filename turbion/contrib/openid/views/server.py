@@ -126,7 +126,8 @@ def decide(request, openid_request=None):
         allowed = None
 
     if not trust:
-        if request.method == "POST":
+        if request.method == "POST"\
+                    and 'decision' in request.POST:#handle case when consumer request comes with POST
             form = forms.DecideForm(request.POST)
             if form.is_valid():
                 decision = form.cleaned_data["decision"]
