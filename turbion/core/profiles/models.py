@@ -13,8 +13,11 @@ class ProfileManager(UserManager):
     def generate_username(self, data, base="turbion_"):
         import md5
         import random
+        import time
 
-        hash = md5.new(repr(data)+str(random.random())).hexdigest()[:30-len(base)]
+        hash = md5.new(
+            repr(data) + str(random.random()) + str(time.time())
+        ).hexdigest()[:30-len(base)]
 
         return base + hash
 
