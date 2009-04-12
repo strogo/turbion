@@ -70,7 +70,7 @@ def endpoint(request):
 
     if openid_request.mode in ["checkid_immediate", "checkid_setup"]:
         if not openid_request.idSelect():
-            id_url = settigs.TURBION_OPENID_IDENTITY_URL
+            id_url = settings.TURBION_OPENID_IDENTITY_URL
 
             # Confirm that this server can actually vouch for that
             # identifier
@@ -139,7 +139,7 @@ def decide(request, openid_request=None):
         else:
             form = forms.DecideForm()
 
-    if trust and allowed is not None:
+    if allowed is not None:
         openid_response = openid_request.answer(
             allowed,
             identity=settings.TURBION_OPENID_IDENTITY_URL
@@ -152,7 +152,6 @@ def decide(request, openid_request=None):
     return {
         'form': form,
         'trust_root': trust_root,
-        'trust_handler_url': reverse('turbion_openid_decide'),
         'trust_root_valid': trust_root_valid,
     }
 

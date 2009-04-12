@@ -29,6 +29,5 @@ class CommentForm(forms.Form):
                                             " to recieve notifications"))
         return notify
 
-
 class SearchForm(forms.Form):
     query = forms.CharField(required=True, label=_('search'))

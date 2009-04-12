@@ -60,5 +60,5 @@ class DecideForm(forms.Form):
         ("disallow", _("disallow"))
     )
 
-    always = forms.BooleanField(initial=True, label=_('always'))
+    always = forms.BooleanField(initial=True, label=_('always'), required=False)
     decision = forms.ChoiceField(choices=decisions, initial='allow', label=_('decision'))

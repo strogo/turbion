@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xrds:XRDS xmlns:xrds="xri://$xrds" xmlns="xri://$xrd*($v*2.0)">
+<xrds:XRDS xmlns:xrds="xri://$xrds" xmlns:openid="http://openid.net/xmlns/1.0" xmlns="xri://$xrd*($v*2.0)">
 <XRD>
     {% for service in services %}
     <Service priority="{{forloop.counter0}}">
-        <Type>{{service.type}}</Type>
+        {% for type in service.types %}
+            <Type>{{type}}</Type>
+        {% endfor %}
         <URI>{{service.uri}}</URI>
+        {% if service.local_id %}
+            <LocalID>{{service.local_id}}</LocalID>
+        {% endif %}
+        {% if service.delegate %}
+            <openid:Delegate>{{service.delegate}}</openid:Delegate>
+        {% endif %}
     </Service>
     {% endfor %}
 </XRD>
