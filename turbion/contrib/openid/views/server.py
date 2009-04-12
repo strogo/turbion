@@ -11,6 +11,7 @@ from turbion.core.profiles import get_profile
 from turbion.contrib.openid import forms, utils, models
 from turbion.core.utils.urls import uri_reverse
 from turbion.core.utils.decorators import templated, special_titled
+from turbion.core.utils.views import status_redirect
 
 # Maps sreg data fields to Turbion's profile if not equal
 SREG_TO_PROFILE_MAP = {
@@ -26,8 +27,33 @@ def identity_profile_required(view):
         return view(request, *args, **kwargs)
     return _decorator
 
-@templated('turbion/openid/server/endpoint.html')
-@titled(page=_("Endpoint"))
+def _render_response(request, openid_response, server=None):
+    if not server:
+        server = utils.get_server()
+
+    try:
+        webresponse = server.encodeResponse(openid_response)
+    except EncodingError, why:
+        import cgi
+        return _render_error(request, cgi.escape(why.response.encodeToKVForm()))
+
+    r = http.HttpResponse(webresponse.body)
+    r.status_code = webresponse.code
+
+    for header, value in webresponse.headers.iteritems():
+        r[header] = value
+
+    return r
+
+def _render_error(request, message):
+    return status_redirect(
+        request,
+        title=_('Error'),
+        section=_("OpenID Server"),
+        message=message,
+        next='/'
+    )
+
 def endpoint(request):
     from openid.server.server import ProtocolError
     server = utils.get_server()
@@ -37,9 +63,7 @@ def endpoint(request):
     try:
         openid_request = server.decodeRequest(data)
     except ProtocolError, why:
-        return {
-            'error': force_unicode(why)
-        }
+        return _render_error(request, force_unicode(why))
 
     if openid_request is None:
         return {}
@@ -55,10 +79,9 @@ def endpoint(request):
                 why = ProtocolError(
                     openid_request.message,
                     "This server cannot verify the URL %r" %
-                    (openid_request.identity,))
-                return {
-                    'error': force_unicode(why)
-                }
+                    (openid_request.identity,)
+                )
+                return _render_error(request, force_unicode(why))
 
         if openid_request.immediate:
             #FIXME: handle this type of request
@@ -70,29 +93,6 @@ def endpoint(request):
     else:
         openid_response = server.handleRequest(openid_request)
         return _render_response(request, openid_response, server)
-
-def _render_response(request, openid_response, server=None):
-    if not server:
-        server = utils.get_server()
-
-    try:
-        webresponse = server.encodeResponse(openid_response)
-    except EncodingError, why:
-        import cgi
-        text = why.response.encodeToKVForm()
-        return direct_to_template(
-            request,
-            "turbion/openid/server/error.html",
-            {'error': cgi.escape(text)}
-        )
-
-    r = http.HttpResponse(webresponse.body)
-    r.status_code = webresponse.code
-
-    for header, value in webresponse.headers.iteritems():
-        r[header] = value
-
-    return r
 
 @login_required
 @identity_profile_required

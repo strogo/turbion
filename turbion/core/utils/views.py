@@ -1,18 +1,20 @@
-# -*- coding: utf-8 -*-
 from django import http
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.utils.decorators import templated, titled
 
-def status_redirect(request, title, section, message, next, button="Continue"):
+def status_redirect(request, title, section, message, next, button=_("Continue")):
     from django.utils.http import urlencode
 
-    query = {"title"  : title,
-            "section": section,
-            "message": message,
-            "next"   : next,
-            "from"   : request.build_absolute_uri(),
-            "button" : button,}
+    query = {
+        "title"  : title,
+        "section": section,
+        "message": message,
+        "next"   : next,
+        "from"   : request.build_absolute_uri(),
+        "button" : button,
+    }
 
     return http.HttpResponseRedirect(reverse("turbion_status") + "?" + urlencode(query))
 
