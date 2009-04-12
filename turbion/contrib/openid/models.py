@@ -7,7 +7,7 @@ from datetime import datetime
 from turbion.core.utils.models import GenericManager
 from turbion.core.utils.enum import Enum
 
-# models needed to openid library store
+# Models needed to openid library store
 
 class Association(models.Model):
     origins = Enum(
@@ -43,6 +43,8 @@ class Nonce(models.Model):
     class Meta:
         db_table = "turbion_openid_nonce"
 
+# Public interface
+
 class Trust(models.Model):
     url = models.URLField(unique=True)
     date = models.DateTimeField(default=datetime.now)
@@ -52,3 +54,5 @@ class Trust(models.Model):
 
     class Meta:
         db_table = "turbion_openid_trust"
+        verbose_name = _('trust url')
+        verbose_name_plural = _('trust urls')
