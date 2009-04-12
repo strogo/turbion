@@ -66,7 +66,7 @@ def endpoint(request):
         return _render_error(request, force_unicode(why))
 
     if openid_request is None:
-        return {}
+        return http.HttpResponseBadRequest('OpenID consumer request required')
 
     if openid_request.mode in ["checkid_immediate", "checkid_setup"]:
         if not openid_request.idSelect():
