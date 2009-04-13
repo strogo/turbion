@@ -11,4 +11,4 @@ class Identity(models.Model):
     openid = models.CharField(max_length=200, db_index=True)
 
     def __unicode__(self):
-        return self.url
+        return self.openid
