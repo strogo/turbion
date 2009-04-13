@@ -81,9 +81,6 @@ class Profile(User):
 
     objects = ProfileManager()
 
-    def is_authenticated_confirmed(self):
-        return self.is_authenticated() and self.is_confirmed
-
     @property
     def full_name(self):
         return "%s %s" % (self.first_name, self.last_name)

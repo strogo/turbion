@@ -27,7 +27,7 @@ for filter_name in settings.TURBION_ANTISPAM_FILTERS:
 
 def anonymous_only(func):
     def _decorator(request, *args, **kwargs):
-        if not get_profile(request).is_authenticated_confirmed():
+        if not get_profile(request).is_confirmed:
             return func(request, *args, **kwargs)
     return _decorator
 
