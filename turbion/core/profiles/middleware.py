@@ -9,18 +9,8 @@ class AnonymousProfile(AnonymousUser):
     nickname = None
     ip = None
     is_confirmed = False
-    birth_date = None
-    gender = None
-    country = None
-    city = None
+    trusted = False
     site = None
-    biography = None
-    interests = None
-    education = None
-    work = None
-    icq = None
-    jabber = None
-    skype = None
     name_view = None
     site_view = None
 
