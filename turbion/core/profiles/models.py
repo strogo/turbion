@@ -77,7 +77,7 @@ class Profile(User):
 
     filter = MarkupField()
 
-    openid = models.URLField(verbose_name=_('openid'), blank=True, default='')
+    openid = models.CharField(max_length=255, verbose_name=_('openid'), blank=True, default='')
 
     objects = ProfileManager()
 

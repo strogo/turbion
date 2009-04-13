@@ -167,7 +167,7 @@ class ActionModelAdmin(object):
         if request.method == 'POST':
             obj = self.model._default_manager.get(pk=object_id)
             action = request.POST.get('action')
-            self.antispam_do_action(request, obj, action)
+            self.antispam_submit_action(request, obj, action)
 
             return http.HttpResponseRedirect(
                 request.META.get('HTTP_REFERER')
