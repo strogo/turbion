@@ -106,7 +106,7 @@ class Post(models.Model):
 
         super(Post, self).save(*args, **kwargs)
 
-    def publicate(self, notify=True):
+    def publicate(self):
         from turbion.core.blogs.models.comment import CommentAdd
         from turbion.core.blogs import signals
 

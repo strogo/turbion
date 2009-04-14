@@ -58,14 +58,14 @@ class Profile(User):
     nickname = models.CharField(max_length=150, null=True, verbose_name =_('nickname'))
     ip = models.IPAddressField(null=True, blank=True, verbose_name =_('IP'))
 
-    is_author = models.BooleanField(default=False, verbose_name=_("blog author"))
+    is_author = models.BooleanField(default=False, verbose_name=_("blog author"), db_index=True)
 
     # False when user is guest and not confirmed his profie
     is_confirmed = models.BooleanField(default=True, verbose_name =_('confirmed'))
 
     # True when user is quest but trusted and have
     # right as registered user when posting comment
-    trusted = models.BooleanField(default=False, verbose_name=_("trusted"))
+    trusted = models.BooleanField(default=False, verbose_name=_("trusted"), db_index=True)
 
     site = models.CharField(blank=True, max_length=100, null=True, verbose_name=('site'))
 

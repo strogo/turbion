@@ -35,7 +35,7 @@ class PostAdmin(admin.ModelAdmin):
             was_draft = Post.objects.get(pk=post.pk).status == Post.statuses.draft
 
         if was_draft and post.is_published:
-            post.publicate(form.cleaned_data['notify'])
+            post.publicate()
         else:
             post.save()
 

@@ -68,7 +68,7 @@ def process_for_pingback(post, **kwargs):
 
         out = Pingback.objects.create(
             post=post,
-            target_uri=target_url,
+            target_url=target_url,
             status=status,
             finished=gateway is not None and status
         )
