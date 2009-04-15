@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.core.paginator import Paginator, Page, InvalidPage
 from django import http
 

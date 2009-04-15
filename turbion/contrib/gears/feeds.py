@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.contrib.syndication.feeds import Feed
 from django.utils.feedgenerator import Atom1Feed
 from django.shortcuts import get_object_or_404

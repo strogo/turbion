@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.utils.functional import curry
 from django.core.cache import cache
 from django.utils.encoding import smart_str

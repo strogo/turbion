@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from turbion.core.utils.tests.composition import models
 
 class BaseTest(object):
@@ -12,7 +11,7 @@ class GenericEventTest(BaseTest):
 
         for i in range(5):
             self.visit_model.objects.create(event=self.event)
-        
+
     def test_event(self):
         self.renew_object("event")
         self.assertEqual(self.event.visit_count, 5)
@@ -38,8 +37,8 @@ class GenericMovieTest(BaseTest):
                             director=self.person
                         )
         self.movie.save()
-        
-    def test_movie(self):       
+
+    def test_movie(self):
         self.movie.update_headline()
 
         self.renew_object("movie")
@@ -63,7 +62,7 @@ class GenericPostTest(BaseTest):
 
         for i in range(5):
             self.comment_model.objects.create(post=self.post)
-            
+
     def test_post(self):
         self.renew_object("post")
         self.assertEqual(self.post.comment_count, 5)

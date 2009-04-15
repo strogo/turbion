@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django import http
 from django.contrib.sites.models import Site

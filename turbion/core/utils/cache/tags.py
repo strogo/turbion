@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from inspect import getargspec
 
 from django.template import TemplateSyntaxError, Node, Variable, generic_tag_compiler, Context

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import tempfile
 
 from django.test import TestCase

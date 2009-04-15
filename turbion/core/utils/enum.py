@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 class Enum(object):
     def __init__(self, **kwargs):

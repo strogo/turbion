@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 
 from django.http import HttpResponse

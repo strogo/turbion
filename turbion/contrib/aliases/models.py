@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.utils.models import GenericManager
 from turbion.core.utils.enum import NamedEnum
 
-class Alias(models.Model):#FIXME: move to contrib and restore middleware
+class Alias(models.Model):
     user_agents = NamedEnum(
         feedburner=("(feedburner|feedvalidator)", "feedburner bot"),
     )

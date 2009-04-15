@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.test import TestCase
 
 from turbion.core.utils.tests.composition.generic import *

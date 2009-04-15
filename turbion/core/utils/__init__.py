@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 def memoize(func):
     def _decorator(self, *args, **kwargs):

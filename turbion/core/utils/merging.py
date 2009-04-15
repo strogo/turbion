@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.dispatch import Signal
 from django.db.models import signals
 

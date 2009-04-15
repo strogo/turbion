@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 
 from django.utils.translation import ugettext_lazy as _

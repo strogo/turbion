@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 from django.test import TestCase
-
 
 from turbion.core.utils.tests.composition.models import Event
 from turbion.core.utils.tests.composition.low import *

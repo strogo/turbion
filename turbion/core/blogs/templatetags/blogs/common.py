@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django import template
 from django.template import resolve_variable, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str

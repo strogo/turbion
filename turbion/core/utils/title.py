@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.contrib.sites.models import Site
 from django.utils.encoding import smart_unicode
 from django.conf import settings

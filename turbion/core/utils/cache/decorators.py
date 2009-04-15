@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from turbion.core.cache.utils import CacheWrapper
 
 def cached(trigger, suffix=None, base_name=None):
