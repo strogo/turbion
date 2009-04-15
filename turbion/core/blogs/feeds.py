@@ -39,7 +39,7 @@ class PostsFeed(BasePostFeed):
 
     def items(self):
         posts = Post.published.all().select_related()
-        if not get_profile(self.request).is_confirmed:
+        if not get_profile(self.request).is_trusted():
             posts = posts.filter(showing=Post.show_settings.everybody)
         return posts.order_by("-published_on")[:10]
 
@@ -53,7 +53,7 @@ class CommentsFeed(Feed):
     def get_object(self, bits):
         if len(bits) == 1:
             query_set = Post.published.all()
-            if not get_profile(self.request).is_confirmed:
+            if not get_profile(self.request).is_trusted():
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
             return get_object_or_404(query_set, pk=bits[0])
 

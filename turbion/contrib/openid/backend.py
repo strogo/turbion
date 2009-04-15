@@ -75,10 +75,6 @@ class OpenidBackend(ModelBackend):
                     model._default_manager.filter(**{field_name: created_profile}).update(**{field_name: profile})
                 created_profile.delete()
 
-        # profile may be unconfirmed when created
-        # while comment/feedback posting
-        profile.is_confirmed = True
-
         profile.save()
 
         return profile

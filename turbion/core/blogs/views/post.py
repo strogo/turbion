@@ -22,7 +22,7 @@ from turbion.core.utils import antispam
 def blog(request):
     posts = Post.published.all()
 
-    if not get_profile(request).is_confirmed:
+    if not get_profile(request).is_trusted():
         posts = posts.filter(showing=Post.show_settings.everybody)
 
     post_page = paginate(
@@ -52,7 +52,7 @@ def tag(request, tag_slug):
     _tag = get_object_or_404(Tag.active, slug=tag_slug)
     posts = _tag.posts.all()
 
-    if not get_profile(request).is_confirmed:
+    if not get_profile(request).is_trusted():
         posts = posts.filter(showing=Post.show_settings.everybody)
 
     post_page = paginate(

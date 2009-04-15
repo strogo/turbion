@@ -20,7 +20,7 @@ def post_view(view_func):
         else:
             query_set = Post.published.all()
 
-            if not get_profile(request).is_confirmed:
+            if not get_profile(request).is_trusted():
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
 
         published_on = dict(

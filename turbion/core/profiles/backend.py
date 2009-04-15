@@ -5,9 +5,7 @@ from turbion.core.profiles.models import Profile
 class OnlyActiveBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
         try:
-            user = Profile.objects.get(username=username,
-                                       is_active=True,
-                                       is_confirmed=True)
+            user = Profile.objects.get(username=username, is_active=True)
             if user.check_password(password):
                 return user
         except Profile.DoesNotExist:

@@ -32,7 +32,6 @@ class ProfileManager(UserManager):
         profile.nickname = nickname
         profile.site = site
         profile.name_view = Profile.names.nickname
-        profile.is_confirmed = False
         profile.ip = ip
         profile.__dict__.update(kwargs)
         profile.save()
@@ -41,7 +40,7 @@ class ProfileManager(UserManager):
 
     def has_superuser(self):
         return self.filter(
-            is_staff=True, is_superuser=True, is_active=True, is_confirmed=True
+            is_staff=True, is_superuser=True, is_active=True, trusted=True
         ).count() != 0
 
 class Profile(User):
@@ -60,9 +59,6 @@ class Profile(User):
 
     is_author = models.BooleanField(default=False, verbose_name=_("blog author"), db_index=True)
 
-    # False when user is guest and not confirmed his profie
-    is_confirmed = models.BooleanField(default=True, verbose_name =_('confirmed'))
-
     # True when user is quest but trusted and have
     # right as registered user when posting comment
     trusted = models.BooleanField(default=False, verbose_name=_("trusted"), db_index=True)
@@ -77,7 +73,8 @@ class Profile(User):
 
     filter = MarkupField()
 
-    openid = models.CharField(max_length=255, verbose_name=_('openid'), blank=True, default='')
+    openid = models.CharField(max_length=255, verbose_name=_('openid'), blank=True,
+                              default='', db_index=True)
 
     objects = ProfileManager()
 
@@ -98,17 +95,18 @@ class Profile(User):
         }
         return type_map.get(self.name_view, self.username)
 
+    def is_trusted(self):
+        return self.trusted
+
     def __unicode__(self):
         return self.name
 
     def get_site_url(self):
-        if self.is_confirmed and self.openid:
-            type_map = {
-                Profile.sites.openid: self.openid,
-                Profile.sites.site: self.site
-            }
-            return type_map.get(self.site_view, self.site or self.openid)
-        return self.site
+        type_map = {
+            Profile.sites.openid: self.openid,
+            Profile.sites.site: self.site
+        }
+        return type_map.get(self.site_view, self.site or self.openid)
 
     @models.permalink
     def get_absolute_url(self):

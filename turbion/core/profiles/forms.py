@@ -17,10 +17,6 @@ class ProfileForm(forms.ModelForm):
             'name_view', 'site_view', 'filter'
         )
 
-    def save(self, commit=True):
-        self.instance.is_confirmed = True
-        return super(ProfileForm, self).save(commit)
-
 ProfileForm.base_fields.keyOrder = ProfileForm.Meta.fields
 
 def extract_profile_data(request):
@@ -33,7 +29,7 @@ USE_OPENID = 'turbion.contrib.openid' in settings.INSTALLED_APPS
 
 def combine_profile_form_with(form_class, request, field='created_by',\
                               fields=None, filter_field=None, markup_filter_fieled='text_filter'):
-    if not get_profile(request).is_confirmed:
+    if not get_profile(request).is_trusted():
         if USE_OPENID:
             from turbion.contrib.openid.forms import OpenidLoginForm as BaseForm
         else:

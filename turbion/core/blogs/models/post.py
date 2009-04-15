@@ -17,7 +17,6 @@ class Post(models.Model):
     moderations = Enum(
         none=_("none"),
         all=_("all"),
-        guests=_("guests"),
         untrusted=_("untrusted")
     )
 
@@ -153,12 +152,8 @@ class Post(models.Model):
         elif self.comments_moderation == Post.moderations.none:
             return Comment.statuses.published
 
-        elif self.comments_moderation == Post.moderations.guests:
-            if not author.is_confirmed:
-                return Comment.statuses.moderation
-
         elif self.comments_moderation == Post.moderations.untrusted:
-            if not author.is_confirmed or not author.trusted:
+            if not author.is_trusted():
                 return Comment.statuses.moderation
 
         return Comment.statuses.published

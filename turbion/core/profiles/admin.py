@@ -8,12 +8,12 @@ class ProfileAdmin(admin.ModelAdmin):
     exclude = ['password', 'last_login', 'user_permissions', 'groups']
     list_display  = (
         'id', 'nickname', 'email', 'site',
-        'is_confirmed', 'trusted', 'is_author',  'ip', 'filter', 'openid'
+        'trusted', 'is_author',  'ip', 'filter', 'openid'
     )
     list_per_page = 50
     list_display_links = ('id', 'nickname')
     list_filter   = (
-        'is_confirmed', 'trusted', 'is_author', 'is_superuser', 'is_staff', 'filter'
+        'trusted', 'is_author', 'is_superuser', 'is_staff', 'filter'
     )
     search_fields = ('username', 'nickname', 'email', 'site')
 

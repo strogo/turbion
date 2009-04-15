@@ -8,7 +8,6 @@ from turbion.core.profiles.models import Profile
 class AnonymousProfile(AnonymousUser):
     nickname = None
     ip = None
-    is_confirmed = False
     trusted = False
     site = None
     name_view = None

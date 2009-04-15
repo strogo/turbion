@@ -63,7 +63,7 @@ related_object.pk,)
                    JOIN
                         auth_user u ON u.id=p.user_ptr_id
                    WHERE
-                        is_confirmed=0 AND %(not_nulls)s
+                        trusted=0 AND %(not_nulls)s
                    GROUP BY
                         %(fields)s
                    HAVING
