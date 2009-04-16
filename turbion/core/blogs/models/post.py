@@ -158,6 +158,9 @@ class Post(models.Model):
 
         return Comment.statuses.published
 
+    def allow_comment_from(self, profile):
+        return self.commenting == Post.commenting_settings.allow
+
     class Meta:
         app_label           = "turbion"
         verbose_name        = 'post'

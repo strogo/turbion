@@ -11,11 +11,14 @@ from turbion.core.profiles import get_profile
 from turbion.core.utils.decorators import templated, paged
 from turbion.core.utils import antispam
 
-def add_comment(request, next, defaults={}, post=None,
-                comment=None, checker=lambda comment: True,
-                status_getter=lambda comment: Comment.statuses.published):
-    if comment and not checker(comment):
-        return HttpResponseRedirect(next % comment.__dict__)
+def _do_comment(request, post, defaults={}, comment=None):
+    profile = get_profile(request)
+
+    if not post.allow_comment_from(profile):
+        return http.HttpResponseRedirect(post.get_absolute_url())#FIXME: add message
+
+    if comment and profile not in (comment.author, post.created_by):
+        return http.HttpResponseRedirect(comment.get_absolute_url())
 
     if request.method == 'POST':
         form = forms.CommentForm(
@@ -36,7 +39,7 @@ def add_comment(request, next, defaults={}, post=None,
                 comment = new_comment
             else:
                 if not new_comment.created_by.trusted:
-                    new_comment.status = status_getter(new_comment)
+                    new_comment.status = post.get_comment_status(new_comment)
 
                 decision = antispam.process_form_submit(
                     request, form, new_comment, post
@@ -65,10 +68,10 @@ def add_comment(request, next, defaults={}, post=None,
 
                 if form.need_auth_redirect():
                     return http.HttpResponseRedirect(
-                        form.auth_redirect(next % new_comment.__dict__)
+                        form.auth_redirect(comment.get_absolute_url())
                     )
 
-                return http.HttpResponseRedirect(next % new_comment.__dict__)
+                return http.HttpResponseRedirect(comment.get_absolute_url())
     else:
         form = forms.CommentForm(
             request=request,
@@ -89,11 +92,9 @@ def add(request, post_id):
     if not post.allow_comments:
         return http.HttpResponseRedirect(post.get_absolute_url())#FIXME: add message showing
 
-    context = add_comment(
+    context = _do_comment(
         request,
         post=post,
-        status_getter=post.get_comment_status,
-        next=post.get_absolute_url() + "#comment_%(id)s"
     )
 
     if isinstance(context, dict):
@@ -106,14 +107,16 @@ def add(request, post_id):
 @templated('turbion/blogs/edit_comment.html')
 @titled(page=_('Edit comment to "{{post.title}}"'))
 def edit(request, comment_id):
-    comment = get_object_or_404(models.Comment.published.select_related("post"),  pk=comment_id)
+    comment = get_object_or_404(
+        models.Comment.published.select_related("post"),
+        pk=comment_id
+    )
     post = comment.post
 
-    context = add_comment(
+    context = _do_comment(
         request,
-        comment=comment,
-        redirect=post.get_absolute_url() + "#comment_%(id)s",
-        checker=lambda comment: get_profile(request) in (comment.author, post.created_by)
+        post=post,
+        comment=comment
     )
 
     if isinstance(context, dict):
@@ -126,4 +129,4 @@ def delete(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     comment.delete()
 
-    return http.HttpResponseRedirect(request.GET.get("redirect", "/"))
+    return http.HttpResponseRedirect(request.GET.get("next", "/"))
