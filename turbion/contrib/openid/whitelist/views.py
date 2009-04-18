@@ -7,7 +7,6 @@ def whitelist(request, queryset):
         queryset = queryset._clone()
     openids = list(queryset)
 
-
     MIMETYPES = ['application/xml', 'text/xml', 'application/json', 'text/plain']
     accept = request.META.get('HTTP_ACCEPT', '')
     try:
@@ -36,5 +35,5 @@ def whitelist(request, queryset):
 
     return http.HttpResponse(
         'Can accept only: %s' % ', '.join(MIMETYPES),
-        status_code = 406
+        status=406
     )
