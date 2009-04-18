@@ -14,7 +14,7 @@ class ProfilesViewsTest(BaseViewTest):
     def test_profile_edit(self):
         self.login()
 
-        self.assertStatus(reverse("turbion_profile_edit", kwargs={"profile_id": 1}))
+        self.assertStatus(reverse("turbion_profile_edit"))
 
 class ProfileCreation(TestCase):
     def test_creation(self):

@@ -176,7 +176,7 @@ def login_pad(context):
 
     if user.is_authenticated():
         if user.is_trusted():
-            urls.append((_("Profile"), reverse('turbion_profile_edit', args=(user.pk,))))
+            urls.append((_("Profile"), reverse('turbion_profile_edit')))
             urls.append((_("Logout"), reverse('django.contrib.auth.views.logout')))
     else:
         urls.append((_("Login"), reverse('django.contrib.auth.views.login')))

@@ -49,7 +49,7 @@ def authenticate(request):
 
     if hasattr(user, "just_created"):
         return http.HttpResponseRedirect(
-            reverse("turbion_profile_edit", args=(user.pk,)) + "?just_created=1"
+            reverse("turbion_profile_edit") + "?just_created=1"
         )
 
     return http.HttpResponseRedirect(request.GET.get('next', '/'))
