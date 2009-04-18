@@ -9,7 +9,7 @@ from turbion.core.profiles.decorators import profile_view, owner_required
 from django.shortcuts import *
 from turbion.core.utils.decorators import special_titled, templated
 
-title = special_titled(section=_("Profile {{profile}}"))
+titled = special_titled(section=_("Profile {{profile}}"))
 
 @profile_view
 @templated('turbion/profiles/profile.html')
