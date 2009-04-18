@@ -25,19 +25,11 @@ for filter_name in settings.TURBION_ANTISPAM_FILTERS:
     else:
         raise ValueError("Cannot load filter '%s'" % filter_name)
 
-def anonymous_only(func):
-    def _decorator(request, *args, **kwargs):
-        if not get_profile(request).is_trusted():
-            return func(request, *args, **kwargs)
-    return _decorator
-
-@anonymous_only
 def process_form_init(request, form, parent=None):
     for filter in filters:
         if hasattr(filter, 'process_form_init'):
             filter.process_form_init(request, form, parent)
 
-@anonymous_only
 def process_form_submit(request, form, child, parent=None):
     decision = 'unknown'
     for filter in filters:
