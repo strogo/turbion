@@ -41,17 +41,18 @@ def process_form_init(request, form, parent=None):
 def process_form_submit(request, form, child, parent=None):
     decision = 'unknown'
     for filter in filters:
-        if hasattr(filter, 'process_form_submit'):
-            decision = filter.process_form_submit(request, form, child, parent)
+        if not hasattr(filter, 'process_form_submit'):
+            continue
+        decision = filter.process_form_submit(request, form, child, parent)
 
-            if isinstance(decision, tuple):
-                decision, need_break = decision
-            else:
-                need_break = False
+        if isinstance(decision, tuple):
+            decision, need_break = decision
+        else:
+            need_break = False
 
-            if decision not in decisions:
-                decision = 'unknown'
+        if decision not in decisions:
+            decision = 'unknown'
 
-            if decision == 'spam' or need_break:
-                break
+        if decision == 'spam' or need_break:
+            break
     return decision
