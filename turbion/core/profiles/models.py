@@ -61,7 +61,7 @@ class Profile(User):
     # right as registered user when posting comment
     trusted = models.BooleanField(default=False, verbose_name=_("trusted"), db_index=True)
 
-    site = models.CharField(blank=True, max_length=100, null=True, verbose_name=('site'))
+    site = models.CharField(blank=True, max_length=100, null=True, verbose_name=_('site'))
 
     name_view = models.CharField(max_length=20, choices=names, null=True, blank=True,
                                  verbose_name=_('name view'))

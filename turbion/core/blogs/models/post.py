@@ -159,8 +159,8 @@ class Post(models.Model):
 
     class Meta:
         app_label           = "turbion"
-        verbose_name        = 'post'
-        verbose_name_plural = 'posts'
+        verbose_name        = _('post')
+        verbose_name_plural = _('posts')
         ordering            = ('-published_on', '-created_on',)
         unique_together     = (("published_on", "title", "slug"),)
         db_table            = "turbion_post"

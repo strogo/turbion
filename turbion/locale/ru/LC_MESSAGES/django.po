@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-19 01:41+0400\n"
+"POT-Creation-Date: 2009-04-19 01:58+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -24,7 +24,6 @@ msgid "to url"
 msgstr "целевой url"
 
 #: contrib/aliases/models.py:19
-#, fuzzy
 msgid "status code"
 msgstr "статус"
 
@@ -83,12 +82,12 @@ msgid "subject"
 msgstr "тема"
 
 #: contrib/feedback/models.py:32 core/blogs/models/comment.py:38
-#: core/blogs/models/post.py:57
+#: core/blogs/models/post.py:53
 msgid "text"
 msgstr "текст"
 
 #: contrib/feedback/models.py:35 core/blogs/models/comment.py:43
-#: core/blogs/models/post.py:60 core/pingback/models.py:20
+#: core/blogs/models/post.py:56 core/pingback/models.py:20
 msgid "status"
 msgstr "статус"
 
@@ -200,6 +199,7 @@ msgid "Latest comments"
 msgstr "Свежие комментарии"
 
 #: core/blogs/feeds.py:71
+#, python-format
 msgid "Comments on '%s'"
 msgstr "Комментарии к '%s'"
 
@@ -225,7 +225,8 @@ msgstr "Вы должны предоставить почту, чтобу пол
 msgid "search"
 msgstr "поиск"
 
-#: core/blogs/models/comment.py:20 core/pingback/models.py:26
+#: core/blogs/models/comment.py:20 core/blogs/models/post.py:162
+#: core/pingback/models.py:26
 msgid "post"
 msgstr "пост"
 
@@ -305,19 +306,23 @@ msgstr "заголовок"
 msgid "slug"
 msgstr ""
 
-#: core/blogs/models/post.py:64
+#: core/blogs/models/post.py:60
 msgid "commenting"
 msgstr "комментирование"
 
-#: core/blogs/models/post.py:67
+#: core/blogs/models/post.py:63
 msgid "showing"
 msgstr "рижим показа"
 
-#: core/blogs/models/post.py:71
+#: core/blogs/models/post.py:67
 msgid "comments moderation"
 msgstr "модерирование комментариев"
 
-#: core/blogs/models/post.py:172
+#: core/blogs/models/post.py:163
+msgid "posts"
+msgstr "посты"
+
+#: core/blogs/models/post.py:168
 msgid "comment count"
 msgstr "количество комментариев"
 
@@ -334,7 +339,6 @@ msgid "tag"
 msgstr "тег"
 
 #: core/blogs/models/tag.py:55
-#, fuzzy
 msgid "tags"
 msgstr "теги"
 
@@ -479,6 +483,7 @@ msgid "Only internal usage"
 msgstr "Только для внутреннего использования"
 
 #: core/profiles/forms.py:44 core/profiles/models.py:54
+#: core/profiles/models.py:64
 msgid "site"
 msgstr "сайт"
 
