@@ -3,7 +3,7 @@ from django.conf import settings
 from turbion.core.utils import loading
 from turbion.core.profiles import get_profile
 
-decisions = ['spam', 'ham', 'unknown']
+decisions = set(['spam', 'ham', 'unknown'])
 
 filters = []
 urlpatterns = []
@@ -43,6 +43,15 @@ def process_form_submit(request, form, child, parent=None):
     for filter in filters:
         if hasattr(filter, 'process_form_submit'):
             decision = filter.process_form_submit(request, form, child, parent)
-            if decision == 'spam':
+
+            if isinstance(decision, tuple):
+                decision, need_break = decision
+            else:
+                need_break = False
+
+            if decision not in decisions:
+                decision = 'unknown'
+
+            if decision == 'spam' or need_break:
                 break
     return decision
