@@ -1,29 +1,30 @@
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.profiles import forms
+from turbion.core.profiles import get_profile, forms
 from turbion.core.profiles.models import Profile
 from turbion.core.profiles.decorators import profile_view, owner_required
 
 from django.shortcuts import *
-from turbion.core.utils.decorators import titled, templated
+from turbion.core.utils.decorators import special_titled, templated
+
+title = special_titled(section=_("Profile {{profile}}"))
 
 @profile_view
 @templated('turbion/profiles/profile.html')
-@titled(page=_("Profile"), section="{{profile}}")
+@titled(page=_("Profile"))
 def profile(request, profile):
     return {
         "profile": profile
     }
 
-@profile_view
-@owner_required
+@login_required
 @templated('turbion/profiles/edit.html')
-@titled(page=_("Edit"), section=_("Profile {{profile}}"))
-def edit_profile(request, profile):
+@titled(page=_("Edit"))
+def edit_profile(request):
+    profile = get_profile(request)
+
     updated = False
     if request.method == "POST":
         profile_form = forms.ProfileForm(
