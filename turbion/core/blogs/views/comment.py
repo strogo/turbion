@@ -68,10 +68,10 @@ def _do_comment(request, post, defaults={}, comment=None):
 
                 if form.need_auth_redirect():
                     return http.HttpResponseRedirect(
-                        form.auth_redirect(comment.get_absolute_url())
+                        form.auth_redirect(new_comment.get_absolute_url())
                     )
 
-                return http.HttpResponseRedirect(comment.get_absolute_url())
+                return http.HttpResponseRedirect(new_comment.get_absolute_url())
     else:
         form = forms.CommentForm(
             request=request,

@@ -13,6 +13,9 @@ class AnonymousProfile(AnonymousUser):
     name_view = None
     site_view = None
 
+    def is_trusted(self):
+        return self.trusted
+
 def get_profile(request):
     try:
         user_id = request.session[SESSION_KEY]

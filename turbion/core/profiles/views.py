@@ -1,20 +1,20 @@
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import get_object_or_404
 
 from turbion.core.profiles import get_profile, forms
 from turbion.core.profiles.models import Profile
-from turbion.core.profiles.decorators import profile_view, owner_required
 
-from django.shortcuts import *
 from turbion.core.utils.decorators import special_titled, templated
 
 titled = special_titled(section=_("Profile {{profile}}"))
 
-@profile_view
 @templated('turbion/profiles/profile.html')
 @titled(page=_("Profile"))
-def profile(request, profile):
+def profile(request, profile_id):
+    profile = get_object_or_404(Profile, pk=profile_id)
+
     return {
         "profile": profile
     }
