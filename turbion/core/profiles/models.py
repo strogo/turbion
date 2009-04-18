@@ -57,8 +57,6 @@ class Profile(User):
     nickname = models.CharField(max_length=150, null=True, verbose_name =_('nickname'))
     ip = models.IPAddressField(null=True, blank=True, verbose_name =_('IP'))
 
-    is_author = models.BooleanField(default=False, verbose_name=_("blog author"), db_index=True)
-
     # True when user is quest but trusted and have
     # right as registered user when posting comment
     trusted = models.BooleanField(default=False, verbose_name=_("trusted"), db_index=True)
