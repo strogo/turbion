@@ -46,8 +46,8 @@ class Nonce(models.Model):
 # Public interface
 
 class Trust(models.Model):
-    url = models.URLField(unique=True)
-    date = models.DateTimeField(default=datetime.now)
+    url = models.URLField(unique=True, verbose_name=_('url'))
+    date = models.DateTimeField(default=datetime.now, verbose_name=_('date'))
 
     def __unicode__(self):
         return self.url

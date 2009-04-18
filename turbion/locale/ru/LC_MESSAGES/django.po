@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-19 01:58+0400\n"
+"POT-Creation-Date: 2009-04-19 02:05+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "статус"
 msgid "exclude user agent"
 msgstr "исключить user agent"
 
-#: contrib/aliases/models.py:26
+#: contrib/aliases/models.py:26 contrib/dbtemplates/models.py:8
 msgid "is active"
 msgstr "активный"
 
@@ -42,6 +42,23 @@ msgstr "алиас"
 #: contrib/aliases/models.py:35
 msgid "aliases"
 msgstr "алиасы"
+
+#: contrib/dbtemplates/models.py:7
+msgid "path"
+msgstr "путь"
+
+#: contrib/dbtemplates/models.py:9 contrib/feedback/models.py:32
+#: core/blogs/models/comment.py:38 core/blogs/models/post.py:53
+msgid "text"
+msgstr "текст"
+
+#: contrib/dbtemplates/models.py:18
+msgid "template"
+msgstr "шаблон"
+
+#: contrib/dbtemplates/models.py:19
+msgid "templates"
+msgstr "шаблоны"
 
 #: contrib/feedback/models.py:14
 msgid "accepted"
@@ -80,11 +97,6 @@ msgstr "автор изменения"
 #: contrib/feedback/models.py:30
 msgid "subject"
 msgstr "тема"
-
-#: contrib/feedback/models.py:32 core/blogs/models/comment.py:38
-#: core/blogs/models/post.py:53
-msgid "text"
-msgstr "текст"
 
 #: contrib/feedback/models.py:35 core/blogs/models/comment.py:43
 #: core/blogs/models/post.py:56 core/pingback/models.py:20
@@ -147,6 +159,14 @@ msgstr "сервер"
 #: contrib/openid/models.py:15
 msgid "consumer"
 msgstr "пользователь"
+
+#: contrib/openid/models.py:49
+msgid "url"
+msgstr ""
+
+#: contrib/openid/models.py:50 core/pingback/models.py:19
+msgid "date"
+msgstr "дата"
 
 #: contrib/openid/models.py:57
 msgid "trust url"
@@ -453,10 +473,6 @@ msgstr "урл источник"
 #: core/pingback/models.py:17
 msgid "target url"
 msgstr "целевой урл"
-
-#: core/pingback/models.py:19
-msgid "date"
-msgstr "дата"
 
 #: core/pingback/models.py:21
 msgid "finished"
