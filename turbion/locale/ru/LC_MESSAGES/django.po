@@ -8,165 +8,138 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-29 17:02+0400\n"
+"POT-Creation-Date: 2009-04-19 01:41+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: contrib/aliases/models.py:18
+#: contrib/aliases/models.py:17
 msgid "from url"
-msgstr ""
+msgstr "исходный url"
+
+#: contrib/aliases/models.py:18
+msgid "to url"
+msgstr "целевой url"
 
 #: contrib/aliases/models.py:19
-msgid "to url"
-msgstr ""
-
-#: contrib/aliases/models.py:20
 #, fuzzy
 msgid "status code"
 msgstr "статус"
 
-#: contrib/aliases/models.py:25
+#: contrib/aliases/models.py:24
 msgid "exclude user agent"
-msgstr ""
+msgstr "исключить user agent"
 
-#: contrib/aliases/models.py:27 contrib/gears/models.py:18
+#: contrib/aliases/models.py:26
 msgid "is active"
-msgstr ""
+msgstr "активный"
+
+#: contrib/aliases/models.py:34
+msgid "alias"
+msgstr "алиас"
 
 #: contrib/aliases/models.py:35
-msgid "alias"
-msgstr ""
-
-#: contrib/aliases/models.py:36
 msgid "aliases"
-msgstr ""
+msgstr "алиасы"
 
-#: contrib/feedback/models.py:15
+#: contrib/feedback/models.py:14
 msgid "accepted"
 msgstr "принятое"
 
-#: contrib/feedback/models.py:16
+#: contrib/feedback/models.py:15
 msgid "rejected"
 msgstr "отклоненное"
 
-#: contrib/feedback/models.py:17
+#: contrib/feedback/models.py:16
 msgid "done"
 msgstr "готово"
 
-#: contrib/feedback/models.py:18
+#: contrib/feedback/models.py:17
 msgid "new"
 msgstr "новое"
 
-#: contrib/feedback/models.py:22
-#, fuzzy
+#: contrib/feedback/models.py:21
 msgid "creation on"
 msgstr "время создания"
 
-#: contrib/feedback/models.py:24 core/blogs/models/comment.py:31
-#: core/blogs/models/post.py:42
+#: contrib/feedback/models.py:23 core/blogs/models/comment.py:32
+#: core/blogs/models/post.py:41
 msgid "created by"
-msgstr "создан"
+msgstr "автор"
 
-#: contrib/feedback/models.py:26
-#, fuzzy
+#: contrib/feedback/models.py:25
 msgid "update on"
 msgstr "время обновления"
 
-#: contrib/feedback/models.py:29 core/blogs/models/comment.py:35
-#: core/blogs/models/post.py:49
+#: contrib/feedback/models.py:28 core/blogs/models/comment.py:36
+#: core/blogs/models/post.py:48
 msgid "edited by"
-msgstr "изменен"
+msgstr "автор изменения"
 
-#: contrib/feedback/models.py:31
+#: contrib/feedback/models.py:30
 msgid "subject"
 msgstr "тема"
 
-#: contrib/feedback/models.py:33 core/blogs/models/comment.py:37
-#: core/blogs/models/post.py:58
+#: contrib/feedback/models.py:32 core/blogs/models/comment.py:38
+#: core/blogs/models/post.py:57
 msgid "text"
 msgstr "текст"
 
-#: contrib/feedback/models.py:36 core/blogs/models/comment.py:42
-#: core/blogs/models/post.py:61 core/pingback/models.py:20
+#: contrib/feedback/models.py:35 core/blogs/models/comment.py:43
+#: core/blogs/models/post.py:60 core/pingback/models.py:20
 msgid "status"
 msgstr "статус"
 
-#: contrib/feedback/models.py:51
+#: contrib/feedback/models.py:50
 msgid "feedback"
-msgstr "Сообщение обратной связи"
+msgstr "сообщение обратной связи"
 
-#: contrib/feedback/models.py:52
+#: contrib/feedback/models.py:51
 msgid "feedbacks"
-msgstr "Сообщения обратной связи"
+msgstr "сообщения обратной связи"
 
-#: contrib/feedback/models.py:59
+#: contrib/feedback/models.py:57
 msgid "New feedback added"
 msgstr "Новое сообщение обратной связи"
 
-#: contrib/feedback/views.py:11
+#: contrib/feedback/views.py:12
 msgid "Write"
-msgstr "Написать"
+msgstr "Новое сообщение"
 
-#: contrib/feedback/views.py:11 contrib/feedback/views.py:27
+#: contrib/feedback/views.py:12 contrib/feedback/views.py:34
 msgid "Feedback"
 msgstr "Обратная связь"
 
-#: contrib/feedback/views.py:26
+#: contrib/feedback/views.py:33
 msgid "Thanks"
 msgstr "Спасибо"
 
-#: contrib/feedback/views.py:29
+#: contrib/feedback/views.py:36
 msgid "Thanks. Your request will be handled by the administrator."
 msgstr ""
 
-#: contrib/gears/feeds.py:19 contrib/gears/feeds.py:24
-msgid "Latest revolving gears"
-msgstr ""
-
-#: contrib/gears/feeds.py:20
-msgid "Gears"
-msgstr ""
-
-#: contrib/gears/models.py:10 core/blogs/models/tag.py:23
-#: core/profiles/forms.py:45
-msgid "name"
-msgstr "имя"
-
-#: contrib/gears/models.py:11
-msgid "descriptor"
-msgstr ""
-
-#: contrib/gears/models.py:13
-msgid "interval"
-msgstr ""
-
-#: contrib/gears/models.py:15
-msgid "last"
-msgstr ""
-
-#: contrib/gears/models.py:16
-msgid "next"
-msgstr ""
-
-#: contrib/gears/models.py:19
-msgid "is lost"
-msgstr ""
-
-#: contrib/gears/models.py:42
-msgid "gear info"
-msgstr ""
-
-#: contrib/gears/models.py:43
-msgid "gear infos"
-msgstr ""
-
-#: contrib/openid/forms.py:14 core/profiles/forms.py:51
-#: core/profiles/models.py:51 core/profiles/models.py:77
+#: contrib/openid/forms.py:14 core/profiles/forms.py:47
+#: core/profiles/models.py:53 core/profiles/models.py:74
 msgid "openid"
 msgstr "OpenID"
+
+#: contrib/openid/forms.py:59 core/blogs/models/post.py:31
+msgid "allow"
+msgstr "разрешить"
+
+#: contrib/openid/forms.py:60 core/blogs/models/post.py:32
+msgid "disallow"
+msgstr "запретить"
+
+#: contrib/openid/forms.py:63
+msgid "always"
+msgstr "всегда"
+
+#: contrib/openid/forms.py:64
+msgid "decision"
+msgstr "решение"
 
 #: contrib/openid/models.py:14
 msgid "server"
@@ -175,6 +148,14 @@ msgstr "сервер"
 #: contrib/openid/models.py:15
 msgid "consumer"
 msgstr "пользователь"
+
+#: contrib/openid/models.py:57
+msgid "trust url"
+msgstr "доверенный url"
+
+#: contrib/openid/models.py:58
+msgid "trust urls"
+msgstr "доверенные url'ы"
 
 #: contrib/openid/views/authorization.py:14
 msgid "OpenID Authorization"
@@ -193,169 +174,156 @@ msgstr "Результат"
 msgid "Openid authentication error"
 msgstr "Ошибка авторизации OpenID"
 
-#: contrib/openid/views/server.py:15
-#, fuzzy
-msgid "Endpoint"
-msgstr "Редактировать"
-
-#: contrib/openid/views/server.py:15
+#: contrib/openid/views/server.py:21 contrib/openid/views/server.py:52
 msgid "OpenID Server"
 msgstr "OpenID сервер"
 
-#: core/assets/models.py:23
-msgid "image"
-msgstr ""
+#: contrib/openid/views/server.py:51
+msgid "Error"
+msgstr "Ошибка"
 
-#: core/assets/models.py:24
-msgid "application"
-msgstr ""
+#: contrib/openid/views/server.py:100
+msgid "Trust decision"
+msgstr "Решение о доверении"
 
-#: core/assets/models.py:25
-msgid "video"
-msgstr ""
+#: core/blogs/feeds.py:30
+msgid "Latest entries"
+msgstr "Последние записи"
 
-#: core/assets/models.py:26
-msgid "audio"
-msgstr ""
+#: core/blogs/feeds.py:38
+#, python-format
+msgid "Latest entries of blog '%s'"
+msgstr "Последние записи блога '%s'"
 
-#: core/assets/models.py:27
-msgid "unknown"
-msgstr ""
+#: core/blogs/feeds.py:63 core/blogs/feeds.py:73
+msgid "Latest comments"
+msgstr "Свежие комментарии"
 
-#: core/assets/models.py:81
-msgid "asset"
-msgstr ""
+#: core/blogs/feeds.py:71
+msgid "Comments on '%s'"
+msgstr "Комментарии к '%s'"
 
-#: core/assets/models.py:82
-msgid "assets"
-msgstr ""
+#: core/blogs/feeds.py:109
+#, python-format
+msgid "Latest entries with tag '%s'"
+msgstr "Последние записи с тегом '%s'"
 
-#: core/blogs/forms/__init__.py:5
-msgid "search"
-msgstr "поиск"
+#: core/blogs/feeds.py:116
+#, python-format
+msgid "Entries with tag '%s'"
+msgstr "Записи с тегом '%s'"
 
-#: core/blogs/forms/comment.py:12
+#: core/blogs/forms.py:12
 msgid "notify"
 msgstr "оповещение"
 
-#: core/blogs/forms/comment.py:28
+#: core/blogs/forms.py:28
 msgid "You have to provide email address to recieve notifications"
 msgstr "Вы должны предоставить почту, чтобу получать уведомления"
 
+#: core/blogs/forms.py:33
+msgid "search"
+msgstr "поиск"
+
 #: core/blogs/models/comment.py:20 core/pingback/models.py:26
-#, fuzzy
 msgid "post"
 msgstr "пост"
 
-#: core/blogs/models/comment.py:28 core/blogs/models/post.py:41
+#: core/blogs/models/comment.py:23 core/blogs/models/post.py:27
+msgid "published"
+msgstr "опубликован"
+
+#: core/blogs/models/comment.py:24
+msgid "moderation"
+msgstr "модерирование"
+
+#: core/blogs/models/comment.py:25 core/blogs/models/post.py:26
+msgid "hidden"
+msgstr "скрытый"
+
+#: core/blogs/models/comment.py:26
+msgid "spam"
+msgstr "спам"
+
+#: core/blogs/models/comment.py:29 core/blogs/models/post.py:40
 msgid "created on"
-msgstr "создан"
+msgstr "время создания"
 
-#: core/blogs/models/comment.py:33 core/blogs/models/post.py:47
+#: core/blogs/models/comment.py:34 core/blogs/models/post.py:46
 msgid "edited on"
-msgstr "изменен"
+msgstr "время измененя"
 
-#: core/blogs/models/comment.py:67
+#: core/blogs/models/comment.py:68
 msgid "comment"
 msgstr "комментарий"
 
-#: core/blogs/models/comment.py:68
+#: core/blogs/models/comment.py:69
 msgid "comments"
 msgstr "комментарии"
 
-#: core/blogs/models/comment.py:73
+#: core/blogs/models/comment.py:74
 msgid "new comment added"
 msgstr "добавлен новый комментарий"
 
 #: core/blogs/models/post.py:18
 msgid "none"
-msgstr "никто"
+msgstr "никого"
 
 #: core/blogs/models/post.py:19
 msgid "all"
-msgstr "все"
+msgstr "всех"
 
 #: core/blogs/models/post.py:20
-msgid "guests"
-msgstr "гости"
-
-#: core/blogs/models/post.py:21
 msgid "untrusted"
-msgstr "не доверенный"
+msgstr "не доверенных"
 
-#: core/blogs/models/post.py:25
+#: core/blogs/models/post.py:24
 msgid "draft"
 msgstr "черновик"
 
-#: core/blogs/models/post.py:26
+#: core/blogs/models/post.py:25
 msgid "trashed"
-msgstr "удален"
+msgstr "удалененый"
 
-#: core/blogs/models/post.py:27
-#, fuzzy
-msgid "hidden"
-msgstr "скрытая"
-
-#: core/blogs/models/post.py:28
-msgid "published"
-msgstr "опубликован"
-
-#: core/blogs/models/post.py:32
-msgid "allow"
-msgstr "разрешить"
-
-#: core/blogs/models/post.py:33
-msgid "disallow"
-msgstr "запретить"
-
-#: core/blogs/models/post.py:37
+#: core/blogs/models/post.py:36
 msgid "everybody"
 msgstr "все"
 
-#: core/blogs/models/post.py:38
+#: core/blogs/models/post.py:37
 msgid "registered"
 msgstr "зарегестрированные"
 
-#: core/blogs/models/post.py:44
+#: core/blogs/models/post.py:43
 msgid "published on"
-msgstr "опубликован"
+msgstr "время публикации"
 
-#: core/blogs/models/post.py:51 core/pingback/models.py:23
+#: core/blogs/models/post.py:50 core/pingback/models.py:23
 msgid "title"
 msgstr "заголовок"
 
-#: core/blogs/models/post.py:52 core/blogs/models/tag.py:24
+#: core/blogs/models/post.py:51 core/blogs/models/tag.py:24
 msgid "slug"
-msgstr "слаг"
-
-#: core/blogs/models/post.py:54
-msgid "mood"
 msgstr ""
 
-#: core/blogs/models/post.py:55
-msgid "location"
-msgstr ""
-
-#: core/blogs/models/post.py:56
-msgid "music"
-msgstr ""
-
-#: core/blogs/models/post.py:65
+#: core/blogs/models/post.py:64
 msgid "commenting"
 msgstr "комментирование"
 
-#: core/blogs/models/post.py:68
+#: core/blogs/models/post.py:67
 msgid "showing"
-msgstr "показ"
+msgstr "рижим показа"
 
-#: core/blogs/models/post.py:72
-#, fuzzy
+#: core/blogs/models/post.py:71
 msgid "comments moderation"
-msgstr "комментирование"
+msgstr "модерирование комментариев"
 
-#: core/blogs/models/post.py:175
+#: core/blogs/models/post.py:172
 msgid "comment count"
 msgstr "количество комментариев"
+
+#: core/blogs/models/tag.py:23 core/profiles/forms.py:41
+msgid "name"
+msgstr "имя"
 
 #: core/blogs/models/tag.py:26
 msgid "post count"
@@ -368,9 +336,9 @@ msgstr "тег"
 #: core/blogs/models/tag.py:55
 #, fuzzy
 msgid "tags"
-msgstr "Теги"
+msgstr "теги"
 
-#: core/blogs/templatetags/blogs/pads.py:179 core/profiles/views.py:16
+#: core/blogs/templatetags/blogs/pads.py:179 core/profiles/views.py:14
 msgid "Profile"
 msgstr "Профиль"
 
@@ -382,25 +350,22 @@ msgstr "Выход"
 msgid "Openid"
 msgstr "OpenID"
 
-#: core/blogs/views/archive.py:15
+#: core/blogs/views/archive.py:14
 msgid "Blog archive"
 msgstr "Архив блога"
 
-#: core/blogs/views/archive.py:23
-#, fuzzy
+#: core/blogs/views/archive.py:22
 msgid "Blog archive on {{blog_calendar.current.year}}"
 msgstr "Архив блога за {{blog.calendar.current.year}}"
 
-#: core/blogs/views/archive.py:41
-#, fuzzy
+#: core/blogs/views/archive.py:40
 msgid ""
 "Blog archive on {{blog_calendar.current.year}}/{{blog_calendar.current."
 "month}}"
 msgstr ""
 "Архив блога за {{blog.calendar.current.year}}/{{blog.calendar.current.month}}"
 
-#: core/blogs/views/archive.py:62
-#, fuzzy
+#: core/blogs/views/archive.py:61
 msgid ""
 "Blog archive on {{blog_calendar.current.year}}/{{blog_calendar.current."
 "month}}/{{blog_calendar.current.day}}"
@@ -408,23 +373,23 @@ msgstr ""
 "Архив блога за {{blog.calendar.current.year}}/{{blog.calendar.current."
 "month}}/{{blog.calendar.current.day}}"
 
-#: core/blogs/views/comment.py:76
+#: core/blogs/views/comment.py:88
 msgid "Add comment to \"{{post.title}}\""
 msgstr "Добавить комментарий к \"{{post.title}}\""
 
-#: core/blogs/views/comment.py:98
+#: core/blogs/views/comment.py:108
 msgid "Edit comment to \"{{post.title}}\""
 msgstr "Редактировать комментарий к \"{{post.title}}\""
 
-#: core/blogs/views/post.py:20
+#: core/blogs/views/post.py:21
 msgid "Blog"
 msgstr "Блог"
 
-#: core/blogs/views/post.py:41
+#: core/blogs/views/post.py:42
 msgid "Tags"
 msgstr "Теги"
 
-#: core/blogs/views/post.py:49
+#: core/blogs/views/post.py:50
 msgid "Tag \"{{tag}}\""
 msgstr "Тег \"{{tag}}\""
 
@@ -440,19 +405,19 @@ msgstr "Поиск в постах"
 msgid "Search in comments"
 msgstr "Поиск в комментариях"
 
-#: core/notifications/models.py:23
+#: core/notifications/models.py:28
 msgid "event"
 msgstr "событие"
 
-#: core/notifications/models.py:24
+#: core/notifications/models.py:29
 msgid "events"
 msgstr "события"
 
-#: core/notifications/models.py:41
+#: core/notifications/models.py:46
 msgid "event connection"
 msgstr ""
 
-#: core/notifications/models.py:42
+#: core/notifications/models.py:47
 msgid "event connections"
 msgstr ""
 
@@ -505,91 +470,90 @@ msgstr "пингбек"
 msgid "pingbacks"
 msgstr "пингбеки"
 
-#: core/profiles/forms.py:46
+#: core/profiles/forms.py:42
 msgid "email"
 msgstr ""
 
-#: core/profiles/forms.py:47
+#: core/profiles/forms.py:43
 msgid "Only internal usage"
 msgstr "Только для внутреннего использования"
 
-#: core/profiles/forms.py:48 core/profiles/models.py:52
+#: core/profiles/forms.py:44 core/profiles/models.py:54
 msgid "site"
 msgstr "сайт"
 
-#: core/profiles/forms.py:55
-msgid "check"
-msgstr "проверка"
-
-#: core/profiles/forms.py:127
+#: core/profiles/forms.py:119
 msgid "Any of nickname or openid is required."
 msgstr "Либо ник, либо OpenID требуется"
 
-#: core/profiles/models.py:46
+#: core/profiles/models.py:48
 msgid "nick"
 msgstr "ник"
 
-#: core/profiles/models.py:47
+#: core/profiles/models.py:49
 msgid "full name"
 msgstr "полное имя"
 
-#: core/profiles/models.py:48
+#: core/profiles/models.py:50
 msgid "full name with nick"
 msgstr "полное имя с ником"
 
-#: core/profiles/models.py:55
+#: core/profiles/models.py:57
 msgid "nickname"
 msgstr "ник"
 
-#: core/profiles/models.py:56
+#: core/profiles/models.py:58
 msgid "IP"
 msgstr ""
 
-#: core/profiles/models.py:58
-msgid "blog author"
-msgstr "автор блога"
-
-#: core/profiles/models.py:61
-msgid "confirmed"
-msgstr "подтвержденный"
-
-#: core/profiles/models.py:65
+#: core/profiles/models.py:62
 msgid "trusted"
 msgstr "доверенный"
 
-#: core/profiles/models.py:70
+#: core/profiles/models.py:67
 msgid "name view"
 msgstr "показ имени"
 
-#: core/profiles/models.py:73
+#: core/profiles/models.py:70
 msgid "site view"
 msgstr "показ сайта"
 
-#: core/profiles/models.py:119
+#: core/profiles/models.py:115
 msgid "profile"
 msgstr "профиль"
 
-#: core/profiles/models.py:120
+#: core/profiles/models.py:116
 msgid "profiles"
 msgstr "профили"
 
-#: core/profiles/views.py:25
-msgid "Edit"
-msgstr "Редактировать"
-
-#: core/profiles/views.py:25
+#: core/profiles/views.py:11
 msgid "Profile {{profile}}"
 msgstr "Профиль {{profile}}"
 
-#: core/utils/title.py:13
+#: core/profiles/views.py:24
+msgid "Edit"
+msgstr "Редактировать"
+
+#: core/utils/title.py:12
 msgid "Page"
 msgstr "Страница"
 
-#: core/utils/title.py:14
+#: core/utils/title.py:13
 msgid "Section"
 msgstr "Секция"
 
+#: core/utils/views.py:7
+msgid "Continue"
+msgstr "Продолжить"
+
+#: core/utils/antispam/akismet.py:190
+msgid "Mark selected as spam"
+msgstr "Отметить выбранное как спам"
+
+#: core/utils/antispam/captcha.py:7
+msgid "check"
+msgstr "проверка"
+
 #: core/utils/markup/fields.py:46
-#, fuzzy
 msgid "markup filter"
 msgstr "фильтр"

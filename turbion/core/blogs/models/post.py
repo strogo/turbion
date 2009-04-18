@@ -50,10 +50,6 @@ class Post(models.Model):
     title         = models.CharField(max_length=130, verbose_name=_("title"))
     slug          = models.CharField(max_length=130, verbose_name=_("slug"), blank=True, db_index=True)
 
-    mood          = models.CharField(max_length=50, null=True, blank=True, verbose_name=_("mood"))
-    location      = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("location"))
-    music         = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("music"))
-
     text          = MarkupTextField(verbose_name=_("text"))
 
     status        = models.CharField(max_length=10, choices=statuses, db_index=True,
