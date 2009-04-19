@@ -75,8 +75,12 @@ def endpoint(request):
     except ProtocolError, why:
         return _render_error(request, force_unicode(why))
 
-    if openid_request is None:
-        return http.HttpResponseBadRequest('OpenID consumer request required')
+    if openid_request is not None:
+        utils._save_request(request, openid_request)
+    else:
+        openid_request = utils._load_request(request)
+        if openid_request is None:
+            return http.HttpResponseBadRequest('OpenID consumer request required')
 
     if openid_request.mode in ["checkid_immediate", "checkid_setup"]:
         if not openid_request.idSelect():
@@ -111,7 +115,6 @@ def endpoint(request):
             )
             return _render_response(request, openid_response)
         else:
-            utils._save_request(request, openid_request)
             return decide(request, openid_request)
     else:
         openid_response = server.handleRequest(openid_request)
