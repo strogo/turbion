@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-19 02:05+0400\n"
+"POT-Creation-Date: 2009-04-19 16:18+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -193,17 +193,21 @@ msgstr "Результат"
 msgid "Openid authentication error"
 msgstr "Ошибка авторизации OpenID"
 
-#: contrib/openid/views/server.py:21 contrib/openid/views/server.py:52
+#: contrib/openid/views/server.py:21 contrib/openid/views/server.py:62
 msgid "OpenID Server"
 msgstr "OpenID сервер"
 
-#: contrib/openid/views/server.py:51
+#: contrib/openid/views/server.py:61
 msgid "Error"
 msgstr "Ошибка"
 
-#: contrib/openid/views/server.py:100
+#: contrib/openid/views/server.py:126
 msgid "Trust decision"
 msgstr "Решение о доверении"
+
+#: core/blogs/admin.py:62
+msgid "headline"
+msgstr ""
 
 #: core/blogs/feeds.py:30
 msgid "Latest entries"
@@ -245,7 +249,7 @@ msgstr "Вы должны предоставить почту, чтобу пол
 msgid "search"
 msgstr "поиск"
 
-#: core/blogs/models/comment.py:20 core/blogs/models/post.py:162
+#: core/blogs/models/comment.py:20 core/blogs/models/post.py:165
 #: core/pingback/models.py:26
 msgid "post"
 msgstr "пост"
@@ -338,11 +342,11 @@ msgstr "рижим показа"
 msgid "comments moderation"
 msgstr "модерирование комментариев"
 
-#: core/blogs/models/post.py:163
+#: core/blogs/models/post.py:166
 msgid "posts"
 msgstr "посты"
 
-#: core/blogs/models/post.py:168
+#: core/blogs/models/post.py:171
 msgid "comment count"
 msgstr "количество комментариев"
 
@@ -416,6 +420,11 @@ msgstr "Теги"
 #: core/blogs/views/post.py:50
 msgid "Tag \"{{tag}}\""
 msgstr "Тег \"{{tag}}\""
+
+#: core/blogs/views/post.py:94
+#, fuzzy
+msgid "Preview of '{{post.title}}'"
+msgstr "Редактировать комментарий к \"{{post.title}}\""
 
 #: core/blogs/views/search.py:44
 msgid "Search"
@@ -567,8 +576,37 @@ msgstr "Секция"
 msgid "Continue"
 msgstr "Продолжить"
 
-#: core/utils/antispam/akismet.py:190
-msgid "Mark selected as spam"
+#: core/utils/antispam/akismet.py:159
+#, python-format
+msgid "`%(obj)s` successfully marked as %(action)s."
+msgstr "`%(obj)s` отмечен как %(action)s."
+
+#: core/utils/antispam/akismet.py:163
+#, python-format
+msgid "`%(obj)s` connot be marked %(error)s"
+msgstr "`%(obj)s` не может быть отмечен как %(error)s"
+
+#: core/utils/antispam/akismet.py:163
+#, python-format
+msgid "because %s."
+msgstr "из-за %s."
+
+#: core/utils/antispam/akismet.py:179
+msgid "Spam"
+msgstr "Спам"
+
+#: core/utils/antispam/akismet.py:179
+msgid "Ham"
+msgstr "Не спам"
+
+#: core/utils/antispam/akismet.py:186
+#, fuzzy
+msgid "antispam"
+msgstr "спам"
+
+#: core/utils/antispam/akismet.py:191
+#, fuzzy
+msgid "mark selected as spam"
 msgstr "Отметить выбранное как спам"
 
 #: core/utils/antispam/captcha.py:7

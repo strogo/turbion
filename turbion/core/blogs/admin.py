@@ -3,6 +3,7 @@ from django.utils.text import truncate_words
 from django.utils.encoding import force_unicode
 from django.contrib import admin
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles import get_profile
@@ -57,8 +58,8 @@ class CommentAdmin(akismet.ActionModelAdmin, admin.ModelAdmin):
     actions = ['antispam_action_spam']
 
     def headline(self, comment):
-        return truncate_words(comment.text, 7)
-    headline.short_description = 'headline'
+        return truncate_words(comment.text, 10)
+    headline.short_description = _('headline')
 
     def save_model(self, request, comment, form, change):
         if change:

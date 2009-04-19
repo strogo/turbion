@@ -156,11 +156,11 @@ class ActionModelAdmin(object):
             result = response.content
 
             self.antispam_do_action(action, obj)
-            self.message_user(request, u"`%s` successfully marked as %s." % (obj, action))
+            self.message_user(request, _("`%(obj)s` successfully marked as %(action)s.") % {'obj': obj, 'action': action})
         else:
             self.message_user(
                 request,
-                u"`%s` connot be marked %s" % (comment, response.content and u'because %s.' % response.content or '.')
+               _("`%(obj)s` connot be marked %(error)s") % {'obj': obj, 'error': response.content and _('because %s.') % response.content or '.'}
             )
 
     def antispam_view(self, request, object_id):
@@ -176,18 +176,19 @@ class ActionModelAdmin(object):
 
     def antispam(self, obj):
         action = self.antispam_map_action(obj)
-        name = action == 'spam' and 'Spam' or 'Ham'
+        name = action == 'spam' and _('Spam') or _('Ham')
 
         return """<form action="%s" method="POST">
         <input type="hidden" name="action" value="%s"/>
         <input class="button" type="submit" style="font-size:10px; padding:1px 2px;" value="%s"/>
         </form>""" % (reverse(self.get_antispam_url_name(), args=(obj.pk,)), action, name)
     antispam.allow_tags = True
+    antispam.short_description = _('antispam')
 
     def antispam_action_spam(self, request, queryset):
         for obj in queryset:
             self.antispam_submit_action(request, obj, 'spam')
-    antispam_action_spam.short_description = _("Mark selected as spam")
+    antispam_action_spam.short_description = _("mark selected as spam")
 
 urlpatterns = patterns('',
     url('akismet/submit_action', submit_action, name='akismet_action'),
