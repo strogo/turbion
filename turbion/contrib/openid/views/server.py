@@ -20,12 +20,22 @@ SREG_TO_PROFILE_MAP = {
 
 titled = special_titled(section=_("OpenID Server"))
 
+def is_identity_profile(request):
+    return get_profile(request).pk == int(settings.TURBION_OPENID_IDENTITY_PROFILE)
+
 def identity_profile_required(view):
     def _decorator(request, *args, **kwargs):
-        if get_profile(request).pk != int(settings.TURBION_OPENID_IDENTITY_PROFILE):
+        if not is_identity_profile(request):
             return http.HttpResponseForbidden('Access restricted')
         return view(request, *args, **kwargs)
     return _decorator
+
+def is_trust(url):
+    try:
+        trust = models.Trust.objects.get(url=url)
+        return True
+    except models.Trust.DoesNotExist:
+        return False
 
 def _render_response(request, openid_response, server=None):
     if not server:
@@ -83,9 +93,22 @@ def endpoint(request):
                 )
                 return _render_error(request, force_unicode(why))
 
+        # authenticate immediate if possible
+        if request.user.is_authenticated()\
+            and is_identity_profile(request)\
+            and is_trust(openid_request.trust_root):
+            openid_response = openid_request.answer(
+                True,
+                identity=settings.TURBION_OPENID_IDENTITY_URL
+            )
+            _add_sreg(openid_request, openid_response)
+            return _render_response(request, openid_response)
+
         if openid_request.immediate:
-            #FIXME: handle this type of request
-            openid_response = openid_request.answer(False)
+            openid_response = openid_request.answer(
+                False,
+                identity=settings.TURBION_OPENID_IDENTITY_URL
+            )
             return _render_response(request, openid_response)
         else:
             utils._save_request(request, openid_request)
@@ -118,36 +141,29 @@ def decide(request, openid_request=None):
     except HTTPFetchingError, err:
         trust_root_valid = "Unreachable"
 
-    try:
-        trust = models.Trust.objects.get(url=trust_root)
-        allowed = True
-    except models.Trust.DoesNotExist:
-        trust = None
-        allowed = None
+    allowed = None
 
-    if not trust:
-        if request.method == "POST"\
-                    and 'decision' in request.POST:#handle case when consumer request comes with POST
-            form = forms.DecideForm(request.POST)
-            if form.is_valid():
-                decision = form.cleaned_data["decision"]
+    if request.method == "POST"\
+                and 'decision' in request.POST:#handle case when consumer request comes with POST
+        form = forms.DecideForm(request.POST)
+        if form.is_valid():
+            decision = form.cleaned_data["decision"]
 
-                allowed = decision == "allow"
+            allowed = decision == "allow"
 
-                if allowed and form.cleaned_data["always"]:
-                    trust, _ = models.Trust.objects.get_or_create(url=trust_root)
-        else:
-            form = forms.DecideForm()
+            if allowed and form.cleaned_data["always"]:
+                trust, _ = models.Trust.objects.get_or_create(url=trust_root)
 
-    if allowed is not None:
-        openid_response = openid_request.answer(
-            allowed,
-            identity=settings.TURBION_OPENID_IDENTITY_URL
-        )
-        if allowed:
-            _add_sreg(openid_request, openid_response)
+            openid_response = openid_request.answer(
+                allowed,
+                identity=settings.TURBION_OPENID_IDENTITY_URL
+            )
+            if allowed:
+                _add_sreg(openid_request, openid_response)
 
-        return _render_response(request, openid_response)
+            return _render_response(request, openid_response)
+    else:
+        form = forms.DecideForm()
 
     return {
         'form': form,
