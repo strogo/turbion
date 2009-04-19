@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django import forms, http
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 
 from turbion import get_version
 from turbion.core.blogs.models import Comment
@@ -176,7 +177,7 @@ class ActionModelAdmin(object):
 
     def antispam(self, obj):
         action = self.antispam_map_action(obj)
-        name = action == 'spam' and _('Spam') or _('Ham')
+        name = action == 'spam' and ugettext('Spam') or ugettext('Ham')
 
         return """<form action="%s" method="POST">
         <input type="hidden" name="action" value="%s"/>

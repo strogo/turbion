@@ -207,7 +207,7 @@ msgstr "Решение о доверении"
 
 #: core/blogs/admin.py:62
 msgid "headline"
-msgstr ""
+msgstr "хедлайн"
 
 #: core/blogs/feeds.py:30
 msgid "Latest entries"
@@ -600,12 +600,10 @@ msgid "Ham"
 msgstr "Не спам"
 
 #: core/utils/antispam/akismet.py:186
-#, fuzzy
 msgid "antispam"
-msgstr "спам"
+msgstr "антиспам"
 
 #: core/utils/antispam/akismet.py:191
-#, fuzzy
 msgid "mark selected as spam"
 msgstr "Отметить выбранное как спам"
 
