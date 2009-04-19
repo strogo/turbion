@@ -74,11 +74,14 @@ class Post(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        args = (
-            self.published_on.year, self.published_on.month,
-            self.published_on.day, self.slug,
-        )
-        return ("turbion_blog_post", args)
+        if self.is_published:
+            args = (
+                self.published_on.year, self.published_on.month,
+                self.published_on.day, self.slug,
+            )
+            return ('turbion_blog_post', args)
+        else:
+            return ('turbion_blog_post_preview', (self.pk,))
 
     is_published = property(lambda self: self.status == Post.statuses.published)
     allow_comments = property(lambda self: self.commenting == Post.commenting_settings.allow)

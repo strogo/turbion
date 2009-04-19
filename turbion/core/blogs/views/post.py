@@ -89,3 +89,12 @@ def post(request, post):
         'pingbacks': pingbacks,
         "comment_form": comment_form
     }
+
+@templated('turbion/blogs/post.html')
+@titled(page=_("Preview of '{{post.title}}'"))
+def preview(request, post_id):
+    post = get_object_or_404(Post.objects.all(), pk=post_id)
+
+    return {
+        "post": post,
+    }
