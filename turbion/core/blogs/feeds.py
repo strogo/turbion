@@ -96,7 +96,7 @@ class CommentsFeedAtom(CommentsFeed):
     subtitle = CommentsFeed.description
 
 class TagFeed(BasePostFeed):
-    description_template = "turbion/blogs/feeds/tag_description.html"
+    description_template = "turbion/blogs/feeds/post_description.html"
 
     def get_object(self, bits):
         if len(bits) == 1:
