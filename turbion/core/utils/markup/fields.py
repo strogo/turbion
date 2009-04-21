@@ -24,6 +24,7 @@ class MarkupField(models.CharField):
 
 class MarkupTextField(models.TextField):
     def __init__(self, *args, **kwargs):
+        self.processing = kwargs.pop("processing", False)
         self.html_name = kwargs.pop("html_name", None)
         self.filter_field_name = kwargs.pop("filter_field_name", None)
         self.limit_choices_to = kwargs.pop("limit_choices_to", None)
@@ -50,8 +51,16 @@ class MarkupTextField(models.TextField):
     def pre_save(self, model_instance, add):
         value = super(MarkupTextField, self).pre_save(model_instance, add)
 
+        if self.processing:
+            from turbion.core.utils.markup import processing
+            value = processing.render_string(value)
+
         filter = getattr(model_instance, self.filter_field_name)
 
-        setattr(model_instance, self.html_name, Filter.manager.get(filter).to_html(value))
+        setattr(
+            model_instance,
+            self.html_name,
+            Filter.manager.get(filter).to_html(value)
+        )
 
         return value

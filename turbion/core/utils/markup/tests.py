@@ -15,7 +15,7 @@ class ProcessingTest(TestCase):
             processing.render_string(TEMPLATE),
             textwrap.dedent("""
             summary text
-            
+
             more text
             """)
         )
@@ -25,4 +25,12 @@ class ProcessingTest(TestCase):
             processing.extract_block(TEMPLATE, 'summary'),
             """summary text
             """.strip('\n ')
+        )
+
+    def test_restrincted_tag(self):
+        from django import template
+        self.assertRaises(
+            template.TemplateSyntaxError,
+            processing.render_string,
+            "{% for i in foobar %}{% endfor %}"
         )
