@@ -55,12 +55,6 @@ class AllModerationTest(BaseTest, TestCase):
     registered_status = Comment.statuses.moderation
     untrusted_status = Comment.statuses.moderation
 
-class GuestsModerationTest(BaseTest, TestCase):
-    moderation = Post.moderations.guests
-
-    registered_status = Comment.statuses.published
-    untrusted_status = Comment.statuses.published
-
 class UntrustedModerationTest(BaseTest, TestCase):
     moderation = Post.moderations.untrusted
 
