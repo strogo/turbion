@@ -66,8 +66,8 @@ class Comment(models.Model):
         from turbion.core import watchlist
 
         watchlist.subscribe(
-            'new_comment',
             self.created_by,
+            'new_comment',
             post=self.post,
             email=email
         )

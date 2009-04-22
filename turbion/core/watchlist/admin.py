@@ -11,7 +11,7 @@ admin.site.register(Event, EventAdmin)
 
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display  = (
-        'date', 'user', 'event', 'email'
+        'date', 'user', 'event', 'post', 'email'
     )
     list_per_page = 50
     list_filter   = ('email',)
