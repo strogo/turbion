@@ -1,0 +1,11 @@
+[
+  {
+    "pk": 2,
+    "model": "turbion.event",
+    "fields": {
+      "is_active": true,
+      "name": "new_feedback",
+      "title": "New Feedback"
+    }
+  }
+]
