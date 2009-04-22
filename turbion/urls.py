@@ -13,7 +13,7 @@ sitemaps = {
 urlpatterns = patterns('',
     url(r'^utils/',               include('turbion.core.utils.urls')),
     url(r'^profiles/',            include('turbion.core.profiles.urls')),
-    url(r'^notifications/',       include('turbion.core.notifications.urls')),
+    #url(r'^notifications/',       include('turbion.core.notifications.urls')),
     url(r'^pingback/',            include('turbion.core.pingback.urls')),
 
     url(r'',                      include('turbion.core.blogs.urls')),

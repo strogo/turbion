@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import http
 
 from turbion.core.blogs.decorators import post_view, titled
-from turbion.core.blogs.models import Post, Comment, CommentAdd
+from turbion.core.blogs.models import Post, Comment
 from turbion.core.blogs import signals
 from turbion.core.blogs import forms
 from turbion.core.profiles import get_profile
@@ -60,11 +60,8 @@ def _do_comment(request, post, defaults={}, comment=None):
                     instance=post
                 )
 
-                if form.cleaned_data["notify"]:
-                    CommentAdd.manager.subscribe(
-                        new_comment.created_by,
-                        new_comment.post
-                    )
+                new_comment.subscribe_author(email=bool(form.cleaned_data["notify"]))
+                new_comment.emit_event()
 
                 if form.need_auth_redirect():
                     return http.HttpResponseRedirect(

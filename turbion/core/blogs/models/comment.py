@@ -9,7 +9,6 @@ from turbion.core.profiles.models import Profile
 from turbion.core.utils.markup.fields import MarkupTextField
 from turbion.core.utils.models import GenericManager
 from turbion.core.utils.enum import Enum
-from turbion.core.notifications import EventDescriptor
 from turbion.core.blogs import signals as blogs_signals
 
 class CommentManager(GenericManager):
@@ -51,7 +50,27 @@ class Comment(models.Model):
         return self.created_on != self.edited_on
 
     def __unicode__(self):
-        return u"Comment on %s by %s" % (self.post, self.created_by.name,)
+        return _('Comment on %(post)s by %(author)s') % {'post': self.post, 'author': self.created_by.name,}
+
+    def emit_event(self):
+        from turbion.core import watchlist
+
+        watchlist.emit_event(
+            'new_comment',
+            post=self.post,
+            filter_recipient=lambda user: user != self.created_by,
+            comment=self,
+        )
+
+    def subscribe_author(self, email=False):
+        from turbion.core import watchlist
+
+        watchlist.subscribe(
+            'new_comment',
+            self.created_by,
+            post=self.post,
+            email=email
+        )
 
     def get_absolute_url(self):
         return self.post.get_absolute_url() + "#comment_%s" % self.pk
@@ -68,18 +87,3 @@ class Comment(models.Model):
         verbose_name        = _('comment')
         verbose_name_plural = _('comments')
         db_table            = "turbion_comment"
-
-class CommentAdd(EventDescriptor):
-    class Meta:
-        name = _("new comment added")
-        to_object = True
-        trigger = (Comment, blogs_signals.comment_added)
-        content_type = "html"
-
-    def allow_event(self, comment, *args, **kwargs):
-        return comment.status == Comment.statuses.published
-
-    def allow_recipient(self, recipient, comment, *args, **kwargs):
-        if recipient == comment.created_by:
-            return False
-        return True

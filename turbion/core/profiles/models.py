@@ -106,6 +106,10 @@ class Profile(User):
         }
         return type_map.get(self.site_view, self.site or self.openid)
 
+    def get_code(self):
+        import md5
+        return md5.new(".".join((self.pk, self.username, self.email))).hexdigest()
+
     @models.permalink
     def get_absolute_url(self):
         return ("turbion_profile", (self.username,))

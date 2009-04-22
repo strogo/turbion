@@ -105,14 +105,14 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
     def publicate(self):
-        from turbion.core.blogs.models.comment import CommentAdd
         from turbion.core.blogs import signals
+        from turbion.core import watchlist
 
         self.published_on = datetime.now()
 
         self.save()
 
-        CommentAdd.manager.subscribe(self.created_by, self)
+        watchlist.subscribe(self.created_by, 'new_comment', self)
 
         signals.post_published.send(
             sender=self.__class__,

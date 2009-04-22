@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.contrib.feedback import signals
 from turbion.core.profiles.models import Profile
-from turbion.core.notifications import EventDescriptor
 from turbion.core.utils.enum import Enum
 from turbion.core.utils.models import GenericManager
 
@@ -51,8 +50,3 @@ class Feedback(models.Model):
         verbose_name_plural = _('feedbacks')
         ordering            = ('-created_on',)
         db_table            = "turbion_feedback"
-
-class FeedbackAdd(EventDescriptor):
-    class Meta:
-        name = _("New feedback added")
-        trigger = (Feedback, signals.feedback_added)

@@ -8,7 +8,7 @@ from django.core import mail
 
 from turbion.core.utils.testing import BaseViewTest
 
-from turbion.core.blogs.models import Post, Comment, CommentAdd
+from turbion.core.blogs.models import Post, Comment
 from turbion.core.profiles.models import Profile
 
 class BlogsViews(BaseViewTest):
