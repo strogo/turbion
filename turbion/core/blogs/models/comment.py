@@ -58,7 +58,7 @@ class Comment(models.Model):
         watchlist.emit_event(
             'new_comment',
             post=self.post,
-            filter_recipient=lambda user: user != self.created_by,
+            filter_recipient=lambda user: user.email != self.created_by.email,
             comment=self,
         )
 

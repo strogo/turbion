@@ -55,8 +55,8 @@ def emit_event(event, post=None, filter_recipient=lambda user: True, **context):
 
             queue_mail(
                 email=user.email,
-                subject=event.render_subject(context),
-                body=event.render_body(context)
+                subject=event.render_subject(user_context),
+                body=event.render_body(user_context)
             )
 
 def queue_mail(email, subject, body, content_type='text/html'):
@@ -69,7 +69,7 @@ def queue_mail(email, subject, body, content_type='text/html'):
 
 def get_subcription_comments(user):
     from turbion.core.blogs.models import Comment
-    
+
     return Comment.published.filter(
         post__in=Subscription.objects.filter(user=user, post__isnull=False).values('post')
     ).select_related()
