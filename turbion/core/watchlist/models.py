@@ -18,7 +18,7 @@ class Event(models.Model):
     default_body_template = "turbion/watchlist/default_body.html"
 
     def __unicode__(self):
-        return self.name
+        return self.title
 
     def render_subject(self, context):
         return loader.select_template(
@@ -44,7 +44,7 @@ class Subscription(models.Model):
 
     post = models.ForeignKey(Post, null=True, blank=True)
 
-    email = models.BooleanField(default=True, db_index=True)
+    email = models.BooleanField(default=False, db_index=True)
 
     def get_unsubscribe_url(self):
         from django.utils.http import urlencode

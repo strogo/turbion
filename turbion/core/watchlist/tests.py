@@ -1,9 +1,11 @@
 from django.core import mail
 from django import http
 from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 from turbion.core import watchlist
-from turbion.core.watchlist.models import Message
+from turbion.core.watchlist.models import Message, Subscription
 from turbion.models import Post, Comment, Profile
 from turbion.core.utils.testing import BaseViewTest
 
@@ -16,6 +18,13 @@ class WatchlistTest(BaseViewTest):
     def setUp(self):
         self.post = Post.objects.all()[0]
 
+    def _create_comment(self):
+        return Comment.objects.create(
+            post=self.post,
+            created_by=self.user,
+            text="text comment text"
+        )
+
     def test_new_comment(self):
         watchlist.subscribe(
             self.user,
@@ -24,11 +33,7 @@ class WatchlistTest(BaseViewTest):
             email=True
         )
 
-        comment = Comment.objects.create(
-            post=self.post,
-            created_by=self.user,
-            text="text comment text"
-        )
+        comment = self._create_comment()
         watchlist.emit_event('new_comment', post=self.post, comment=comment)
 
         self.assertEqual(queue_len(), 1)
@@ -52,15 +57,39 @@ class WatchlistTest(BaseViewTest):
 
             self.assertEqual(queue_len(), 1)
 
-    def _test_unsubscribe(self):
-        self.login()
+    def test_unsubscribe_view(self):
+        sub = watchlist.subscribe(
+            self.user,
+            'new_comment',
+            self.post,
+            email=True
+        )
 
-        AnimalAdd.manager.subscribe(self.profile, self.owner)
+        site = Site.objects.get_current()
+        url, data = sub.get_unsubscribe_url().split("?")
 
-        url, data = AnimalAdd.manager.get_unsubscribe_url(self.profile, self.owner).split("?")
-
-        response = self.client.get(url, dict(d.split('=') for d in data.split('&')))
+        response = self.client.get(url[len('http://' + site.domain):], dict(d.split('=') for d in data.split('&')))
 
         self.assertEqual(response.status_code, http.HttpResponseRedirect.status_code)
 
-        self.assert_(not AnimalAdd.manager.has_subscription(self.profile, self.owner))
+        self.assertEqual(Subscription.objects.count(), 0)
+
+    def test_feed(self):
+        sub = watchlist.subscribe(
+            self.user,
+            'new_comment',
+            self.post,
+            email=True
+        )
+        self.create_comment()
+
+        self.login()
+
+        response = self.client.get(
+            reverse('turbion_watchlist_feed', args=('atom/%s/' % self.user.pk,))
+        )
+
+        self.assertEqual(response.status_code, http.HttpResponse.status_code)
+
+    def test_add_to_watchlist_view(self):
+        pass

@@ -1,6 +1,6 @@
 from django.contrib.syndication import views
 from django.shortcuts import get_object_or_404
-from django.conf import settigs
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django import forms, http
@@ -18,7 +18,7 @@ titled = special_titled(section=_('Watchlist'))
 @login_required
 @templated('turbion/watchlist/index.html')
 @titled(page=_('{{profile.name}}'))
-def watchlist(request):
+def index(request):
     profile = get_profile(request)
     return {
         'profile': profile,
@@ -31,15 +31,15 @@ def watchlist(request):
 class SubscriptionForm(forms.Form):
     action = forms.ChoiceField(choices=[('subs', 'subscribe'), ('unsubs', 'unsubscribe')])
     post = forms.ModelChoiceField(queryset=Post.published.all())
-    code = forms.CharFied(required=False)
+    code = forms.CharField(required=False)
 
     def __init__(self, user, *args, **kwargs):
-        super(SubscriptionForm).__init__(*args, **kwargs)
+        super(SubscriptionForm, self).__init__(*args, **kwargs)
         self.user = user
 
     def clean_code(self):
         code = self.cleaned_data['code']
-        if code != self.user.code:
+        if code != self.user.get_code():
             raise forms.ValidationError('Wrong code')
 
         return code
@@ -49,9 +49,9 @@ class SubscriptionForm(forms.Form):
         post = self.cleaned_data['post']
 
         if action == 'subs':
-            watchlist.subscribe('new_comment', self.user, post=post)
+            watchlist.subscribe(self.user, 'new_comment', post=post)
         else:
-            watchlist.unsubscrive('new_comment', self.user, post=post)
+            watchlist.unsubscribe(self.user, 'new_comment', post=post)
 
         return action, post
 

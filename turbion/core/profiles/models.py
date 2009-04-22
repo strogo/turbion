@@ -2,6 +2,7 @@ from django.db import models, connection
 from django.contrib.auth.models import User, UserManager
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import signals
+from django.utils.encoding import force_unicode
 
 from datetime import date
 
@@ -108,7 +109,7 @@ class Profile(User):
 
     def get_code(self):
         import md5
-        return md5.new(".".join((self.pk, self.username, self.email))).hexdigest()
+        return md5.new(".".join(map(force_unicode, [self.pk, self.username, self.email]))).hexdigest()
 
     @models.permalink
     def get_absolute_url(self):
