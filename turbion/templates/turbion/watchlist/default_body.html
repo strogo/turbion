@@ -1,0 +1,10 @@
+Notification on event: {{event}}
+===========================
+
+Hi, {{user}}!
+
+The new event accurs: {{event}}{% if subscription.post %} connected to {{subscription.post}}{% endif %}
+
+---------------------------
+To unsubscribe from notification visit:
+  {{subscription.get_unsubscribe_url}}
