@@ -20,7 +20,10 @@ setup(
     package_data={
         'turbion': strip_turbion(findall('turbion/locale')) +\
                    strip_turbion(findall('turbion/templates')) +\
-                   strip_turbion(findall('turbion/contrib/openid/templates'))
+                   strip_turbion(findall('turbion/fixtures')) +\
+
+                   strip_turbion(findall('turbion/contrib/openid/templates')) +\
+                   strip_turbion(findall('turbion/contrib/feedback/fixtures'))
     },
 
     install_requires = [
