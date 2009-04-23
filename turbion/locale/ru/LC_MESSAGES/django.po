@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-19 16:18+0400\n"
+"POT-Creation-Date: 2009-04-23 14:41+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -47,8 +47,9 @@ msgstr "алиасы"
 msgid "path"
 msgstr "путь"
 
-#: contrib/dbtemplates/models.py:9 contrib/feedback/models.py:32
-#: core/blogs/models/comment.py:38 core/blogs/models/post.py:53
+#: contrib/dbtemplates/models.py:9 contrib/feedback/models.py:31
+#: core/blogs/models/comment.py:37 core/blogs/models/post.py:53
+#: migrations/0001_initial.py:80 migrations/0001_initial.py:107
 msgid "text"
 msgstr "текст"
 
@@ -60,60 +61,60 @@ msgstr "шаблон"
 msgid "templates"
 msgstr "шаблоны"
 
-#: contrib/feedback/models.py:14
+#: contrib/feedback/models.py:13
 msgid "accepted"
 msgstr "принятое"
 
-#: contrib/feedback/models.py:15
+#: contrib/feedback/models.py:14
 msgid "rejected"
 msgstr "отклоненное"
 
-#: contrib/feedback/models.py:16
+#: contrib/feedback/models.py:15
 msgid "done"
 msgstr "готово"
 
-#: contrib/feedback/models.py:17
+#: contrib/feedback/models.py:16
 msgid "new"
 msgstr "новое"
 
-#: contrib/feedback/models.py:21
+#: contrib/feedback/models.py:20
 msgid "creation on"
 msgstr "время создания"
 
-#: contrib/feedback/models.py:23 core/blogs/models/comment.py:32
-#: core/blogs/models/post.py:41
+#: contrib/feedback/models.py:22 core/blogs/models/comment.py:31
+#: core/blogs/models/post.py:41 migrations/0001_initial.py:81
+#: migrations/0001_initial.py:110
 msgid "created by"
 msgstr "автор"
 
-#: contrib/feedback/models.py:25
+#: contrib/feedback/models.py:24
 msgid "update on"
 msgstr "время обновления"
 
-#: contrib/feedback/models.py:28 core/blogs/models/comment.py:36
-#: core/blogs/models/post.py:48
+#: contrib/feedback/models.py:27 core/blogs/models/comment.py:35
+#: core/blogs/models/post.py:48 migrations/0001_initial.py:78
+#: migrations/0001_initial.py:104
 msgid "edited by"
 msgstr "автор изменения"
 
-#: contrib/feedback/models.py:30
+#: contrib/feedback/models.py:29
 msgid "subject"
 msgstr "тема"
 
-#: contrib/feedback/models.py:35 core/blogs/models/comment.py:43
+#: contrib/feedback/models.py:34 core/blogs/models/comment.py:42
 #: core/blogs/models/post.py:56 core/pingback/models.py:20
+#: migrations/0001_initial.py:18 migrations/0001_initial.py:77
+#: migrations/0001_initial.py:101
 msgid "status"
 msgstr "статус"
 
-#: contrib/feedback/models.py:50
+#: contrib/feedback/models.py:49
 msgid "feedback"
 msgstr "сообщение обратной связи"
 
-#: contrib/feedback/models.py:51
+#: contrib/feedback/models.py:50
 msgid "feedbacks"
 msgstr "сообщения обратной связи"
-
-#: contrib/feedback/models.py:57
-msgid "New feedback added"
-msgstr "Новое сообщение обратной связи"
 
 #: contrib/feedback/views.py:12
 msgid "Write"
@@ -132,7 +133,8 @@ msgid "Thanks. Your request will be handled by the administrator."
 msgstr ""
 
 #: contrib/openid/forms.py:14 core/profiles/forms.py:47
-#: core/profiles/models.py:53 core/profiles/models.py:74
+#: core/profiles/models.py:54 core/profiles/models.py:75
+#: migrations/0001_initial.py:44
 msgid "openid"
 msgstr "OpenID"
 
@@ -165,6 +167,7 @@ msgid "url"
 msgstr ""
 
 #: contrib/openid/models.py:50 core/pingback/models.py:19
+#: migrations/0001_initial.py:25
 msgid "date"
 msgstr "дата"
 
@@ -249,46 +252,50 @@ msgstr "Вы должны предоставить почту, чтобу пол
 msgid "search"
 msgstr "поиск"
 
-#: core/blogs/models/comment.py:20 core/blogs/models/post.py:165
-#: core/pingback/models.py:26
+#: core/blogs/models/comment.py:19 core/blogs/models/post.py:165
+#: core/pingback/models.py:26 migrations/0001_initial.py:26
+#: migrations/0001_initial.py:85
 msgid "post"
 msgstr "пост"
 
-#: core/blogs/models/comment.py:23 core/blogs/models/post.py:27
+#: core/blogs/models/comment.py:22 core/blogs/models/post.py:27
 msgid "published"
 msgstr "опубликован"
 
-#: core/blogs/models/comment.py:24
+#: core/blogs/models/comment.py:23
 msgid "moderation"
 msgstr "модерирование"
 
-#: core/blogs/models/comment.py:25 core/blogs/models/post.py:26
+#: core/blogs/models/comment.py:24 core/blogs/models/post.py:26
 msgid "hidden"
 msgstr "скрытый"
 
-#: core/blogs/models/comment.py:26
+#: core/blogs/models/comment.py:25
 msgid "spam"
 msgstr "спам"
 
-#: core/blogs/models/comment.py:29 core/blogs/models/post.py:40
+#: core/blogs/models/comment.py:28 core/blogs/models/post.py:40
+#: migrations/0001_initial.py:82 migrations/0001_initial.py:112
 msgid "created on"
 msgstr "время создания"
 
-#: core/blogs/models/comment.py:34 core/blogs/models/post.py:46
+#: core/blogs/models/comment.py:33 core/blogs/models/post.py:46
+#: migrations/0001_initial.py:83 migrations/0001_initial.py:113
 msgid "edited on"
 msgstr "время измененя"
 
-#: core/blogs/models/comment.py:68
+#: core/blogs/models/comment.py:53
+#, python-format
+msgid "Comment on %(post)s by %(author)s"
+msgstr ""
+
+#: core/blogs/models/comment.py:87
 msgid "comment"
 msgstr "комментарий"
 
-#: core/blogs/models/comment.py:69
+#: core/blogs/models/comment.py:88
 msgid "comments"
 msgstr "комментарии"
-
-#: core/blogs/models/comment.py:74
-msgid "new comment added"
-msgstr "добавлен новый комментарий"
 
 #: core/blogs/models/post.py:18
 msgid "none"
@@ -318,27 +325,29 @@ msgstr "все"
 msgid "registered"
 msgstr "зарегестрированные"
 
-#: core/blogs/models/post.py:43
+#: core/blogs/models/post.py:43 migrations/0001_initial.py:102
 msgid "published on"
 msgstr "время публикации"
 
 #: core/blogs/models/post.py:50 core/pingback/models.py:23
+#: migrations/0001_initial.py:21 migrations/0001_initial.py:106
 msgid "title"
 msgstr "заголовок"
 
 #: core/blogs/models/post.py:51 core/blogs/models/tag.py:24
+#: migrations/0001_initial.py:69 migrations/0001_initial.py:111
 msgid "slug"
 msgstr ""
 
-#: core/blogs/models/post.py:60
+#: core/blogs/models/post.py:60 migrations/0001_initial.py:103
 msgid "commenting"
 msgstr "комментирование"
 
-#: core/blogs/models/post.py:63
+#: core/blogs/models/post.py:63 migrations/0001_initial.py:108
 msgid "showing"
 msgstr "рижим показа"
 
-#: core/blogs/models/post.py:67
+#: core/blogs/models/post.py:67 migrations/0001_initial.py:116
 msgid "comments moderation"
 msgstr "модерирование комментариев"
 
@@ -351,10 +360,11 @@ msgid "comment count"
 msgstr "количество комментариев"
 
 #: core/blogs/models/tag.py:23 core/profiles/forms.py:41
+#: migrations/0001_initial.py:71
 msgid "name"
 msgstr "имя"
 
-#: core/blogs/models/tag.py:26
+#: core/blogs/models/tag.py:26 migrations/0001_initial.py:68
 msgid "post count"
 msgstr "количество постов"
 
@@ -401,11 +411,11 @@ msgstr ""
 "Архив блога за {{blog.calendar.current.year}}/{{blog.calendar.current."
 "month}}/{{blog.calendar.current.day}}"
 
-#: core/blogs/views/comment.py:88
+#: core/blogs/views/comment.py:85
 msgid "Add comment to \"{{post.title}}\""
 msgstr "Добавить комментарий к \"{{post.title}}\""
 
-#: core/blogs/views/comment.py:108
+#: core/blogs/views/comment.py:105
 msgid "Edit comment to \"{{post.title}}\""
 msgstr "Редактировать комментарий к \"{{post.title}}\""
 
@@ -438,56 +448,23 @@ msgstr "Поиск в постах"
 msgid "Search in comments"
 msgstr "Поиск в комментариях"
 
-#: core/notifications/models.py:28
-msgid "event"
-msgstr "событие"
-
-#: core/notifications/models.py:29
-msgid "events"
-msgstr "события"
-
-#: core/notifications/models.py:46
-msgid "event connection"
-msgstr ""
-
-#: core/notifications/models.py:47
-msgid "event connections"
-msgstr ""
-
-#: core/notifications/views.py:32
-msgid "Wrong code"
-msgstr "Неверный код"
-
-#: core/notifications/views.py:67
-msgid "Unsubscribe"
-msgstr "Отписаться"
-
-#: core/notifications/views.py:68
-msgid "Notifications"
-msgstr "Оповещения"
-
-#: core/notifications/views.py:69
-#, python-format
-msgid "You've been unsubscribed from \"%s\""
-msgstr "Вы успешно отписаны от \"%s\""
-
-#: core/pingback/models.py:14
+#: core/pingback/models.py:14 migrations/0001_initial.py:20
 msgid "incoming"
 msgstr "входящий"
 
-#: core/pingback/models.py:16
+#: core/pingback/models.py:16 migrations/0001_initial.py:22
 msgid "source url"
 msgstr "урл источник"
 
-#: core/pingback/models.py:17
+#: core/pingback/models.py:17 migrations/0001_initial.py:19
 msgid "target url"
 msgstr "целевой урл"
 
-#: core/pingback/models.py:21
+#: core/pingback/models.py:21 migrations/0001_initial.py:23
 msgid "finished"
 msgstr "завершен"
 
-#: core/pingback/models.py:24
+#: core/pingback/models.py:24 migrations/0001_initial.py:24
 msgid "paragraph"
 msgstr "параграф"
 
@@ -507,8 +484,8 @@ msgstr ""
 msgid "Only internal usage"
 msgstr "Только для внутреннего использования"
 
-#: core/profiles/forms.py:44 core/profiles/models.py:54
-#: core/profiles/models.py:64
+#: core/profiles/forms.py:44 core/profiles/models.py:55
+#: core/profiles/models.py:65
 msgid "site"
 msgstr "сайт"
 
@@ -516,43 +493,43 @@ msgstr "сайт"
 msgid "Any of nickname or openid is required."
 msgstr "Либо ник, либо OpenID требуется"
 
-#: core/profiles/models.py:48
+#: core/profiles/models.py:49
 msgid "nick"
 msgstr "ник"
 
-#: core/profiles/models.py:49
+#: core/profiles/models.py:50
 msgid "full name"
 msgstr "полное имя"
 
-#: core/profiles/models.py:50
+#: core/profiles/models.py:51
 msgid "full name with nick"
 msgstr "полное имя с ником"
 
-#: core/profiles/models.py:57
+#: core/profiles/models.py:58 migrations/0001_initial.py:51
 msgid "nickname"
 msgstr "ник"
 
-#: core/profiles/models.py:58
+#: core/profiles/models.py:59 migrations/0001_initial.py:47
 msgid "IP"
 msgstr ""
 
-#: core/profiles/models.py:62
+#: core/profiles/models.py:63 migrations/0001_initial.py:52
 msgid "trusted"
 msgstr "доверенный"
 
-#: core/profiles/models.py:67
+#: core/profiles/models.py:68 migrations/0001_initial.py:46
 msgid "name view"
 msgstr "показ имени"
 
-#: core/profiles/models.py:70
+#: core/profiles/models.py:71 migrations/0001_initial.py:49
 msgid "site view"
 msgstr "показ сайта"
 
-#: core/profiles/models.py:115
+#: core/profiles/models.py:120
 msgid "profile"
 msgstr "профиль"
 
-#: core/profiles/models.py:116
+#: core/profiles/models.py:121
 msgid "profiles"
 msgstr "профили"
 
@@ -576,34 +553,34 @@ msgstr "Секция"
 msgid "Continue"
 msgstr "Продолжить"
 
-#: core/utils/antispam/akismet.py:159
+#: core/utils/antispam/akismet.py:160
 #, python-format
 msgid "`%(obj)s` successfully marked as %(action)s."
 msgstr "`%(obj)s` отмечен как %(action)s."
 
-#: core/utils/antispam/akismet.py:163
+#: core/utils/antispam/akismet.py:164
 #, python-format
 msgid "`%(obj)s` connot be marked %(error)s"
 msgstr "`%(obj)s` не может быть отмечен как %(error)s"
 
-#: core/utils/antispam/akismet.py:163
+#: core/utils/antispam/akismet.py:164
 #, python-format
 msgid "because %s."
 msgstr "из-за %s."
 
-#: core/utils/antispam/akismet.py:179
+#: core/utils/antispam/akismet.py:180
 msgid "Spam"
 msgstr "Спам"
 
-#: core/utils/antispam/akismet.py:179
+#: core/utils/antispam/akismet.py:180
 msgid "Ham"
 msgstr "Не спам"
 
-#: core/utils/antispam/akismet.py:186
+#: core/utils/antispam/akismet.py:187
 msgid "antispam"
 msgstr "антиспам"
 
-#: core/utils/antispam/akismet.py:191
+#: core/utils/antispam/akismet.py:192
 msgid "mark selected as spam"
 msgstr "Отметить выбранное как спам"
 
@@ -611,6 +588,53 @@ msgstr "Отметить выбранное как спам"
 msgid "check"
 msgstr "проверка"
 
-#: core/utils/markup/fields.py:46
+#: core/utils/markup/fields.py:47
 msgid "markup filter"
 msgstr "фильтр"
+
+#: core/watchlist/feeds.py:24 core/watchlist/views.py:16
+#: core/watchlist/views.py:90
+msgid "Watchlist"
+msgstr ""
+
+#: core/watchlist/feeds.py:25
+#, python-format
+msgid "For %s"
+msgstr "Для %s"
+
+#: core/watchlist/feeds.py:29
+#, python-format
+msgid "Watchlist for %s"
+msgstr "Watchlist для %s"
+
+#: core/watchlist/models.py:36
+msgid "event"
+msgstr "событие"
+
+#: core/watchlist/models.py:37
+msgid "events"
+msgstr "события"
+
+#: core/watchlist/models.py:68
+msgid "subscription"
+msgstr "подписка"
+
+#: core/watchlist/models.py:69
+msgid "subscriptions"
+msgstr "подписки"
+
+#: core/watchlist/views.py:20
+msgid "{{profile.name}}"
+msgstr ""
+
+#: core/watchlist/views.py:74
+msgid "Update subscriptions"
+msgstr "Обновление подписок"
+
+#: core/watchlist/views.py:89
+msgid "Unsubscribed"
+msgstr "Отписаться"
+
+#: core/watchlist/views.py:91
+msgid "You've been unsubscribed from new comment notification"
+msgstr "Вы успешно отписаны от оповещения о новых комментариях"
