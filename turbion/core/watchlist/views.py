@@ -14,7 +14,6 @@ from turbion.core.profiles import get_profile
 from turbion.core.utils.pagination import paginate
 from turbion.core.utils.views import status_redirect
 from turbion.core.watchlist.forms import SubscriptionForm
-from turbion.core.watchlist.models import Subscription
 
 titled = special_titled(section=_('Watchlist'))
 
@@ -31,7 +30,7 @@ def index(request):
             request.page,
             settings.TURBION_BLOG_POSTS_PER_PAGE
         ),
-        'subscriptions': Subscription.objects.filter(event__name='new_comment').\
+        'subscriptions': profile.subscriptions.filter(event__name='new_comment').\
                                         order_by('date').distinct()
     }
 
