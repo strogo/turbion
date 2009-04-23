@@ -9,10 +9,10 @@ from turbion.core.blogs.models import Post
 from turbion.core.utils.urls import uri_reverse
 
 class Event(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    title = models.CharField(max_length=150)
+    name = models.CharField(max_length=50, unique=True, verbose_name=_('name'))
+    title = models.CharField(max_length=150, verbose_name=_('title'))
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, verbose_name=_('is active'))
 
     default_subject_template = 'turbion/watchlist/default_subject.html'
     default_body_template = 'turbion/watchlist/default_body.html'
@@ -37,17 +37,17 @@ class Event(models.Model):
         verbose_name_plural = _('events')
 
 class Subscription(models.Model):
-    user = models.ForeignKey(Profile, related_name='subscriptions')
-    event = models.ForeignKey(Event, related_name='subscriptions')
+    user = models.ForeignKey(Profile, related_name='subscriptions', verbose_name=_('user'))
+    event = models.ForeignKey(Event, related_name='subscriptions', verbose_name=_('event'))
 
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateTimeField(default=datetime.now, verbose_name=_('date'))
 
-    post = models.ForeignKey(Post, null=True, blank=True)
+    post = models.ForeignKey(Post, null=True, blank=True, related_name='subscriptions', verbose_name=_('post'))
 
-    email = models.BooleanField(default=False, db_index=True)
+    email = models.BooleanField(default=False, db_index=True, verbose_name=_('email'))
 
     def __unicode__(self):
-        return (u'%s on %s' % (self.user.name, self.event)) + self.post and u' to `%s`' % self.post or ''
+        return (_('%s on %s') % (self.user.name, self.event)) + (self.post and _(' to `%s`') % self.post or '')
 
     def get_unsubscribe_url(self):
         from django.utils.http import urlencode
@@ -66,6 +66,8 @@ class Subscription(models.Model):
         return url
 
     class Meta:
+        ordering = ['-date']
+        unique_together = [('event', 'user', 'post')]
         db_table = 'turbion_subscription'
         app_label = 'turbion'
         verbose_name = _('subscription')
@@ -78,6 +80,9 @@ class Message(models.Model):
 
     body = models.TextField()
     content_type = models.CharField(max_length=50, blank=True)
+
+    def __unicode__(self):
+        return u'`%s` to %s' % (self.subject, self.email)
 
     def send(self):
         domain = Site.objects.get_current().domain

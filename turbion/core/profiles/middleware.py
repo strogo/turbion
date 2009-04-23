@@ -22,7 +22,7 @@ def get_profile(request):
         backend_path = request.session[BACKEND_SESSION_KEY]
         backend = load_backend(backend_path)
         user = backend.get_user(user_id)
-        if user:
+        if not isinstance(user, Profile):
             user = user.profile
         else:
             user = AnonymousProfile()

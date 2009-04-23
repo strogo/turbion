@@ -1,11 +1,11 @@
-from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth import backends
 
 from turbion.core.profiles.models import Profile
 
-class OnlyActiveBackend(ModelBackend):
+class ModelBackend(backends.ModelBackend):
     def authenticate(self, username=None, password=None):
         try:
-            user = Profile.objects.get(username=username, is_active=True)
+            user = Profile.objects.get(username=username)
             if user.check_password(password):
                 return user
         except Profile.DoesNotExist:

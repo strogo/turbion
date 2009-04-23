@@ -9,7 +9,7 @@ feed_dict = {
 
 urlpatterns = patterns('turbion.core.watchlist.views',
     url(r'^$', 'index', name='turbion_watchlist'),
-    url(r'^add/$', 'add_to_watchlist', name='turbion_watchlist_add'),
+    url(r'^action/$', 'watchlist_action', name='turbion_watchlist_action'),
     url(r'^update/$', 'update_watchlist', name='turbion_watchlist_update'),
     url(r'^feed/(.+)$', feed, {'feed_dict': feed_dict}, name='turbion_watchlist_feed',),
     url(r'^unsubscribe/(\d+)/$', 'unsubscribe', name="turbion_watchlist_unsubscribe"),

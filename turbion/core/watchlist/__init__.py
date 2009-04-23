@@ -59,7 +59,7 @@ def emit_event(event, post=None, filter_recipient=lambda user: True, **context):
                 body=event.render_body(user_context)
             )
 
-def queue_mail(email, subject, body, content_type='text/html'):
+def queue_mail(email, subject, body, content_type='html'):
     msg = Message.objects.create(
         email=email,
         subject=subject,
@@ -72,4 +72,4 @@ def get_subcription_comments(user):
 
     return Comment.published.filter(
         post__in=Subscription.objects.filter(user=user, post__isnull=False).values('post')
-    ).select_related()
+    ).select_related().order_by('-created_on')

@@ -3,70 +3,50 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
-from django import forms, http
+from django import http
+from django.core.urlresolvers import reverse
 
 from turbion.core.blogs.models import Post
 from turbion.core.profiles.models import Profile
-from turbion.core.utils.decorators import special_titled, templated
+from turbion.core.utils.decorators import special_titled, templated, paged
 from turbion.core import watchlist
 from turbion.core.profiles import get_profile
 from turbion.core.utils.pagination import paginate
 from turbion.core.utils.views import status_redirect
+from turbion.core.watchlist.forms import SubscriptionForm
+from turbion.core.watchlist.models import Subscription
 
 titled = special_titled(section=_('Watchlist'))
 
+@paged
 @login_required
 @templated('turbion/watchlist/index.html')
-@titled(page=_('{{profile.name}}'))
+@titled(page=_('Recent comments'))
 def index(request):
     profile = get_profile(request)
     return {
         'profile': profile,
-        'comments': paginate(
-            get_subcription_comments(profile),
+        'comments_page': paginate(
+            watchlist.get_subcription_comments(profile),
+            request.page,
             settings.TURBION_BLOG_POSTS_PER_PAGE
-        )
+        ),
+        'subscriptions': Subscription.objects.filter(event__name='new_comment').\
+                                        order_by('date').distinct()
     }
 
-class SubscriptionForm(forms.Form):
-    action = forms.ChoiceField(choices=[('subs', 'subscribe'), ('unsubs', 'unsubscribe')])
-    post = forms.ModelChoiceField(queryset=Post.published.all())
-    code = forms.CharField(required=False)
-
-    def __init__(self, user, *args, **kwargs):
-        super(SubscriptionForm, self).__init__(*args, **kwargs)
-        self.user = user
-
-    def clean_code(self):
-        code = self.cleaned_data['code']
-        if code != self.user.get_code():
-            raise forms.ValidationError('Wrong code')
-
-        return code
-
-    def process(self):
-        action = self.cleaned_data['action']
-        post = self.cleaned_data['post']
-
-        if action == 'subs':
-            watchlist.subscribe(self.user, 'new_comment', post=post)
-        else:
-            watchlist.unsubscribe(self.user, 'new_comment', post=post)
-
-        return action, post
-
 @login_required
-def add_to_watchlist(request):
+def watchlist_action(request):
     if request.method != 'POST':
         return http.HttpResponseNotAllowed('POST request required')
 
     profile = get_profile(request)
-    form = AddSubscriptionForm(user=profile, data=request.POST)
+    form = SubscriptionForm(user=profile, data=request.POST)
 
     if form.is_valid():
         action, post = form.process()
 
-        return http.HttpResponseRedirect(request.REQUEST.get('next', post.get_absolute_url()))
+        return http.HttpResponseRedirect(request.REQUEST.get('next', reverse('turbion_watchlist')))
     return http.HttpResponseBadRequest('Post not found or bad action')
 
 @login_required

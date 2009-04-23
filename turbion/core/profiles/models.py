@@ -111,9 +111,18 @@ class Profile(User):
         import md5
         return md5.new(".".join(map(force_unicode, [self.pk, self.username, self.email]))).hexdigest()
 
+    def has_subscription(self, event, post=None):
+        from turbion.core.watchlist.models import Subscription
+
+        return bool(Subscription.objects.filter(user=self, event__name=event, post=post).count())
+
     @models.permalink
     def get_absolute_url(self):
         return ("turbion_profile", (self.username,))
+
+    @models.permalink
+    def get_watchlist_atom_url(self):
+        return ('turbion_watchlist_feed', ('atom/%s/' % self.pk,))
 
     class Meta:
         app_label           = "turbion"

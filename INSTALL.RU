@@ -69,10 +69,4 @@ turbion, так и к глобальной. Это регулуриется па
 преоритет перед шаблона в файловой системе, что дас возможно подменять их и редактировать
 через административный интерфейс.
 
-== turbion.contrib.pingback
-
 == turbion.contrib.openid
-
-== turbion.contrib.gears
-
-== turbion.contrib.registration
