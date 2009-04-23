@@ -55,6 +55,9 @@ class Comment(models.Model):
     def emit_event(self):
         from turbion.core import watchlist
 
+        if not self.is_published:
+            return
+
         watchlist.emit_event(
             'new_comment',
             post=self.post,
