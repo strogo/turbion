@@ -1,25 +1,5 @@
 from django.db import models
 
-from turbion.core.utils.descriptor import DescriptorField, GenericForeignKey
-
-class ConnectedModel(models.Model):
-    connection_dscr = DescriptorField()
-    connection_id = models.PositiveIntegerField()
-
-    connection = GenericForeignKey("connection_dscr", "connection_id")
-
-    class Meta:
-        abstract = True
-
-class NullConnectedModel(models.Model):
-    connection_dscr = DescriptorField(null=True)
-    connection_id = models.PositiveIntegerField(null=True)
-
-    connection = GenericForeignKey("connection_dscr", "connection_id")
-
-    class Meta:
-        abstract = True
-
 class GenericManager(models.Manager):
     def __init__(self, *args, **kwargs):
         super(GenericManager, self).__init__()
