@@ -47,7 +47,7 @@ class Subscription(models.Model):
     email = models.BooleanField(default=False, db_index=True, verbose_name=_('email'))
 
     def __unicode__(self):
-        return (_('%s on %s') % (self.user.name, self.event)) + (self.post and _(' to `%s`') % self.post or '')
+        return (_('%(user)s on %(event)s') % {'user': self.user, 'event': self.event}) + (self.post and _(' to `%s`') % self.post or '')
 
     def get_unsubscribe_url(self):
         from django.utils.http import urlencode
