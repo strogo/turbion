@@ -14,20 +14,20 @@ class Event(models.Model):
 
     is_active = models.BooleanField(default=True)
 
-    default_subject_template = "turbion/watchlist/default_subject.html"
-    default_body_template = "turbion/watchlist/default_body.html"
+    default_subject_template = 'turbion/watchlist/default_subject.html'
+    default_body_template = 'turbion/watchlist/default_body.html'
 
     def __unicode__(self):
         return self.title
 
     def render_subject(self, context):
         return loader.select_template(
-            ["turbion/watchlist/%s_subject.html" % self.name, self.default_subject_template]
+            ['turbion/watchlist/%s_subject.html' % self.name, self.default_subject_template]
         ).render(Context(context))
 
     def render_body(self, context):
         return loader.select_template(
-            ["turbion/watchlist/%s_body.html" % self.name, self.default_body_template]
+            ['turbion/watchlist/%s_body.html' % self.name, self.default_body_template]
         ).render(Context(context))
 
     class Meta:
@@ -37,8 +37,8 @@ class Event(models.Model):
         verbose_name_plural = _('events')
 
 class Subscription(models.Model):
-    user = models.ForeignKey(Profile)
-    event = models.ForeignKey(Event)
+    user = models.ForeignKey(Profile, related_name='subscriptions')
+    event = models.ForeignKey(Event, related_name='subscriptions')
 
     date = models.DateTimeField(default=datetime.now)
 
@@ -46,11 +46,14 @@ class Subscription(models.Model):
 
     email = models.BooleanField(default=False, db_index=True)
 
+    def __unicode__(self):
+        return (u'%s on %s' % (self.user.name, self.event)) + self.post and u' to `%s`' % self.post or ''
+
     def get_unsubscribe_url(self):
         from django.utils.http import urlencode
 
         url = uri_reverse(
-            "turbion_watchlist_unsubscribe",
+            'turbion_watchlist_unsubscribe',
             args=(self.user.pk,)
         )
 
@@ -78,7 +81,7 @@ class Message(models.Model):
 
     def send(self):
         domain = Site.objects.get_current().domain
-        from_email = settings.TURBION_NOTIFACTIONS_FROM_EMAIL % {"domain": domain}
+        from_email = settings.TURBION_NOTIFACTIONS_FROM_EMAIL % {'domain': domain}
 
         msg = EmailMessage(
             self.subject,
@@ -94,4 +97,4 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['date']
-        app_label = "turbion"
+        app_label = 'turbion'
