@@ -112,7 +112,7 @@ class Post(models.Model):
 
         self.save()
 
-        watchlist.subscribe(self.created_by, 'new_comment', self)
+        watchlist.subscribe(self.created_by, 'new_comment', self, True)
 
         signals.post_published.send(
             sender=self.__class__,
