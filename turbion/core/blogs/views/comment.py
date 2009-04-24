@@ -60,8 +60,9 @@ def _do_comment(request, post, defaults={}, comment=None):
                     instance=post
                 )
 
-                new_comment.subscribe_author(email=bool(form.cleaned_data["notify"]))
-                new_comment.emit_event()
+                if new_comment.status != Comment.statuses.spam:
+                    new_comment.subscribe_author(email=bool(form.cleaned_data["notify"]))
+                    new_comment.emit_event()
 
                 if form.need_auth_redirect():
                     return http.HttpResponseRedirect(
