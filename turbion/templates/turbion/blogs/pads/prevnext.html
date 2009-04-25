@@ -1,7 +1,0 @@
-<h3>Timeline</h3>
-{% if prev_post %}
-    <a href="{{prev_post.get_absolute_url}}">← {{prev_post}}</a>
-{% endif %}
-{% if next_post %}
-    <a href="{{next_post.get_absolute_url}}">{{next_post}} →</a>
-{% endif %}

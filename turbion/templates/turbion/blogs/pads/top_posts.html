@@ -1,9 +1,0 @@
-<h2>Popular posts</h2>
-<ul>
-	{% for post in posts %}
-	<li>
-		<a href="{{post.get_absolute_url}}">{{post}}</a> ({{post.comment_count}})
-		 (<a href="{{post.get_feed_url.atom}}">rss</a>)
-	</li>
-	{% endfor %}
-</ul>
