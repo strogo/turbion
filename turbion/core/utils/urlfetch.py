@@ -3,6 +3,8 @@ import httplib2
 from django.conf import settings
 from django.utils.http import urlencode
 
+from turbion import get_version
+
 class ResponseObject(object):
     def __init__(self, status_code, content, headers={}):
         self.status_code = status_code
@@ -13,14 +15,17 @@ class UrlFetcher(object):
     def fetch(self, url, data=None, headers=None, timeout=10):
         http = httplib2.Http(timeout=timeout)
 
-        if headers is None:
-            headers = {}
+        default_headers = {
+            'User-Agent': 'Turbion urlfetcher/%s' % get_version()
+        }
+        if headers:
+            default_headers.update(headers)
 
         method = data and 'POST' or 'GET'
         data = data and urlencode(data) or ''
 
         resp, content = http.request(
-            url, method, data, headers=headers
+            url, method, data, headers=default_headers
         )
 
         return ResponseObject(resp["status"], content, resp)
