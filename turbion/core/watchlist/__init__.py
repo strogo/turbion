@@ -8,11 +8,11 @@ def subscribe(user, event, post=None, email=False):
     subscription, _ = Subscription.objects.get_or_create(
         event=event,
         user=user,
-        post=post,
-        defaults={
-            'email': email
-        }
+        post=post
     )
+    if subscription.email != email:
+        subscription.email = email
+        subscription.save()
 
     return subscription
 
