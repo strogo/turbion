@@ -1,6 +1,6 @@
 from django.core.management.base import NoArgsCommand
 
-from turbion.core.watchlist.models import Message
+from turbion.models import Message
 
 class Command(NoArgsCommand):
     help = 'Performs email watchlist messages sending'
