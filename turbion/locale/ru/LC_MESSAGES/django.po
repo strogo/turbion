@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-24 01:37+0400\n"
+"POT-Creation-Date: 2009-04-26 15:57+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -31,8 +31,7 @@ msgstr "статус"
 msgid "exclude user agent"
 msgstr "исключить user agent"
 
-#: contrib/aliases/models.py:26 contrib/dbtemplates/models.py:8
-#: core/watchlist/models.py:15
+#: contrib/aliases/models.py:26 core/watchlist/models.py:15
 msgid "is active"
 msgstr "активный"
 
@@ -43,23 +42,6 @@ msgstr "алиас"
 #: contrib/aliases/models.py:35
 msgid "aliases"
 msgstr "алиасы"
-
-#: contrib/dbtemplates/models.py:7
-msgid "path"
-msgstr "путь"
-
-#: contrib/dbtemplates/models.py:9 contrib/feedback/models.py:31
-#: core/blogs/models/comment.py:37 core/blogs/models/post.py:53
-msgid "text"
-msgstr "текст"
-
-#: contrib/dbtemplates/models.py:18
-msgid "template"
-msgstr "шаблон"
-
-#: contrib/dbtemplates/models.py:19
-msgid "templates"
-msgstr "шаблоны"
 
 #: contrib/feedback/models.py:13
 msgid "accepted"
@@ -98,6 +80,11 @@ msgstr "автор изменения"
 #: contrib/feedback/models.py:29
 msgid "subject"
 msgstr "тема"
+
+#: contrib/feedback/models.py:31 core/blogs/models/comment.py:37
+#: core/blogs/models/post.py:53
+msgid "text"
+msgstr "текст"
 
 #: contrib/feedback/models.py:34 core/blogs/models/comment.py:42
 #: core/blogs/models/post.py:56 core/pingback/models.py:20
@@ -157,7 +144,7 @@ msgstr "сервер"
 msgid "consumer"
 msgstr "пользователь"
 
-#: contrib/openid/models.py:49
+#: contrib/openid/models.py:49 contrib/openid/whitelist/models.py:5
 msgid "url"
 msgstr ""
 
@@ -202,6 +189,16 @@ msgstr "Ошибка"
 #: contrib/openid/views/server.py:126
 msgid "Trust decision"
 msgstr "Решение о доверении"
+
+#: contrib/openid/whitelist/models.py:13
+#, fuzzy
+msgid "source"
+msgstr "урл источник"
+
+#: contrib/openid/whitelist/models.py:14
+#, fuzzy
+msgid "sources"
+msgstr "урл источник"
 
 #: core/blogs/admin.py:62
 msgid "headline"
@@ -371,14 +368,14 @@ msgstr "теги"
 msgid "Profile"
 msgstr "Профиль"
 
-#: core/blogs/templatetags/blogs/pads.py:179
-msgid "Logout"
-msgstr "Выход"
-
-#: core/blogs/templatetags/blogs/pads.py:180 core/watchlist/feeds.py:24
+#: core/blogs/templatetags/blogs/pads.py:179 core/watchlist/feeds.py:24
 #: core/watchlist/views.py:18 core/watchlist/views.py:69
 msgid "Watchlist"
 msgstr ""
+
+#: core/blogs/templatetags/blogs/pads.py:180
+msgid "Logout"
+msgstr "Выход"
 
 #: core/blogs/templatetags/blogs/pads.py:185
 msgid "Openid"
@@ -407,11 +404,11 @@ msgstr ""
 "Архив блога за {{blog.calendar.current.year}}/{{blog.calendar.current."
 "month}}/{{blog.calendar.current.day}}"
 
-#: core/blogs/views/comment.py:85
+#: core/blogs/views/comment.py:86
 msgid "Add comment to \"{{post.title}}\""
 msgstr "Добавить комментарий к \"{{post.title}}\""
 
-#: core/blogs/views/comment.py:105
+#: core/blogs/views/comment.py:106
 msgid "Edit comment to \"{{post.title}}\""
 msgstr "Редактировать комментарий к \"{{post.title}}\""
 
