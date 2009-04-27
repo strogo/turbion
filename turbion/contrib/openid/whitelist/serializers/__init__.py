@@ -16,7 +16,7 @@ def _get_handler(name):
     def _handler(mime_type):
         for s in serializers:
             if mime_type in s['mime_types'] and s[name]:
-                return s[name], s['mime_types']
+                return s[name], mime_type
         return None, None
     return _handler
 
