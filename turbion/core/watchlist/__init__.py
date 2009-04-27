@@ -10,7 +10,7 @@ def subscribe(user, event, post=None, email=False):
         user=user,
         post=post
     )
-    if subscription.email != email:
+    if not subscription.email and email:
         subscription.email = email
         subscription.save()
 
