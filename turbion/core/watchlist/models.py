@@ -3,6 +3,9 @@ from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.template import loader, Context
+from django.contrib.sites.models import Site
+from django.core.mail import EmailMessage
+from django.conf import settings
 
 from turbion.core.profiles.models import Profile
 from turbion.core.blogs.models import Post
