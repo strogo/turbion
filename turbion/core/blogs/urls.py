@@ -19,7 +19,7 @@ rss_feeds = {
 urlpatterns = patterns('turbion.core.blogs.views',
  url(r'^$',                                  'post.blog', name="turbion_blog_index"),
 
- url(r"^(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/"
+ url(r"^(?P<year_id>\d{4})/(?P<month_id>\d{2})/(?P<day_id>\d{2})/"
      r"(?P<post_slug>[\w_-]+)/$",            'post.post', name="turbion_blog_post"),
 
  url(r'^posts/(?P<post_id>\d+)/$', 'post.preview', name="turbion_blog_post_preview"),
@@ -32,8 +32,8 @@ urlpatterns = patterns('turbion.core.blogs.views',
 
  url(r'^archive/$',                          'archive.index', name="turbion_blog_archive"),
  url(r'^(?P<year_id>\d{4})/$',       'archive.year',  name="turbion_blog_archive_year"),
- url(r'^(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/$',  'archive.month', name="turbion_blog_archive_month"),
- url(r'^(?P<year_id>\d{4})/(?P<month_id>\d{1,2})/(?P<day_id>\d{1,2})/$', 'archive.day',   name="turbion_blog_archive_day"),
+ url(r'^(?P<year_id>\d{4})/(?P<month_id>\d{2})/$',  'archive.month', name="turbion_blog_archive_month"),
+ url(r'^(?P<year_id>\d{4})/(?P<month_id>\d{2})/(?P<day_id>\d{2})/$', 'archive.day',   name="turbion_blog_archive_day"),
 )
 
 if "djapian" in settings.INSTALLED_APPS:
