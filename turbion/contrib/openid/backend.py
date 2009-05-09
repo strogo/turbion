@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.backends import ModelBackend
+from django.db import IntegrityError
 
 from turbion.core.profiles.models import Profile
 from turbion.core.profiles.forms import extract_profile_data
@@ -72,7 +73,14 @@ class OpenidBackend(ModelBackend):
                     model = rel.model
                     field_name = rel.field.name
 
-                    model._default_manager.filter(**{field_name: created_profile}).update(**{field_name: profile})
+                    try:
+                        model._default_manager.filter(**{field_name: created_profile})\
+                                                .update(**{field_name: profile})
+                    except IntegrityError:
+                        # May produce error with duplicate key
+                        # For example when user auths second time and get another
+                        # watchlist subscription to same post
+                        pass
                 created_profile.delete()
 
         profile.save()
