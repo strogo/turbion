@@ -76,8 +76,8 @@ class Post(models.Model):
     def get_absolute_url(self):
         if self.is_published:
             args = (
-                self.published_on.year, '%.2d' % self.published_on.month,
-                '%.2d' % self.published_on.day, self.slug,
+                self.published_on.year, '%02d' % self.published_on.month,
+                '%02d' % self.published_on.day, self.slug,
             )
             return ('turbion_blog_post', args)
         else:
