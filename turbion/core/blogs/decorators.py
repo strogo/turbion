@@ -24,9 +24,9 @@ def post_view(view_func):
                 query_set = query_set.filter(showing=Post.show_settings.everybody)
 
         published_on = dict(
-            published_on__year=kwargs.pop('year_id'),
-            published_on__month=kwargs.pop('month_id'),
-            published_on__day=kwargs.pop('day_id'),
+            published_on__year=int(kwargs.pop('year_id')),
+            published_on__month=int(kwargs.pop('month_id')),
+            published_on__day=int(kwargs.pop('day_id')),
         )
         query_set = query_set.filter(slug=kwargs.pop('post_slug'), **published_on)
 
