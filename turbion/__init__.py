@@ -6,7 +6,7 @@ VERSION = (0, 8, 2, 'Pushkin', '0')
 
 def get_revision(path=None, check_changes=False):
     if not path:
-        path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
     try:
         from mercurial import hg, ui, repo
