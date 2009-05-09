@@ -30,13 +30,13 @@ def get_revision(path=None, check_changes=False):
     except ImportError:
         return None
 
-def get_version(bits=4, revision=False):
+def get_version(bits=4, revision=False, version_info=VERSION, path=None):
     base = reduce(
         lambda l, r: (isinstance(r, basestring) and ' ' or '.').join(map(str, [l, r])),
-        VERSION[:bits]
+        version_info[:bits]
     )
     if revision:
-        rev = get_revision()
+        rev = get_revision(path)
         if rev:
             base += " HG-%s:%s:%s" % rev
 
