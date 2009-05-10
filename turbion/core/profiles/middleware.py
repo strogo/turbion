@@ -11,7 +11,6 @@ class AnonymousProfile(AnonymousUser):
     trusted = False
     site = None
     name_view = None
-    site_view = None
 
     def is_trusted(self):
         return self.trusted

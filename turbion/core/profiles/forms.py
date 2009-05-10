@@ -14,7 +14,7 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = (
             'nickname', 'email', 'first_name', 'last_name', 'site',
-            'name_view', 'site_view', 'filter'
+            'name_view', 'filter'
         )
 
 ProfileForm.base_fields.keyOrder = ProfileForm.Meta.fields

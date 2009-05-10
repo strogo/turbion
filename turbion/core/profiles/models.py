@@ -50,10 +50,6 @@ class Profile(User):
         full_name     =_("full name"),
         full_name_nick=_("full name with nick"),
     )
-    sites = Enum(
-        openid=_("openid"),
-        site   =_("site"),
-    )
 
     nickname = models.CharField(max_length=150, null=True, verbose_name =_('nickname'))
     ip = models.IPAddressField(null=True, blank=True, verbose_name =_('IP'))
@@ -66,9 +62,6 @@ class Profile(User):
 
     name_view = models.CharField(max_length=20, choices=names, null=True, blank=True,
                                  verbose_name=_('name view'))
-    site_view = models.CharField(max_length=20, choices=sites,
-                                 default=sites.site, null=True, blank=True,
-                                verbose_name=_('site view'))
 
     filter = MarkupField()
 
@@ -101,11 +94,7 @@ class Profile(User):
         return self.name
 
     def get_site_url(self):
-        type_map = {
-            Profile.sites.openid: self.openid,
-            Profile.sites.site: self.site
-        }
-        return type_map.get(self.site_view, self.site or self.openid)
+        return self.openid or self.site
 
     def get_code(self):
         import md5
