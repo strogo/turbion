@@ -17,8 +17,6 @@ class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name=_("name"))
     slug = models.CharField(max_length=50, unique=True, verbose_name=_("slug"))
 
-    post_count = PostCountField(verbose_name=_("post count"))
-
     objects = models.Manager()
     active = managers.TagManager(post_count__gt=0)
 
@@ -102,7 +100,6 @@ class Post(models.Model):
                                             default=moderations.none,
                                             verbose_name=_("comments moderation"))
 
-    comment_count = CommentCountField(verbose_name=_("comment count"))
     tags = models.ManyToManyField("turbion.Tag", related_name="posts", blank=True)
 
     objects = managers.PostManager()
@@ -203,6 +200,8 @@ class Post(models.Model):
         unique_together     = (("published_on", "title", "slug"),)
         db_table            = "turbion_post"
 
+Tag.add_to_class('post_count', PostCountField(verbose_name=_("post count")))
+
 class Comment(models.Model):
     post = models.ForeignKey('turbion.Post', related_name="comments", verbose_name=_("post"))
 
@@ -278,6 +277,8 @@ class Comment(models.Model):
         verbose_name        = _('comment')
         verbose_name_plural = _('comments')
         db_table            = "turbion_comment"
+
+Comment.add_to_class('comment_count', CommentCountField(verbose_name=_("comment count")))
 
 class BlogCalendar(Calendar):
     date_field = "published_on"

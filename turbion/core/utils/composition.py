@@ -14,6 +14,7 @@ class Trigger(object):
         if sender_model and not sender:
             if isinstance(sender_model, basestring):
                 sender_model = models.get_model(*sender_model.split(".", 1))
+
             self.sender = self.sender_model = sender_model
         else:
             self.sender = sender
@@ -68,12 +69,12 @@ class CompositionMeta(object):
             trigger = [trigger]
 
         trigger_defaults = dict(
-                sender_model=model,
-                sender=None,
-                on=[models.signals.post_save],
-                field_holder_getter=lambda instance: instance,
-                field_name=name,
-                commit=True
+            sender_model=model,
+            sender=None,
+            on=[models.signals.post_save],
+            field_holder_getter=lambda instance: instance,
+            field_name=name,
+            commit=True
         )
         trigger_defaults.update(commons)
 
@@ -184,10 +185,10 @@ class CompositionField(object):
         if native is not None:
             import new
             self.__class__ = new.classobj(
-                                    self.__class__.__name__,
-                                    tuple([self.__class__, native.__class__] + list(self.__class__.__mro__[1:])),
-                                    {}
-                                )
+                self.__class__.__name__,
+                tuple([self.__class__, native.__class__] + list(self.__class__.__mro__[1:])),
+                {}
+            )
 
             self.__dict__.update(native.__dict__)
 
@@ -203,18 +204,18 @@ class CompositionField(object):
 
         if not self._c_native:
             models.signals.class_prepared.connect(
-                            self.deferred_contribute_to_class,
-                            sender=cls
-                        )
+                self.deferred_contribute_to_class,
+                sender=cls
+            )
         else:
             self._composition_meta = self.create_meta(cls)
             return self._c_native.__class__.contribute_to_class(self, cls, name)
 
     def create_meta(self, cls):
         return CompositionMeta(
-                    cls, self._c_native, self._c_name, self._c_trigger,\
-                    self._c_commons, self._c_commit, self._c_update_method
-                )
+            cls, self._c_native, self._c_name, self._c_trigger,\
+            self._c_commons, self._c_commit, self._c_update_method
+        )
 
     def deferred_contribute_to_class(self, sender, **kwargs):
         cls = sender
@@ -266,10 +267,10 @@ class ForeignAttribute(CompositionField):
                 related_name = foreign_field.rel.related_name
                 if not related_name:
                     related_name = RelatedObject(
-                                    foreign_field.rel.to,
-                                    related_models_chain[-1],
-                                    foreign_field
-                                ).get_accessor_name()
+                        foreign_field.rel.to,
+                        related_models_chain[-1],
+                        foreign_field
+                    ).get_accessor_name()
 
                 related_models_chain.append(foreign_field.rel.to)
                 related_names_chain.append(related_name)
@@ -293,9 +294,9 @@ class ForeignAttribute(CompositionField):
             if chain:
                 for obj in attr:
                     for inst in get_root_instances(
-                                        obj,
-                                        chain
-                                    ):
+                        obj,
+                        chain
+                    ):
                         yield inst
             else:
                 for obj in attr:
