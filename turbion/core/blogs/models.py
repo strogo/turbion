@@ -278,7 +278,7 @@ class Comment(models.Model):
         verbose_name_plural = _('comments')
         db_table            = "turbion_comment"
 
-Comment.add_to_class('comment_count', CommentCountField(verbose_name=_("comment count")))
+Post.add_to_class('comment_count', CommentCountField(verbose_name=_("comment count")))
 
 class BlogCalendar(Calendar):
     date_field = "published_on"
