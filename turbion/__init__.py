@@ -38,7 +38,7 @@ def get_version(bits=4, revision=False, version_info=VERSION, path=None):
     if revision:
         rev = get_revision(path)
         if rev:
-            base += " HG-%s:%s:%s" % rev
+            base += " HG-%s" % rev[0]
 
     return base
 
