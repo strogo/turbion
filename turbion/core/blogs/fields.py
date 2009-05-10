@@ -7,7 +7,10 @@ D = dict
 
 class CommentCountField(CompositionField):
     def __init__(self, verbose_name=None, editable=False):
-        from turbion.core.blogs.models.comment import Comment
+        def _do(host, comment, signal):
+            from turbion.core.blogs.models import Comment
+
+            return host.comments.filter(**Comment.published.lookups).count()
 
         super(CommentCountField, self).__init__(
             native=models.PositiveIntegerField(
@@ -16,11 +19,11 @@ class CommentCountField(CompositionField):
             trigger=[
                 D(
                     on=(signals.post_save, signals.post_delete),
-                    do=lambda host, comment, signal: host.comments.filter(**Comment.published.lookups).count()
+                    do=_do
                 )
             ],
             commons=D(
-                sender_model=Comment,
+                sender_model='turbion.Comment',
                 field_holder_getter=lambda comment: comment.post,
             ),
             commit=True,
@@ -34,7 +37,10 @@ class CommentCountField(CompositionField):
 
 class PostCountField(CompositionField):
     def __init__(self, verbose_name=None, editable=False):
-        from turbion.core.blogs.models.post import Post
+        def _do(host, comment, signal):
+            from turbion.core.blogs.models import Post
+
+            return host.posts.filter(**Post.published.lookups).count()
 
         super(PostCountField, self).__init__(
             native=models.PositiveIntegerField(
@@ -43,11 +49,11 @@ class PostCountField(CompositionField):
             trigger=[
                 D(
                     on=(signals.post_save, signals.post_delete),
-                    do=lambda host, comment, signal: host.posts.filter(**Post.published.lookups).count()
+                    do=_do
                 )
             ],
             commons=D(
-                sender_model=Post,
+                sender_model='turbion.Post',
                 field_holder_getter=lambda post: post.tags.all(),
             ),
             commit=True,

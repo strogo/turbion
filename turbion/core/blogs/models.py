@@ -1,17 +1,53 @@
 from datetime import datetime
 
-from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.db import models
 from django.core.urlresolvers import reverse
 
 from turbion.core.blogs import managers
-from turbion.core.blogs.fields import CommentCountField
-#from turbion.core.blogs.models.tag import Tag
 from turbion.core.profiles.models import Profile
 from turbion.core.utils.markup.fields import MarkupTextField
 from turbion.core.utils.enum import Enum
+
+from turbion.core.utils._calendar import Calendar
+from turbion.core.blogs.fields import PostCountField, CommentCountField
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name=_("name"))
+    slug = models.CharField(max_length=50, unique=True, verbose_name=_("slug"))
+
+    post_count = PostCountField(verbose_name=_("post count"))
+
+    objects = models.Manager()
+    active = managers.TagManager(post_count__gt=0)
+
+    def __unicode__(self):
+        return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ("turbion_blog_tag", (self.slug,))
+
+    def get_feed_url(self):
+        return {
+            "atom": reverse("turbion_blog_atom", args=("tag/%s" % self.pk,)),
+            "rss": reverse("turbion_blog_rss", args=("tag/%s" % self.pk,))
+        }
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from turbion.core.utils.text import slugify
+            self.slug = slugify(self.name)
+
+        super(Tag, self).save(*args, **kwargs)
+
+    class Meta:
+        app_label           = "turbion"
+        ordering            = ("name", "slug")
+        verbose_name        = _("tag")
+        verbose_name_plural = _("tags")
+        db_table            = "turbion_tag"
 
 class Post(models.Model):
     moderations = Enum(
@@ -141,8 +177,6 @@ class Post(models.Model):
     get_next_by_published_on = lambda self, **kwargs: self._get_near_post(True, **kwargs)
 
     def get_comment_status(self, comment):
-        from turbion.core.blogs.models.comment import Comment
-
         author = comment.created_by
 
         if self.comments_moderation == Post.moderations.all:
@@ -169,3 +203,104 @@ class Post(models.Model):
         db_table            = "turbion_post"
 
 Post.add_to_class("comment_count", CommentCountField(verbose_name=_("comment count")))
+
+class Comment(models.Model):
+    post = models.ForeignKey('turbion.Post', related_name="comments", verbose_name=_("post"))
+
+    statuses = Enum(
+        published=_("published"),
+        moderation=_("moderation"),
+        hidden=_("hidden"),
+        spam=_("spam"),
+    )
+
+    created_on = models.DateTimeField(default=datetime.now, verbose_name=_("created on"))
+
+    created_by = models.ForeignKey(Profile, related_name="created_comments",
+                                   verbose_name=_("created by"))
+
+    edited_on = models.DateTimeField(null=True, editable=False, blank=True, verbose_name=_("edited on"))
+    edited_by = models.ForeignKey(Profile, related_name="edited_comments",
+                                  editable=False, null=True, verbose_name=_("edited by"))
+
+    text = MarkupTextField(verbose_name=_("text"))
+
+    status = models.CharField(max_length=20,
+                              choices=statuses,
+                              default=statuses.published,
+                              verbose_name=_("status"))
+
+    is_published = property(lambda self: self.status == Comment.statuses.published)
+
+    objects = managers.CommentManager()
+    published = managers.CommentManager(status=statuses.published)
+
+    def is_edited(self):
+        return self.created_on != self.edited_on
+
+    def __unicode__(self):
+        return _('Comment on %(post)s by %(author)s') % {'post': self.post, 'author': self.created_by.name,}
+
+    def emit_event(self):
+        from turbion.core import watchlist
+
+        if not self.is_published:
+            return
+
+        watchlist.emit_event(
+            'new_comment',
+            post=self.post,
+            filter_recipient=lambda user: user.email != self.created_by.email,
+            comment=self,
+        )
+
+    def subscribe_author(self, email=False):
+        from turbion.core import watchlist
+
+        watchlist.subscribe(
+            self.created_by,
+            'new_comment',
+            post=self.post,
+            email=email
+        )
+
+    def get_absolute_url(self):
+        return self.post.get_absolute_url() + "#comment_%s" % self.pk
+
+    def save(self, *args, **kwargs):
+        if self.edited_by:
+            self.edited_on = datetime.now()
+
+        super(Comment, self).save(*args, **kwargs)
+
+    class Meta:
+        app_label           = "turbion"
+        ordering            = ("-created_on",)
+        verbose_name        = _('comment')
+        verbose_name_plural = _('comments')
+        db_table            = "turbion_comment"
+
+class BlogCalendar(Calendar):
+    date_field = "published_on"
+    queryset = Post.published.all()
+
+    @models.permalink
+    def get_month_url(self, date):
+        return "turbion_blog_archive_month", (date.year, date.month), {}
+
+    def get_per_day_urls(self, dates):
+        return dict(
+            [
+                (
+                    date.date(),
+                    reverse(
+                        "turbion_blog_archive_day",
+                        args=(
+                            date.year,
+                            date.month,
+                            date.day
+                        )
+                    )
+                ) for date in dates
+            ]
+        )

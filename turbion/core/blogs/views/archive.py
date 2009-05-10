@@ -5,8 +5,7 @@ from turbion.core.utils.decorators import paged, templated
 from turbion.core.utils.pagination import paginate
 
 from turbion.core.blogs.decorators import titled
-from turbion.core.blogs.models import Post
-from turbion.core.blogs.models.blog import BlogCalendar
+from turbion.core.blogs.models import Post, BlogCalendar
 
 from datetime import date
 

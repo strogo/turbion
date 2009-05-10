@@ -7,8 +7,7 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.blogs.models import Post, Comment, Tag
-from turbion.core.blogs.models.blog import BlogCalendar
+from turbion.core.blogs.models import Post, Comment, Tag, BlogCalendar
 from turbion.core.profiles.models import Profile
 from turbion.core.utils.cache.tags import cached_inclusion_tag
 
