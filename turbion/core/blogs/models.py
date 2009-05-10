@@ -102,11 +102,12 @@ class Post(models.Model):
                                             default=moderations.none,
                                             verbose_name=_("comments moderation"))
 
+    comment_count = CommentCountField(verbose_name=_("comment count"))
+    tags = models.ManyToManyField("turbion.Tag", related_name="posts", blank=True)
+
     objects = managers.PostManager()
 
     published = managers.PostManager(status=statuses.published)
-
-    tags = models.ManyToManyField("turbion.Tag", related_name="posts", blank=True)
 
     @models.permalink
     def get_absolute_url(self):
@@ -201,8 +202,6 @@ class Post(models.Model):
         ordering            = ('-published_on', '-created_on',)
         unique_together     = (("published_on", "title", "slug"),)
         db_table            = "turbion_post"
-
-Post.add_to_class("comment_count", CommentCountField(verbose_name=_("comment count")))
 
 class Comment(models.Model):
     post = models.ForeignKey('turbion.Post', related_name="comments", verbose_name=_("post"))
