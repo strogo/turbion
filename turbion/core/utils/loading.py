@@ -1,6 +1,8 @@
 import os
 import imp
 
+from django.utils.importlib import import_module
+
 class NoModuleError(Exception):
     """
     Custom exception class indicates that given module does not exit at all
@@ -18,7 +20,7 @@ def get_module(base, module_name):
     except ImportError:
         raise NoModuleError("Cannot find module `%s` in base `%s`" % (module_name, base))
 
-    return getattr(__import__(base, {}, {}, [module_name]), module_name)
+    return import_module('.%s' % module_name, base)
 
 def get_module_attrs(base, module_name, filter=lambda attr: True):
     mod = get_module(base, module_name)
