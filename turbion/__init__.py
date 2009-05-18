@@ -9,7 +9,7 @@ def get_revision(path=None, check_changes=False):
         path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
     try:
-        from mercurial import hg, ui, repo
+        from mercurial import hg, ui, repo, node
 
         try:
             repository = hg.repository(ui.ui(), path)
@@ -21,10 +21,10 @@ def get_revision(path=None, check_changes=False):
 
         if check_changes and bool(reduce(operator.add, repository.status()[:4])):
             raise RuntimeError('Repository has local modifications')
-
+        
         return (
             repository.changelog.nodemap[tip],
-            hg.short(tip),
+            node.short(tip),
             tip_tag
         )
     except ImportError:
