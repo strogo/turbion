@@ -6,7 +6,6 @@ from turbion.core.profiles import get_profile
 decisions = set(['spam', 'ham', 'unknown'])
 
 filters = []
-urlpatterns = []
 
 for filter_name in settings.TURBION_ANTISPAM_FILTERS:
     mod = None
@@ -19,8 +18,6 @@ for filter_name in settings.TURBION_ANTISPAM_FILTERS:
             except loading.NoModuleError:
                 pass
     if mod:
-        if hasattr(mod, 'urlpatterns'):
-            urlpatterns.extend(mod.urlpatterns)
         filters.append(mod)
     else:
         raise ValueError("Cannot load filter '%s'" % filter_name)
@@ -48,3 +45,16 @@ def process_form_submit(request, form, child, parent=None):
         if decision == 'spam' or need_break:
             break
     return decision
+
+class AntispamModel(object):
+    def get_antispam_data(self):
+        raise NotImplementedError
+
+    def get_antispam_status(self):
+        raise NotImplementedError
+
+    def get_antispam_action(self):
+        raise NotImplementedError
+
+    def set_antispam_status(self, action):
+        raise NotImplementedError

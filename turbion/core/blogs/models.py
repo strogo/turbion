@@ -12,6 +12,7 @@ from turbion.core.utils.enum import Enum
 
 from turbion.core.utils._calendar import Calendar
 from turbion.core.blogs.fields import PostCountField, CommentCountField
+from turbion.core.utils.antispam import AntispamModel
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name=_("name"))
@@ -202,7 +203,7 @@ class Post(models.Model):
 
 Tag.add_to_class('post_count', PostCountField(verbose_name=_("post count")))
 
-class Comment(models.Model):
+class Comment(models.Model, AntispamModel):
     post = models.ForeignKey('turbion.Post', related_name="comments", verbose_name=_("post"))
 
     statuses = Enum(
@@ -270,6 +271,32 @@ class Comment(models.Model):
             self.edited_on = datetime.now()
 
         super(Comment, self).save(*args, **kwargs)
+
+    # some antispam methods
+    def get_antispam_data(self):
+        return {
+            'permalink': self.post.get_absolute_url(),
+            'comment_type': 'comment',
+            'comment_author': self.created_by.name,
+            'comment_author_email': self.created_by.email,
+            'comment_author_url': self.created_by.site or self.created_by.openid,
+            'comment_content': self.text,
+            'user_ip': self.created_by.ip,
+        }
+
+    def get_antispam_status(self):
+        return self.status
+
+    def get_antispam_action(self):
+        return self.status == Comment.status.published and 'spam' or 'ham'
+
+    def set_antispam_status(self, decision):
+        decision_map = {
+            'ham': Comment.statuses.published,
+            'spam': Comment.statuses.spam,
+            'unknown': Comment.statuses.moderation
+        }
+        self.status = decision_map.get(decision, Comment.statuses.moderation)
 
     class Meta:
         app_label           = "turbion"
