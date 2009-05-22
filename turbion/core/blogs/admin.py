@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.blogs.models import Post, Comment, Tag
 from turbion.core.profiles import get_profile
-from turbion.core.utils.antispam import akismet
+from turbion.core.utils.antispam.admin import ActionModelAdmin
 
 class PostAdmin(admin.ModelAdmin):
     exclude = ['created_by', 'edited_by']
@@ -44,7 +44,7 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 
-class CommentAdmin(akismet.ActionModelAdmin, admin.ModelAdmin):
+class CommentAdmin(ActionModelAdmin, admin.ModelAdmin):
     list_display = (
         'created_on', 'post', 'status', 'created_by', 'headline',
         'text_filter', 'antispam'

@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
+from django.core.urlresolvers import reverse
 
 from turbion.core.utils.antispam import action_submit
 
@@ -62,12 +63,17 @@ class ActionModelAdmin(object):
         return """<form action="%s" method="POST">
         <input type="hidden" name="action" value="%s"/>
         <input class="button" type="submit" style="font-size:10px; padding:1px 2px;" value="%s"/>
-        </form>""" % (reverse(self.get_antispam_url_name(), args=(obj.pk,)), status, name)
+        </form>""" % (reverse(self.get_antispam_url_name(), args=(obj.pk,)), action, name)
     antispam.allow_tags = True
     antispam.short_description = _('antispam')
 
-    def antispam_action_spam(self, request, queryset):
-        """Admin batch action"""
+    def _antispam_batch_action(self, request, queryset, status):
+        """Generic admin batch action"""
         for obj in queryset:
-            self.antispam_submit_action_for_object(request, obj, 'spam')
+            self.antispam_submit_action_for_object(request, obj, status)
+
+    antispam_action_spam = lambda self, request, queryset: self._antispam_batch_action(request, queryset, 'spam')
     antispam_action_spam.short_description = _("mark selected as spam")
+
+    antispam_action_ham = lambda self, request, queryset: self._antispam_batch_action(request, queryset, 'ham')
+    antispam_action_ham.short_description = _("mark selected as ham")

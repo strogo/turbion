@@ -46,6 +46,14 @@ def process_form_submit(request, form, child, parent=None):
             break
     return decision
 
+def action_submit(action, obj):
+    for filter in filters:
+        if hasattr(filter, 'action_submit'):
+            if filter.action_submit(action, obj):
+                return
+
+    obj.set_antispam_status
+
 class AntispamModel(object):
     def get_antispam_data(self):
         raise NotImplementedError

@@ -288,7 +288,7 @@ class Comment(models.Model, AntispamModel):
         return self.status
 
     def get_antispam_action(self):
-        return self.status == Comment.status.published and 'spam' or 'ham'
+        return self.status == Comment.statuses.published and 'spam' or 'ham'
 
     def set_antispam_status(self, decision):
         decision_map = {

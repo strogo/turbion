@@ -2,13 +2,9 @@ from django.contrib.sites.models import Site
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from django.core.urlresolvers import reverse
-from django.contrib.contenttypes.models import ContentType
 from django import forms, http
 from django.utils.http import urlencode
 
-from turbion import get_version
-from turbion.core.blogs.models import Comment
-from turbion.contrib.feedback.models import Feedback
 from turbion.core.utils.urlfetch import fetch
 
 """
@@ -52,7 +48,7 @@ def process_form_submit(request, form, child, parent=None):
 
         if response.status_code == '200':
             if response.content == 'true':
-                return 'akismet:spam'
+                return 'spam:akismet'
 
     return 'unknown'
 
