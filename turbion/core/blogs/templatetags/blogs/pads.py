@@ -39,8 +39,8 @@ def archive_pad(context):
 
         def count(self):
             return queryset._clone().filter(
-                        published_on__year=self.month.year,
-                        published_on__month=self.month.month
+                published_on__year=self.month.year,
+                published_on__month=self.month.month
             ).count()
 
     months = map(MonthMeta, queryset.dates("published_on", "month", order='DESC').distinct())
@@ -87,7 +87,9 @@ def top_commenters_pad(context, count=5):
                       file_name='turbion/blogs/pads/latest_comments.html',
                       takes_context=True)
 def latest_comments_pad(context, count=5):
-    comments = Comment.published.all().order_by("-created_on").distinct()[:count]
+    comments = Comment.published.filter(
+        Post.published.get_lookup('post')
+    ).order_by("-created_on").distinct()[:count]
 
     return  {"comments": comments}
 
