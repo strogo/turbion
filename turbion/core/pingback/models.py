@@ -6,7 +6,7 @@ from django.db import models
 from turbion.core.blogs import signals
 from turbion.core.pingback import client
 from turbion.core.utils.enum import Enum
-from turbion.core.utils.models import GenericManager
+from turbion.core.utils.models import FilteredManager
 
 from turbion.core.blogs.models import Post
 
@@ -27,8 +27,8 @@ class Pingback(models.Model):
 
     objects = models.Manager()
 
-    incomings = GenericManager(incoming=True, finished=True)
-    outgoings = GenericManager(incoming=False, finished=True)
+    incomings = FilteredManager(incoming=True, finished=True)
+    outgoings = FilteredManager(incoming=False, finished=True)
 
     class Meta:
         app_label           = "turbion"

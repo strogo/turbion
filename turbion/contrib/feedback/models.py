@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.contrib.feedback import signals
 from turbion.core.profiles.models import Profile
 from turbion.core.utils.enum import Enum
-from turbion.core.utils.models import GenericManager
+from turbion.core.utils.models import FilteredManager
 
 class Feedback(models.Model):
     statuses = Enum(
@@ -34,8 +34,8 @@ class Feedback(models.Model):
                                   default=statuses.new, verbose_name=_("status"))
 
     objects  = models.Manager()
-    new      = GenericManager(status=statuses.new)
-    accepted = GenericManager(status=statuses.accepted)
+    new      = FilteredManager(status=statuses.new)
+    accepted = FilteredManager(status=statuses.accepted)
 
     def __unicode__(self):
         return "%s by %s" % (self.subject, self.created_by)

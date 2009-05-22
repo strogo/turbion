@@ -8,7 +8,7 @@ from datetime import date
 
 from turbion.core.utils.enum import Enum
 from turbion.core.utils.markup.fields import MarkupField
-from turbion.core.utils.models import GenericManager
+from turbion.core.utils.models import FilteredManager
 
 class ProfileManager(UserManager):
     def generate_username(self, data, base="turbion_"):

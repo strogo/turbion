@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.utils.models import GenericManager
+from turbion.core.utils.models import FilteredManager
 from turbion.core.utils.enum import NamedEnum
 
 class Alias(models.Model):
@@ -26,7 +26,7 @@ class Alias(models.Model):
     is_active   = models.BooleanField(default=True, verbose_name=_("is active"))
 
     objects = models.Manager()
-    active  = GenericManager(is_active=True)
+    active  = FilteredManager(is_active=True)
 
     class Meta:
         db_table = "turbion_alias"

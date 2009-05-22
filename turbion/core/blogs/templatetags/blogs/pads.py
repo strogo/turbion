@@ -147,14 +147,14 @@ def calendar_pad(context):
                       file_name='turbion/blogs/pads/prevnext.html',
                       takes_context=True)
 def prevnext_pad(context, post):
-    filter = Post.published.lookups
+    filter = Post.published.get_lookup()
     try:
-        prev_post = post.get_previous_by_published_on(**filter)
+        prev_post = post.get_previous_by_published_on(filter)
     except Post.DoesNotExist:
         prev_post = None
 
     try:
-        next_post = post.get_next_by_published_on(**filter)
+        next_post = post.get_next_by_published_on(filter)
     except Post.DoesNotExist:
         next_post = None
 

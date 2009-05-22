@@ -1,12 +1,12 @@
 from django.db import models
 
-from turbion.core.utils.models import GenericManager
+from turbion.core.utils.models import FilteredManager
 
-class PostManager(GenericManager):
+class PostManager(FilteredManager):
     def get_query_set(self):
         return super(PostManager, self).get_query_set().select_related("created_by")
 
-class TagManager(GenericManager):
+class TagManager(FilteredManager):
     def get_query_set(self):
         from turbion.core.blogs.models import Post
         post_count = Post.published.count()
@@ -20,6 +20,6 @@ class TagManager(GenericManager):
             select={"ratio": "post_count * %s" % total_ratio}
         )
 
-class CommentManager(GenericManager):
+class CommentManager(FilteredManager):
     def get_query_set(self):
         return super(CommentManager, self).get_query_set().select_related("created_by")

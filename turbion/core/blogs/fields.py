@@ -10,7 +10,7 @@ class CommentCountField(CompositionField):
         def _do(host, comment, signal):
             from turbion.core.blogs.models import Comment
 
-            return host.comments.filter(**Comment.published.lookups).count()
+            return host.comments.filter(Comment.published.get_lookup()).count()
 
         super(CommentCountField, self).__init__(
             native=models.PositiveIntegerField(
@@ -40,7 +40,7 @@ class PostCountField(CompositionField):
         def _do(host, comment, signal):
             from turbion.core.blogs.models import Post
 
-            return host.posts.filter(**Post.published.lookups).count()
+            return host.posts.filter(Post.published.get_lookup()).count()
 
         super(PostCountField, self).__init__(
             native=models.PositiveIntegerField(
