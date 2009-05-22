@@ -32,18 +32,12 @@ def process_form_submit(request, form, child, parent=None):
     for filter in filters:
         if not hasattr(filter, 'process_form_submit'):
             continue
+
         decision = filter.process_form_submit(request, form, child, parent)
 
-        if isinstance(decision, tuple):
-            decision, need_break = decision
-        else:
-            need_break = False
-
-        if decision not in decisions:
-            decision = 'unknown'
-
-        if decision == 'spam' or need_break:
+        if decision:
             break
+
     return decision
 
 def action_submit(action, obj):
@@ -52,16 +46,11 @@ def action_submit(action, obj):
             if filter.action_submit(action, obj):
                 return
 
-    obj.set_antispam_status
-
 class AntispamModel(object):
     def get_antispam_data(self):
         raise NotImplementedError
 
     def get_antispam_status(self):
-        raise NotImplementedError
-
-    def get_antispam_action(self):
         raise NotImplementedError
 
     def set_antispam_status(self, action):

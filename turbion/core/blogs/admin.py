@@ -47,7 +47,7 @@ admin.site.register(Post, PostAdmin)
 class CommentAdmin(ActionModelAdmin, admin.ModelAdmin):
     list_display = (
         'created_on', 'post', 'status', 'created_by', 'headline',
-        'text_filter', 'antispam'
+        'text_filter', ActionModelAdmin.action
     )
     list_per_page = 25
     list_select_related = True
@@ -55,7 +55,7 @@ class CommentAdmin(ActionModelAdmin, admin.ModelAdmin):
     date_hierarchy = 'created_on'
     list_filter = ('status',)
 
-    actions = ['antispam_action_spam']
+    actions = ActionModelAdmin.batch_actions
 
     def headline(self, comment):
         return truncate_words(comment.text, 10)
@@ -64,20 +64,6 @@ class CommentAdmin(ActionModelAdmin, admin.ModelAdmin):
     def save_model(self, request, comment, form, change):
         if change:
             comment.edited_by = get_profile(request)
-
-        comment.save()
-
-    # Antispam related callbacks
-
-    def antispam_map_action(self, comment):
-        return comment.status in\
-            (Comment.statuses.published, Comment.statuses.moderation) and 'spam' or 'ham'
-
-    def antispam_do_action(self, action, comment):
-        if action == 'spam':
-            comment.status = Comment.statuses.spam
-        elif action == 'ham':
-            comment.status = Comment.statuses.published
 
         comment.save()
 

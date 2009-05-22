@@ -5,6 +5,9 @@ from django.core.urlresolvers import reverse
 from turbion.core.utils.antispam import action_submit
 
 class ActionModelAdmin(object):
+    action = 'antispam'
+    batch_actions = ['antispam_action_spam', 'antispam_action_ham']
+
     def get_antispam_url_name(self):
         """Creates antispam action url name"""
         info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
@@ -57,7 +60,7 @@ class ActionModelAdmin(object):
 
     def antispam(self, obj):
         """Creates button with action url and proper label"""
-        action = obj.get_antispam_action()
+        action = obj.get_antispam_status() == 'ham' and 'spam' or 'ham'
         name = action == 'spam' and ugettext('Spam') or ugettext('Ham')
 
         return """<form action="%s" method="POST">

@@ -16,16 +16,7 @@ API specifications:
 site = Site.objects.get_current()
 site_url = 'http://%s' % site.domain
 
-def get_antispam_data(self):
-    return {
-        'permalink': reverse('turbion_feedback'),
-        'comment_type': 'feedback',
-        'comment_author': self.created_by.name,
-        'comment_author_email': self.created_by.email,
-        'comment_author_url': self.created_by.site or self.created_by.openid,
-        'comment_content': self.text,
-        'user_ip': self.created_by.ip,
-    }
+# filter functions
 
 def get_data(obj, *args, **kwargs):
     data = obj.get_antispam_data()
@@ -50,7 +41,19 @@ def process_form_submit(request, form, child, parent=None):
             if response.content == 'true':
                 return 'spam:akismet'
 
-    return 'unknown'
+    return None
+
+def action_submit(status, obj):
+    data = get_data(obj)
+
+    if status.startswith('spam'):
+        _make_request('submit-ham', data)
+        if 'spam:akismet':
+            return True
+    elif status == 'ham':
+        _make_request('submit-spam', data)
+
+# helper
 
 def _make_request(method, data, method_map=settings.TURBION_AKISMET_API_METHODS,
                   key=settings.TURBION_AKISMET_API_KEY):
@@ -64,7 +67,4 @@ def _make_request(method, data, method_map=settings.TURBION_AKISMET_API_METHODS,
     )
     return result
 
-def action_submit(action, obj):
-    data = get_data(obj)
 
-    return _make_request('submit-%s' % action, data)

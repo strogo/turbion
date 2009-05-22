@@ -19,7 +19,7 @@ class Feedback(models.Model):
     created_on = models.DateTimeField(default=datetime.now, editable=False,
                                       verbose_name=_('creation on'))
     created_by = models.ForeignKey(Profile, related_name="created_feedbacks",
-                                   editable=False, verbose_name=_("created by"))
+                                   verbose_name=_("created by"))
 
     edited_on  = models.DateTimeField(verbose_name=_('update on'), editable=False,
                                       null=True, blank=True)
@@ -44,6 +44,32 @@ class Feedback(models.Model):
         if self.edited_by:
             self.edited_on = datetime.now()
         super(Feedback, self).save(*args, **kwargs)
+
+    # some antispam methods
+    def get_antispam_data(self):
+        return {
+            'permalink': reverse('turbion_feedback'),
+            'comment_type': 'feedback',
+            'comment_author': self.created_by.name,
+            'comment_author_email': self.created_by.email,
+            'comment_author_url': self.created_by.site or self.created_by.openid,
+            'comment_content': self.text,
+            'user_ip': self.created_by.ip,
+        }
+
+    def get_antispam_status(self):
+        if self.status.startswith('spam'):
+            return self.status
+
+        return 'ham'
+
+    def set_antispam_status(self, decision):
+        decision_map = {
+            'ham': Comment.statuses.published,
+            'spam': Comment.statuses.spam,
+            'unknown': Comment.statuses.moderation
+        }
+        self.status = decision_map.get(decision, Comment.statuses.moderation)
 
     class Meta:
         verbose_name        = _('feedback')

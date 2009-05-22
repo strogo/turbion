@@ -62,11 +62,13 @@ class FilteredManager(models.Manager):
             )
 
         if not args_lookups:
-            args_lookups = models.Q()
+            args_lookups = [models.Q()]
 
         return reduce(
             operator.and_,
-            [args_lookups] + [models.Q(**{key: value}) for key, value in kwargs_lookups.iteritems()]
+            list(args_lookups) + [
+                models.Q(**{key: value}) for key, value in kwargs_lookups.iteritems()
+            ]
         )
 
     def apply_lookup(self, qs, prefix=None):

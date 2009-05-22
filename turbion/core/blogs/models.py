@@ -233,7 +233,7 @@ class Comment(models.Model, AntispamModel):
 
     objects = managers.CommentManager()
     published = managers.CommentManager(
-        Post.published.get_lookup('post'), status=statuses.published
+        Post.published.get_lookup('post__'), status=statuses.published
     )
 
     def is_edited(self):
@@ -287,10 +287,7 @@ class Comment(models.Model, AntispamModel):
         }
 
     def get_antispam_status(self):
-        return self.status
-
-    def get_antispam_action(self):
-        return self.status == Comment.statuses.published and 'spam' or 'ham'
+        return self.status == Comment.statuses.published and 'ham' or self.status
 
     def set_antispam_status(self, decision):
         decision_map = {
