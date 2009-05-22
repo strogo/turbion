@@ -232,7 +232,9 @@ class Comment(models.Model, AntispamModel):
     is_published = property(lambda self: self.status == Comment.statuses.published)
 
     objects = managers.CommentManager()
-    published = managers.CommentManager(status=statuses.published)
+    published = managers.CommentManager(
+        Post.published.get_lookup('post'), status=statuses.published
+    )
 
     def is_edited(self):
         return self.created_on != self.edited_on
