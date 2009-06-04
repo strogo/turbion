@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import signals
 
-from turbion.core.utils.composition import CompositionField
+from composition import CompositionField
 
 D = dict
 
