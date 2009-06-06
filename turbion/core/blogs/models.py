@@ -85,7 +85,7 @@ class Post(models.Model):
     title         = models.CharField(max_length=130, verbose_name=_("title"))
     slug          = models.CharField(max_length=130, verbose_name=_("slug"), blank=True, db_index=True)
 
-    text          = MarkupTextField(verbose_name=_("text"))
+    text          = MarkupTextField(verbose_name=_("text"), safe=False)
 
     status        = models.CharField(max_length=10, choices=statuses, db_index=True,
                                      default=statuses.draft, verbose_name=_("status"))

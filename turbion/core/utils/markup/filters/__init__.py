@@ -21,6 +21,9 @@ class BaseFilter(object):
     def name(self):
         return self.meta.name.lower()
 
+    def is_safe(self):
+        return True
+
     def to_html(self, value):
         raise NotImplementedError
 
