@@ -1,4 +1,5 @@
 from django.core.management.base import NoArgsCommand
+from django.conf import settings
 
 from turbion.models import Message
 
@@ -7,8 +8,6 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
         for message in Message.objects.all():
-            try:
-                message.send()
-            except:
-                pass
-            message.delete()
+            if message.send()\
+                or message.attempt >= settings.TURBION_NOTIFICATION_ATTEMPTS:
+                message.delete()

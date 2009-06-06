@@ -80,6 +80,7 @@ class Message(models.Model):
     email = models.EmailField()
     subject = models.CharField(max_length=255)
     date = models.DateTimeField(default=datetime.now)
+    attempt = models.PositiveSmallIntegerField(default=0)
 
     body = models.TextField()
     content_type = models.CharField(max_length=50, blank=True)
@@ -88,20 +89,26 @@ class Message(models.Model):
         return u'`%s` to %s' % (self.subject, self.email)
 
     def send(self):
-        domain = Site.objects.get_current().domain
-        from_email = settings.TURBION_NOTIFACTIONS_FROM_EMAIL % {'domain': domain}
+        try:
+            domain = Site.objects.get_current().domain
+            from_email = settings.TURBION_NOTIFACATION_FROM_EMAIL % {'domain': domain}
 
-        msg = EmailMessage(
-            self.subject,
-            self.body,
-            from_email,
-            [self.email]
-        )
+            msg = EmailMessage(
+                self.subject,
+                self.body,
+                from_email,
+                [self.email]
+            )
 
-        if self.content_type:
-            msg.content_subtype = self.content_type
+            if self.content_type:
+                msg.content_subtype = self.content_type
 
-        msg.send()
+            msg.send()
+            return True
+        except Exception:
+            self.attempt += 1
+            self.save()
+            return False
 
     class Meta:
         ordering = ['date']
