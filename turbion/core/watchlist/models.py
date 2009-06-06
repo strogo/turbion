@@ -91,7 +91,7 @@ class Message(models.Model):
     def send(self):
         try:
             domain = Site.objects.get_current().domain
-            from_email = settings.TURBION_NOTIFACATION_FROM_EMAIL % {'domain': domain}
+            from_email = settings.TURBION_NOTIFiCATION_FROM_EMAIL % {'domain': domain}
 
             msg = EmailMessage(
                 self.subject,
