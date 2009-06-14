@@ -12,13 +12,6 @@ TURBION_PINGBACK_PARAGRAPH_LENGTH = 200
 
 TURBION_ANTISPAM_FILTERS = ['trusted', 'whitelist', 'captcha', 'akismet']
 
-TURBION_AKISMET_API_METHODS = {
-    'verify-key': 'http://rest.akismet.com/1.1/verify-key',
-    'comment-check': 'http://%(api-key)s.rest.akismet.com/1.1/comment-check',
-    'submit-spam': 'http://%(api-key)s.rest.akismet.com/1.1/submit-spam',
-    'submit-ham': 'http://%(api-key)s.rest.akismet.com/1.1/submit-ham'
-}
-
 TURBION_AKISMET_API_KEY = ''
 
 import logging

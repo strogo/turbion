@@ -19,7 +19,12 @@ site_url = 'http://%s' % site.domain
 
 # filter functions
 class Akismet(Filter):
-    method_map = settings.TURBION_AKISMET_API_METHODS
+    method_map = {
+        'verify-key': 'http://rest.akismet.com/1.1/verify-key',
+        'comment-check': 'http://%(api-key)s.rest.akismet.com/1.1/comment-check',
+        'submit-spam': 'http://%(api-key)s.rest.akismet.com/1.1/submit-spam',
+        'submit-ham': 'http://%(api-key)s.rest.akismet.com/1.1/submit-ham'
+    }
     key = settings.TURBION_AKISMET_API_KEY
 
     def get_data(self, obj, *args, **kwargs):
