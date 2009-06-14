@@ -20,11 +20,12 @@ site_url = 'http://%s' % site.domain
 # filter functions
 class Akismet(Filter):
     method_map = {
-        'verify-key': 'http://rest.akismet.com/1.1/verify-key',
-        'comment-check': 'http://%(api-key)s.rest.akismet.com/1.1/comment-check',
-        'submit-spam': 'http://%(api-key)s.rest.akismet.com/1.1/submit-spam',
-        'submit-ham': 'http://%(api-key)s.rest.akismet.com/1.1/submit-ham'
+        'verify-key': 'http://%(domain)s/1.1/verify-key',
+        'comment-check': 'http://%(api-key)s.%(domain)s/1.1/comment-check',
+        'submit-spam': 'http://%(api-key)s.%(domain)s/1.1/submit-spam',
+        'submit-ham': 'http://%(api-key)s.%(domain)s/1.1/submit-ham'
     }
+    domain = 'rest.akismet.com'
     key = settings.TURBION_AKISMET_API_KEY
 
     def get_data(self, obj, *args, **kwargs):
@@ -66,7 +67,7 @@ class Akismet(Filter):
 
     def _make_request(self, method, data):
         result = fetch(
-            self.method_map[method] % {'api-key': self.key},
+            self.method_map[method] % {'api-key': self.key, 'domain': self.domain},
             data,
             headers={
                 'Content-type': 'application/x-www-form-urlencoded',
