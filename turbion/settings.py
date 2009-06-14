@@ -10,9 +10,10 @@ TURBION_NOTIFICATION_ATTEMPTS = 3
 
 TURBION_PINGBACK_PARAGRAPH_LENGTH = 200
 
-TURBION_ANTISPAM_FILTERS = ['trusted', 'whitelist', 'captcha', 'akismet']
+TURBION_ANTISPAM_FILTERS = ['trusted', 'whitelist', 'captcha', 'akismet', 'typepad']
 
 TURBION_AKISMET_API_KEY = ''
+TURBION_TYPEPAD_API_KEY = ''
 
 import logging
 
