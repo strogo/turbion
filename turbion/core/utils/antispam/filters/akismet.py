@@ -8,17 +8,13 @@ from django.utils.http import urlencode
 from turbion.core.utils.antispam import Filter
 from turbion.core.utils.urlfetch import fetch
 
-"""
-API specifications:
- - http://akismet.com/development/api/
- - http://antispam.typepad.com/info/developers.html
-"""
-
 site = Site.objects.get_current()
 site_url = 'http://%s' % site.domain
 
-# filter functions
 class Akismet(Filter):
+    """
+    Akismet filter. API docs: http://akismet.com/development/api/
+    """
     method_map = {
         'verify-key': 'http://%(domain)s/1.1/verify-key',
         'comment-check': 'http://%(api-key)s.%(domain)s/1.1/comment-check',
@@ -27,17 +23,11 @@ class Akismet(Filter):
     }
     domain = 'rest.akismet.com'
     key = settings.TURBION_AKISMET_API_KEY
-
-    def get_data(self, obj, *args, **kwargs):
-        data = obj.get_antispam_data()
-        data.update({
-            'blog': site_url,
-            'permalink': site_url + data['permalink']
-        })
-        return data
-
+        
+    # filter functions
+    
     def process_form_submit(self, request, form, child, parent=None):
-        data = self.get_data(child)
+        data = self._get_data(child)
 
         if data:
             data.update({
@@ -49,21 +39,21 @@ class Akismet(Filter):
 
             if response.status_code == '200':
                 if response.content == 'true':
-                    return 'spam:akismet'
+                    return self._get_spam_status()
 
         return None
 
     def action_submit(self, status, obj):
-        data = self.get_data(obj)
+        data = self._get_data(obj)
 
         if status.startswith('spam'):
             self._make_request('submit-ham', data)
-            if 'spam:akismet':
+            if self._get_spam_status():
                 return True
         elif status == 'ham':
             self._make_request('submit-spam', data)
 
-    # helper
+    # helpers
 
     def _make_request(self, method, data):
         result = fetch(
@@ -76,4 +66,14 @@ class Akismet(Filter):
         )
         return result
 
+    def _get_data(self, obj, *args, **kwargs):
+        data = obj.get_antispam_data()
+        data.update({
+            'blog': site_url,
+            'permalink': site_url + data['permalink']
+        })
+        return data
+        
+    def _get_spam_status(self):
+        return 'spam:%s' % self.name
 
