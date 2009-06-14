@@ -45,7 +45,7 @@ class FilterManager(spot.SpotManager):
             else:
                 raise ValueError("Cannot load filter '%s'" % filter_name)
 
-Filter = spot.create(BaseFilter, manager=FilterManager, cache=False)
+Filter = spot.create(BaseFilter, manager=FilterManager, cache=False, preload=True)
 
 def process_form_init(request, form, parent=None):
     for name, filter in Filter.manager.all():

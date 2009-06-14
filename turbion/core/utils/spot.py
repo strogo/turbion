@@ -3,11 +3,13 @@ import re
 SPLIT_RE = re.compile('([A-Z][a-z]*)')
 
 class SpotManager(object):
-    def __init__(self, cache=True):
+    def __init__(self, cache=True, preload=False):
         self._classes = {}
         self._objects = {}
         self._cache = cache
         self._loaded = not hasattr(self, 'load')
+        if preload and not self._loaded:
+            self._load()
 
     def create(self, obj_class):
         if not self._cache:
@@ -41,13 +43,13 @@ class SpotManager(object):
             self.load()
             self._loaded = True
 
-def create(base, manager=SpotManager, cache=True):
+def create(base, manager=SpotManager, cache=True, preload=False):
     class SpotMetaclass(type):
         def __new__(cls, name, bases, attrs):
             try:
                 Spot
             except NameError:
-                cls.manager = manager(cache)
+                cls.manager = manager(cache, preload)
                 t = super(SpotMetaclass, cls).__new__(cls, name, bases, attrs)
             else:
                 t = super(SpotMetaclass, cls).__new__(cls, name, bases, attrs)
