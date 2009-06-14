@@ -60,6 +60,7 @@ def create(base, manager=SpotManager, cache=True, preload=False):
                     descriptor = '_'.join(
                         [bit.lower() for bit in SPLIT_RE.split(name) if bit]
                     )
+                    attrs['name'] = descriptor
 
                 cls.manager.add(descriptor, t)
 
