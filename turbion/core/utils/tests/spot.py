@@ -12,11 +12,11 @@ class PluginManager(spot.SpotManager):
 
 Plugin = spot.create(BasePlugin, manager=PluginManager, cache=False)
 
-class PluginA(Plugin):
+class PlugA(Plugin):
     name = 'plug_a'
 
-class PluginB(Plugin):
-    name = 'plug_b'
+class PlugB(Plugin):
+    pass
 
 class SpotTest(TestCase):
     def setUp(self):
