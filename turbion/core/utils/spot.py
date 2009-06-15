@@ -2,7 +2,7 @@ import re
 
 SPLIT_RE = re.compile('([A-Z][a-z]*)')
 
-class SpotManager(object):
+class Manager(object):
     def __init__(self, cache=True):
         self._classes = {}
         self._objects = {}
@@ -41,7 +41,7 @@ class SpotManager(object):
             self.load()
             self._loaded = True
 
-def create(base, manager=SpotManager, cache=True):
+def create(base, manager=Manager, cache=True):
     class SpotMetaclass(type):
         def __new__(cls, name, bases, attrs):
             try:

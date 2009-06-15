@@ -6,7 +6,7 @@ class BasePlugin(object):
     def hello(self):
         return 'Hello from %s' % self.name
 
-class PluginManager(spot.SpotManager):
+class PluginManager(spot.Manager):
     def load(self):
         pass
 

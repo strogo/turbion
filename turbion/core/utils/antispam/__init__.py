@@ -25,7 +25,7 @@ class BaseFilter(object):
     def action_submit(self, action, obj):
         raise NotImplementedError
 
-class FilterManager(spot.SpotManager):
+class FilterManager(spot.Manager):
     def load(self):
         for filter_name in settings.TURBION_ANTISPAM_FILTERS:
             mod = None

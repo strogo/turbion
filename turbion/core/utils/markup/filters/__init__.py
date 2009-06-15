@@ -1,6 +1,6 @@
 from turbion.core.utils import spot
 
-class FilterManager(spot.SpotManager):
+class FilterManager(spot.Manager):
     def load(self):
         from turbion.core.utils.loading import get_sub_modules
         get_sub_modules("turbion.core.utils.markup", "filters")
