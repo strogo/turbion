@@ -5,8 +5,6 @@ from turbion.core.profiles import get_profile
 
 decisions = set(['spam', 'ham', 'unknown'])
 
-urlpatterns = []
-
 class AntispamModel(object):
     def get_antispam_data(self):
         raise NotImplementedError
@@ -39,10 +37,7 @@ class FilterManager(spot.SpotManager):
                         mod = loading.get_module(filter_name.rsplit('.', 1))
                     except loading.NoModuleError:
                         pass
-            if mod:
-                if hasattr(mod, 'urlpatterns'):
-                    urlpatterns.extend(mod.urlpatterns)
-            else:
+            if not mod:
                 raise ValueError("Cannot load filter '%s'" % filter_name)
 
 Filter = spot.create(BaseFilter, manager=FilterManager, cache=False)
