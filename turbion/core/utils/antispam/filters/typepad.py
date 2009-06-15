@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from turbion.core.utils.antispam.filter.akismet import Akismet
+from turbion.core.utils.antispam.filters.akismet import Akismet
 
 class Typepad(Akismet):
     """
