@@ -20,10 +20,10 @@ class AntispamModel(object):
 class BaseFilter(object):
     def process_form_init(self, request, form, parent=None):
         raise NotImplementedError
-    
+
     def process_form_submit(self, request, form, child, parent=None):
         raise NotImplementedError
-        
+
     def action_submit(self, action, obj):
         raise NotImplementedError
 
@@ -45,7 +45,7 @@ class FilterManager(spot.SpotManager):
             else:
                 raise ValueError("Cannot load filter '%s'" % filter_name)
 
-Filter = spot.create(BaseFilter, manager=FilterManager, cache=False, preload=True)
+Filter = spot.create(BaseFilter, manager=FilterManager, cache=False)
 
 def process_form_init(request, form, parent=None):
     for name, filter in Filter.manager.all():
@@ -73,4 +73,3 @@ def action_submit(action, obj):
                 return
         except NotImplementedError:
             pass
-
