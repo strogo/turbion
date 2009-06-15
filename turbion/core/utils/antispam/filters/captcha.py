@@ -11,5 +11,4 @@ class Captcha(Filter):
 
 urlpatterns = patterns('',
     url(r'^captcha/(?P<code>[\da-f]{32})/$', 'supercaptcha.draw'),
-    url(r'^antispam/', include('turbion.core.utils.antispam.urls')),
 )
