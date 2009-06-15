@@ -154,7 +154,7 @@ class Post(models.Model):
             post=self
         )
 
-    def _get_near_post(self, is_next, **kwargs):
+    def _get_near_post(self, is_next, *args, **kwargs):
         if self.published_on is None:
             raise ValueError("Cannot find next or prev post when published_on is None")
 
@@ -165,15 +165,15 @@ class Post(models.Model):
             'published_on__%s' % op: self.published_on,
             'published_on__isnull': False
         })
-        qs = self.__class__._default_manager.filter(**kwargs).exclude(pk=self.pk)\
+        qs = self.__class__._default_manager.filter(*args, **kwargs).exclude(pk=self.pk)\
                                         .order_by('%spublished_on' % order)
         try:
             return qs[0]
         except IndexError:
             raise self.DoesNotExist("%s matching query does not exist." % self.__class__._meta.object_name)
 
-    get_previous_by_published_on = lambda self, **kwargs: self._get_near_post(False, **kwargs)
-    get_next_by_published_on = lambda self, **kwargs: self._get_near_post(True, **kwargs)
+    get_previous_by_published_on = lambda self, *args, **kwargs: self._get_near_post(False, **kwargs)
+    get_next_by_published_on = lambda self, *args, **kwargs: self._get_near_post(True, **kwargs)
 
     def get_comment_status(self, comment):
         author = comment.created_by
