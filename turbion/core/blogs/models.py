@@ -102,6 +102,7 @@ class Post(models.Model):
                                             verbose_name=_("comments moderation"))
 
     tags = models.ManyToManyField("turbion.Tag", related_name="posts", blank=True)
+    actual = models.ForeignKey('self', blank=True, null=True, verbose_name=_('actual post'))
 
     objects = managers.PostManager()
 
