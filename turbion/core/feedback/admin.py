@@ -1,6 +1,6 @@
 from django import forms
 
-from django.core import admin
+from django.contrib import admin
 
 from turbion.core.feedback.models import Feedback
 from turbion.core.profiles import get_profile

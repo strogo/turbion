@@ -1,8 +1,8 @@
 from django.core.management.base import NoArgsCommand
 
 from turbion.core.utils.urlfetch import fetch
-from turbion.contrib.openid.whitelist.models import Source, Identity
-from turbion.contrib.openid.whitelist.serializers import get_accept, get_parser
+from turbion.core.whitelist.models import Source, Identity
+from turbion.core.whitelist.serializers import get_accept, get_parser
 from turbion import logger
 
 class Command(NoArgsCommand):

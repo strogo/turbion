@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from turbion.contrib.openid.whitelist.models import Source
+from turbion.core.whitelist.models import Source
 
 class SourceAdmin(admin.ModelAdmin):
     pass

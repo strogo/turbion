@@ -1,4 +1,5 @@
-from django.core import admin
+from django.contrib import admin
+
 from turbion.core.aliases.models import Alias
 
 class AliasAdmin(admin.ModelAdmin):

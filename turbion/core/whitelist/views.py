@@ -1,7 +1,7 @@
 from django import http
 
 from turbion.core.utils.compat.mimeparse import best_match
-from turbion.contrib.openid.whitelist.serializers import get_accept, get_generator
+from turbion.core.whitelist.serializers import get_accept, get_generator
 
 def whitelist(request, queryset):
     if hasattr(queryset, '_clone'):
