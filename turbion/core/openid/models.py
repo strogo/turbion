@@ -53,6 +53,7 @@ class Trust(models.Model):
         return self.url
 
     class Meta:
+        app_label = 'turbion'
         db_table = "turbion_openid_trust"
         verbose_name = _('trust url')
         verbose_name_plural = _('trust urls')

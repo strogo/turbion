@@ -8,7 +8,7 @@ class Source(models.Model):
         return self.url
 
     class Meta:
-        app_label = 'openid'
+        app_label = 'turbion'
         db_table = 'turbion_whitelist_source'
         verbose_name = _('source')
         verbose_name_plural = _('sources')
@@ -21,5 +21,5 @@ class Identity(models.Model):
         return u'%s: %s' % (self.source, self.openid)
 
     class Meta:
-        app_label = 'openid'
+        app_label = 'turbion'
         db_table = 'turbion_whitelist_identity'

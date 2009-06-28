@@ -72,6 +72,7 @@ class Feedback(models.Model):
         self.status = decision_map.get(decision, Comment.statuses.moderation)
 
     class Meta:
+        app_label           = 'turbion'
         verbose_name        = _('feedback')
         verbose_name_plural = _('feedbacks')
         ordering            = ('-created_on',)

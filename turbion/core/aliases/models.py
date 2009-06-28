@@ -29,6 +29,7 @@ class Alias(models.Model):
     active  = FilteredManager(is_active=True)
 
     class Meta:
+        app_label = 'turbion'
         db_table = "turbion_alias"
 
         verbose_name = _("alias")
