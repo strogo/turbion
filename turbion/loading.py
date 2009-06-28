@@ -1,7 +1,7 @@
 from turbion.core.utils.loading import get_module_attrs, NoModuleError
 
 SUB_APPLICATIONS = (
-    "profiles", "blogs", "utils", "pingback", "utils.markup", 'aliases'
+    "profiles", "blogs", "utils", "pingback", "utils.markup", 'aliases',
     'watchlist', 'feedback', 'openid', 'whitelist'
 )
 
