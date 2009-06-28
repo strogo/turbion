@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from turbion.core.utils.urls import uri_reverse
-from turbion.contrib.openid import views
+from turbion.core.openid import views
 
 class YadisMiddleware(object):
     def process_request(self, request):

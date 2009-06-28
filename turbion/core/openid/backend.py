@@ -5,7 +5,7 @@ from django.db import IntegrityError
 
 from turbion.core.profiles.models import Profile
 from turbion.core.profiles.forms import extract_profile_data
-from turbion.contrib.openid import utils
+from turbion.core.openid import utils
 import turbion
 
 class OpenidBackend(ModelBackend):

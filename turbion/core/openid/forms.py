@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.core.profiles.models import Profile
-from turbion.contrib.openid import utils
+from turbion.core.openid import utils
 
 class OpenidLoginForm(forms.ModelForm):
     class Meta:

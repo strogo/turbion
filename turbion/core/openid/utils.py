@@ -2,17 +2,17 @@ from django.conf import settings
 
 from turbion.core.utils.urls import uri_reverse
 from turbion.core.profiles.models import Profile
-from turbion.contrib.openid.models import Association
+from turbion.core.openid.models import Association
 
 def get_consumer(session):
     from openid.consumer import consumer
-    from turbion.contrib.openid.store import DatabaseStore
+    from turbion.core.openid.store import DatabaseStore
 
     return consumer.Consumer(session, DatabaseStore(Association.origins.consumer))
 
 def get_server():
     from openid.server import server
-    from turbion.contrib.openid.store import DatabaseStore
+    from turbion.core.openid.store import DatabaseStore
 
     return server.Server(
         DatabaseStore(Association.origins.server),

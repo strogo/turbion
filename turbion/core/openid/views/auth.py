@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str
 
-from turbion.contrib.openid import forms, utils, models, backend
+from turbion.core.openid import forms, utils, models, backend
 from turbion.core.utils.urls import uri_reverse
 from turbion.core.profiles import get_profile
 from turbion.core.utils.decorators import templated, special_titled

@@ -8,7 +8,7 @@ from django.utils.encoding import force_unicode
 from django.conf import settings
 
 from turbion.core.profiles import get_profile
-from turbion.contrib.openid import forms, utils, models
+from turbion.core.openid import forms, utils, models
 from turbion.core.utils.urls import uri_reverse
 from turbion.core.utils.decorators import templated, special_titled
 from turbion.core.utils.views import status_redirect
