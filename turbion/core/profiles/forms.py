@@ -25,20 +25,13 @@ def extract_profile_data(request):
         'ip': ':' in ip and ip.rsplit(':', 1)[1] or ip
     }
 
-USE_OPENID = 'turbion.contrib.openid' in settings.INSTALLED_APPS
-
 def combine_profile_form_with(form_class, request, field='created_by',\
                               fields=None, filter_field=None, markup_filter_fieled='text_filter'):
     if not get_profile(request).is_trusted():
-        if USE_OPENID:
-            from turbion.contrib.openid.forms import OpenidLoginForm as BaseForm
-        else:
-            class BaseForm(forms.ModelForm):
-                def __init__(self, request, *args, **kwargs):
-                    super(BaseForm, self).__init__(*args, **kwargs)
+        from turbion.core.openid.forms import OpenidLoginForm as BaseForm
 
         class ProfileForm(form_class, BaseForm):
-            nickname  = forms.CharField(required=not USE_OPENID, label=_('name'))
+            nickname  = forms.CharField(required=False, label=_('name'))
             email = forms.EmailField(required=False, label=_('email'),
                                      help_text=_('Only internal usage'))
             site  = forms.URLField(required=False, label=_('site'))
@@ -104,21 +97,20 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
                 return obj
 
-            if USE_OPENID:
-                def clean_openid(self):
-                    value = self.cleaned_data["openid"]
-                    if value:
-                        return super(ProfileForm, self).clean_openid()
-                    return value
+            def clean_openid(self):
+                value = self.cleaned_data["openid"]
+                if value:
+                    return super(ProfileForm, self).clean_openid()
+                return value
 
-                def clean(self):
-                    nickname = self.cleaned_data.get('nickname')
-                    openid = self.cleaned_data.get('openid')
+            def clean(self):
+                nickname = self.cleaned_data.get('nickname')
+                openid = self.cleaned_data.get('openid')
 
-                    if not nickname and not openid:
-                        raise forms.ValidationError(_(u'Any of nickname or openid is required.'))
+                if not nickname and not openid:
+                    raise forms.ValidationError(_(u'Any of nickname or openid is required.'))
 
-                    return self.cleaned_data
+                return self.cleaned_data
 
         # Remove filter selection for not logged in user
         ProfileForm.base_fields.pop(markup_filter_fieled, None)

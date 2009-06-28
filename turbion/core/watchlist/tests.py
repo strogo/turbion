@@ -38,24 +38,23 @@ class WatchlistTest(BaseViewTest):
 
         self.assertEqual(queue_len(), 1)
 
-    if 'turbion.contrib.feedback' in settings.INSTALLED_APPS:
-        def test_new_feedback(self):
-            from turbion.contrib.feedback.models import Feedback
+    def test_new_feedback(self):
+        from turbion.core.feedback.models import Feedback
 
-            watchlist.subscribe(
-                self.user,
-                'new_feedback',
-                email=True
-            )
+        watchlist.subscribe(
+            self.user,
+            'new_feedback',
+            email=True
+        )
 
-            feedback = Feedback.objects.create(
-                created_by=self.user,
-                subject='test',
-                text='test text'
-            )
-            watchlist.emit_event('new_feedback', feedback=feedback)
+        feedback = Feedback.objects.create(
+            created_by=self.user,
+            subject='test',
+            text='test text'
+        )
+        watchlist.emit_event('new_feedback', feedback=feedback)
 
-            self.assertEqual(queue_len(), 1)
+        self.assertEqual(queue_len(), 1)
 
     def test_unsubscribe_view(self):
         sub = watchlist.subscribe(

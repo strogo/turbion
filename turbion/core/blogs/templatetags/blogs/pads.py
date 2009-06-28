@@ -179,9 +179,7 @@ def login_pad(context):
             urls.append((_("Logout"), reverse('django.contrib.auth.views.logout')))
     else:
         urls.append((_("Login"), reverse('django.contrib.auth.views.login')))
-
-        if "turbion.contrib.openid" in settings.INSTALLED_APPS:
-            urls.append((_("Openid"), reverse("turbion_openid_login")))
+        urls.append((_("Openid"), reverse("turbion_openid_login")))
 
     return {
         "user": user,

@@ -1,6 +1,6 @@
 # Trying to find user in OpenID whitelist
 from turbion.core.utils.antispam import Filter
-from turbion.contrib.openid.whitelist.models import Identity
+from turbion.core.whitelist.models import Identity
 
 class Whitelist(Filter):
     def process_form_submit(self, request, form, child, parent=None):
