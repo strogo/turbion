@@ -13,6 +13,11 @@ TURBION_ANTISPAM_FILTERS = ['trusted', 'whitelist', 'captcha', 'akismet', 'typep
 TURBION_AKISMET_API_KEY = ''
 TURBION_TYPEPAD_API_KEY = ''
 
+TURBION_OPENID_TRUST_URL = None
+
+TURBION_OPENID_IDENTITY_URL = None
+TURBION_OPENID_IDENTITY_PROFILE = None
+
 import logging
 
 class NullHandler(logging.Handler):
