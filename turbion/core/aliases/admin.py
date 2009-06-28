@@ -1,5 +1,5 @@
-from django.contrib import admin
-from turbion.contrib.aliases.models import Alias
+from django.core import admin
+from turbion.core.aliases.models import Alias
 
 class AliasAdmin(admin.ModelAdmin):
     list_display = (
