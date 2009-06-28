@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.contrib.feedback import signals
+from turbion.core.feedback import signals
 from turbion.core.profiles.models import Profile
 from turbion.core.utils.enum import Enum
 from turbion.core.utils.models import FilteredManager

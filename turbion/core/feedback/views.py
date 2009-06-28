@@ -3,9 +3,9 @@ from django.utils.translation import ugettext_lazy as _
 from turbion.core.utils.decorators import templated, titled
 from turbion.core.utils.views import status_redirect
 
-from turbion.contrib.feedback.forms import FeedbackForm
-from turbion.contrib.feedback.models import Feedback
-from turbion.contrib.feedback import signals
+from turbion.core.feedback.forms import FeedbackForm
+from turbion.core.feedback.models import Feedback
+from turbion.core.feedback import signals
 from turbion.core.utils import antispam
 
 @templated("turbion/feedback/index.html")

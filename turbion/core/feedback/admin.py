@@ -1,8 +1,8 @@
 from django import forms
 
-from django.contrib import admin
+from django.core import admin
 
-from turbion.contrib.feedback.models import Feedback
+from turbion.core.feedback.models import Feedback
 from turbion.core.profiles import get_profile
 from turbion.core.utils.antispam.admin import ActionModelAdmin
 

@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^profiles/',            include('turbion.core.profiles.urls')),
     url(r'^watchlist/',           include('turbion.core.watchlist.urls')),
     url(r'^pingback/',            include('turbion.core.pingback.urls')),
+    url(r'^feedback/',            include('turbion.core.feedback.urls')),
 
     url(r'',                      include('turbion.core.blogs.urls')),
 
