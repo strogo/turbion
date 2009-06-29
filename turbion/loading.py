@@ -1,7 +1,7 @@
 from turbion.core.utils.loading import get_module_attrs, NoModuleError
 
 SUB_APPLICATIONS = (
-    "profiles", "blogs", "utils", "pingback", "utils.markup", 'aliases',
+    'profiles', 'blogs', 'utils', 'pingback', 'utils.markup', 'aliases',
     'watchlist', 'feedback', 'openid', 'whitelist'
 )
 
@@ -10,21 +10,21 @@ def connectors():
 
     for app in settings.INSTALLED_APPS:
         try:
-            get_module_attrs(app, "connector")
+            get_module_attrs(app, 'connector')
         except NoModuleError:
             pass
 
 def admins():
     for app in SUB_APPLICATIONS:
         try:
-            get_module_attrs("turbion.core.%s" % app, "admin")
+            get_module_attrs('turbion.core.%s' % app, 'admin')
         except NoModuleError:
             pass
 
 def indexes():
     for app in SUB_APPLICATIONS:
         try:
-            get_module_attrs("turbion.core.%s" % app, "index")
+            get_module_attrs('turbion.core.%s' % app, 'index')
         except NoModuleError:
             pass
 
@@ -36,8 +36,8 @@ def tests():
         try:
             test_classes.update(
                 get_module_attrs(
-                    "turbion.core.%s" % app,
-                    "tests",
+                    'turbion.core.%s' % app,
+                    'tests',
                     lambda attr: isinstance(attr, type) and issubclass(attr, TestCase)
                 )
             )
@@ -54,8 +54,8 @@ def models():
         try:
             model_classes.update(
                 get_module_attrs(
-                    "turbion.core.%s" % app,
-                    "models",
+                    'turbion.core.%s' % app,
+                    'models',
                     lambda attr: isinstance(attr, type) and issubclass(attr, Model)
                 )
             )
@@ -71,14 +71,14 @@ def _load_paths(leaf_module):
         try:
             paths.extend(
                 get_module_attrs(
-                    "turbion.core.%s" % app,
+                    'turbion.core.%s' % app,
                     leaf_module
-                )["__path__"]
+                )['__path__']
             )
         except NoModuleError:
             pass
 
     return paths
 
-templatetags = lambda: _load_paths("templatetags")
-commands = lambda: _load_paths("management.commands")
+templatetags = lambda: _load_paths('templatetags')
+commands = lambda: _load_paths('management.commands')
