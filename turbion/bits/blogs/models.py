@@ -12,7 +12,7 @@ from turbion.bits.utils.enum import Enum
 
 from turbion.bits.utils._calendar import Calendar
 from turbion.bits.blogs.fields import PostCountField, CommentCountField
-from turbion.bits.utils.antispam import AntispamModel
+from turbion.bits.antispam import AntispamModel
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name=_("name"))

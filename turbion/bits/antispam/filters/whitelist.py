@@ -1,5 +1,5 @@
 # Trying to find user in OpenID whitelist
-from turbion.bits.utils.antispam import Filter
+from turbion.bits.antispam import Filter
 from turbion.bits.whitelist.models import Identity
 
 class Whitelist(Filter):

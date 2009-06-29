@@ -1,6 +1,6 @@
 import operator
 
-from turbion.bits.utils.antispam import Filter
+from turbion.bits.antispam import Filter
 
 urlpatterns = reduce(
     operator.add,

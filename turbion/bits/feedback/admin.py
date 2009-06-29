@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from turbion.bits.feedback.models import Feedback
 from turbion.bits.profiles import get_profile
-from turbion.bits.utils.antispam.admin import ActionModelAdmin
+from turbion.bits.antispam.admin import ActionModelAdmin
 
 class FeedbackAdmin(ActionModelAdmin, admin.ModelAdmin):
     list_display = (

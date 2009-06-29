@@ -10,5 +10,4 @@ def uri_reverse(view, urlconf=None, args=None, kwargs=None):
 
 urlpatterns = patterns('',
     url(r'^status/$',     "turbion.bits.utils.views.status", name="turbion_status"),
-    url(r'^antispam/', include('turbion.bits.utils.antispam.urls')),
 )

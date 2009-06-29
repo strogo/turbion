@@ -30,7 +30,7 @@ class FilterManager(spot.Manager):
         for filter_name in settings.TURBION_ANTISPAM_FILTERS:
             mod = None
             try:
-                mod = loading.get_module('turbion.bits.utils.antispam.filters', filter_name)
+                mod = loading.get_module('turbion.bits.antispam.filters', filter_name)
             except loading.NoModuleError:
                 if '.' in filter_name:
                     try:

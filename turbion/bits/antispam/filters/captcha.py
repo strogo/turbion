@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from supercaptcha import CaptchaField
 
-from turbion.bits.utils.antispam import Filter
+from turbion.bits.antispam import Filter
 
 class Captcha(Filter):
     urlpatterns = patterns('',

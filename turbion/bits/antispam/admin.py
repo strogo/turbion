@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.core.urlresolvers import reverse
 
-from turbion.bits.utils.antispam import action_submit
+from turbion.bits.antispam import action_submit
 
 class ActionModelAdmin(object):
     action = 'antispam'
