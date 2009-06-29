@@ -6,14 +6,14 @@ from django.utils.translation import ugettext_lazy as _
 from django import http
 from django.core.urlresolvers import reverse
 
-from turbion.core.blogs.models import Post
-from turbion.core.profiles.models import Profile
-from turbion.core.utils.decorators import special_titled, templated, paged
-from turbion.core import watchlist
-from turbion.core.profiles import get_profile
-from turbion.core.utils.pagination import paginate
-from turbion.core.utils.views import status_redirect
-from turbion.core.watchlist.forms import SubscriptionForm
+from turbion.bits.blogs.models import Post
+from turbion.bits.profiles.models import Profile
+from turbion.bits.utils.decorators import special_titled, templated, paged
+from turbion.bits import watchlist
+from turbion.bits.profiles import get_profile
+from turbion.bits.utils.pagination import paginate
+from turbion.bits.utils.views import status_redirect
+from turbion.bits.watchlist.forms import SubscriptionForm
 
 titled = special_titled(section=_('Watchlist'))
 

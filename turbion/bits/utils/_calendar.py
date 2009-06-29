@@ -70,7 +70,7 @@ class Calendar(object):
         try:
             from calendar import Calendar
         except (ImportError, AttributeError):
-            from turbion.core.utils.calendar24 import Calendar
+            from turbion.bits.utils.calendar24 import Calendar
 
         cal = Calendar()
 

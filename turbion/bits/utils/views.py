@@ -2,7 +2,7 @@ from django import http
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.utils.decorators import templated, titled
+from turbion.bits.utils.decorators import templated, titled
 
 def status_redirect(request, title, section, message, next, button=_("Continue")):
     from django.utils.http import urlencode

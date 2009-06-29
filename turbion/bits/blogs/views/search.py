@@ -3,11 +3,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from turbion.core.blogs.decorators import titled
-from turbion.core.blogs.models import Post, Comment
-from turbion.core.blogs.forms import SearchForm
-from turbion.core.utils.pagination import paginate
-from turbion.core.utils.decorators import templated, paged
+from turbion.bits.blogs.decorators import titled
+from turbion.bits.blogs.models import Post, Comment
+from turbion.bits.blogs.forms import SearchForm
+from turbion.bits.utils.pagination import paginate
+from turbion.bits.utils.decorators import templated, paged
 
 def generic_search(request, models, filters={}, form_name="form", page=1):
     context = {}

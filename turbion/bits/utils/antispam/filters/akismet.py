@@ -5,8 +5,8 @@ from django.core.urlresolvers import reverse
 from django import forms, http
 from django.utils.http import urlencode
 
-from turbion.core.utils.antispam import Filter
-from turbion.core.utils.urlfetch import fetch
+from turbion.bits.utils.antispam import Filter
+from turbion.bits.utils.urlfetch import fetch
 
 site = Site.objects.get_current()
 site_url = 'http://%s' % site.domain

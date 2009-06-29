@@ -6,7 +6,7 @@ from django.utils.encoding import smart_unicode
 from django import http
 from django.template.context import get_standard_processors
 
-from turbion.core.utils.title import gen_title
+from turbion.bits.utils.title import gen_title
 
 __all__ = ["status", "paged", "templated", "titled", "special_titled"]
 

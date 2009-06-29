@@ -6,15 +6,15 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from turbion.core.blogs.decorators import post_view, login_required, titled
-from turbion.core.blogs.models import Post, Comment, Tag
-from turbion.core.profiles.models import Profile
-from turbion.core.pingback.models import Pingback
-from turbion.core.blogs import forms
-from turbion.core.profiles import get_profile
-from turbion.core.utils.pagination import paginate
-from turbion.core.utils.decorators import paged, templated
-from turbion.core.utils import antispam
+from turbion.bits.blogs.decorators import post_view, login_required, titled
+from turbion.bits.blogs.models import Post, Comment, Tag
+from turbion.bits.profiles.models import Profile
+from turbion.bits.pingback.models import Pingback
+from turbion.bits.blogs import forms
+from turbion.bits.profiles import get_profile
+from turbion.bits.utils.pagination import paginate
+from turbion.bits.utils.decorators import paged, templated
+from turbion.bits.utils import antispam
 
 @paged
 @templated('turbion/blogs/post_list.html')

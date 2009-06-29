@@ -5,9 +5,9 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.blogs.models import Post, Comment, Tag
-from turbion.core.profiles import get_profile
-from turbion.core.utils.antispam.admin import ActionModelAdmin
+from turbion.bits.blogs.models import Post, Comment, Tag
+from turbion.bits.profiles import get_profile
+from turbion.bits.utils.antispam.admin import ActionModelAdmin
 
 class PostAdmin(admin.ModelAdmin):
     exclude = ['created_by', 'edited_by']

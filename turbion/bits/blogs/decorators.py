@@ -7,9 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponsePermanentRedirect
 from django.shortcuts import *
 
-from turbion.core.blogs.models import Post
-from turbion.core.utils.decorators import special_titled
-from turbion.core.profiles import get_profile
+from turbion.bits.blogs.models import Post
+from turbion.bits.utils.decorators import special_titled
+from turbion.bits.profiles import get_profile
 
 titled = special_titled(section=settings.TURBION_BLOG_NAME)
 

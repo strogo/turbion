@@ -5,14 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.core.urlresolvers import reverse
 
-from turbion.core.blogs import managers
-from turbion.core.profiles.models import Profile
-from turbion.core.utils.markup.fields import MarkupTextField
-from turbion.core.utils.enum import Enum
+from turbion.bits.blogs import managers
+from turbion.bits.profiles.models import Profile
+from turbion.bits.utils.markup.fields import MarkupTextField
+from turbion.bits.utils.enum import Enum
 
-from turbion.core.utils._calendar import Calendar
-from turbion.core.blogs.fields import PostCountField, CommentCountField
-from turbion.core.utils.antispam import AntispamModel
+from turbion.bits.utils._calendar import Calendar
+from turbion.bits.blogs.fields import PostCountField, CommentCountField
+from turbion.bits.utils.antispam import AntispamModel
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name=_("name"))
@@ -36,7 +36,7 @@ class Tag(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            from turbion.core.utils.text import slugify
+            from turbion.bits.utils.text import slugify
             self.slug = slugify(self.name)
 
         super(Tag, self).save(*args, **kwargs)
@@ -133,7 +133,7 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            from turbion.core.utils.text import slugify
+            from turbion.bits.utils.text import slugify
             self.slug = slugify(self.title)
 
         self.edited_on = datetime.now()
@@ -141,8 +141,8 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
     def publicate(self):
-        from turbion.core.blogs import signals
-        from turbion.core import watchlist
+        from turbion.bits.blogs import signals
+        from turbion.bits import watchlist
 
         self.published_on = datetime.now()
 
@@ -244,7 +244,7 @@ class Comment(models.Model, AntispamModel):
         return _('Comment on %(post)s by %(author)s') % {'post': self.post, 'author': self.created_by.name,}
 
     def emit_event(self):
-        from turbion.core import watchlist
+        from turbion.bits import watchlist
 
         if not self.is_published:
             return
@@ -257,7 +257,7 @@ class Comment(models.Model, AntispamModel):
         )
 
     def subscribe_author(self, email=False):
-        from turbion.core import watchlist
+        from turbion.bits import watchlist
 
         watchlist.subscribe(
             self.created_by,

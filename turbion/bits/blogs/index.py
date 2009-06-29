@@ -1,6 +1,6 @@
 import djapian
 
-from turbion.core.blogs.models import Post, Comment
+from turbion.bits.blogs.models import Post, Comment
 
 class PostIndexer(djapian.Indexer):
     fields = ("text",)

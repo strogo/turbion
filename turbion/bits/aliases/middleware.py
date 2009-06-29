@@ -2,7 +2,7 @@ import re
 
 from django import http
 
-from turbion.core.aliases.models import Alias
+from turbion.bits.aliases.models import Alias
 
 class AliasesMiddleware(object):
     def process_request(self, request):

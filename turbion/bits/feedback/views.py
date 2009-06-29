@@ -1,12 +1,12 @@
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.utils.decorators import templated, titled
-from turbion.core.utils.views import status_redirect
+from turbion.bits.utils.decorators import templated, titled
+from turbion.bits.utils.views import status_redirect
 
-from turbion.core.feedback.forms import FeedbackForm
-from turbion.core.feedback.models import Feedback
-from turbion.core.feedback import signals
-from turbion.core.utils import antispam
+from turbion.bits.feedback.forms import FeedbackForm
+from turbion.bits.feedback.models import Feedback
+from turbion.bits.feedback import signals
+from turbion.bits.utils import antispam
 
 @templated("turbion/feedback/index.html")
 @titled(page=_(u"Write"), section=_(u"Feedback"))

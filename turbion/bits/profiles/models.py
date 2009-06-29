@@ -6,9 +6,9 @@ from django.utils.encoding import force_unicode
 
 from datetime import date
 
-from turbion.core.utils.enum import Enum
-from turbion.core.utils.markup.fields import MarkupField
-from turbion.core.utils.models import FilteredManager
+from turbion.bits.utils.enum import Enum
+from turbion.bits.utils.markup.fields import MarkupField
+from turbion.bits.utils.models import FilteredManager
 
 class ProfileManager(UserManager):
     def generate_username(self, data, base="turbion_"):
@@ -101,7 +101,7 @@ class Profile(User):
         return md5.new(".".join(map(force_unicode, [self.pk, self.username, self.email]))).hexdigest()
 
     def has_subscription(self, event, post=None):
-        from turbion.core.watchlist.models import Subscription
+        from turbion.bits.watchlist.models import Subscription
 
         return bool(Subscription.objects.filter(user=self, event__name=event, post=post).count())
 
@@ -120,7 +120,7 @@ class Profile(User):
         db_table            = "turbion_profile"
 
 def create_profile_for_user(sender, instance, created, *args, **kwargs):
-    from turbion.core.profiles.models import Profile
+    from turbion.bits.profiles.models import Profile
     try:
         Profile.objects.get(user_ptr=instance)
     except Profile.DoesNotExist:

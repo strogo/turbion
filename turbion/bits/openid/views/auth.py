@@ -6,10 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str
 
-from turbion.core.openid import forms, utils, models, backend
-from turbion.core.utils.urls import uri_reverse
-from turbion.core.profiles import get_profile
-from turbion.core.utils.decorators import templated, special_titled
+from turbion.bits.openid import forms, utils, models, backend
+from turbion.bits.utils.urls import uri_reverse
+from turbion.bits.profiles import get_profile
+from turbion.bits.utils.decorators import templated, special_titled
 
 titled = special_titled(section=_("OpenID Authorization"))
 

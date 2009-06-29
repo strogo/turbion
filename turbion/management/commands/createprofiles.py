@@ -4,7 +4,7 @@ from django.core.management.base import NoArgsCommand
 from django.db import connection, IntegrityError
 from django.contrib.auth.models import User
 
-from turbion.core.profiles.models import Profile
+from turbion.bits.profiles.models import Profile
 
 class Command(NoArgsCommand):
     help = 'Create profiles for raw django users'

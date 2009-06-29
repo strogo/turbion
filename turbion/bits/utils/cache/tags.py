@@ -6,7 +6,7 @@ from django.utils.functional import curry
 from django.utils.encoding import smart_str
 from django.conf import settings
 
-from turbion.core.utils.cache.utils import CacheWrapper
+from turbion.bits.utils.cache.utils import CacheWrapper
 
 def cached_inclusion_tag(register, trigger, suffix, file_name, context_class=Context, takes_context=False):
     def _wrapper(func):

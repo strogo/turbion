@@ -1,4 +1,4 @@
-from turbion.core.utils.markup.filters import Filter
+from turbion.bits.utils.markup.filters import Filter
 
 class Markdown(Filter):
     def to_html(self, value):

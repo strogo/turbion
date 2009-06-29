@@ -8,7 +8,7 @@ D = dict
 class CommentCountField(CompositionField):
     def __init__(self, verbose_name=None, editable=False):
         def _do(host, comment, signal):
-            from turbion.core.blogs.models import Comment
+            from turbion.bits.blogs.models import Comment
 
             return host.comments.filter(Comment.published.get_lookup()).count()
 
@@ -38,7 +38,7 @@ class CommentCountField(CompositionField):
 class PostCountField(CompositionField):
     def __init__(self, verbose_name=None, editable=False):
         def _do(host, comment, signal):
-            from turbion.core.blogs.models import Post
+            from turbion.bits.blogs.models import Post
 
             return host.posts.filter(Post.published.get_lookup()).count()
 

@@ -3,7 +3,7 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from django.db import connection, IntegrityError
 
-from turbion.core.profiles.models import Profile
+from turbion.bits.profiles.models import Profile
 
 class Command(NoArgsCommand):
     help = 'Revolve (executes) all needed gears once'

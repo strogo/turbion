@@ -1,7 +1,7 @@
 from django.template import Library
 
-from turbion.core.watchlist.forms import SubscriptionForm
-from turbion.core.profiles import get_profile
+from turbion.bits.watchlist.forms import SubscriptionForm
+from turbion.bits.profiles import get_profile
 
 register = Library()
 

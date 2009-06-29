@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from turbion.core.blogs.models import Post, Comment
-from turbion.core.profiles.models import Profile
+from turbion.bits.blogs.models import Post, Comment
+from turbion.bits.profiles.models import Profile
 
 class BaseTest(object):
     fixtures = ["turbion/test/blogs", "turbion/test/profiles"]

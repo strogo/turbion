@@ -2,8 +2,8 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from turbion.core.utils.testing import BaseViewTest
-from turbion.core.profiles.models import Profile
+from turbion.bits.utils.testing import BaseViewTest
+from turbion.bits.profiles.models import Profile
 
 class ProfilesViewsTest(BaseViewTest):
     fixtures = ["turbion/test/profiles"]

@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.utils.models import FilteredManager
-from turbion.core.utils.enum import NamedEnum
+from turbion.bits.utils.models import FilteredManager
+from turbion.bits.utils.enum import NamedEnum
 
 class Alias(models.Model):
     user_agents = NamedEnum(

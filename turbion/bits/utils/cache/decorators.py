@@ -1,4 +1,4 @@
-from turbion.core.cache.utils import CacheWrapper
+from turbion.bits.cache.utils import CacheWrapper
 
 def cached(trigger, suffix=None, base_name=None):
     def _wrapper(func):

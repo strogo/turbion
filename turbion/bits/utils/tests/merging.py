@@ -4,7 +4,7 @@ from django.db import models
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from turbion.core.utils import merging
+from turbion.bits.utils import merging
 
 class MyProfile(models.Model):
     user_ptr = models.ForeignKey(User, unique=True)

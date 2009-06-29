@@ -1,11 +1,11 @@
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
-from turbion.core.utils.decorators import paged, templated
-from turbion.core.utils.pagination import paginate
+from turbion.bits.utils.decorators import paged, templated
+from turbion.bits.utils.pagination import paginate
 
-from turbion.core.blogs.decorators import titled
-from turbion.core.blogs.models import Post, BlogCalendar
+from turbion.bits.blogs.decorators import titled
+from turbion.bits.blogs.models import Post, BlogCalendar
 
 from datetime import date
 

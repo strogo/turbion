@@ -1,4 +1,4 @@
-from turbion.core.utils.loading import get_module_attrs, NoModuleError
+from turbion.bits.utils.loading import get_module_attrs, NoModuleError
 
 SUB_APPLICATIONS = (
     'profiles', 'blogs', 'utils', 'pingback', 'utils.markup', 'aliases',
@@ -17,14 +17,14 @@ def connectors():
 def admins():
     for app in SUB_APPLICATIONS:
         try:
-            get_module_attrs('turbion.core.%s' % app, 'admin')
+            get_module_attrs('turbion.bits.%s' % app, 'admin')
         except NoModuleError:
             pass
 
 def indexes():
     for app in SUB_APPLICATIONS:
         try:
-            get_module_attrs('turbion.core.%s' % app, 'index')
+            get_module_attrs('turbion.bits.%s' % app, 'index')
         except NoModuleError:
             pass
 
@@ -36,7 +36,7 @@ def tests():
         try:
             test_classes.update(
                 get_module_attrs(
-                    'turbion.core.%s' % app,
+                    'turbion.bits.%s' % app,
                     'tests',
                     lambda attr: isinstance(attr, type) and issubclass(attr, TestCase)
                 )
@@ -54,7 +54,7 @@ def models():
         try:
             model_classes.update(
                 get_module_attrs(
-                    'turbion.core.%s' % app,
+                    'turbion.bits.%s' % app,
                     'models',
                     lambda attr: isinstance(attr, type) and issubclass(attr, Model)
                 )
@@ -71,7 +71,7 @@ def _load_paths(leaf_module):
         try:
             paths.extend(
                 get_module_attrs(
-                    'turbion.core.%s' % app,
+                    'turbion.bits.%s' % app,
                     leaf_module
                 )['__path__']
             )

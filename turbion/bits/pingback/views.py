@@ -2,8 +2,8 @@ from django import http
 from django.shortcuts import *
 from django.conf import settings
 
-from turbion.core.utils import xmlrpc
-from turbion.core.pingback import utils, server, signals, models
+from turbion.bits.utils import xmlrpc
+from turbion.bits.pingback import utils, server, signals, models
 
 gateway = xmlrpc.ServerGateway("pingback")
 

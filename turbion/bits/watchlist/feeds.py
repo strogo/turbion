@@ -4,12 +4,12 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django import http
 
-from turbion.core.blogs.models import Comment
-from turbion.core.profiles.models import Profile
-from turbion.core.blogs.feeds import CommentsFeedAtom
-from turbion.core.watchlist.models import Subscription
-from turbion.core import watchlist
-from turbion.core.utils.title import gen_title
+from turbion.bits.blogs.models import Comment
+from turbion.bits.profiles.models import Profile
+from turbion.bits.blogs.feeds import CommentsFeedAtom
+from turbion.bits.watchlist.models import Subscription
+from turbion.bits import watchlist
+from turbion.bits.utils.title import gen_title
 
 class UserWatchlistFeed(CommentsFeedAtom):
     link = ''

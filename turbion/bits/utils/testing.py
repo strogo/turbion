@@ -88,5 +88,5 @@ class BaseViewTest(TestCase):
 
     @property
     def user(self):
-        from turbion.core.profiles.models import Profile
+        from turbion.bits.profiles.models import Profile
         return Profile.objects.get(username=self.credentials["username"])

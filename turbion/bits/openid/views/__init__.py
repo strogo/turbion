@@ -1,7 +1,7 @@
 from django.views.generic.simple import direct_to_template
 from django.conf import settings
 
-from turbion.core.utils.urls import uri_reverse
+from turbion.bits.utils.urls import uri_reverse
 
 def xrds(request):
     from openid.yadis.constants import YADIS_CONTENT_TYPE

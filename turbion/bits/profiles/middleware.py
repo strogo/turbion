@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, load_backend
 
-from turbion.core.profiles.models import Profile
+from turbion.bits.profiles.models import Profile
 
 class AnonymousProfile(AnonymousUser):
     nickname = None

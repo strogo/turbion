@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('turbion.core.openid.views',
+urlpatterns = patterns('turbion.bits.openid.views',
     url(r'^xrds/$',                  'xrds',               name="turbion_openid_xrds"),
 
     url(r'^login/$',                 'auth.login',         name="turbion_openid_login"),

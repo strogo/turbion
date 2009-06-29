@@ -3,13 +3,13 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django import http
 
-from turbion.core.blogs.decorators import post_view, titled
-from turbion.core.blogs.models import Post, Comment
-from turbion.core.blogs import signals
-from turbion.core.blogs import forms
-from turbion.core.profiles import get_profile
-from turbion.core.utils.decorators import templated, paged
-from turbion.core.utils import antispam
+from turbion.bits.blogs.decorators import post_view, titled
+from turbion.bits.blogs.models import Post, Comment
+from turbion.bits.blogs import signals
+from turbion.bits.blogs import forms
+from turbion.bits.profiles import get_profile
+from turbion.bits.utils.decorators import templated, paged
+from turbion.bits.utils import antispam
 
 def _do_comment(request, post, defaults={}, comment=None):
     profile = get_profile(request)

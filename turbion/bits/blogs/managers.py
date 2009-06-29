@@ -1,6 +1,6 @@
 from django.db import models
 
-from turbion.core.utils.models import FilteredManager
+from turbion.bits.utils.models import FilteredManager
 
 class PostManager(FilteredManager):
     def get_query_set(self):
@@ -8,7 +8,7 @@ class PostManager(FilteredManager):
 
 class TagManager(FilteredManager):
     def get_query_set(self):
-        from turbion.core.blogs.models import Post
+        from turbion.bits.blogs.models import Post
         post_count = Post.published.count()
 
         if post_count != 0:

@@ -1,6 +1,6 @@
 from django.contrib.auth import backends
 
-from turbion.core.profiles.models import Profile
+from turbion.bits.profiles.models import Profile
 
 class ModelBackend(backends.ModelBackend):
     def authenticate(self, username=None, password=None):

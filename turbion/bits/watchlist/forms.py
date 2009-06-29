@@ -1,7 +1,7 @@
 from django import forms
 
-from turbion.core.blogs.models import Post
-from turbion.core import watchlist
+from turbion.bits.blogs.models import Post
+from turbion.bits import watchlist
 
 class SubscriptionForm(forms.Form):
     action = forms.ChoiceField(choices=[('subs', 'subscribe'), ('unsubs', 'unsubscribe')], widget=forms.HiddenInput())

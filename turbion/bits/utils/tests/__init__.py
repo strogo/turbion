@@ -1,2 +1,2 @@
-from turbion.core.utils.tests.merging import *
-from turbion.core.utils.tests.spot import *
+from turbion.bits.utils.tests.merging import *
+from turbion.bits.utils.tests.spot import *

@@ -2,9 +2,9 @@ from django.test import TestCase
 from django.db import models
 from django import http
 
-from turbion.core.blogs.models import Comment, Post
-from turbion.core.blogs.views import comment as views
-from turbion.core.utils.testing import RequestFactory, BaseViewTest
+from turbion.bits.blogs.models import Comment, Post
+from turbion.bits.blogs.views import comment as views
+from turbion.bits.utils.testing import RequestFactory, BaseViewTest
 
 class CommentsTest(BaseViewTest):
     fixtures = [

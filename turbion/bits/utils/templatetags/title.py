@@ -1,7 +1,7 @@
 from django import template
 from django.conf import settings
 
-from turbion.core.utils.title import gen_title
+from turbion.bits.utils.title import gen_title
 
 register = template.Library()
 

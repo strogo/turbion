@@ -6,8 +6,8 @@ from django.contrib.auth.backends import ModelBackend
 
 from datetime import date
 
-from turbion.core.profiles import get_profile
-from turbion.core.profiles.models import Profile
+from turbion.bits.profiles import get_profile
+from turbion.bits.profiles.models import Profile
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -28,7 +28,7 @@ def extract_profile_data(request):
 def combine_profile_form_with(form_class, request, field='created_by',\
                               fields=None, filter_field=None, markup_filter_fieled='text_filter'):
     if not get_profile(request).is_trusted():
-        from turbion.core.openid.forms import OpenidLoginForm as BaseForm
+        from turbion.bits.openid.forms import OpenidLoginForm as BaseForm
 
         class ProfileForm(form_class, BaseForm):
             nickname  = forms.CharField(required=False, label=_('name'))

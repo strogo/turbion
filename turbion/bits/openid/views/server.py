@@ -7,11 +7,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_unicode
 from django.conf import settings
 
-from turbion.core.profiles import get_profile
-from turbion.core.openid import forms, utils, models
-from turbion.core.utils.urls import uri_reverse
-from turbion.core.utils.decorators import templated, special_titled
-from turbion.core.utils.views import status_redirect
+from turbion.bits.profiles import get_profile
+from turbion.bits.openid import forms, utils, models
+from turbion.bits.utils.urls import uri_reverse
+from turbion.bits.utils.decorators import templated, special_titled
+from turbion.bits.utils.views import status_redirect
 
 # Maps sreg data fields to Turbion's profile if not equal
 SREG_TO_PROFILE_MAP = {
@@ -176,7 +176,7 @@ def decide(request, openid_request=None):
 
 def _add_sreg(openid_request, openid_response):
     from openid.extensions import sreg
-    from turbion.core.profiles.models import Profile
+    from turbion.bits.profiles.models import Profile
 
     try:
         profile = Profile.objects.get(pk=settings.TURBION_OPENID_IDENTITY_PROFILE)

@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib.syndication.views import feed
 
-from turbion.core.blogs import feeds
+from turbion.bits.blogs import feeds
 
 atom_feeds = {
     'posts'   : feeds.PostsFeedAtom,
@@ -16,7 +16,7 @@ rss_feeds = {
     'tag'     : feeds.TagFeed,
 }
 
-urlpatterns = patterns('turbion.core.blogs.views',
+urlpatterns = patterns('turbion.bits.blogs.views',
  url(r'^$',                                  'post.blog', name="turbion_blog_index"),
 
  url(r"^(?P<year_id>\d{4})/(?P<month_id>\d{2})/(?P<day_id>\d{2})/"
@@ -37,7 +37,7 @@ urlpatterns = patterns('turbion.core.blogs.views',
 )
 
 if "djapian" in settings.INSTALLED_APPS:
-    urlpatterns += patterns('turbion.core.blogs.views',
+    urlpatterns += patterns('turbion.bits.blogs.views',
      url(r'^search/$',            'search.search',   name="turbion_blog_search"),
      url(r'^search/posts/$',      'search.posts',    name="turbion_blog_search_posts"),
      url(r'^search/comments/$',   'search.comments', name="turbion_blog_search_comments"),

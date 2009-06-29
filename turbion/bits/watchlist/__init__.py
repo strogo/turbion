@@ -1,6 +1,6 @@
 from django.contrib.sites.models import Site
 
-from turbion.core.watchlist.models import Subscription, Event, Message
+from turbion.bits.watchlist.models import Subscription, Event, Message
 
 def subscribe(user, event, post=None, email=False):
     event = Event.objects.get(name=event)
@@ -68,7 +68,7 @@ def queue_mail(email, subject, body, content_type='html'):
     )
 
 def get_subcription_comments(user):
-    from turbion.core.blogs.models import Comment
+    from turbion.bits.blogs.models import Comment
 
     return Comment.published.filter(
         post__in=Subscription.objects.filter(user=user, post__isnull=False).values('post')

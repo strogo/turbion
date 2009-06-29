@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from django.contrib import admin
-from turbion.core.watchlist.models import Event, Subscription
+from turbion.bits.watchlist.models import Event, Subscription
 
 class EventAdmin(admin.ModelAdmin):
     list_display  = ('name', 'title', 'is_active')

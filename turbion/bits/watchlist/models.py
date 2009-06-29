@@ -7,9 +7,9 @@ from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.conf import settings
 
-from turbion.core.profiles.models import Profile
-from turbion.core.blogs.models import Post
-from turbion.core.utils.urls import uri_reverse
+from turbion.bits.profiles.models import Profile
+from turbion.bits.blogs.models import Post
+from turbion.bits.utils.urls import uri_reverse
 
 class Event(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name=_('name'))

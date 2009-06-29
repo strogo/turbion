@@ -4,7 +4,7 @@ from django.template.loader import render_to_string
 from django.utils.http import urlencode
 from django.utils.encoding import smart_str
 
-from turbion.core.utils.pagination import split_domains
+from turbion.bits.utils.pagination import split_domains
 
 register = template.Library()
 

@@ -1,4 +1,4 @@
-from turbion.core.utils.markup.filters import Filter
+from turbion.bits.utils.markup.filters import Filter
 
 class Dummy(Filter):
     def is_safe(self):

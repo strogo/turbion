@@ -3,9 +3,9 @@ from django import http
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from turbion.core.profiles.models import Profile
-from turbion.core.feedback.models import FeedbackAdd
-from turbion.core.utils.testing import BaseViewTest
+from turbion.bits.profiles.models import Profile
+from turbion.bits.feedback.models import FeedbackAdd
+from turbion.bits.utils.testing import BaseViewTest
 
 class FeedbackPageTest(BaseViewTest):
     fixtures = [

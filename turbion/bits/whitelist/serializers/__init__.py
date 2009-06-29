@@ -4,7 +4,7 @@ serializers = []
 mime_types_modules = ['_xml', 'json', 'plain']
 
 for mod_name in mime_types_modules:
-    mod = __import__('turbion.core.whitelist.serializers.%s' % mod_name, {}, {}, [''])
+    mod = __import__('turbion.bits.whitelist.serializers.%s' % mod_name, {}, {}, [''])
 
     serializers.append({
         'mime_types': set(getattr(mod, 'mime_types')),

@@ -9,6 +9,6 @@ def uri_reverse(view, urlconf=None, args=None, kwargs=None):
     return "http://%s%s" % (domain, reverse(view, urlconf, args, kwargs))
 
 urlpatterns = patterns('',
-    url(r'^status/$',     "turbion.core.utils.views.status", name="turbion_status"),
-    url(r'^antispam/', include('turbion.core.utils.antispam.urls')),
+    url(r'^status/$',     "turbion.bits.utils.views.status", name="turbion_status"),
+    url(r'^antispam/', include('turbion.bits.utils.antispam.urls')),
 )

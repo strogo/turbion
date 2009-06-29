@@ -1,5 +1,5 @@
 from django.contrib.sitemaps import Sitemap
-from turbion.core.blogs.models import Post, Comment
+from turbion.bits.blogs.models import Post, Comment
 
 class PostSitemap(Sitemap):
     changefreq = "never"

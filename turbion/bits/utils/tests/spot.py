@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from turbion.core.utils import spot
+from turbion.bits.utils import spot
 
 class BasePlugin(object):
     def hello(self):

@@ -1,8 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.blogs.models import Comment
-from turbion.core.profiles.forms import combine_profile_form_with
+from turbion.bits.blogs.models import Comment
+from turbion.bits.profiles.forms import combine_profile_form_with
 
 class _CommentForm(forms.ModelForm):
     class Meta:

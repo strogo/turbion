@@ -3,9 +3,9 @@ from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.backends import ModelBackend
 from django.db import IntegrityError
 
-from turbion.core.profiles.models import Profile
-from turbion.core.profiles.forms import extract_profile_data
-from turbion.core.openid import utils
+from turbion.bits.profiles.models import Profile
+from turbion.bits.profiles.forms import extract_profile_data
+from turbion.bits.openid import utils
 import turbion
 
 class OpenidBackend(ModelBackend):

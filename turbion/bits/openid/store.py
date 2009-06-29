@@ -4,7 +4,7 @@ from openid.store.filestore import OpenIDStore
 
 from django.db import connection
 
-from turbion.core.openid.models import Association, Nonce
+from turbion.bits.openid.models import Association, Nonce
 
 qn = connection.ops.quote_name
 

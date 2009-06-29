@@ -2,9 +2,9 @@ from django import forms
 
 from django.contrib import admin
 
-from turbion.core.feedback.models import Feedback
-from turbion.core.profiles import get_profile
-from turbion.core.utils.antispam.admin import ActionModelAdmin
+from turbion.bits.feedback.models import Feedback
+from turbion.bits.profiles import get_profile
+from turbion.bits.utils.antispam.admin import ActionModelAdmin
 
 class FeedbackAdmin(ActionModelAdmin, admin.ModelAdmin):
     list_display = (

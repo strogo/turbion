@@ -4,10 +4,10 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 
-from turbion.core import watchlist
-from turbion.core.watchlist.models import Message, Subscription
+from turbion.bits import watchlist
+from turbion.bits.watchlist.models import Message, Subscription
 from turbion.models import Post, Comment, Profile
-from turbion.core.utils.testing import BaseViewTest
+from turbion.bits.utils.testing import BaseViewTest
 
 def queue_len():
     return Message.objects.count()
@@ -39,7 +39,7 @@ class WatchlistTest(BaseViewTest):
         self.assertEqual(queue_len(), 1)
 
     def test_new_feedback(self):
-        from turbion.core.feedback.models import Feedback
+        from turbion.bits.feedback.models import Feedback
 
         watchlist.subscribe(
             self.user,

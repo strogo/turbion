@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, Group
 from django.conf import settings
 
 from django.contrib import admin
-from turbion.core.profiles.models import Profile
+from turbion.bits.profiles.models import Profile
 
 class ProfileAdmin(admin.ModelAdmin):
     exclude = ['password', 'last_login', 'user_permissions', 'groups']

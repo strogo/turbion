@@ -3,12 +3,12 @@ from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
-from turbion.core.blogs import signals
-from turbion.core.pingback import client
-from turbion.core.utils.enum import Enum
-from turbion.core.utils.models import FilteredManager
+from turbion.bits.blogs import signals
+from turbion.bits.pingback import client
+from turbion.bits.utils.enum import Enum
+from turbion.bits.utils.models import FilteredManager
 
-from turbion.core.blogs.models import Post
+from turbion.bits.blogs.models import Post
 
 class Pingback(models.Model):
     incoming   = models.BooleanField(verbose_name=_("incoming"))

@@ -8,10 +8,10 @@ from django import http
 from django.conf import settings
 from django.core.management import call_command
 
-from turbion.core.utils.testing import BaseViewTest
+from turbion.bits.utils.testing import BaseViewTest
 
-from turbion.core.blogs.models import Post, Comment
-from turbion.core.profiles.models import Profile
+from turbion.bits.blogs.models import Post, Comment
+from turbion.bits.profiles.models import Profile
 
 class SearchTest(BaseViewTest):
     fixtures = [

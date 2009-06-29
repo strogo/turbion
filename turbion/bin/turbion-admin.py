@@ -58,7 +58,7 @@ class BlogProjectCommand(LabelCommand):
             lines,
             {
                 "INSTALLED_APPS": 'turbion',
-                "CONTEXT_PROCESSORS": 'turbion.core.blogs.context_processors.blog_globals',
+                "CONTEXT_PROCESSORS": 'turbion.bits.blogs.context_processors.blog_globals',
             },
             get_lines(defaults_file_name)
         )

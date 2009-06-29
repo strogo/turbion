@@ -1,6 +1,6 @@
 from django import template
 
-from turbion.core.utils.markup.filters import Filter
+from turbion.bits.utils.markup.filters import Filter
 
 register = template.Library()
 

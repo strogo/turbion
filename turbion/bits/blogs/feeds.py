@@ -7,9 +7,9 @@ from django import http
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.blogs.models import Comment, Post, Tag
-from turbion.core.profiles import get_profile
-from turbion.core.utils.title import gen_title
+from turbion.bits.blogs.models import Comment, Post, Tag
+from turbion.bits.profiles import get_profile
+from turbion.bits.utils.title import gen_title
 
 class BasePostFeed(Feed):
     def item_link(self, post):

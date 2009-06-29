@@ -4,8 +4,8 @@ from django.utils.translation import gettext_lazy as _
 
 from datetime import datetime
 
-from turbion.core.utils.models import FilteredManager
-from turbion.core.utils.enum import Enum
+from turbion.bits.utils.models import FilteredManager
+from turbion.bits.utils.enum import Enum
 
 # Models needed to openid library store
 

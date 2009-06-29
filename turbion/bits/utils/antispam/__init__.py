@@ -1,7 +1,7 @@
 from django.conf import settings
 
-from turbion.core.utils import loading, spot
-from turbion.core.profiles import get_profile
+from turbion.bits.utils import loading, spot
+from turbion.bits.profiles import get_profile
 
 decisions = set(['spam', 'ham', 'unknown'])
 
@@ -30,7 +30,7 @@ class FilterManager(spot.Manager):
         for filter_name in settings.TURBION_ANTISPAM_FILTERS:
             mod = None
             try:
-                mod = loading.get_module('turbion.core.utils.antispam.filters', filter_name)
+                mod = loading.get_module('turbion.bits.utils.antispam.filters', filter_name)
             except loading.NoModuleError:
                 if '.' in filter_name:
                     try:

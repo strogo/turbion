@@ -11,7 +11,7 @@ def get_profile(obj):
         return user.profile
 
     if isinstance(user, AnonymousUser):
-        from turbion.core.profiles.middleware import AnonymousProfile
+        from turbion.bits.profiles.middleware import AnonymousProfile
         return AnonymousProfile()
 
     return user

@@ -7,9 +7,9 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.blogs.models import Post, Comment, Tag, BlogCalendar
-from turbion.core.profiles.models import Profile
-from turbion.core.utils.cache.tags import cached_inclusion_tag
+from turbion.bits.blogs.models import Post, Comment, Tag, BlogCalendar
+from turbion.bits.profiles.models import Profile
+from turbion.bits.utils.cache.tags import cached_inclusion_tag
 
 register = template.Library()
 
@@ -168,7 +168,7 @@ def prevnext_pad(context, post):
     takes_context=True
 )
 def login_pad(context):
-    from turbion.core.profiles import get_profile
+    from turbion.bits.profiles import get_profile
     urls = []
     user = get_profile(context["user"])
 
@@ -191,7 +191,7 @@ def login_pad(context):
     takes_context=True
 )
 def search_pad(context):
-    from turbion.core.blogs.forms import SearchForm
+    from turbion.bits.blogs.forms import SearchForm
 
     request = context.get("request")
 

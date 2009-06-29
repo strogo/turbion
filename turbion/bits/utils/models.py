@@ -8,7 +8,7 @@ class SlugField(models.SlugField):
         super(SlugField, self).__init__(*args, **kwargs)
 
     def _get_val_from_obj(self, obj):
-        from turbion.core.utils.text import slugify
+        from turbion.bits.utils.text import slugify
 
         if obj:
             val = getattr(obj, self.attname, None)

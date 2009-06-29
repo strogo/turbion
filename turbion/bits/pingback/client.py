@@ -4,7 +4,7 @@ import re
 from django.conf import settings
 from django.contrib.sites.models import Site
 
-from turbion.core.utils.urlfetch import fetch
+from turbion.bits.utils.urlfetch import fetch
 
 class ServerProxy(xmlrpclib.ServerProxy):
     pass
@@ -36,8 +36,8 @@ def call_ping(gateway, source_uri, target_uri):
         return str(e)
 
 def process_for_pingback(post, **kwargs):
-    from turbion.core.pingback.models import Pingback
-    from turbion.core.pingback import utils
+    from turbion.bits.pingback.models import Pingback
+    from turbion.bits.pingback import utils
 
     domain = Site.objects.get_current().domain
 

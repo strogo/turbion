@@ -3,10 +3,10 @@ from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.feedback import signals
-from turbion.core.profiles.models import Profile
-from turbion.core.utils.enum import Enum
-from turbion.core.utils.models import FilteredManager
+from turbion.bits.feedback import signals
+from turbion.bits.profiles.models import Profile
+from turbion.bits.utils.enum import Enum
+from turbion.bits.utils.models import FilteredManager
 
 class Feedback(models.Model):
     statuses = Enum(

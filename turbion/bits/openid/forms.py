@@ -3,8 +3,8 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.core.profiles.models import Profile
-from turbion.core.openid import utils
+from turbion.bits.profiles.models import Profile
+from turbion.bits.openid import utils
 
 class OpenidLoginForm(forms.ModelForm):
     class Meta:

@@ -1,7 +1,7 @@
 from django import template
 from django.conf import settings
 
-from turbion.core.utils.urls import uri_reverse
+from turbion.bits.utils.urls import uri_reverse
 
 register = template.Library()
 
