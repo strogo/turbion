@@ -1,7 +1,7 @@
 import textwrap
 
 from django.test import TestCase
-from turbion.bits.utils.markup import processing
+from turbion.bits.markup import processing
 
 TEMPLATE = """{% block summary %}
 summary text

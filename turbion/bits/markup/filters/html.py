@@ -1,4 +1,4 @@
-from turbion.bits.utils.markup.filters import Filter
+from turbion.bits.markup.filters import Filter
 
 class Html(Filter):
     def is_safe(self):

@@ -5,7 +5,7 @@ from django.utils.functional import curry
 
 from turbion.bits.utils.loading import get_module_attrs
 
-__path__.extend(get_module_attrs("turbion.bits.utils.markup", "templatetags")["__path__"])
+__path__.extend(get_module_attrs("turbion.bits.markup", "templatetags")["__path__"])
 
 def simple_tag_with_request(register):
     def _wrapper(func):

@@ -7,7 +7,7 @@ from django.utils.encoding import force_unicode
 from datetime import date
 
 from turbion.bits.utils.enum import Enum
-from turbion.bits.utils.markup.fields import MarkupField
+from turbion.bits.markup.fields import MarkupField
 from turbion.bits.utils.models import FilteredManager
 
 class ProfileManager(UserManager):

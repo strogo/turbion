@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 
 from turbion.bits.blogs import managers
 from turbion.bits.profiles.models import Profile
-from turbion.bits.utils.markup.fields import MarkupTextField
+from turbion.bits.markup.fields import MarkupTextField
 from turbion.bits.utils.enum import Enum
 
 from turbion.bits.utils._calendar import Calendar

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.bits.utils.markup.filters import Filter
+from turbion.bits.markup.filters import Filter
 
 class MarkupField(models.CharField):
     __metaclass__ = models.SubfieldBase
@@ -53,7 +53,7 @@ class MarkupTextField(models.TextField):
         value = super(MarkupTextField, self).pre_save(model_instance, add)
 
         if self.processing:
-            from turbion.bits.utils.markup import processing
+            from turbion.bits.markup import processing
             value = processing.render_string(value)
 
         filter = getattr(model_instance, self.filter_field_name)
