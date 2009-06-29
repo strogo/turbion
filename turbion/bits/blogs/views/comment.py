@@ -9,7 +9,7 @@ from turbion.bits.blogs import signals
 from turbion.bits.blogs import forms
 from turbion.bits.profiles import get_profile
 from turbion.bits.utils.decorators import templated, paged
-from turbion.bits.utils import antispam
+from turbion.bits import antispam
 
 def _do_comment(request, post, defaults={}, comment=None):
     profile = get_profile(request)

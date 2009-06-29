@@ -6,7 +6,7 @@ from turbion.bits.utils.views import status_redirect
 from turbion.bits.feedback.forms import FeedbackForm
 from turbion.bits.feedback.models import Feedback
 from turbion.bits.feedback import signals
-from turbion.bits.utils import antispam
+from turbion.bits import antispam
 
 @templated("turbion/feedback/index.html")
 @titled(page=_(u"Write"), section=_(u"Feedback"))

@@ -14,7 +14,7 @@ from turbion.bits.blogs import forms
 from turbion.bits.profiles import get_profile
 from turbion.bits.utils.pagination import paginate
 from turbion.bits.utils.decorators import paged, templated
-from turbion.bits.utils import antispam
+from turbion.bits import antispam
 
 @paged
 @templated('turbion/blogs/post_list.html')
