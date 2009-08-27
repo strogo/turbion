@@ -15,8 +15,6 @@ setup(
     version = get_version(),
     packages = find_packages(),
 
-    scripts = ['turbion/bin/turbion-admin.py'],
-
     package_data={
         'turbion': strip_turbion(findall('turbion/locale')) +\
                    strip_turbion(findall('turbion/templates')) +\

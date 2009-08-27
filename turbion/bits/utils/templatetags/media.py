@@ -25,3 +25,4 @@ def generic_feed(type, title, path):
 @register.simple_tag
 def atom_feed(title, path):
     return generic_feed('application/atom+xml', title, path)
+
