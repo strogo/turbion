@@ -75,5 +75,5 @@ class Akismet(Filter):
         return data
         
     def _get_spam_status(self):
-        return 'spam:%s' % self.name
+        return 'spam:%s' % self.__class__.__name__.lower()
 
