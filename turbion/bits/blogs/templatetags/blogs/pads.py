@@ -7,7 +7,7 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from turbion.bits.blogs.models import Post, Comment, Tag, BlogCalendar
+from turbion.bits.blogs.models import Post, Comment, Tag
 from turbion.bits.profiles.models import Profile
 from turbion.bits.utils.cache.tags import cached_inclusion_tag
 
@@ -115,26 +115,6 @@ def top_posts_pad(context, count=5):
 def tags_pad(context):
     return {
         "tags" : Tag.active.all(),
-    }
-
-@cached_inclusion_tag(register,
-                      trigger=D(
-                        sender=Post,
-                        signal=(signals.post_save, signals.post_delete),
-                        filter=lambda post: post.is_published,
-                        suffix=lambda instance, *args, **kwargs: (instance.published_on.year, instance.published_on.month)
-                      ),
-                      suffix=lambda context: [],
-                      file_name='turbion/blogs/pads/calendar.html',
-                      takes_context=True)
-def calendar_pad(context):
-    if "blog_calendar" in context:
-        blog_calendar = context["blog_calendar"]
-    else:
-        blog_calendar = BlogCalendar()
-
-    return {
-        "blog_calendar": blog_calendar
     }
 
 @cached_inclusion_tag(register,

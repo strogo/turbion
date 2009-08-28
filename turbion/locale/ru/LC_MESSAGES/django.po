@@ -386,23 +386,20 @@ msgid "Blog archive"
 msgstr "Архив блога"
 
 #: core/blogs/views/archive.py:22
-msgid "Blog archive on {{blog_calendar.current.year}}"
-msgstr "Архив блога за {{blog.calendar.current.year}}"
+msgid "Blog archive on {{ year }}"
+msgstr "Архив блога за {{ year }}"
 
 #: core/blogs/views/archive.py:40
 msgid ""
-"Blog archive on {{blog_calendar.current.year}}/{{blog_calendar.current."
-"month}}"
+"Blog archive on {{ year }}/{{ month }}"
 msgstr ""
-"Архив блога за {{blog.calendar.current.year}}/{{blog.calendar.current.month}}"
+"Архив блога за {{ year }}/{{ month }}"
 
 #: core/blogs/views/archive.py:61
 msgid ""
-"Blog archive on {{blog_calendar.current.year}}/{{blog_calendar.current."
-"month}}/{{blog_calendar.current.day}}"
+"Blog archive on {{ year }}/{{ month }}/{{ day }}"
 msgstr ""
-"Архив блога за {{blog.calendar.current.year}}/{{blog.calendar.current."
-"month}}/{{blog.calendar.current.day}}"
+"Архив блога за {{ year }}/{{ month }}/{{ day }}"
 
 #: core/blogs/views/comment.py:86
 msgid "Add comment to \"{{post.title}}\""
