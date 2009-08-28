@@ -5,7 +5,7 @@ from django.core.management.commands import dumpdata
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import serializers
-from django.db.models import get_app, get_model
+from django.db.models import get_app, get_model, get_models
 
 from turbion.models import *
 
@@ -31,7 +31,7 @@ class Command(NoArgsCommand):
 
     option_list = list(dumpdata.Command.option_list[:-1]) + [
         make_option('-a', '--add', dest='add', action='append', default=[],
-            help='Model (appname.modelname) to include into dump (use multiple --add to include multiple models).')
+            help='Model (appname.modelname) or app name to include into dump (use multiple --add to include multiple models).')
     ]
 
     def handle_noargs(self, **options):
@@ -41,19 +41,26 @@ class Command(NoArgsCommand):
         add = options.get('add', [])
         
         models = MODEL_QUEUE[:]
-        for a in add:
-            app_label, model_label = a.split('.', 1)
-            try:
-                get_app(app_label)
-            except ImproperlyConfigured:
-                raise CommandError("Unknown application: %s" % app_label)
-            
-            model = get_model(app_label, model_label)
-            
-            if model is None:
-                raise CommandError("Unknown model: %s.%s" % (app_label, model_label))
-            
-            models.append(model)
+        for app_label in add:
+            if '.' in app_label:
+                app_label, model_label = app_label.split('.', 1)
+                try:
+                    get_app(app_label)
+                except ImproperlyConfigured:
+                    raise CommandError("Unknown application: %s" % app_label)
+                
+                model = get_model(app_label, model_label)
+                
+                if model is None:
+                    raise CommandError("Unknown model: %s.%s" % (app_label, model_label))
+                
+                models.append(model)
+            else:
+                try:
+                    app = get_app(app_label)
+                except ImproperlyConfigured:
+                    raise CommandError("Unknown application: %s" % app_label)
+                models.extend(get_models(app))
 
         def objects():
             for model in models:
