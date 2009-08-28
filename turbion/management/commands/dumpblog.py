@@ -33,13 +33,14 @@ class Command(NoArgsCommand):
         indent = options.get('indent', None)
         show_traceback = options.get('traceback', False)
 
-        objects = []
-        for model in MODEL_QUEUE:
-            if not model._meta.proxy:
-                objects.extend(model._default_manager.all())
+        def objects():
+            for model in MODEL_QUEUE:
+                if not model._meta.proxy:
+                    for o in model._default_manager.all():
+                        yield o
 
         try:
-            return serializers.serialize(format, objects, indent=indent)
+            return serializers.serialize(format, objects(), indent=indent)
         except Exception, e:
             if show_traceback:
                 raise
