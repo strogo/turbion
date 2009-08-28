@@ -18,9 +18,8 @@ def index(request):
         if form.is_valid():
             feedback = form.save(False)
 
-            if antispam.process_form_submit(request, form, feedback) == "spam":
-                feedback.status = Feedback.statuses.rejected
-
+            antispam.process_form_submit(request, form, feedback)
+            
             feedback.save()
 
             signals.feedback_added.send(

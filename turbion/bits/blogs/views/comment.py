@@ -41,11 +41,9 @@ def _do_comment(request, post, defaults={}, comment=None):
                 if not new_comment.created_by.trusted:
                     new_comment.status = post.get_comment_status(new_comment)
 
-                decision = antispam.process_form_submit(
+                antispam.process_form_submit(
                     request, form, new_comment, post
                 )
-                if decision == "spam":
-                    new_comment.status = Comment.statuses.spam
 
                 new_comment.save()
 

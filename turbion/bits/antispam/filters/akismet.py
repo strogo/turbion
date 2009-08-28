@@ -39,20 +39,13 @@ class Akismet(Filter):
 
             if response.status_code == '200':
                 if response.content == 'true':
-                    return self._get_spam_status()
+                    return True
 
-        return None
+        return False
 
-    def action_submit(self, status, obj):
-        data = self._get_data(obj)
-
-        if status.startswith('spam'):
-            self._make_request('submit-ham', data)
-            if self._get_spam_status():
-                return True
-        elif status == 'ham':
-            self._make_request('submit-spam', data)
-
+    def action_submit(self, action, obj):
+        r = self._make_request('submit-%s' % action, self._get_data(obj))
+            
     # helpers
 
     def _make_request(self, method, data):
@@ -73,7 +66,3 @@ class Akismet(Filter):
             'permalink': site_url + data['permalink']
         })
         return data
-        
-    def _get_spam_status(self):
-        return 'spam:%s' % self.__class__.__name__.lower()
-

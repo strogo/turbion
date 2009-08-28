@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.core.urlresolvers import reverse
+from django import http
 
 from turbion.bits.antispam import action_submit
 
@@ -24,32 +25,26 @@ class ActionModelAdmin(object):
         return my_urls + urls
 
     def antispam_submit_action_for_object(self, request, obj, action):
-        response = action_submit(status, action, obj)
-        if response.status_code == '200':
-            result = response.content
+        action_submit(action, obj)
 
-            obj.set_antispam_status(action)
-            self.message_user(
-                request,
-                _("`%(obj)s` successfully marked as %(action)s.") % {
-                    'obj': obj,
-                    'action': action
-                }
-            )
-        else:
-            self.message_user(
-                request,
-               _("`%(obj)s` connot be marked %(error)s") % {
-                    'obj': obj,
-                    'error': response.content and _('because %s.') % response.content or '.'
-                }
-            )
+        obj.antispam_status = action == 'spam' and 'spam' or None
+        obj.handle_antispam_decision(action)
+        obj.save()
+        
+        self.message_user(
+            request,
+            _("`%(obj)s` successfully marked as %(action)s.") % {
+                'obj': obj,
+                'action': action
+            }
+        )
 
     def antispam_view(self, request, object_id):
         """Processes action form for object"""
         if request.method == 'POST':
             obj = self.model._default_manager.get(pk=object_id)
             action = request.POST.get('action')
+
             self.antispam_submit_action_for_object(request, obj, action)
 
             return http.HttpResponseRedirect(
@@ -59,7 +54,7 @@ class ActionModelAdmin(object):
 
     def antispam(self, obj):
         """Creates button with action url and proper label"""
-        action = obj.get_antispam_status() == 'ham' and 'spam' or 'ham'
+        action = obj.antispam_status and 'ham' or 'spam'
         name = action == 'spam' and ugettext('Spam') or ugettext('Ham')
         url = reverse('admin:%s' % self.get_antispam_url_name(), args=(obj.pk,), current_app=self.admin_site.name)
 

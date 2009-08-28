@@ -203,7 +203,7 @@ class Post(models.Model):
 
 Tag.add_to_class('post_count', PostCountField(verbose_name=_("post count")))
 
-class Comment(models.Model, AntispamModel):
+class Comment(AntispamModel):
     post = models.ForeignKey('turbion.Post', related_name="comments", verbose_name=_("post"))
 
     statuses = Enum(
@@ -286,10 +286,7 @@ class Comment(models.Model, AntispamModel):
             'user_ip': self.created_by.ip,
         }
 
-    def get_antispam_status(self):
-        return self.status == Comment.statuses.published and 'ham' or self.status
-
-    def set_antispam_status(self, decision):
+    def handle_antispam_decision(self, decision):
         decision_map = {
             'ham': Comment.statuses.published,
             'spam': Comment.statuses.spam,

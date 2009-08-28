@@ -7,8 +7,9 @@ from turbion.bits.feedback import signals
 from turbion.bits.profiles.models import Profile
 from turbion.bits.utils.enum import Enum
 from turbion.bits.utils.models import FilteredManager
+from turbion.bits.antispam import AntispamModel
 
-class Feedback(models.Model):
+class Feedback(AntispamModel):
     statuses = Enum(
         accepted=_("accepted"),
         rejected=_("rejected"),
@@ -57,19 +58,13 @@ class Feedback(models.Model):
             'user_ip': self.created_by.ip,
         }
 
-    def get_antispam_status(self):
-        if self.status.startswith('spam'):
-            return self.status
-
-        return 'ham'
-
-    def set_antispam_status(self, decision):
+    def handle_antispam_decision(self, decision):
         decision_map = {
-            'ham': Comment.statuses.published,
-            'spam': Comment.statuses.spam,
-            'unknown': Comment.statuses.moderation
+            'ham': Feedback.statuses.new,
+            'spam': Feedback.statuses.rejected,
+            'unknown': Feedback.statuses.new
         }
-        self.status = decision_map.get(decision, Comment.statuses.moderation)
+        self.status = decision_map.get(decision, Feedback.statuses.new)
 
     class Meta:
         app_label           = 'turbion'

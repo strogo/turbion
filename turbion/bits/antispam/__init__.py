@@ -1,25 +1,37 @@
 from django.conf import settings
+from django.db import models
 
 from turbion.bits.utils import loading, spot
 from turbion.bits.profiles import get_profile
 
-decisions = set(['spam', 'ham', 'unknown'])
+class StopChecking(Exception):
+    pass
 
-class AntispamModel(object):
+class AntispamModel(models.Model):
+    antispam_status = models.CharField(max_length=20, null=True, blank=True,
+                                       editable=False)
+    
     def get_antispam_data(self):
         raise NotImplementedError
 
-    def get_antispam_status(self):
+    def handle_antispam_decision(self, decision):
         raise NotImplementedError
-
-    def set_antispam_status(self, action):
-        raise NotImplementedError
+        
+    class Meta:
+        abstract = True
 
 class BaseFilter(object):
     def process_form_init(self, request, form, parent=None):
         raise NotImplementedError
 
     def process_form_submit(self, request, form, child, parent=None):
+        """
+        Makes decision about child.
+        Returns:
+            True - spam detected
+            False - cannot decide
+            raise StopChecking - stop pipeline with not spam decision
+        """
         raise NotImplementedError
 
     def action_submit(self, action, obj):
@@ -50,21 +62,26 @@ def process_form_init(request, form, parent=None):
             pass
 
 def process_form_submit(request, form, child, parent=None):
-    decision = 'unknown'
+    decision = None
     for name, filter in Filter.manager.all():
         try:
             decision = filter.process_form_submit(request, form, child, parent)
 
             if decision:
-                break
+                decision = name
         except NotImplementedError:
             pass
+        except StopChecking:
+            break
+
+    child.antispam_status = decision
+    child.handle_antispam_decision(decision and 'spam' or 'ham')
+    
     return decision
 
 def action_submit(action, obj):
     for name, filter in Filter.manager.all():
         try:
-            if filter.action_submit(action, obj):
-                return
+            filter.action_submit(action, obj)
         except NotImplementedError:
             pass

@@ -15,7 +15,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display       = (
         'title', 'created_by', 'created_on', 'published_on',
         'status', 'comment_count', 'showing', 'commenting',
-        'comments_moderation',
+        'comments_moderation'
     )
     list_display_links = ('title',)
     list_filter        = ('status', )
