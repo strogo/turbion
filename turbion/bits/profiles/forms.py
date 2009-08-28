@@ -36,8 +36,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                                      help_text=_('Only internal usage'))
             site  = forms.URLField(required=False, label=_('site'))
 
-            if USE_OPENID:
-                openid = forms.URLField(required=False, label=_('openid'))
+            openid = forms.URLField(required=False, label=_('openid'))
 
             def __init__(self, initial=None, *args, **kwargs):
                 if not initial:
