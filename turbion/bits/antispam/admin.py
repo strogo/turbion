@@ -10,8 +10,7 @@ class ActionModelAdmin(object):
 
     def get_antispam_url_name(self):
         """Creates antispam action url name"""
-        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
-        return '%sadmin_%s_%s_antispam_action' % info
+        return '%s_%s_antispam_action' % (self.model._meta.app_label, self.model._meta.module_name)
 
     def get_urls(self):
         """Updates default ModelAdmin urls"""
@@ -62,11 +61,12 @@ class ActionModelAdmin(object):
         """Creates button with action url and proper label"""
         action = obj.get_antispam_status() == 'ham' and 'spam' or 'ham'
         name = action == 'spam' and ugettext('Spam') or ugettext('Ham')
+        url = reverse('admin:%s' % self.get_antispam_url_name(), args=(obj.pk,), current_app=self.admin_site.name)
 
         return """<form action="%s" method="POST">
         <input type="hidden" name="action" value="%s"/>
         <input class="button" type="submit" style="font-size:10px; padding:1px 2px;" value="%s"/>
-        </form>""" % (reverse(self.get_antispam_url_name(), args=(obj.pk,)), action, name)
+        </form>""" % (url, action, name)
     antispam.allow_tags = True
     antispam.short_description = _('antispam')
 
