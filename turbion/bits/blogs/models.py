@@ -235,6 +235,9 @@ class Comment(AntispamModel):
     published = managers.CommentManager(
         Post.published.get_lookup('post__'), status=statuses.published
     )
+    spams = managers.CommentManager(
+        status=statuses.spam
+    )
 
     def is_edited(self):
         return self.created_on != self.edited_on
