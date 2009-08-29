@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.bits.blogs.models import Comment
 from turbion.bits.profiles.forms import combine_profile_form_with
+from turbion.bits.profiles import get_profile
 
 class _CommentForm(forms.ModelForm):
     class Meta:
@@ -19,7 +20,12 @@ class CommentForm(forms.Form):
             field="created_by",
             filter_field="text_filter"
         )
-
+        
+        profile = get_profile(request)
+        # If not openid authenticated no subscriptions available
+        if not profile.is_authenticated() or not profile.openid:
+            del self.__class__.base_fields['notify']
+            
         self.__class__.__init__(self, *args, **kwargs)
 
     def clean_notify(self):

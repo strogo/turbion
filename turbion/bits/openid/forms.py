@@ -11,7 +11,7 @@ class OpenidLoginForm(forms.ModelForm):
         model = Profile
         fields = [None]
 
-    openid = forms.CharField(label=_("openid"), required=True)
+    openid = forms.URLField(label=_("openid"), required=True)
 
     def __init__(self, request, *args, **kwargs):
         super(OpenidLoginForm, self).__init__(*args, **kwargs)
@@ -25,14 +25,10 @@ class OpenidLoginForm(forms.ModelForm):
         openid_url = self.cleaned_data['openid']
 
         consumer = utils.get_consumer(self.request.session)
-        errors = []
         try:
             self.openid_request = consumer.begin(openid_url)
         except discover.DiscoveryFailure, e:
-            errors.append(str(e[0]))
-
-        if errors:
-            raise forms.ValidationError(errors)
+            raise forms.ValidationError(str(e[0]))
 
         return openid_url
 

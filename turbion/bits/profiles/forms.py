@@ -26,57 +26,47 @@ def extract_profile_data(request):
     }
 
 def combine_profile_form_with(form_class, request, field='created_by',\
-                              fields=None, filter_field=None, markup_filter_fieled='text_filter'):
+                              fields=None, filter_field='text_filter'):
     if not get_profile(request).is_trusted():
         from turbion.bits.openid.forms import OpenidLoginForm as BaseForm
 
         class ProfileForm(form_class, BaseForm):
-            nickname  = forms.CharField(required=False, label=_('name'))
-            email = forms.EmailField(required=False, label=_('email'),
-                                     help_text=_('Only internal usage'))
-            site  = forms.URLField(required=False, label=_('site'))
-
-            openid = forms.URLField(required=False, label=_('openid'))
-
+            openid = forms.CharField(label=_('Name or OpenID'), required=True)
+            
             def __init__(self, initial=None, *args, **kwargs):
-                if not initial:
+                if initial is None:
                     initial = {}
 
                 initial.update(get_profile(request).__dict__)
-                super(ProfileForm, self).__init__(initial=initial, request=request, *args, **kwargs)
+                super(ProfileForm, self).__init__(
+                    initial=initial, request=request, *args, **kwargs
+                )
+                
+                self.valid_openid = False
 
             def get_user(self):
-                form_data = dict([(key, value) for key, value in self.cleaned_data.iteritems()\
-                                                if key in ['nickname', 'email', 'site', 'openid']])
+                from django.contrib.auth import login
+                if self.valid_openid:
+                    form_data = {'openid': self.cleaned_data['openid']}
+                else:
+                    form_data = {'nickname': self.cleaned_data['openid']}
+                form_data.update(extract_profile_data(request))
 
                 profile = get_profile(request)
 
-                openid = form_data.pop('openid', None)
-
                 if not profile.is_authenticated():
-                    from django.contrib.auth import login
-
-                    form_data.update(
-                        extract_profile_data(request)
-                    )
-
-                    #if openid:
-                    #    if not form_data.get('nickname', None):
-                    #        form_data["nickname"] = openid
-
                     profile = Profile.objects.create_guest_profile(**form_data)
 
-                    if not openid:
+                    if not form_data.get('openid'):
                         profile.backend = '%s.%s' % (
                             ModelBackend.__module__,
                             ModelBackend.__name__
                         )
                         login(request, profile)
+                    else:
+                        self.created_profile = profile
                 else:
                     profile.__dict__.update(form_data)
-
-                if openid:
-                    self.created_profile = profile
 
                 profile.save()
 
@@ -98,21 +88,16 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
             def clean_openid(self):
                 value = self.cleaned_data["openid"]
-                if value:
-                    return super(ProfileForm, self).clean_openid()
+                if value.startswith('http://'):
+                    try:
+                        value = super(ProfileForm, self).clean_openid()
+                        self.valid_openid = True
+                    except forms.ValidationError:
+                        pass
                 return value
 
-            def clean(self):
-                nickname = self.cleaned_data.get('nickname')
-                openid = self.cleaned_data.get('openid')
-
-                if not nickname and not openid:
-                    raise forms.ValidationError(_(u'Any of nickname or openid is required.'))
-
-                return self.cleaned_data
-
         # Remove filter selection for not logged in user
-        ProfileForm.base_fields.pop(markup_filter_fieled, None)
+        ProfileForm.base_fields.pop(filter_field, None)
 
         return ProfileForm
     else:
