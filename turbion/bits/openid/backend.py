@@ -57,7 +57,7 @@ class OpenidBackend(ModelBackend):
                 profile = created_profile
 
                 profile.__dict__.update(
-                    extract_profile_data(request)
+                    data
                 )
             else:# not profile yet. create it
                 profile = Profile.objects.create_guest_profile(
