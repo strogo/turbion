@@ -49,40 +49,41 @@ class OpenidBackend(ModelBackend):
         except Profile.DoesNotExist:
             profile = None
 
-        if not profile:
+        if profile:# user already exists
             if created_profile:
+                self._merge_profiles(created_profile, profile)
+        else:# completely new user 
+            if created_profile:# but with already created profile
                 profile = created_profile
 
-                # updated only empty fields
-                for name, value in data.iteritems():
-                    if not getattr(profile, name, None):
-                        setattr(profile, name, value)
-            else:
+                profile.__dict__.update(
+                    extract_profile_data(request)
+                )
+            else:# not profile yet. create it
                 profile = Profile.objects.create_guest_profile(
                     **data
                 )
                 profile.just_created = True
+                profile.__dict__.update(
+                    extract_profile_data(request)
+                )
+            
             profile.openid = response.identity_url
-
-            profile.__dict__.update(
-                extract_profile_data(request)
-            )
-        else:
-            if created_profile:
-                for rel in Profile._meta.get_all_related_objects():
-                    model = rel.model
-                    field_name = rel.field.name
-
-                    try:
-                        model._default_manager.filter(**{field_name: created_profile})\
-                                                .update(**{field_name: profile})
-                    except IntegrityError:
-                        # May produce error with duplicate key
-                        # For example when user auths second time and get another
-                        # watchlist subscription to same post
-                        pass
-                created_profile.delete()
-
-        profile.save()
+            profile.save()
 
         return profile
+
+    def _merge_profiles(self, created_profile, old_profile):
+        for rel in Profile._meta.get_all_related_objects():
+            model = rel.model
+            field_name = rel.field.name
+
+            try:
+                model._default_manager.filter(**{field_name: created_profile})\
+                                        .update(**{field_name: old_profile})
+            except IntegrityError:
+                # May produce error with duplicate key
+                # For example when user auths second time and get another
+                # watchlist subscription to same post
+                pass
+        created_profile.delete()

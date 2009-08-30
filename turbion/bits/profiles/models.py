@@ -25,7 +25,9 @@ class ProfileManager(UserManager):
     def create_profile(self, *args, **kwargs):
         return self.create_user(*args, **kwargs)
 
-    def create_guest_profile(self, nickname, email=None, site=None, ip=None, host=None, **kwargs):
+    def create_guest_profile(self, nickname=None, email=None, site=None, ip=None, host=None, **kwargs):
+        if kwargs.get('openid') and nickname is None:
+            nickname = kwargs['openid']
         profile = self.create_user(username=self.generate_username([nickname,email,site]),
                                    email=email and email or "",
                                    password=None)

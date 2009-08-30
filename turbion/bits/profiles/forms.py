@@ -27,7 +27,7 @@ def extract_profile_data(request):
 
 def combine_profile_form_with(form_class, request, field='created_by',\
                               fields=None, filter_field='text_filter'):
-    if not get_profile(request).is_trusted():
+    if not get_profile(request).is_authenticated():
         from turbion.bits.openid.forms import OpenidLoginForm as BaseForm
 
         class ProfileForm(form_class, BaseForm):
@@ -46,10 +46,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
             def get_user(self):
                 from django.contrib.auth import login
-                if self.valid_openid:
-                    form_data = {'openid': self.cleaned_data['openid']}
-                else:
-                    form_data = {'nickname': self.cleaned_data['openid']}
+                form_data = {'nickname': self.cleaned_data['openid']}
                 form_data.update(extract_profile_data(request))
 
                 profile = get_profile(request)
@@ -57,7 +54,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                 if not profile.is_authenticated():
                     profile = Profile.objects.create_guest_profile(**form_data)
 
-                    if not form_data.get('openid'):
+                    if not self.valid_openid:
                         profile.backend = '%s.%s' % (
                             ModelBackend.__module__,
                             ModelBackend.__name__
