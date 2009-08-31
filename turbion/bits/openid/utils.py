@@ -4,20 +4,19 @@ from turbion.bits.utils.urls import uri_reverse
 from turbion.bits.profiles.models import Profile
 from turbion.bits.openid.models import Association
 
+def _get_store():
+    from openid.store.filestore import FileOpenIDStore
+    return FileOpenIDStore(settings.TURBION_OPENID_STORE)
+
 def get_consumer(session):
     from openid.consumer import consumer
-    from turbion.bits.openid.store import DatabaseStore
 
-    return consumer.Consumer(session, DatabaseStore(Association.origins.consumer))
+    return consumer.Consumer(session, _get_store())
 
 def get_server():
     from openid.server import server
-    from turbion.bits.openid.store import DatabaseStore
 
-    return server.Server(
-        DatabaseStore(Association.origins.server),
-        uri_reverse("turbion_openid_endpoint")
-    )
+    return server.Server(_get_store(), uri_reverse("turbion_openid_endpoint"))
 
 def complete(request):
     data = dict(request.REQUEST.items())
