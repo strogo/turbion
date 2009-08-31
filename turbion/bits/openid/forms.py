@@ -40,12 +40,14 @@ class OpenidLoginForm(forms.ModelForm):
 
         trust_url, return_to = utils.get_auth_urls(self.request)
 
+        params = {}
         if next or "next" in self.request.REQUEST:
-            self.openid_request.return_to_args['next'] = next or self.request.REQUEST["next"]
+            params['next'] = next or self.request.REQUEST["next"]
 
         if self.created_profile:
-            self.openid_request.return_to_args['created_profile'] = str(self.created_profile.pk)
+            params['created_profile'] = str(self.created_profile.pk)
 
+        self.openid_request.return_to_args.update(utils.sign_params(params))
         url = self.openid_request.redirectURL(trust_url, return_to)
 
         return url

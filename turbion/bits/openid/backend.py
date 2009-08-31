@@ -33,7 +33,7 @@ class OpenidBackend(ModelBackend):
 
         # Getting profile created by comment/feedback post.
         # We must associate this identity with it
-        created_profile = request.REQUEST.get('created_profile')
+        created_profile = utils.extract_params(request.REQUEST).get('created_profile')
         if created_profile:
             try:
                 created_profile = Profile.objects.get(pk=created_profile)
@@ -52,7 +52,7 @@ class OpenidBackend(ModelBackend):
         if profile:# user already exists
             if created_profile:
                 self._merge_profiles(created_profile, profile)
-        else:# completely new user 
+        else:# completely new user
             if created_profile:# but with already created profile
                 profile = created_profile
 
@@ -67,7 +67,7 @@ class OpenidBackend(ModelBackend):
                 profile.__dict__.update(
                     extract_profile_data(request)
                 )
-            
+
             profile.openid = response.identity_url
             profile.save()
 
