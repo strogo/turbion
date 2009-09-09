@@ -13,7 +13,7 @@ def get_revision(path=None, check_changes=False):
 
         try:
             repository = hg.repository(ui.ui(), path)
-        except repo.RepoError:
+        except repo.error.RepoError:
             return None
 
         tip = repository.changelog.tip()

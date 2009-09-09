@@ -4,7 +4,6 @@ from django.utils.datastructures import SortedDict
 
 from turbion.bits.utils.urls import uri_reverse
 from turbion.bits.profiles.models import Profile
-from turbion.bits.openid.models import Association
 
 def _get_store():
     from openid.store.filestore import FileOpenIDStore
