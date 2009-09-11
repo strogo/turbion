@@ -53,7 +53,7 @@ class Feedback(AntispamModel):
             'comment_type': 'feedback',
             'comment_author': self.created_by.name,
             'comment_author_email': self.created_by.email,
-            'comment_author_url': self.created_by.site or self.created_by.openid,
+            'comment_author_url': self.created_by.openid,
             'comment_content': self.text,
             'user_ip': self.created_by.ip,
         }

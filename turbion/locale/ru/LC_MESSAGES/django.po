@@ -474,10 +474,6 @@ msgstr ""
 msgid "Only internal usage"
 msgstr "Только для внутреннего использования"
 
-#: core/profiles/forms.py:44 core/profiles/models.py:55
-#: core/profiles/models.py:65
-msgid "site"
-msgstr "сайт"
 
 #: core/profiles/forms.py:119
 msgid "Any of nickname or openid is required."
@@ -510,10 +506,6 @@ msgstr "доверенный"
 #: core/profiles/models.py:68
 msgid "name view"
 msgstr "показ имени"
-
-#: core/profiles/models.py:71
-msgid "site view"
-msgstr "показ сайта"
 
 #: core/profiles/models.py:129
 msgid "profile"

@@ -25,15 +25,14 @@ class ProfileManager(UserManager):
     def create_profile(self, *args, **kwargs):
         return self.create_user(*args, **kwargs)
 
-    def create_guest_profile(self, nickname=None, email=None, site=None, ip=None, host=None, **kwargs):
+    def create_guest_profile(self, nickname=None, email=None, ip=None, host=None, **kwargs):
         if kwargs.get('openid') and nickname is None:
             nickname = kwargs['openid']
-        profile = self.create_user(username=self.generate_username([nickname,email,site]),
+        profile = self.create_user(username=self.generate_username([nickname,email]),
                                    email=email and email or "",
                                    password=None)
 
         profile.nickname = nickname
-        profile.site = site
         profile.name_view = Profile.names.nickname
         profile.ip = ip
         profile.__dict__.update(kwargs)
@@ -59,8 +58,6 @@ class Profile(User):
     # True when user is quest but trusted and have
     # right as registered user when posting comment
     trusted = models.BooleanField(default=False, verbose_name=_("trusted"), db_index=True)
-
-    site = models.CharField(blank=True, max_length=100, null=True, verbose_name=_('site'))
 
     name_view = models.CharField(max_length=20, choices=names, null=True, blank=True,
                                  verbose_name=_('name view'))
@@ -94,9 +91,6 @@ class Profile(User):
 
     def __unicode__(self):
         return self.name
-
-    def get_site_url(self):
-        return self.openid or self.site
 
     def get_code(self):
         import md5

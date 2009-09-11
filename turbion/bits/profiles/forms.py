@@ -13,7 +13,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = (
-            'nickname', 'email', 'first_name', 'last_name', 'site',
+            'nickname', 'email', 'first_name', 'last_name',
             'name_view', 'filter'
         )
 
@@ -32,7 +32,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
         class ProfileForm(form_class, BaseForm):
             openid = forms.CharField(label=_('Name or OpenID'), required=True)
-            
+
             def __init__(self, initial=None, *args, **kwargs):
                 if initial is None:
                     initial = {}
@@ -41,7 +41,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                 super(ProfileForm, self).__init__(
                     initial=initial, request=request, *args, **kwargs
                 )
-                
+
                 self.valid_openid = False
 
             def get_user(self):

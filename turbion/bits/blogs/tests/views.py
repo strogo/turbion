@@ -86,7 +86,6 @@ class BlogsViews(BaseViewTest):
             "text_filter": "markdown",
             "nickname": "Alex",
             "email": "foo@bar.com",
-            "site": "http://foobar.com",
             'notify': True,
         })
 

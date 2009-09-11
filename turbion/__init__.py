@@ -10,10 +10,15 @@ def get_revision(path=None, check_changes=False):
 
     try:
         from mercurial import hg, ui, repo, node
-
+        
+        try:
+            RepoError = repo.RepoError
+        except NameError:
+            RepoError = repo.error.RepoError
+        
         try:
             repository = hg.repository(ui.ui(), path)
-        except repo.error.RepoError:
+        except RepoError:
             return None
 
         tip = repository.changelog.tip()

@@ -60,7 +60,6 @@ class CommentsTest(BaseViewTest):
             "notify": True,
             "nickname": "Test User",
             "email": "testuser@domain.com",
-            "site": "http://domain.com/",
         }
         initial_request = self.client.get("/foobar/")
         response_dict = views.add_comment(

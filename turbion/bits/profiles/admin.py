@@ -7,7 +7,7 @@ from turbion.bits.profiles.models import Profile
 class ProfileAdmin(admin.ModelAdmin):
     exclude = ['password', 'last_login', 'user_permissions', 'groups']
     list_display  = (
-        'id', 'nickname', 'email', 'full_name', 'site', 'openid',
+        'id', 'nickname', 'email', 'full_name', 'openid',
         'trusted', 'ip', 'filter',
     )
     list_per_page = 50
@@ -15,6 +15,6 @@ class ProfileAdmin(admin.ModelAdmin):
     list_filter   = (
         'trusted', 'is_superuser', 'is_staff', 'filter'
     )
-    search_fields = ('username', 'nickname', 'email', 'site')
+    search_fields = ('username', 'nickname', 'email')
 
 admin.site.register(Profile, ProfileAdmin)

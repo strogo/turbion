@@ -23,7 +23,6 @@
     "fields": {
       "name_view": null,
       "ip": null,
-      "site": null,
       "trusted": true,
       "filter": "dummy",
       "nickname": null

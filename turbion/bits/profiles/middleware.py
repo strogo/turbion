@@ -9,8 +9,8 @@ class AnonymousProfile(AnonymousUser):
     nickname = None
     ip = None
     trusted = False
-    site = None
     name_view = None
+    openid = None
 
     def is_trusted(self):
         return self.trusted
