@@ -10,12 +10,12 @@ def get_revision(path=None, check_changes=False):
 
     try:
         from mercurial import hg, ui, repo, node
-        
+
         try:
             RepoError = repo.RepoError
-        except NameError:
+        except AttributeError:
             RepoError = repo.error.RepoError
-        
+
         try:
             repository = hg.repository(ui.ui(), path)
         except RepoError:
@@ -26,7 +26,7 @@ def get_revision(path=None, check_changes=False):
 
         if check_changes and bool(reduce(operator.add, repository.status()[:4])):
             raise RuntimeError('Repository has local modifications')
-        
+
         return (
             repository.changelog.nodemap[tip],
             node.short(tip),
