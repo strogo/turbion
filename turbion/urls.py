@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^feedback/',            include('turbion.bits.feedback.urls')),
     url(r'^openid/',              include('turbion.bits.openid.urls')),
     url(r'^antispam/',            include('turbion.bits.antispam.urls')),
+    url(r'^markup/',              include('turbion.bits.markup.urls')),
     url(r'^openid/whitelist/$',   'turbion.bits.whitelist.views.whitelist', {'queryset': queryset}, name='turbion_whitelist'),
 
     url(r'',                      include('turbion.bits.blogs.urls')),
