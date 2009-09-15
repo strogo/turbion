@@ -9,6 +9,7 @@ class MarkupField(models.CharField):
     def __init__(self, safe=True, limit_choices_to=None, *args, **kwargs):
         self.limit_choices_to = limit_choices_to
         self.safe = safe
+
         def _check(name, filter):
             if limit_choices_to and name not in limit_choices_to:
                 return False
