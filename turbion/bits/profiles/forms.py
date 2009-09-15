@@ -93,9 +93,6 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                         pass
                 return value
 
-        # Remove filter selection for not logged in user
-        ProfileForm.base_fields.pop(filter_field, None)
-
         return ProfileForm
     else:
         class ProfileForm(form_class):

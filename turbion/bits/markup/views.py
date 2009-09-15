@@ -6,7 +6,7 @@ from turbion.bits.markup.filters import Filter
 
 class PreviewForm(forms.Form):
     filter = forms.CharField(required=True)
-    text = forms.TextField()
+    text = forms.CharField()
 
     def clean_filter(self):
         filter = self.cleaned_data['filter']
@@ -19,7 +19,7 @@ class PreviewForm(forms.Form):
     def render(self):
         filter = Filter.manager.get(self.cleaned_data['filter'])
 
-        return filer.to_html(self.cleaned_data['text'])
+        return filter.to_html(self.cleaned_data['text'])
 
 @require_POST
 def preview(request):

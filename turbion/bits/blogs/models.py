@@ -222,7 +222,7 @@ class Comment(AntispamModel):
     edited_by = models.ForeignKey(Profile, related_name="edited_comments",
                                   editable=False, null=True, verbose_name=_("edited by"))
 
-    text = MarkupTextField(verbose_name=_("text"))
+    text = MarkupTextField(verbose_name=_("text"), safe=False)
 
     status = models.CharField(max_length=20,
                               choices=statuses,

@@ -9,11 +9,18 @@ class MarkupField(models.CharField):
     def __init__(self, safe=True, limit_choices_to=None, *args, **kwargs):
         self.limit_choices_to = limit_choices_to
         self.safe = safe
+        def _check(name, filter):
+            if limit_choices_to and name not in limit_choices_to:
+                return False
+
+            if not safe and not filter.is_safe():
+                return False
+
+            return True
 
         defaults = {
             "choices": [(name, name) for name, filter in Filter.manager.all()\
-                        if ((limit_choices_to and name in limit_choices_to) or True)\
-                            and (self.safe and filter.is_safe() or True)],
+                                    if _check(name, filter)],
             "max_length": 50,
             "default": "markdown"
         }
@@ -46,7 +53,8 @@ class MarkupTextField(models.TextField):
         ).contribute_to_class(cls, self.html_name)
         MarkupField(
             verbose_name=_("markup filter"),
-            limit_choices_to=self.limit_choices_to
+            limit_choices_to=self.limit_choices_to,
+            safe=self.safe
         ).contribute_to_class(cls, self.filter_field_name)
 
     def pre_save(self, model_instance, add):
