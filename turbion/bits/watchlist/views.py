@@ -48,12 +48,6 @@ def watchlist_action(request):
         return http.HttpResponseRedirect(request.REQUEST.get('next', reverse('turbion_watchlist')))
     return http.HttpResponseBadRequest('Post not found or bad action')
 
-@login_required
-@templated('turbion/watchlist/update.html')
-@titled(page=_('Update subscriptions'))
-def update_watchlist(request):
-    pass
-
 def unsubscribe(request, user_id):
     profile = get_object_or_404(Profile, pk=user_id)
 
