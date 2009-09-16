@@ -477,8 +477,8 @@ msgid "pingbacks"
 msgstr "пингбеки"
 
 #: bits/profiles/forms.py:34
-msgid "name or OpenID"
-msgstr "имя или OpenID"
+msgid "Name or OpenID"
+msgstr "Имя или OpenID"
 
 #: bits/profiles/models.py:50
 msgid "nick"
