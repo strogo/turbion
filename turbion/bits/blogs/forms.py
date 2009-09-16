@@ -8,7 +8,7 @@ from turbion.bits.profiles import get_profile
 class _CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ("text", "text_filter")
+        fields = ('text_filter', 'text')
 
     notify = forms.BooleanField(initial=False, required=False, label=_("notify"))
 
@@ -20,12 +20,12 @@ class CommentForm(forms.Form):
             field="created_by",
             filter_field="text_filter"
         )
-        
+
         profile = get_profile(request)
         # If not openid authenticated no subscriptions available
         if not profile.is_authenticated() or not profile.openid:
             del self.__class__.base_fields['notify']
-            
+
         self.__class__.__init__(self, *args, **kwargs)
 
     def clean_notify(self):
