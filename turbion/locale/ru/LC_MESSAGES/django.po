@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-14 01:29+0400\n"
+"POT-Creation-Date: 2009-09-17 01:23+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -270,7 +270,7 @@ msgid "Profile"
 msgstr "Профиль"
 
 #: bits/blogs/templatetags/blogs/pads.py:158 bits/watchlist/feeds.py:24
-#: bits/watchlist/views.py:18 bits/watchlist/views.py:69
+#: bits/watchlist/views.py:18 bits/watchlist/views.py:63
 msgid "Watchlist"
 msgstr ""
 
@@ -391,7 +391,7 @@ msgstr "Спасибо"
 msgid "Thanks. Your request will be handled by the administrator."
 msgstr ""
 
-#: bits/markup/fields.py:48
+#: bits/markup/fields.py:56
 msgid "markup filter"
 msgstr "фильтр"
 
@@ -477,8 +477,8 @@ msgid "pingbacks"
 msgstr "пингбеки"
 
 #: bits/profiles/forms.py:34
-msgid "Name or OpenID"
-msgstr ""
+msgid "name or OpenID"
+msgstr "имя или OpenID"
 
 #: bits/profiles/models.py:50
 msgid "nick"
@@ -584,15 +584,11 @@ msgstr "подписки"
 msgid "Recent comments"
 msgstr "Свежие комментарии"
 
-#: bits/watchlist/views.py:53
-msgid "Update subscriptions"
-msgstr "Обновление подписок"
-
-#: bits/watchlist/views.py:68
+#: bits/watchlist/views.py:62
 msgid "Unsubscribed"
 msgstr "Отписаться"
 
-#: bits/watchlist/views.py:70
+#: bits/watchlist/views.py:64
 msgid "You've been unsubscribed from new comment notification"
 msgstr "Вы успешно отписаны от оповещения о новых комментариях"
 
@@ -603,3 +599,6 @@ msgstr "whitelist источник"
 #: bits/whitelist/models.py:14
 msgid "sources"
 msgstr "whitelist источники"
+
+#~ msgid "Update subscriptions"
+#~ msgstr "Обновление подписок"
