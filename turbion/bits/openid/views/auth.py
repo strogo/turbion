@@ -11,7 +11,7 @@ from turbion.bits.utils.urls import uri_reverse
 from turbion.bits.profiles import get_profile
 from turbion.bits.utils.decorators import templated, special_titled
 
-titled = special_titled(section=_("OpenID Authorization"))
+titled = special_titled(section=_("OpenID authentication"))
 
 def get_redirect(request):
     redirect = request.REQUEST.get("next", request.META.get("HTTP_REFERER", "/"))
@@ -52,4 +52,4 @@ def authenticate(request):
             reverse("turbion_profile_edit") + "?just_created=1"
         )
 
-    return http.HttpResponseRedirect(request.GET.get('next', '/'))
+    return http.HttpResponseRedirect(request.GET.get('turbion.next', '/'))
