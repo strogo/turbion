@@ -41,7 +41,7 @@ def sign_params(params, prefix='turbion.'):
     params = SortedDict(
         [('%s%s' % (prefix, key), value) for key, value in params.iteritems()]
     )
-    params['%ssignature' % prefix] = _sign(params),
+    params['%ssignature' % prefix] = _sign(params)
 
     return params
 
@@ -51,7 +51,8 @@ def extract_params(params, prefix='turbion.'):
         [(name[len(prefix):], value)\
             for name, value in params.iteritems() if name.startswith(prefix)]
     )
-    if params.get('signature') != _sign(params):
+    signature = params.pop('signature', '')
+    if signature != _sign(params):
         raise ValueError('Parameters signature doesn\'t match')
 
     return params
