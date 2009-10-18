@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-17 01:23+0400\n"
+"POT-Creation-Date: 2009-10-18 19:02+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -181,7 +181,7 @@ msgstr "зарегестрированные"
 msgid "created on"
 msgstr "время создания"
 
-#: bits/blogs/models.py:75 bits/blogs/models.py:219 bits/feedback/models.py:23
+#: bits/blogs/models.py:75 bits/blogs/models.py:219
 msgid "created by"
 msgstr "автор"
 
@@ -193,7 +193,7 @@ msgstr "время публикации"
 msgid "edited on"
 msgstr "время измененя"
 
-#: bits/blogs/models.py:82 bits/blogs/models.py:223 bits/feedback/models.py:28
+#: bits/blogs/models.py:82 bits/blogs/models.py:223
 msgid "edited by"
 msgstr "автор изменения"
 
@@ -202,12 +202,11 @@ msgstr "автор изменения"
 msgid "title"
 msgstr "заголовок"
 
-#: bits/blogs/models.py:87 bits/blogs/models.py:225 bits/feedback/models.py:32
+#: bits/blogs/models.py:87 bits/blogs/models.py:225
 msgid "text"
 msgstr "текст"
 
-#: bits/blogs/models.py:90 bits/blogs/models.py:230 bits/feedback/models.py:35
-#: bits/pingback/models.py:20
+#: bits/blogs/models.py:90 bits/blogs/models.py:230 bits/pingback/models.py:20
 msgid "status"
 msgstr "статус"
 
@@ -338,58 +337,6 @@ msgstr "Поиск в постах"
 #: bits/blogs/views/search.py:84
 msgid "Search in comments"
 msgstr "Поиск в комментариях"
-
-#: bits/feedback/models.py:14
-msgid "accepted"
-msgstr "принятое"
-
-#: bits/feedback/models.py:15
-msgid "rejected"
-msgstr "отклоненное"
-
-#: bits/feedback/models.py:16
-msgid "done"
-msgstr "готово"
-
-#: bits/feedback/models.py:17
-msgid "new"
-msgstr "новое"
-
-#: bits/feedback/models.py:21
-msgid "creation on"
-msgstr "время создания"
-
-#: bits/feedback/models.py:25
-msgid "update on"
-msgstr "время обновления"
-
-#: bits/feedback/models.py:30
-msgid "subject"
-msgstr "тема"
-
-#: bits/feedback/models.py:71
-msgid "feedback"
-msgstr "сообщение обратной связи"
-
-#: bits/feedback/models.py:72
-msgid "feedbacks"
-msgstr "сообщения обратной связи"
-
-#: bits/feedback/views.py:12
-msgid "Write"
-msgstr "Новое сообщение"
-
-#: bits/feedback/views.py:12 bits/feedback/views.py:33
-msgid "Feedback"
-msgstr "Обратная связь"
-
-#: bits/feedback/views.py:32
-msgid "Thanks"
-msgstr "Спасибо"
-
-#: bits/feedback/views.py:35
-msgid "Thanks. Your request will be handled by the administrator."
-msgstr ""
 
 #: bits/markup/fields.py:56
 msgid "markup filter"
@@ -599,6 +546,3 @@ msgstr "whitelist источник"
 #: bits/whitelist/models.py:14
 msgid "sources"
 msgstr "whitelist источники"
-
-#~ msgid "Update subscriptions"
-#~ msgstr "Обновление подписок"

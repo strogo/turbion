@@ -17,7 +17,7 @@ def _do_comment(request, post, defaults={}, comment=None):
     if not post.allow_comment_from(profile):
         return http.HttpResponseRedirect(post.get_absolute_url())#FIXME: add message
 
-    if comment and profile not in (comment.author, post.created_by):
+    if comment and profile not in (comment.created_by, post.created_by):
         return http.HttpResponseRedirect(comment.get_absolute_url())
 
     if request.method == 'POST':
@@ -104,7 +104,7 @@ def add(request, post_id):
 @titled(page=_('Edit comment to "{{post.title}}"'))
 def edit(request, comment_id):
     comment = get_object_or_404(
-        models.Comment.published.select_related("post"),
+        Comment.published.select_related("post"),
         pk=comment_id
     )
     post = comment.post

@@ -16,7 +16,6 @@ MODEL_QUEUE = [
     Post,
     Comment,
     Pingback,
-    Feedback,
     Event,
     Subscription,
     Alias,
@@ -39,7 +38,7 @@ class Command(NoArgsCommand):
         indent = options.get('indent', None)
         show_traceback = options.get('traceback', False)
         add = options.get('add', [])
-        
+
         models = MODEL_QUEUE[:]
         for app_label in add:
             if '.' in app_label:
@@ -48,12 +47,12 @@ class Command(NoArgsCommand):
                     get_app(app_label)
                 except ImproperlyConfigured:
                     raise CommandError("Unknown application: %s" % app_label)
-                
+
                 model = get_model(app_label, model_label)
-                
+
                 if model is None:
                     raise CommandError("Unknown model: %s.%s" % (app_label, model_label))
-                
+
                 models.append(model)
             else:
                 try:

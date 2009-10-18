@@ -38,24 +38,6 @@ class WatchlistTest(BaseViewTest):
 
         self.assertEqual(queue_len(), 1)
 
-    def test_new_feedback(self):
-        from turbion.bits.feedback.models import Feedback
-
-        watchlist.subscribe(
-            self.user,
-            'new_feedback',
-            email=True
-        )
-
-        feedback = Feedback.objects.create(
-            created_by=self.user,
-            subject='test',
-            text='test text'
-        )
-        watchlist.emit_event('new_feedback', feedback=feedback)
-
-        self.assertEqual(queue_len(), 1)
-
     def test_unsubscribe_view(self):
         sub = watchlist.subscribe(
             self.user,

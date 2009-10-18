@@ -31,7 +31,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
         from turbion.bits.openid.forms import OpenidLoginForm as BaseForm
 
         class ProfileForm(form_class, BaseForm):
-            openid = forms.CharField(label=_('name or OpenID'), required=True)
+            openid = forms.CharField(label=_('Name or OpenID'), required=True)
 
             def __init__(self, initial=None, *args, **kwargs):
                 if initial is None:
