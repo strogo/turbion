@@ -9,7 +9,7 @@ from turbion.bits.openid import utils
 class OpenidLoginForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = [None]
+        fields = ['openid']
 
     openid = forms.URLField(label=_("openid"), required=True)
 

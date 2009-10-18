@@ -19,7 +19,7 @@ def get_redirect(request):
     return redirect
 
 @templated('turbion/openid/login.html')
-@titled(page=_("Login"))
+@titled(page=_("OpendID login"))
 def login(request):
     if request.method == 'POST':
         form = forms.OpenidLoginForm(request, data=request.POST)
@@ -27,7 +27,7 @@ def login(request):
             after_auth_redirect = form.auth_redirect(get_redirect(request))
             return http.HttpResponseRedirect(after_auth_redirect)
     else:
-        form = forms.OpenidLoginForm(request.session)
+        form = forms.OpenidLoginForm(request)
 
     return {
         'form': form,
