@@ -28,12 +28,11 @@ class ProfileManager(UserManager):
     def create_guest_profile(self, nickname=None, email=None, ip=None, host=None, **kwargs):
         if kwargs.get('openid') and nickname is None:
             nickname = kwargs['openid']
-        profile = self.create_user(username=self.generate_username([nickname,email]),
+        profile = self.create_user(username=self.generate_username([nickname, email]),
                                    email=email and email or "",
                                    password=None)
 
         profile.nickname = nickname
-        profile.name_view = Profile.names.nickname
         profile.ip = ip
         profile.__dict__.update(kwargs)
         profile.save()
@@ -46,12 +45,6 @@ class ProfileManager(UserManager):
         ).count() != 0
 
 class Profile(User):
-    names = Enum(
-        nickname      =_("nick"),
-        full_name     =_("full name"),
-        full_name_nick=_("full name with nick"),
-    )
-
     nickname = models.CharField(max_length=150, null=True, verbose_name =_('nickname'))
     ip = models.IPAddressField(null=True, blank=True, verbose_name =_('IP'))
 
@@ -59,10 +52,7 @@ class Profile(User):
     # right as registered user when posting comment
     trusted = models.BooleanField(default=False, verbose_name=_("trusted"), db_index=True)
 
-    name_view = models.CharField(max_length=20, choices=names, null=True, blank=True,
-                                 verbose_name=_('name view'))
-
-    filter = MarkupField()
+    filter = MarkupField(verbose_name=_('filter'))
 
     openid = models.CharField(max_length=255, verbose_name=_('openid'), blank=True,
                               default='', db_index=True)
@@ -71,20 +61,15 @@ class Profile(User):
 
     @property
     def full_name(self):
-        return "%s %s" % (self.first_name, self.last_name)
-
-    @property
-    def full_name_with_nick(self):
-        return "%s %s %s" % (self.first_name, self.username, self.last_name)
+        return (self.first_name and self.last_name) and '%s %s' % (self.first_name, self.last_name) or ''
 
     @property
     def name(self):
-        type_map = {
-            Profile.names.nickname      : self.nickname,
-            Profile.names.full_name     : self.full_name,
-            Profile.names.full_name_nick: self.full_name_with_nick
-        }
-        return type_map.get(self.name_view, self.username)
+        for value in (self.nickname, self.full_name, self.openid):
+            if value:
+                return value
+
+        return self.username
 
     def is_trusted(self):
         return self.trusted

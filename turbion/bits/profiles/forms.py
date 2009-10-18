@@ -13,8 +13,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = (
-            'nickname', 'email', 'first_name', 'last_name',
-            'name_view', 'filter'
+            'nickname', 'filter'
         )
 
 ProfileForm.base_fields.keyOrder = ProfileForm.Meta.fields
