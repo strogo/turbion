@@ -187,11 +187,11 @@ msgstr "автор"
 
 #: bits/blogs/models.py:77
 msgid "published on"
-msgstr "время публикации"
+msgstr "опубликован"
 
 #: bits/blogs/models.py:80 bits/blogs/models.py:221
 msgid "edited on"
-msgstr "время измененя"
+msgstr "изменен"
 
 #: bits/blogs/models.py:82 bits/blogs/models.py:223
 msgid "edited by"
@@ -216,11 +216,11 @@ msgstr "комментирование"
 
 #: bits/blogs/models.py:97
 msgid "showing"
-msgstr "рижим показа"
+msgstr "показ"
 
 #: bits/blogs/models.py:101
 msgid "comments moderation"
-msgstr "модерирование комментариев"
+msgstr "модерация"
 
 #: bits/blogs/models.py:104
 msgid "actual post"
@@ -237,11 +237,11 @@ msgstr "посты"
 
 #: bits/blogs/models.py:204
 msgid "post count"
-msgstr "количество постов"
+msgstr "посты"
 
 #: bits/blogs/models.py:211
 msgid "moderation"
-msgstr "модерирование"
+msgstr "модерация"
 
 #: bits/blogs/models.py:213
 msgid "spam"
@@ -262,7 +262,7 @@ msgstr "комментарии"
 
 #: bits/blogs/models.py:307
 msgid "comment count"
-msgstr "количество комментариев"
+msgstr "комментарии"
 
 #: bits/blogs/templatetags/blogs/pads.py:157 bits/profiles/views.py:14
 msgid "Profile"
