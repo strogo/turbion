@@ -70,7 +70,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
                 return profile
 
             def need_auth_redirect(self):
-                return self.cleaned_data.get('openid', None) not in (None, '')
+                return self.valid_openid
 
             def save(self, commit=True):
                 obj = super(ProfileForm, self).save(False)
@@ -85,7 +85,7 @@ def combine_profile_form_with(form_class, request, field='created_by',\
 
             def clean_openid(self):
                 value = self.cleaned_data["openid"]
-                if value.startswith('http://'):
+                if value.startswith('http://') or value.startswith('https://'):
                     try:
                         value = super(ProfileForm, self).clean_openid()
                         self.valid_openid = True
