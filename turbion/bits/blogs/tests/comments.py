@@ -31,7 +31,6 @@ class CommentsTest(BaseViewTest):
 
         data = {
             "text": "Foo bar text",
-            "notify": True,
             'text_filter': "markdown"
         }
 
@@ -57,7 +56,6 @@ class CommentsTest(BaseViewTest):
         data = {
             "text": "Foo bar text",
             'text_filter': "markdown",
-            "notify": True,
             "nickname": "Test User",
             "email": "testuser@domain.com",
         }

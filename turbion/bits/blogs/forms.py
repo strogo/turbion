@@ -10,8 +10,6 @@ class _CommentForm(forms.ModelForm):
         model = Comment
         fields = ('text_filter', 'text')
 
-    notify = forms.BooleanField(initial=False, required=False, label=_("notify"))
-
 class CommentForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
         self.__class__ = combine_profile_form_with(
@@ -22,18 +20,8 @@ class CommentForm(forms.Form):
         )
 
         profile = get_profile(request)
-        # If not openid authenticated no subscriptions available
-        if not profile.is_authenticated() or not profile.openid:
-            del self.__class__.base_fields['notify']
 
         self.__class__.__init__(self, *args, **kwargs)
-
-    def clean_notify(self):
-        notify = self.cleaned_data["notify"]
-        if notify and ("email" in self.fields and not self.cleaned_data.get("email")):
-            raise forms.ValidationError(_("You have to provide email address"
-                                            " to recieve notifications"))
-        return notify
 
 class SearchForm(forms.Form):
     query = forms.CharField(required=True, label=_('search'))
