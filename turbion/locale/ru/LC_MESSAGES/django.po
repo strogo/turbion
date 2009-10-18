@@ -270,7 +270,6 @@ msgid "Logout"
 msgstr "Выход"
 
 #: bits/blogs/templatetags/blogs/pads.py:161
-#, fuzzy
 msgid "OpenID login"
 msgstr "OpenID"
 
