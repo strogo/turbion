@@ -65,7 +65,7 @@ def _sign(params):
         ':'.join(
             map(smart_str, [settings.SECRET_KEY] + params.values())
         )
-    ).hexdigets()
+    ).hexdigest()
 
 def _save_request(request, openid_request):
     if openid_request:
