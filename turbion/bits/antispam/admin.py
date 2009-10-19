@@ -6,7 +6,7 @@ from django import http
 from turbion.bits.antispam import action_submit
 
 class ActionModelAdmin(object):
-    action = 'antispam'
+    additinal_fields = ['antispam']
     batch_actions = ['antispam_action_spam', 'antispam_action_ham']
 
     def get_antispam_url_name(self):
@@ -30,7 +30,7 @@ class ActionModelAdmin(object):
         obj.antispam_status = action == 'spam' and 'spam' or None
         obj.handle_antispam_decision(action)
         obj.save()
-        
+
         self.message_user(
             request,
             _("`%(obj)s` successfully marked as %(action)s.") % {

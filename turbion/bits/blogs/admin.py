@@ -45,10 +45,11 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Post, PostAdmin)
 
 class CommentAdmin(ActionModelAdmin, admin.ModelAdmin):
-    list_display = (
-        'created_on', 'post', 'status', 'created_by', 'headline',
-        'text_filter', ActionModelAdmin.action
-    )
+    list_display = [
+        'created_on', 'post', '_status', 'created_by', 'headline',
+        'text_filter'
+    ] + ActionModelAdmin.additinal_fields
+
     list_per_page = 25
     list_select_related = True
 
@@ -56,6 +57,12 @@ class CommentAdmin(ActionModelAdmin, admin.ModelAdmin):
     list_filter = ('status',)
 
     actions = ActionModelAdmin.batch_actions
+
+    def _status(self, comment):
+        if comment.status == Comment.statuses.spam:
+            return '%s: %s' % (comment.status, comment.antispam_status)
+        return comment.status
+    _status.short_description = _('status')
 
     def headline(self, comment):
         return truncate_words(comment.text, 10)

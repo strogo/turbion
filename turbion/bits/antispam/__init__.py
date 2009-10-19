@@ -10,13 +10,13 @@ class StopChecking(Exception):
 class AntispamModel(models.Model):
     antispam_status = models.CharField(max_length=20, null=True, blank=True,
                                        editable=False)
-    
+
     def get_antispam_data(self):
         raise NotImplementedError
 
     def handle_antispam_decision(self, decision):
         raise NotImplementedError
-        
+
     class Meta:
         abstract = True
 
@@ -62,22 +62,22 @@ def process_form_init(request, form, parent=None):
             pass
 
 def process_form_submit(request, form, child, parent=None):
-    decision = None
+    decisions = []
     for name, filter in Filter.manager.all():
         try:
-            decision = filter.process_form_submit(request, form, child, parent)
-
-            if decision:
-                decision = name
+            filter_decision = filter.process_form_submit(request, form, child, parent)
+            print 'P', name, filter_decision
+            if filter_decision:
+                decisions.append(name)
         except NotImplementedError:
             pass
         except StopChecking:
             break
 
-    child.antispam_status = decision
-    child.handle_antispam_decision(decision and 'spam' or 'ham')
-    
-    return decision
+    child.antispam_status = ', '.join(decisions)
+    child.handle_antispam_decision(decisions and 'spam' or 'ham')
+
+    return child.antispam_status
 
 def action_submit(action, obj):
     for name, filter in Filter.manager.all():
