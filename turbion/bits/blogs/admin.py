@@ -60,8 +60,8 @@ class CommentAdmin(ActionModelAdmin, admin.ModelAdmin):
 
     def _status(self, comment):
         if comment.status == Comment.statuses.spam:
-            return '%s: %s' % (comment.status, comment.antispam_status)
-        return comment.status
+            return '%s: %s' % (comment.get_status_display(), comment.antispam_status)
+        return comment.get_status_display()
     _status.short_description = _('status')
 
     def headline(self, comment):
