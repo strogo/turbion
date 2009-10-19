@@ -27,7 +27,7 @@ class ActionModelAdmin(object):
     def antispam_submit_action_for_object(self, request, obj, action):
         action_submit(action, obj)
 
-        obj.antispam_status = action == 'spam' and 'spam' or None
+        obj.antispam_status = action == 'spam' and 'manual' or None
         obj.handle_antispam_decision(action)
         obj.save()
 
