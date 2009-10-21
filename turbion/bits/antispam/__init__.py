@@ -66,7 +66,7 @@ def process_form_submit(request, form, child, parent=None):
     for name, filter in Filter.manager.all():
         try:
             filter_decision = filter.process_form_submit(request, form, child, parent)
-            print 'P', name, filter_decision
+
             if filter_decision:
                 decisions.append(name)
         except NotImplementedError:
