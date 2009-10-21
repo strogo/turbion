@@ -20,8 +20,6 @@ class BlogsViews(BaseViewTest):
     def setUp(self):
         self.post = Post.objects.all()[0]
 
-        CommentAdd.manager.subscribe(self.post.created_by, self.post)
-
     def test_index(self):
         self.assertStatus(reverse("turbion_blog_index"))
 
@@ -55,7 +53,6 @@ class BlogsViews(BaseViewTest):
         self.login()
 
         url = reverse("turbion_blog_comment_add", args=(self.post.id,))
-        CommentAdd.manager.subscribe(self.post.created_by)
 
         comment = {
             "text": "My comment",
@@ -72,7 +69,6 @@ class BlogsViews(BaseViewTest):
         post = Post.published.get(pk=self.post.pk)
 
         self.assertEqual(post.comment_count, 1)
-        self.assertEqual(len(CommentAdd.manager.recipients(post)), 1)
 
     def test_comment_add_visitor(self):
         response = self.assertStatus(self.post.get_absolute_url())
@@ -102,7 +98,6 @@ class BlogsViews(BaseViewTest):
         comment = Comment.objects.get()
 
         self.assertEqual(comment.created_by.name, "Alex")
-        self.assertEqual(len(CommentAdd.manager.recipients(post)), 2)
 
     def test_comment_delete(self):
         self.test_comment_add()
