@@ -7,10 +7,7 @@ class SimpleAliasTest(TestCase):
     fixtures = ["turbion/test/blogs"]
 
     def setUp(self):
-        self.blog = Blog.objects.all()[0]
-
         self.alias = Alias.objects.create(
-            blog=self.blog,
             from_url="/tags/",
             to_url="/bar/foo/",
             status_code=Alias.status_codes.permanent
@@ -26,10 +23,7 @@ class ExcludeAgentAliasTest(TestCase):
     fixtures = ["turbion/test/blogs"]
 
     def setUp(self):
-        self.blog = Blog.objects.all()[0]
-
         self.alias = Alias.objects.create(
-            blog=self.blog,
             from_url="/tags/",
             to_url="/bar/foo/",
             status_code=Alias.status_codes.permanent,

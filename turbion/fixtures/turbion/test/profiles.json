@@ -21,7 +21,6 @@
     "pk": 1,
     "model": "turbion.profile",
     "fields": {
-      "name_view": null,
       "ip": null,
       "trusted": true,
       "filter": "dummy",
