@@ -81,7 +81,6 @@ class BlogsViews(BaseViewTest):
             "text": "My comment",
             "text_filter": "markdown",
             "nickname": "Alex",
-            "email": "foo@bar.com",
         })
 
         response = self.assertStatus(
