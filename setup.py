@@ -10,7 +10,7 @@ from turbion import write_version, read_version
 def strip_turbion(paths):
     return [p[len('turbion/'):] for p in paths]
 
-write_version()
+write_version(source='turbion')
 
 setup(
     name = "turbion",
