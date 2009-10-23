@@ -1,6 +1,7 @@
 include ez_setup.py
 include AUTHORS
 include LICENSE
+include VERSION
 
 recursive-include media *
 recursive-include turbion *.html

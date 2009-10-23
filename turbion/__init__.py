@@ -2,8 +2,6 @@ import logging
 import os
 import operator
 
-VERSION = (0, 8, 2, 'Pushkin', '0')
-
 def get_revision(path=None, check_changes=False):
     if not path:
         path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -35,16 +33,23 @@ def get_revision(path=None, check_changes=False):
     except ImportError:
         return None
 
-def get_version(bits=4, revision=False, version_info=VERSION, path=None):
-    base = reduce(
-        lambda l, r: (isinstance(r, basestring) and ' ' or '.').join(map(str, [l, r])),
-        version_info[:bits]
-    )
-    if revision:
-        rev = get_revision(path)
-        if rev:
-            base += " HG-%s" % rev[0]
+def get_version(path=None):
+    rev = get_revision(path)
+    if rev is None:
+        raise RuntimeError
+    return "hg%s" % rev[0]
 
-    return base
+def write_version(path=None, filename='VERSION'):
+    try:
+        version = get_version(path)
+    except RuntimeError:
+        return
+
+    outp = file(filename, 'w')
+    outp.write(version)
+    outp.close()
+
+def read_version(filename='VERSION'):
+    return file(filename).read()
 
 logger = logging.getLogger('turbion')
