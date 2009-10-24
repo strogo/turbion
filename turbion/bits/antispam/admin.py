@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.core.urlresolvers import reverse
 from django import http
-from django.template.loading import render_to_string
+from django.template.loader import render_to_string
 
 from turbion.bits.antispam import action_submit
 
