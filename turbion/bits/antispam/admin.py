@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.core.urlresolvers import reverse
 from django import http
+from django.template.loading import render_to_string
 
 from turbion.bits.antispam import action_submit
 
@@ -58,10 +59,10 @@ class ActionModelAdmin(object):
         name = action == 'spam' and ugettext('Spam') or ugettext('Ham')
         url = reverse('admin:%s' % self.get_antispam_url_name(), args=(obj.pk,), current_app=self.admin_site.name)
 
-        return """<form action="%s" method="POST">
-        <input type="hidden" name="action" value="%s"/>
-        <input class="button" type="submit" style="font-size:10px; padding:1px 2px;" value="%s"/>
-        </form>""" % (url, action, name)
+        return render_to_string(
+            'turbion/antispam/change_list_button.html',
+            {'url': url, 'action': action, 'name': name}
+        )
     antispam.allow_tags = True
     antispam.short_description = _('antispam')
 
