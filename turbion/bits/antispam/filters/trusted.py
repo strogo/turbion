@@ -5,3 +5,5 @@ class Trusted(Filter):
     def process_form_submit(self, request, form, child, parent=None):
         if child.created_by.trusted:
             raise StopChecking
+
+        return None

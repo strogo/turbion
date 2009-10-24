@@ -23,9 +23,9 @@ class Akismet(Filter):
     }
     domain = 'rest.akismet.com'
     key = settings.TURBION_AKISMET_API_KEY
-        
+
     # filter functions
-    
+
     def process_form_submit(self, request, form, child, parent=None):
         data = self._get_data(child)
 
@@ -41,11 +41,11 @@ class Akismet(Filter):
                 if response.content == 'true':
                     return True
 
-        return False
+        return None
 
     def action_submit(self, action, obj):
         r = self._make_request('submit-%s' % action, self._get_data(obj))
-            
+
     # helpers
 
     def _make_request(self, method, data):

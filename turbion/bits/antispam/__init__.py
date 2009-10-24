@@ -29,7 +29,7 @@ class BaseFilter(object):
         Makes decision about child.
         Returns:
             True - spam detected
-            False - cannot decide
+            None - cannot decide
             raise StopChecking - stop pipeline with not spam decision
         """
         raise NotImplementedError

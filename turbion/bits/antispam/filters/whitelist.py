@@ -7,3 +7,5 @@ class Whitelist(Filter):
         if child.created_by.openid\
             and Identity.objects.filter(openid=child.created_by.openid).count() > 0:
                 raise StopChecking
+
+        return None
