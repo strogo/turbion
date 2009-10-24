@@ -4,8 +4,7 @@ use_setuptools()
 
 from setuptools import setup, find_packages, findall
 
-# assume that it is relative import
-from turbion import write_version, read_version
+from version import write_version, read_version
 
 def strip_turbion(paths):
     return [p[len('turbion/'):] for p in paths]
