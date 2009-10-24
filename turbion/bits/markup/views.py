@@ -28,4 +28,4 @@ def preview(request):
     if form.is_valid():
         return http.HttpResponse(form.render())
 
-    return http.HttpReponseBadRequest(force_unicode(form.errors))
+    return http.HttpResponseBadRequest(force_unicode(form.errors))
