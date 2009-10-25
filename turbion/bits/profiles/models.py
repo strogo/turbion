@@ -1,4 +1,4 @@
-from django.db import models, connection
+from django.db import models
 from django.contrib.auth.models import User, UserManager
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import signals
@@ -6,7 +6,6 @@ from django.utils.encoding import force_unicode
 
 from datetime import date
 
-from turbion.bits.utils.enum import Enum
 from turbion.bits.markup.fields import MarkupField
 from turbion.bits.utils.models import FilteredManager
 
