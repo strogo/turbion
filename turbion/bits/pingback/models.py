@@ -2,13 +2,12 @@ from datetime import datetime
 
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.db.models.signals import post_save
 
-from turbion.bits.blogs import signals
 from turbion.bits.pingback import client
-from turbion.bits.utils.enum import Enum
 from turbion.bits.utils.models import FilteredManager
 
-from turbion.bits.blogs.models import Post
+from turbion.bits.blogs.models import Post, Comment
 
 class Pingback(models.Model):
     incoming   = models.BooleanField(verbose_name=_("incoming"))
@@ -23,10 +22,9 @@ class Pingback(models.Model):
     title      = models.CharField(max_length=500, null=True, verbose_name=_("title"))
     paragraph  = models.TextField(null=True, verbose_name=_("paragraph"))
 
-    post       = models.ForeignKey(Post, verbose_name=_("post"))
+    post       = models.ForeignKey(Post, verbose_name=_("post"), null=True, blank=True)
 
-    objects = models.Manager()
-
+    objects   = models.Manager()
     incomings = FilteredManager(incoming=True, finished=True)
     outgoings = FilteredManager(incoming=False, finished=True)
 
@@ -37,4 +35,5 @@ class Pingback(models.Model):
         db_table            = "turbion_pingback"
         ordering            = ["-date", "-finished"]
 
-signals.post_published.connect(client.process_for_pingback)
+post_save.connect(client.ping_links, sender=Post)
+post_save.connect(client.ping_links, sender=Comment)

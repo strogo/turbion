@@ -42,10 +42,10 @@ def ping(source_uri, target_uri, id):
             raise utils.PingError(0x0010)
 
         parser = utils.SourceParser(doc)
-        title = pingback.title = parser.get_title()
-        paragraph = pingback.paragraph = parser.get_paragraph(target_uri)
+        pingback.title = parser.get_title()
+        pingback.paragraph = parser.get_paragraph(target_uri)
 
-        status = pingback.status = 'Pingback from %s to %s registered. Keep the web talking! :-)' % (source_uri, target_uri)
+        pingback.status = 'Pingback from %s to %s registered. Keep the web talking! :-)' % (source_uri, target_uri)
 
         pingback.save()
 
@@ -55,15 +55,7 @@ def ping(source_uri, target_uri, id):
             pingback=pingback
         )
 
-        response = {
-            "status": status,
-            "source_title": title,
-            "source_paragraph": paragraph,
-            "source_uri": source_uri,
-            "target_uri": target_uri,
-            "model": model
-        }
-        return response['status']
+        return pingback.status
     except utils.PingError, e:
         pingback.status = e.code
         pingback.save()
