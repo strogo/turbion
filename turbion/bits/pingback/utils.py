@@ -4,11 +4,11 @@ from urlparse import urlsplit
 from BeautifulSoup import BeautifulSoup
 
 def parse_html_links(text, domain):
-    def is_external(external):
+    def is_external(href):
         if not href.startswith("http://"):
             return False
 
-        path_e = urlsplit(external)[2]
+        path_e = urlsplit(href)[2]
         return path_e != domain
 
     soup = BeautifulSoup(text)
