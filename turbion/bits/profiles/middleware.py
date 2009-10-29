@@ -25,7 +25,7 @@ def get_profile(request):
             user = user.profile
         else:
             user = AnonymousProfile()
-    except KeyError:
+    except (KeyError, Profile.DoesNotExist):
         user = AnonymousProfile()
     return user
 
