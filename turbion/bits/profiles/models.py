@@ -10,6 +10,13 @@ from datetime import date
 from turbion.bits.markup.fields import MarkupField
 from turbion.bits.utils.models import FilteredManager
 
+def create_profile_for_user(user):
+    p = Profile()
+    p.__dict__.update(user.__dict__)
+    p.nickname = p.username
+    p.save(force_insert=True)
+    return p
+
 class ProfileManager(UserManager):
     def generate_username(self, data, base="turbion_"):
         import md5
@@ -32,7 +39,10 @@ class ProfileManager(UserManager):
             user.set_unusable_password()
         user.save()
 
-        return user.profile
+        try:
+            return user.profile
+        except Profile.DoesNotExist:
+            return create_profile_for_user(user)
 
     def create_guest_profile(self, nickname=None, email=None, ip=None, host=None, **kwargs):
         if kwargs.get('openid') and nickname is None:
@@ -109,13 +119,10 @@ class Profile(User):
         verbose_name_plural = _('profiles')
         db_table            = "turbion_profile"
 
-def create_profile_for_user(sender, instance, created, *args, **kwargs):
+def user_handler(sender, instance, created, *args, **kwargs):
     try:
         Profile.objects.get(user_ptr=instance)
     except Profile.DoesNotExist:
-        p = Profile()
-        p.__dict__.update(instance.__dict__)
-        p.nickname = p.username
-        p.save()
+        create_profile_for_user(instance)
 
-signals.post_save.connect(create_profile_for_user, sender=User)
+signals.post_save.connect(user_handler, sender=User)
