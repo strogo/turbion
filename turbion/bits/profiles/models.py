@@ -100,7 +100,6 @@ class Profile(User):
         db_table            = "turbion_profile"
 
 def create_profile_for_user(sender, instance, created, *args, **kwargs):
-    from turbion.bits.profiles.models import Profile
     try:
         Profile.objects.get(user_ptr=instance)
     except Profile.DoesNotExist:
