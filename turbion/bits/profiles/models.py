@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import signals
 from django.utils.encoding import force_unicode
 
+import datetime
 from datetime import date
 
 from turbion.bits.markup.fields import MarkupField
@@ -21,13 +22,22 @@ class ProfileManager(UserManager):
 
         return base + hash
 
-    def create_profile(self, *args, **kwargs):
-        return self.create_user(*args, **kwargs)
+    def create_profile(self, username, email, password=None):
+        "Creates and saves a User with the given username, e-mail and password."
+        now = datetime.datetime.now()
+        user = User(None, username, '', '', email.strip().lower(), 'placeholder', False, True, False, now, now)
+        if password:
+            user.set_password(password)
+        else:
+            user.set_unusable_password()
+        user.save()
+
+        return user.profile
 
     def create_guest_profile(self, nickname=None, email=None, ip=None, host=None, **kwargs):
         if kwargs.get('openid') and nickname is None:
             nickname = kwargs['openid']
-        profile = self.create_user(username=self.generate_username([nickname, email]),
+        profile = self.create_profile(username=self.generate_username([nickname, email]),
                                    email=email and email or "",
                                    password=None)
 
