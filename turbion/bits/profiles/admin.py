@@ -7,8 +7,7 @@ from turbion.bits.profiles.models import Profile
 class ProfileAdmin(admin.ModelAdmin):
     exclude = ['password', 'last_login', 'user_permissions', 'groups']
     list_display  = (
-        'id', 'nickname', 'email', 'full_name', 'openid',
-        'trusted', 'ip', 'filter',
+        'id', 'nickname', 'email', 'openid', 'trusted', 'ip', 'filter',
     )
     list_per_page = 50
     list_display_links = ('id', 'nickname')
