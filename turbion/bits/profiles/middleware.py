@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, load_backend
+from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, load_backend, ImproperlyConfigured
 
 from turbion.bits.profiles.models import Profile
 
@@ -25,7 +25,7 @@ def get_profile(request):
             user = user.profile
         else:
             user = AnonymousProfile()
-    except (KeyError, Profile.DoesNotExist):
+    except (KeyError, Profile.DoesNotExist, ImproperlyConfigured):
         user = AnonymousProfile()
     return user
 
