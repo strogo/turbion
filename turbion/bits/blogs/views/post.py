@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
-from django.http import HttpResponseRedirect
+from django import http
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -70,6 +70,10 @@ def tag(request, tag_slug):
 @templated('turbion/blogs/post.html')
 @titled(page='{{post.title}}')
 def post(request, post):
+    if not post.is_published\
+        and get_profile(request) not in (post.created_by, post.edited_by):
+        return http.HttpResponseForbidden('Forbidden')
+
     comment_form = forms.CommentForm(request=request)
     antispam.process_form_init(request, comment_form)
 
