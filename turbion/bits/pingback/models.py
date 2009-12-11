@@ -31,7 +31,7 @@ class Pingback(models.Model):
     def __unicode__(self):
         if self.incoming:
             return u'Incoming pingback from %s' % self.source_url
-        return u'OUtgoing pingback to %s' % self.target_url
+        return u'Outgoing pingback to %s' % self.target_url
 
     class Meta:
         app_label           = "turbion"
