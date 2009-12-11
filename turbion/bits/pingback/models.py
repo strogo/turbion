@@ -28,6 +28,11 @@ class Pingback(models.Model):
     incomings = FilteredManager(incoming=True, finished=True)
     outgoings = FilteredManager(incoming=False, finished=True)
 
+    def __unicode__(self):
+        if self.incoming:
+            return u'Incoming pingback from %s' % self.source_url
+        return u'OUtgoing pingback to %s' % self.target_url
+
     class Meta:
         app_label           = "turbion"
         verbose_name        = _("pingback")
