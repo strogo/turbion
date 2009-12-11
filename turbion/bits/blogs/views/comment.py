@@ -47,16 +47,17 @@ def _do_comment(request, post, defaults={}, comment=None):
 
                 new_comment.save()
 
-                if comment:
-                    signal = signals.comment_edited
-                else:
-                    signal = signals.comment_added
+                if new_comment.is_published:
+                    if comment:
+                        signal = signals.comment_edited
+                    else:
+                        signal = signals.comment_added
 
-                signal.send(
-                    sender=Comment,
-                    comment=new_comment,
-                    instance=post
-                )
+                    signal.send(
+                        sender=Comment,
+                        comment=new_comment,
+                        instance=post
+                    )
 
                 if new_comment.status != Comment.statuses.spam:
                     new_comment.subscribe_author(email=False)
