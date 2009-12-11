@@ -12,7 +12,7 @@ from turbion.bits.blogs.models import Post, Comment
 class Pingback(models.Model):
     incoming   = models.BooleanField(verbose_name=_("incoming"))
 
-    source_url = models.URLField(max_length=500, verify_exist=False, verbose_name=_("source url"))
+    source_url = models.URLField(max_length=500, verify_exists=False, verbose_name=_("source url"))
     target_url = models.CharField(max_length=500, verbose_name=_("target url"))
 
     date       = models.DateTimeField(default=datetime.now, verbose_name=_("date"))
