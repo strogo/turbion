@@ -48,7 +48,7 @@ def ping_links(instance, **kwargs):
                 continue
 
             server = ServerProxy(gateway)
-            satus = server.pingback.ping(local_url, target_url)
+            status = server.pingback.ping(local_url, target_url)
         except Exception, e:
             status = str(e)
             gateway = None
@@ -58,5 +58,5 @@ def ping_links(instance, **kwargs):
             target_url=target_url,
             source_url=local_url,
             status=status,
-            finished=gateway is not None and status
+            finished=gateway is not None
         )
