@@ -70,10 +70,6 @@ def tag(request, tag_slug):
 @templated('turbion/blogs/post.html')
 @titled(page='{{post.title}}')
 def post(request, post):
-    if not post.is_published\
-        and get_profile(request) not in (post.created_by, post.edited_by):
-        return http.HttpResponseForbidden('Forbidden')
-
     comment_form = forms.CommentForm(request=request)
     antispam.process_form_init(request, comment_form)
 
@@ -98,6 +94,10 @@ def post(request, post):
 @titled(page=_("Preview of '{{post.title}}'"))
 def preview(request, post_id):
     post = get_object_or_404(Post.objects.all(), pk=post_id)
+
+    if not post.is_published\
+        and get_profile(request) not in (post.created_by, post.edited_by):
+        return http.HttpResponseForbidden('Forbidden')
 
     return {
         "post": post,
