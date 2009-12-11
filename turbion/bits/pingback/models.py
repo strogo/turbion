@@ -35,5 +35,10 @@ class Pingback(models.Model):
         db_table            = "turbion_pingback"
         ordering            = ["-date", "-finished"]
 
-post_save.connect(client.ping_links, sender=Post)
-post_save.connect(client.ping_links, sender=Comment)
+
+def handle_published(instance, *args, **kwargs):
+    if instance.is_published:
+        return client.ping_links(instance=instance, *args, **kwargs)
+
+post_save.connect(handle_published, sender=Post)
+post_save.connect(handle_published, sender=Comment)
