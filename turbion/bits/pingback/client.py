@@ -4,6 +4,7 @@ import re
 from django.conf import settings
 from django.contrib.sites.models import Site
 
+from turbion import logger
 from turbion.bits.utils.urlfetch import fetch
 
 class ServerProxy(xmlrpclib.ServerProxy):
@@ -43,10 +44,13 @@ def ping_links(instance, **kwargs):
 
         try:
             gateway = get_rpc_gateway(target_url)
+        except Exception, e:
+            logger.warning(str(e))
 
-            if not gateway:
-                continue
+        if not gateway:
+            continue
 
+        try:
             server = ServerProxy(gateway)
             status = server.pingback.ping(local_url, target_url)
         except Exception, e:
