@@ -60,7 +60,7 @@ def ping_links(instance, **kwargs):
 
         try:
             code = int(status)
-            status = utils.get_code_description(code)
+            status = '%s: %s' % (code, utils.get_code_description(code))
         except (TypeError, ValueError):
             code = None
 
