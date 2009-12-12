@@ -45,7 +45,7 @@ def ping(source_uri, target_uri, id):
 
         parser = utils.SourceParser(doc)
 
-        pingback = Pingback.objects.get(
+        pingback = Pingback.objects.create(
             source_url=source_uri,
             target_url=target_uri,
             incoming=True,
