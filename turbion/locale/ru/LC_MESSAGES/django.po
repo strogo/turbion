@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-19 01:58+0400\n"
+"POT-Creation-Date: 2009-12-12 21:21+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alex Koshelev <daevaorn@gmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "статус"
 msgid "exclude user agent"
 msgstr "исключить user agent"
 
-#: bits/aliases/models.py:26 bits/watchlist/models.py:18
+#: bits/aliases/models.py:26 bits/watchlist/models.py:19
 msgid "is active"
 msgstr "активный"
 
@@ -43,52 +43,56 @@ msgstr "алиас"
 msgid "aliases"
 msgstr "алиасы"
 
-#: bits/antispam/admin.py:36
+#: bits/antispam/admin.py:37
 #, python-format
 msgid "`%(obj)s` successfully marked as %(action)s."
 msgstr "`%(obj)s` отмечен как %(action)s."
 
-#: bits/antispam/admin.py:58
+#: bits/antispam/admin.py:59
 msgid "Spam"
 msgstr "Спам"
 
-#: bits/antispam/admin.py:58
+#: bits/antispam/admin.py:59
 msgid "Ham"
 msgstr "Не спам"
 
-#: bits/antispam/admin.py:66
+#: bits/antispam/admin.py:67
 msgid "antispam"
 msgstr "антиспам"
 
-#: bits/antispam/admin.py:74
+#: bits/antispam/admin.py:75
 msgid "mark selected as spam"
 msgstr "Отметить выбранное как спам"
 
-#: bits/antispam/admin.py:77
-#, fuzzy
+#: bits/antispam/admin.py:78
 msgid "mark selected as ham"
-msgstr "Отметить выбранное как спам"
+msgstr "Отметить выбранное как не спам"
 
 #: bits/antispam/filters/captcha.py:14
 msgid "check"
 msgstr "проверка"
 
-#: bits/blogs/admin.py:62
+#: bits/blogs/admin.py:65 bits/blogs/models.py:90 bits/blogs/models.py:230
+#: bits/pingback/models.py:19
+msgid "status"
+msgstr "статус"
+
+#: bits/blogs/admin.py:69
 msgid "headline"
 msgstr "хедлайн"
 
 #: bits/blogs/feeds.py:30
 msgid "Latest entries"
-msgstr "Последние записи"
+msgstr "Новые записи"
 
 #: bits/blogs/feeds.py:38
 #, python-format
 msgid "Latest entries of blog '%s'"
-msgstr "Последние записи блога '%s'"
+msgstr "Новые записи блога '%s'"
 
 #: bits/blogs/feeds.py:63 bits/blogs/feeds.py:73
 msgid "Latest comments"
-msgstr "Свежие комментарии"
+msgstr "Новые комментарии"
 
 #: bits/blogs/feeds.py:71
 #, python-format
@@ -109,7 +113,7 @@ msgstr "Записи с тегом '%s'"
 msgid "search"
 msgstr "поиск"
 
-#: bits/blogs/models.py:17 bits/watchlist/models.py:15
+#: bits/blogs/models.py:17 bits/watchlist/models.py:16
 msgid "name"
 msgstr "имя"
 
@@ -189,18 +193,14 @@ msgstr "изменен"
 msgid "edited by"
 msgstr "автор изменения"
 
-#: bits/blogs/models.py:84 bits/pingback/models.py:23
-#: bits/watchlist/models.py:16
+#: bits/blogs/models.py:84 bits/pingback/models.py:22
+#: bits/watchlist/models.py:17
 msgid "title"
 msgstr "заголовок"
 
 #: bits/blogs/models.py:87 bits/blogs/models.py:225
 msgid "text"
 msgstr "текст"
-
-#: bits/blogs/models.py:90 bits/blogs/models.py:230 bits/pingback/models.py:20
-msgid "status"
-msgstr "статус"
 
 #: bits/blogs/models.py:94
 msgid "commenting"
@@ -216,10 +216,10 @@ msgstr "модерация"
 
 #: bits/blogs/models.py:104
 msgid "actual post"
-msgstr ""
+msgstr "актуальный пост"
 
 #: bits/blogs/models.py:198 bits/blogs/models.py:207
-#: bits/pingback/models.py:26 bits/watchlist/models.py:48
+#: bits/pingback/models.py:25 bits/watchlist/models.py:49
 msgid "post"
 msgstr "пост"
 
@@ -289,13 +289,17 @@ msgstr "Архив блога за {{ year }}/{{ month }}"
 msgid "Blog archive on {{ year }}/{{ month }}/{{ day }}"
 msgstr "Архив блога за {{ year }}/{{ month }}/{{ day }}"
 
-#: bits/blogs/views/comment.py:84
-msgid "Add comment to \"{{post.title}}\""
-msgstr "Добавить комментарий к \"{{post.title}}\""
+#: bits/blogs/views/comment.py:67
+msgid "Your comment added to moderation queue"
+msgstr "Ваш комментарий добавлен в очередь на модерацию"
 
-#: bits/blogs/views/comment.py:104
+#: bits/blogs/views/comment.py:89
+msgid "Add comment to \"{{post.title}}\""
+msgstr "Добавление комментария к \"{{post.title}}\""
+
+#: bits/blogs/views/comment.py:109
 msgid "Edit comment to \"{{post.title}}\""
-msgstr "Редактировать комментарий к \"{{post.title}}\""
+msgstr "Редактирование комментария к \"{{post.title}}\""
 
 #: bits/blogs/views/post.py:21
 msgid "Blog"
@@ -310,9 +314,8 @@ msgid "Tag \"{{tag}}\""
 msgstr "Тег \"{{tag}}\""
 
 #: bits/blogs/views/post.py:94
-#, fuzzy
 msgid "Preview of '{{post.title}}'"
-msgstr "Редактировать комментарий к \"{{post.title}}\""
+msgstr "Предпросмотр '{{post.title}}'"
 
 #: bits/blogs/views/search.py:44
 msgid "Search"
@@ -330,7 +333,7 @@ msgstr "Поиск в комментариях"
 msgid "markup filter"
 msgstr "фильтр"
 
-#: bits/openid/forms.py:14 bits/profiles/models.py:57
+#: bits/openid/forms.py:14 bits/profiles/models.py:76
 msgid "openid"
 msgstr "OpenID"
 
@@ -346,8 +349,8 @@ msgstr "решение"
 msgid "url"
 msgstr ""
 
-#: bits/openid/models.py:12 bits/pingback/models.py:19
-#: bits/watchlist/models.py:46
+#: bits/openid/models.py:12 bits/pingback/models.py:18
+#: bits/watchlist/models.py:47
 msgid "date"
 msgstr "дата"
 
@@ -360,12 +363,10 @@ msgid "trust urls"
 msgstr "доверенные url'ы"
 
 #: bits/openid/views/auth.py:14
-#, fuzzy
 msgid "OpenID authentication"
-msgstr "Ошибка авторизации OpenID"
+msgstr "OpenID аутентификация"
 
 #: bits/openid/views/auth.py:22
-#, fuzzy
 msgid "OpendID login"
 msgstr "OpenID авторизация"
 
@@ -375,7 +376,7 @@ msgstr "Результат"
 
 #: bits/openid/views/auth.py:45
 msgid "Openid authentication error"
-msgstr "Ошибка авторизации OpenID"
+msgstr "Ошибка аутентификации OpenID"
 
 #: bits/openid/views/server.py:21 bits/openid/views/server.py:62
 msgid "OpenID Server"
@@ -389,31 +390,31 @@ msgstr "Ошибка"
 msgid "Trust decision"
 msgstr "Решение о доверении"
 
-#: bits/pingback/models.py:14
+#: bits/pingback/models.py:13
 msgid "incoming"
 msgstr "входящий"
 
-#: bits/pingback/models.py:16
+#: bits/pingback/models.py:15
 msgid "source url"
 msgstr "урл источник"
 
-#: bits/pingback/models.py:17
+#: bits/pingback/models.py:16
 msgid "target url"
 msgstr "целевой урл"
 
-#: bits/pingback/models.py:21
+#: bits/pingback/models.py:20
 msgid "finished"
 msgstr "завершен"
 
-#: bits/pingback/models.py:24
+#: bits/pingback/models.py:23
 msgid "paragraph"
 msgstr "параграф"
 
-#: bits/pingback/models.py:35
+#: bits/pingback/models.py:38
 msgid "pingback"
 msgstr "пингбек"
 
-#: bits/pingback/models.py:36
+#: bits/pingback/models.py:39
 msgid "pingbacks"
 msgstr "пингбеки"
 
@@ -421,28 +422,27 @@ msgstr "пингбеки"
 msgid "Name or OpenID"
 msgstr "Имя или OpenID"
 
-#: bits/profiles/models.py:48
+#: bits/profiles/models.py:67
 msgid "nickname"
 msgstr "ник"
 
-#: bits/profiles/models.py:49
+#: bits/profiles/models.py:68
 msgid "IP"
 msgstr ""
 
-#: bits/profiles/models.py:53
+#: bits/profiles/models.py:72
 msgid "trusted"
 msgstr "доверенный"
 
-#: bits/profiles/models.py:55
-#, fuzzy
+#: bits/profiles/models.py:74
 msgid "filter"
 msgstr "фильтр"
 
-#: bits/profiles/models.py:99
+#: bits/profiles/models.py:118
 msgid "profile"
 msgstr "профиль"
 
-#: bits/profiles/models.py:100
+#: bits/profiles/models.py:119
 msgid "profiles"
 msgstr "профили"
 
@@ -452,7 +452,7 @@ msgstr "Профиль {{profile}}"
 
 #: bits/profiles/views.py:24
 msgid "Edit"
-msgstr "Редактировать"
+msgstr "Редактирование"
 
 #: bits/utils/title.py:12
 msgid "Page"
@@ -476,37 +476,37 @@ msgstr "Для %s"
 msgid "Watchlist for %s"
 msgstr "Watchlist для %s"
 
-#: bits/watchlist/models.py:39 bits/watchlist/models.py:44
+#: bits/watchlist/models.py:40 bits/watchlist/models.py:45
 msgid "event"
 msgstr "событие"
 
-#: bits/watchlist/models.py:40
+#: bits/watchlist/models.py:41
 msgid "events"
 msgstr "события"
 
-#: bits/watchlist/models.py:43
+#: bits/watchlist/models.py:44
 msgid "user"
 msgstr "пользователь"
 
-#: bits/watchlist/models.py:50
+#: bits/watchlist/models.py:51
 msgid "email"
 msgstr ""
 
-#: bits/watchlist/models.py:53
+#: bits/watchlist/models.py:54
 #, python-format
 msgid "%(user)s on %(event)s"
 msgstr "%(user)s на %(event)s"
 
-#: bits/watchlist/models.py:53
+#: bits/watchlist/models.py:54
 #, python-format
 msgid " to `%s`"
 msgstr " к `%s`"
 
-#: bits/watchlist/models.py:76
+#: bits/watchlist/models.py:77
 msgid "subscription"
 msgstr "подписка"
 
-#: bits/watchlist/models.py:77
+#: bits/watchlist/models.py:78
 msgid "subscriptions"
 msgstr "подписки"
 

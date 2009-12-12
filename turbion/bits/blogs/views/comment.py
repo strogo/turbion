@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, gettext
 from django import http
 
 from turbion.bits.blogs.decorators import post_view, titled
@@ -62,6 +62,10 @@ def _do_comment(request, post, defaults={}, comment=None):
                 if new_comment.status != Comment.statuses.spam:
                     new_comment.subscribe_author(email=False)
                     new_comment.emit_event()
+                else:
+                    new_comment.created_by.message_set.create(
+                        message=gettext('Your comment added to moderation queue')
+                    )
 
                 if form.need_auth_redirect():
                     return http.HttpResponseRedirect(
