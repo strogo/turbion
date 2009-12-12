@@ -12,7 +12,7 @@ from turbion.bits.pingback.models import Pingback
 from turbion.models import Post
 from turbion.bits.utils import xmlrpc
 
-gateway = xmlrpc.ServerGateway("pingback")
+gateway = xmlrpc.ServerGateway('pingback')
 
 @gateway.connect
 def ping(source_uri, target_uri, id):
@@ -44,13 +44,16 @@ def ping(source_uri, target_uri, id):
             return 16
 
         parser = utils.SourceParser(doc)
+        paragraph = parser.get_paragraph(target_uri)
+        if paragraph is None:
+            return 17
 
         pingback = Pingback.objects.create(
             source_url=source_uri,
             target_url=target_uri,
             incoming=True,
             title=parser.get_title(),
-            paragraph=parser.get_paragraph(target_uri),
+            paragraph=paragraph,
             status='Pingback from %s to %s registered. Keep the web talking! :-)' % (source_uri, target_uri),
             post=post
         )
@@ -62,7 +65,7 @@ def ping(source_uri, target_uri, id):
         )
 
         return pingback.status
-    except Exceptoon, e:
+    except Exception, e:
         logger.warning(str(e))
 
         return 0

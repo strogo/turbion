@@ -49,8 +49,7 @@ class SourceParser(object):
     def get_paragraph(self, target_uri, max_length=200):
         mylink = self.soup.find('a', href=target_uri)
         if not mylink:
-            # The source URI does not contain a link to the target URI, and so cannot be used as a source.
-            raise PingError(0x0011)
+            return None
 
         content = force_unicode(mylink.findParent())
         mylink = force_unicode(mylink)
