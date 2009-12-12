@@ -25,11 +25,6 @@ setup(
                    strip_turbion(findall('turbion/contrib/feedback/fixtures'))
     },
 
-    install_requires = [
-        'Pytils',
-        'markdown2>=1.0.1.11'
-    ],
-
     author = "Alex Koshelev",
     author_email = "daevaorn@gmail.com",
     description = "Flexible django-based blog application",
