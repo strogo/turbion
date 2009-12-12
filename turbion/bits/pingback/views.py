@@ -19,10 +19,11 @@ def ping(source_uri, target_uri, id):
         target_url=target_uri,
         incoming=True
     )
-    if not created:
-        raise utils.PingError(0x0030)
 
     try:
+        if not created:
+            raise utils.PingError(0x0030)
+
         domain = Site.objects.get_current().domain
         scheme, server, path, query, fragment = urlsplit(target_uri)
 
@@ -57,7 +58,6 @@ def ping(source_uri, target_uri, id):
 
         return pingback.status
     except utils.PingError, e:
-        pingback.status = e.code
-        pingback.save()
+        pingback.delete()
 
         return e.code

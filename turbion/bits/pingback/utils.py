@@ -17,9 +17,23 @@ def parse_html_links(text, domain):
     return [a['href'] for a in soup.findAll('a') if is_external(a['href'])]
 
 class PingError(Exception):
+    code_descriptions = {
+        0: 'A generic fault',
+       16: 'The source URI does not exist',
+       17: 'The source URI does not contain a link to the target URI',
+       32: 'The specified target URI does not exist',
+       33: 'The specified target URI cannot be used as a target',
+       48: 'The pingback has already been registered',
+       49: 'Access denied',
+       50: 'The server could not communicate with an upstream server',
+    }
+
     def __init__(self, code):
         self.code = code
-        super(PingError, self).__init__('pingback.ping: error with code %s' % code)
+        super(PingError, self).__init__('%s: %s' % (code, self.get_description()))
+
+    def get_description(self):
+        return self.code_descriptions.get(self.code, 'Unknown')
 
 class SourceParser(object):
     def __init__(self, content):
