@@ -14,7 +14,7 @@ class MarkupField(models.CharField):
             if limit_choices_to and name not in limit_choices_to:
                 return False
 
-            if not safe and not filter.is_safe():
+            if safe and not filter.is_safe():
                 return False
 
             return True
