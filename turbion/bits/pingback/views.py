@@ -18,7 +18,7 @@ gateway = xmlrpc.ServerGateway('pingback')
 def ping(source_uri, target_uri, id):
     try:
         try:
-            pingback = Pingback.objects.get(
+            Pingback.objects.get(
                 source_url=source_uri,
                 target_url=target_uri,
                 incoming=True
