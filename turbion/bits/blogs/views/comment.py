@@ -59,20 +59,24 @@ def _do_comment(request, post, defaults={}, comment=None):
                         instance=post
                     )
 
-                if new_comment.status != Comment.statuses.spam:
-                    new_comment.subscribe_author(email=False)
-                    new_comment.emit_event()
-                else:
+                if new_comment.status == Comment.statuses.spam:
                     new_comment.created_by.message_set.create(
                         message=gettext('Your comment added to moderation queue')
                     )
+                else:
+                    new_comment.subscribe_author(email=False)
+                    new_comment.emit_event()
+
 
                 if form.need_auth_redirect():
                     return http.HttpResponseRedirect(
                         form.auth_redirect(new_comment.get_absolute_url())
                     )
 
-                return http.HttpResponseRedirect(new_comment.get_absolute_url())
+                if new_comment.status == Comment.statuses.spam:
+                    return http.HttpResponseRedirect(post.get_absolute_url() + '#messages')
+                else:
+                    return http.HttpResponseRedirect(new_comment.get_absolute_url())
     else:
         form = forms.CommentForm(
             request=request,
