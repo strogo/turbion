@@ -27,7 +27,7 @@ CODE_DESCRIPTIONS = {
    50: 'The server could not communicate with an upstream server',
 }
 
-def get_code_description(self, code):
+def get_code_description(code):
     return CODE_DESCRIPTIONS.get(code, 'Unknown')
 
 class SourceParser(object):
