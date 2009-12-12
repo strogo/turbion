@@ -7,6 +7,7 @@ from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.conf import settings
 
+from turbion import logger
 from turbion.bits.profiles.models import Profile
 from turbion.bits.blogs.models import Post
 from turbion.bits.utils.urls import uri_reverse
@@ -105,7 +106,8 @@ class Message(models.Model):
 
             msg.send()
             return True
-        except Exception:
+        except Exception, e:
+            logger.warning(str(e))
             self.attempt += 1
             self.save()
             return False
