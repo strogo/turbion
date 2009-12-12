@@ -46,6 +46,7 @@ def ping_links(instance, **kwargs):
             gateway = get_rpc_gateway(target_url)
         except Exception, e:
             logger.warning(str(e))
+            continue
 
         if not gateway:
             continue
@@ -54,13 +55,19 @@ def ping_links(instance, **kwargs):
             server = ServerProxy(gateway)
             status = server.pingback.ping(local_url, target_url)
         except Exception, e:
-            status = str(e)
-            gateway = None
+            logger.warning(str(e))
+            continue
+
+        try:
+            code = int(status)
+            status = utils.get_code_description(code)
+        except (TypeError, ValueError):
+            code = None
 
         out = Pingback.objects.create(
             post=None,
             target_url=target_url,
             source_url=local_url,
             status=status,
-            finished=gateway is not None
+            finished=code is None
         )
