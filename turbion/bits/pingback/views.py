@@ -1,9 +1,11 @@
 import urllib2
+import socket
 from urlparse import urlparse, urlsplit
 
 from django import http
 from django.contrib.sites.models import Site
 
+from turbion import logger
 from turbion.bits.utils.urlfetch import fetch
 from turbion.bits.pingback import signals, utils, client
 from turbion.bits.pingback.models import Pingback
@@ -14,15 +16,16 @@ gateway = xmlrpc.ServerGateway("pingback")
 
 @gateway.connect
 def ping(source_uri, target_uri, id):
-    pingback, created = Pingback.objects.get_or_create(
-        source_url=source_uri,
-        target_url=target_uri,
-        incoming=True
-    )
-
     try:
-        if not created:
-            raise utils.PingError(0x0030)
+        try:
+            pingback = Pingback.objects.get(
+                source_url=source_uri,
+                target_url=target_uri,
+                incoming=True
+            )
+            return 48
+        except Pingback.DoesNotExist:
+            pass
 
         domain = Site.objects.get_current().domain
         scheme, server, path, query, fragment = urlsplit(target_uri)
@@ -30,25 +33,27 @@ def ping(source_uri, target_uri, id):
         try:
             post = Post.objects.get(pk=id)
         except Post.DoesNotExist:
-            raise utils.PingError(0x0021)
+            return 33
 
         if post.get_absolute_url() != path + query:
-            raise utils.PingError(0x0021)
-
-        pingback.post = post
+            return 33
 
         try:
             doc = fetch(source_uri).content
-        except (urllib2.HTTPError, urllib2.URLError), e:
-            raise utils.PingError(0x0010)
+        except (urllib2.HTTPError, urllib2.URLError, socket.timeout), e:
+            return 16
 
         parser = utils.SourceParser(doc)
-        pingback.title = parser.get_title()
-        pingback.paragraph = parser.get_paragraph(target_uri)
 
-        pingback.status = 'Pingback from %s to %s registered. Keep the web talking! :-)' % (source_uri, target_uri)
-
-        pingback.save()
+        pingback = Pingback.objects.get(
+            source_url=source_uri,
+            target_url=target_uri,
+            incoming=True,
+            title=parser.get_title(),
+            paragraph=parser.get_paragraph(target_uri),
+            status='Pingback from %s to %s registered. Keep the web talking! :-)' % (source_uri, target_uri),
+            post=post
+        )
 
         signals.pingback_recieved.send(
             sender=post.__class__,
@@ -57,7 +62,7 @@ def ping(source_uri, target_uri, id):
         )
 
         return pingback.status
-    except utils.PingError, e:
-        pingback.delete()
+    except Exceptoon, e:
+        logger.warning(str(e))
 
-        return e.code
+        return 0
