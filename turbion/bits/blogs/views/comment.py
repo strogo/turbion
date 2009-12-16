@@ -65,8 +65,8 @@ def _do_comment(request, post, defaults={}, comment=None):
                     )
                 else:
                     new_comment.subscribe_author(email=False)
-                    new_comment.emit_event()
 
+                new_comment.emit_event()
 
                 if form.need_auth_redirect():
                     return http.HttpResponseRedirect(
