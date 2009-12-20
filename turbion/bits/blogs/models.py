@@ -248,9 +248,6 @@ class Comment(AntispamModel):
     def emit_event(self):
         from turbion.bits import watchlist
 
-        if not self.is_published:
-            return
-
         watchlist.emit_event(
             'new_comment',
             post=self.post,
