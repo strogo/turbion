@@ -1,23 +1,13 @@
 from django import template
-from django.template import resolve_variable, TemplateSyntaxError, Node
-from django.utils.encoding import smart_str
 from django.conf import settings
 from django.db.models import signals
-from django.db import connection
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from turbion.bits.blogs.models import Post, Comment, Tag
-from turbion.bits.profiles.models import Profile
 from turbion.bits.utils.cache.tags import cached_inclusion_tag
 
 register = template.Library()
-
-quote_name = connection.ops.quote_name
-
-posts_table_name    = quote_name(Post._meta.db_table)
-comments_table_name = quote_name(Comment._meta.db_table)
-profiles_table_name = quote_name(Profile._meta.db_table)
 
 D = dict
 
@@ -34,7 +24,6 @@ def latest_comments_pad(context, count=5):
     comments = Comment.published.all().order_by("-created_on").distinct()[:count]
 
     return  {"comments": comments}
-
 
 @cached_inclusion_tag(register,
                       trigger={"sender": Post,
