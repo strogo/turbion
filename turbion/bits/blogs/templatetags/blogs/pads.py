@@ -23,34 +23,6 @@ D = dict
 
 @cached_inclusion_tag(register,
                       trigger=D(
-                            sender=Post,
-                            signal=signals.post_save,
-                            suffix=lambda instance, created, *args, **kwargs: []
-                        ),
-                      suffix=lambda context: [],
-                      file_name='turbion/blogs/pads/archive.html',
-                      takes_context=True)
-def archive_pad(context):
-    queryset = Post.published.all()
-
-    class MonthMeta(object):
-        def __init__(self, month):
-            self.month = month
-
-        def count(self):
-            return queryset._clone().filter(
-                published_on__year=self.month.year,
-                published_on__month=self.month.month
-            ).count()
-
-    months = map(MonthMeta, queryset.dates("published_on", "month", order='DESC').distinct())
-
-    return {
-        'months': months,
-    }
-
-@cached_inclusion_tag(register,
-                      trigger=D(
                         sender=Comment,
                         signal=(signals.post_save, signals.post_delete),
                         suffix=lambda instance, *args, **kwargs: [],
