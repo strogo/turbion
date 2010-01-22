@@ -24,34 +24,6 @@ D = dict
 @cached_inclusion_tag(register,
                       trigger=D(
                         sender=Comment,
-                        signal=(signals.post_save, signals.post_delete),
-                        suffix=lambda instance, *args, **kwargs: [],
-                  ),
-                  suffix=lambda context: [],
-                  file_name='turbion/blogs/pads/top_commenters.html',
-                  takes_context=True)
-def top_commenters_pad(context, count=5):
-    extra_select="""
-        SELECT COUNT(*)
-        FROM %(comment_table)s AS cc JOIN %(post_table)s pp ON (cc.post_id=pp.id)
-        WHERE
-            cc.created_by_id=%(profile_table)s.user_ptr_id
-            AND pp.created_by_id!=cc.created_by_id
-    """ % {
-        "comment_table": comments_table_name,
-        "profile_table": profiles_table_name,
-        "post_table": posts_table_name,
-    }
-
-    return  {
-        "commenters": Profile.objects.select_related()\
-             .extra(select={"comment_count": extra_select})\
-             .order_by('-comment_count').distinct()[:count]
-    }
-
-@cached_inclusion_tag(register,
-                      trigger=D(
-                        sender=Comment,
                         signal=signals.post_save,
                         suffix=lambda instance, *args, **kwargs: []
                       ),
@@ -63,19 +35,6 @@ def latest_comments_pad(context, count=5):
 
     return  {"comments": comments}
 
-@cached_inclusion_tag(register,
-                      trigger=D(
-                        sender= Post,
-                        signal=signals.post_save,
-                        suffix=lambda instance, created, *args, **kwargs: []
-                        ),
-                      suffix=lambda context: [],
-                      file_name='turbion/blogs/pads/top_posts.html',
-                      takes_context=True)
-def top_posts_pad(context, count=5):
-    return  {
-        "posts": Post.published.all().order_by('-comment_count')[:count]
-    }
 
 @cached_inclusion_tag(register,
                       trigger={"sender": Post,
