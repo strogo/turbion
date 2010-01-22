@@ -71,7 +71,7 @@ class Profile(User):
     # right as registered user when posting comment
     trusted = models.BooleanField(default=False, verbose_name=_("trusted"), db_index=True)
 
-    filter = MarkupField(verbose_name=_('filter'))
+    filter = MarkupField(verbose_name=_('filter'), safe=False)
 
     openid = models.CharField(max_length=255, verbose_name=_('openid'), blank=True,
                               default='', db_index=True)
