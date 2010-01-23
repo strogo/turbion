@@ -19,8 +19,8 @@ class Pingback(models.Model):
     status     = models.CharField(max_length=500, verbose_name=_("status"))
     finished   = models.BooleanField(default=False, verbose_name=_("finished"))
 
-    title      = models.CharField(max_length=500, null=True, verbose_name=_("title"))
-    paragraph  = models.TextField(null=True, verbose_name=_("paragraph"))
+    title      = models.CharField(max_length=500, null=True, blank=True, verbose_name=_("title"))
+    paragraph  = models.TextField(null=True, blank=True, verbose_name=_("paragraph"))
 
     post       = models.ForeignKey(Post, verbose_name=_("post"), null=True, blank=True)
 
