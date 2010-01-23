@@ -31,16 +31,23 @@ def ping_links(instance, **kwargs):
 
     for target_url in utils.parse_html_links(instance.text_html, domain):
         try:
-            Pingback.objects.get(
+            pingback = Pingback.objects.get(
                 target_url=target_url,
                 source_url=local_url,
                 post=None,
-                finished=True,
                 incoming=False
             )
-            continue# do nothing if we just have pinged this url from this instance of model
+            if pingback.finished:
+                # do nothing if we just have pinged this url
+                # from this instance of model
+                continue
         except Pingback.DoesNotExist:
-            pass
+            pingback = Pingback.objects.create(
+                target_url=target_url,
+                source_url=local_url,
+                post=None,
+                incoming=False
+            )
 
         try:
             gateway = get_rpc_gateway(target_url)
@@ -64,10 +71,6 @@ def ping_links(instance, **kwargs):
         except (TypeError, ValueError):
             code = None
 
-        out = Pingback.objects.create(
-            post=None,
-            target_url=target_url,
-            source_url=local_url,
-            status=status,
-            finished=code is None
-        )
+        pingback.status = status
+        pingback.finished = code is None
+        pingback.save()

@@ -33,6 +33,11 @@ class Pingback(models.Model):
             return u'Incoming pingback from %s' % self.source_url
         return u'Outgoing pingback to %s' % self.target_url
 
+    def save(self, *args, **kwargs):
+        self.date = datetime.now()
+
+        super(Pingback, self).save(*args, **kwargs)
+
     class Meta:
         app_label           = "turbion"
         verbose_name        = _("pingback")
