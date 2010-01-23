@@ -55,7 +55,8 @@ def ping(source_uri, target_uri, id):
             title=parser.get_title(),
             paragraph=paragraph,
             status='Pingback from %s to %s registered. Keep the web talking! :-)' % (source_uri, target_uri),
-            post=post
+            post=post,
+            finished=True
         )
 
         signals.pingback_recieved.send(
