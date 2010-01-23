@@ -58,5 +58,4 @@ class SourceParser(object):
             if end > len(content):
                 end = len(content)
             content = content[start:end]
-        mark = "[...]"
-        return mark + content.strip() + mark
+        return content.strip()
