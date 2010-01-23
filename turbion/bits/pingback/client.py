@@ -42,7 +42,7 @@ def ping_links(instance, **kwargs):
                 # from this instance of model
                 continue
         except Pingback.DoesNotExist:
-            pingback = Pingback.objects.create(
+            pingback = Pingback(
                 target_url=target_url,
                 source_url=local_url,
                 post=None,
