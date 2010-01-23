@@ -9,8 +9,7 @@ def parse_html_links(text, domain):
         if not href.startswith('http://') and not href.startswith('https://'):
             return False
 
-        path_e = urlsplit(href)[2]
-        return path_e != domain
+        return urlsplit(href)[1] != domain
 
     soup = BeautifulSoup(text)
 
