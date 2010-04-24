@@ -4,16 +4,14 @@ use_setuptools()
 
 from setuptools import setup, find_packages, findall
 
-from version import write_version, read_version
+from version import get_version
 
 def strip_turbion(paths):
     return [p[len('turbion/'):] for p in paths]
 
-write_version()
-
 setup(
     name = "turbion",
-    version = read_version(),
+    version = get_version(0.8),
     packages = find_packages(),
 
     package_data={
