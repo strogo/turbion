@@ -11,7 +11,7 @@ def strip_turbion(paths):
 
 setup(
     name = "turbion",
-    version = get_version(0.8),
+    version = get_version('0.8'),
     packages = find_packages(),
 
     package_data={
