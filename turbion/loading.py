@@ -80,5 +80,4 @@ def _load_paths(leaf_module):
 
     return paths
 
-templatetags = lambda: _load_paths('templatetags')
 commands = lambda: _load_paths('management.commands')
