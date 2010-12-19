@@ -1,11 +1,8 @@
 include ez_setup.py
 include AUTHORS
 include LICENSE
-include VERSION
 
-recursive-include media *
 recursive-include turbion *.html
 recursive-include turbion *.xml
 recursive-include turbion/locale *
 recursive-include turbion/fixtures *
-recursive-include turbion/contrib/feedback/fixtures *
