@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
@@ -72,32 +74,29 @@ def ensure_meta(request, response):
 
 def status(code=200):
     def _wrapper(func):
+        @wraps(func)
         def _decor(request, *args, **kwargs):
             meta = ensure_meta(request, func(request, *args, **kwargs))
             if isinstance(meta, PageMeta):
                 meta.status_code = code
             return meta
-        _decor.__doc__  = func.__doc__
-        _decor.__dict__ = func.__dict__
-        _decor.__name__ = func.__name__
         return _decor
     return _wrapper
 
 def templated(template=None):
     def _wrapper(func):
+        @wraps(func)
         def _decor(request, *args, **kwargs):
             meta = ensure_meta(request, func(request, *args, **kwargs))
             if isinstance(meta, PageMeta):
                 return meta.render_to_response(template)
             return meta
-        _decor.__doc__  = func.__doc__
-        _decor.__dict__ = func.__dict__
-        _decor.__name__ = func.__name__
         return _decor
     return _wrapper
 
 def titled(**bits):
     def _wrapper(func):
+        @wraps(func)
         def _decor(request, *args, **kwargs):
             def _title_processor(request, context):
                 defaults = {"site" : request.META['SERVER_NAME']}
@@ -112,9 +111,6 @@ def titled(**bits):
             if isinstance(meta, PageMeta):
                 meta.add_processor(_title_processor)
             return meta
-        _decor.__doc__  = func.__doc__
-        _decor.__dict__ = func.__dict__
-        _decor.__name__ = func.__name__
         return _decor
     return _wrapper
 
@@ -126,10 +122,8 @@ def special_titled(**default):
     return another_wrapper
 
 def paged(view_func):
+    @wraps(view_func)
     def _decor(request, *args, **kwargs):
         request.page = request.GET.get('page', 1)
         return view_func(request, *args, **kwargs)
-    _decor.__doc__  = view_func.__doc__
-    _decor.__dict__ = view_func.__dict__
-    _decor.__name__ = view_func.__name__
     return _decor
