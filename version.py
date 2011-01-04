@@ -10,14 +10,15 @@ def get_output(*cmd):
 def get_version(base):
     try:
         rev = get_output(
-            'git', 'log', '-n', '1', '--pretty=format:%ai%%h', '--',
+            'git', 'log', '-1', '--pretty=format:%ai~%h', '--',
             os.path.dirname(__file__)
         )
-        base += '~%s' % TIMEZONE_RE.sub('', rev.strip('\n\r\t '))\
+        print rev
+        base += '-%s' % TIMEZONE_RE.sub('', rev.strip('\n\r\t '))\
                            .replace('-', '')\
                            .replace(':', '')\
                            .replace(' ', '')\
-                           .replace('%', ':')
+                           .replace('~', '-')
     except OSError:
         pass
 
