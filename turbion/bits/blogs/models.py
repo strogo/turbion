@@ -71,18 +71,23 @@ class Post(models.Model):
         registred=_("registered"),
     )
 
-    created_on    = models.DateTimeField(default=datetime.now, editable=False, verbose_name=_("created on"))
-    created_by    = models.ForeignKey(Profile, related_name="created_posts", verbose_name=_("created by"))
+    created_on    = models.DateTimeField(default=datetime.now, editable=False,
+                                         verbose_name=_("created on"))
+    created_by    = models.ForeignKey(Profile, related_name="created_posts",
+                                      verbose_name=_("created by"))
 
     published_on  = models.DateTimeField(editable=False, verbose_name=_("published on"),
                                          blank=True, null=True, db_index=True)
 
-    edited_on     = models.DateTimeField(null=True, editable=False, verbose_name=_("edited on"))
+    edited_on     = models.DateTimeField(null=True, editable=False,
+                                         verbose_name=_("edited on"))
     edited_by     = models.ForeignKey(Profile, null=True, blank=True,
-                                      related_name="edited_blogs", verbose_name=_("edited by"))
+                                      related_name="edited_blogs",
+                                      verbose_name=_("edited by"))
 
     title         = models.CharField(max_length=130, verbose_name=_("title"))
-    slug          = models.CharField(max_length=130, verbose_name=_("slug"), blank=True, db_index=True)
+    slug          = models.CharField(max_length=130, verbose_name=_("slug"),
+                                     blank=True, db_index=True)
 
     text          = MarkupTextField(verbose_name=_("text"), safe=False)
 
@@ -204,7 +209,8 @@ class Post(models.Model):
 Tag.add_to_class('post_count', PostCountField(verbose_name=_("post count")))
 
 class Comment(AntispamModel):
-    post = models.ForeignKey('turbion.Post', related_name="comments", verbose_name=_("post"))
+    post = models.ForeignKey('turbion.Post', related_name="comments",
+                             verbose_name=_("post"))
 
     statuses = Enum(
         published=_("published"),
@@ -218,7 +224,8 @@ class Comment(AntispamModel):
     created_by = models.ForeignKey(Profile, related_name="created_comments",
                                    verbose_name=_("created by"))
 
-    edited_on = models.DateTimeField(null=True, editable=False, blank=True, verbose_name=_("edited on"))
+    edited_on = models.DateTimeField(null=True, editable=False, blank=True,
+                                     verbose_name=_("edited on"))
     edited_by = models.ForeignKey(Profile, related_name="edited_comments",
                                   editable=False, null=True, verbose_name=_("edited by"))
 
@@ -243,7 +250,8 @@ class Comment(AntispamModel):
         return self.created_on != self.edited_on
 
     def __unicode__(self):
-        return _('Comment on %(post)s by %(author)s') % {'post': self.post, 'author': self.created_by.name,}
+        return _('Comment on %(post)s by %(author)s') % {'post': self.post,
+                                                         'author': self.created_by.name,}
 
     def emit_event(self):
         from turbion.bits import watchlist
