@@ -3,12 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from turbion.bits.blogs.models import Comment
 from turbion.bits.profiles.forms import combine_profile_form_with
-from turbion.bits.profiles import get_profile
+
 
 class _CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ('text_filter', 'text')
+        fields = ('text',)
+
 
 class CommentForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
@@ -19,9 +20,8 @@ class CommentForm(forms.Form):
             filter_field="text_filter"
         )
 
-        profile = get_profile(request)
-
         self.__class__.__init__(self, *args, **kwargs)
+
 
 class SearchForm(forms.Form):
     query = forms.CharField(required=True, label=_('search'))
